@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<RootNamespace>Microsoft.Maui.Resizetizer</RootNamespace>
+		<AssemblyName>Microsoft.Maui.Resizetizer</AssemblyName>
+		<!--<Nullable>enable</Nullable>-->
+		<PackageId>Microsoft.Maui.Resizetizer.Sdk</PackageId>
+		<Description>.NET MAUI SDK support for images, fonts, etc. Enabled via &lt;UseMauiAssets&gt;true&lt;/UseMauiAssets&gt;.</Description>
+		<IsPackable>false</IsPackable>
+		<LangVersion>latest</LangVersion>
+		<!--<_SkiaPackagePath>build\</_SkiaPackagePath>-->
+	</PropertyGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Resources\MauiSplash.storyboard" LogicalName="MauiSplash.storyboard" />
+	</ItemGroup>
+
+	<Import Project="ResizetizerPackages.projitems" />
+
+	<ItemGroup>
+		<None Include="@(_ResizetizerFiles)" Visible="false" Pack="true" PackagePath="build/%(Arch)" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="$(OutputPath)$(AssemblyName).dll" Visible="false" Pack="true" PackagePath="build" />
+		<None Include="$(OutputPath)$(AssemblyName).pdb" Visible="false" Pack="true" PackagePath="build" />
+		<None Include="../../../Uno.Resizetizer.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).targets" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+
+	<Target Name="_CopyToNuspecDir" AfterTargets="Build">
+		<ItemGroup>
+			<_CopyItems Include="$(TargetDir)**\*.dll" Exclude="$(TargetDir)System.*.dll" />
+			<_CopyItems Include="$(TargetDir)**\*.so" />
+			<_CopyItems Include="$(TargetDir)**\*.dylib" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(MauiNuSpecDirectory)%(RecursiveDir)" ContinueOnError="true" Retries="0" />
+	</Target>
+</Project>
