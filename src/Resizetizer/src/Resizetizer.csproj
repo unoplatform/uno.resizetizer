@@ -19,10 +19,11 @@
 	<Import Project="ResizetizerPackages.projitems" />
 
 	<ItemGroup>
-		<None Include="@(_ResizetizerFiles)" Visible="false" Pack="true" PackagePath="build/%(Arch)" CopyToOutputDirectory="PreserveNewest" />
+		<None Remove="bin\Debug\netstandard2.0\Microsoft.Maui.Resizetizer.dll" />
 		<None Include="$(OutputPath)$(AssemblyName).dll" Visible="false" Pack="true" PackagePath="build" />
+		<None Remove="bin\Debug\netstandard2.0\Microsoft.Maui.Resizetizer.pdb" />
 		<None Include="$(OutputPath)$(AssemblyName).pdb" Visible="false" Pack="true" PackagePath="build" />
-		<None Include="../../../Uno.Resizetizer.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).targets" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="../../Microsoft.Maui.Resizetizer.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).targets" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
 	<Target Name="_CopyToNuspecDir" AfterTargets="Build">
@@ -33,4 +34,41 @@
 		</ItemGroup>
 		<Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(MauiNuSpecDirectory)%(RecursiveDir)" ContinueOnError="true" Retries="0" />
 	</Target>
+
+	<!-- Removed the compiled file from solution -->
+	<ItemGroup>
+		<Compile Remove="arm64\**" />
+		<Compile Remove="arm\**" />
+		<Compile Remove="bin\**" />
+		<Compile Remove="musl-x64\**" />
+		<Compile Remove="x64\**" />
+		<Compile Remove="x86\**" />
+		<EmbeddedResource Remove="arm64\**" />
+		<EmbeddedResource Remove="arm\**" />
+		<EmbeddedResource Remove="bin\**" />
+		<EmbeddedResource Remove="musl-x64\**" />
+		<EmbeddedResource Remove="x64\**" />
+		<EmbeddedResource Remove="x86\**" />
+		<None Remove="arm64\**" />
+		<None Remove="arm\**" />
+		<None Remove="bin\**" />
+		<None Remove="musl-x64\**" />
+		<None Remove="x64\**" />
+		<None Remove="x86\**" />
+		<None Include="@(_ResizetizerFiles)" Visible="false" Pack="true" PackagePath="build/%(Arch)" CopyToOutputDirectory="PreserveNewest" />
+		<None Remove="C:\Users\Jesus\.nuget\packages\harfbuzzsharp.nativeassets.linux\2.8.2.2\runtimes\linux-arm64\native\libHarfBuzzSharp.so" />
+		<None Remove="C:\Users\Jesus\.nuget\packages\harfbuzzsharp.nativeassets.linux\2.8.2.2\runtimes\linux-arm\native\libHarfBuzzSharp.so" />
+		<None Remove="C:\Users\Jesus\.nuget\packages\harfbuzzsharp.nativeassets.linux\2.8.2.2\runtimes\linux-musl-x64\native\libHarfBuzzSharp.so" />
+		<None Remove="C:\Users\Jesus\.nuget\packages\harfbuzzsharp.nativeassets.linux\2.8.2.2\runtimes\linux-x64\native\libHarfBuzzSharp.so" />
+		<None Remove="C:\Users\Jesus\.nuget\packages\harfbuzzsharp.nativeassets.win32\2.8.2.2\runtimes\win-arm64\native\libHarfBuzzSharp.dll" />
+		<None Remove="C:\Users\Jesus\.nuget\packages\harfbuzzsharp.nativeassets.win32\2.8.2.2\runtimes\win-x64\native\libHarfBuzzSharp.dll" />
+		<None Remove="C:\Users\Jesus\.nuget\packages\harfbuzzsharp.nativeassets.win32\2.8.2.2\runtimes\win-x86\native\libHarfBuzzSharp.dll" />
+		<None Remove="C:\Users\Jesus\.nuget\packages\skiasharp.nativeassets.linux.nodependencies\2.88.2\runtimes\linux-arm64\native\libSkiaSharp.so" />
+		<None Remove="C:\Users\Jesus\.nuget\packages\skiasharp.nativeassets.linux.nodependencies\2.88.2\runtimes\linux-arm\native\libSkiaSharp.so" />
+		<None Remove="C:\Users\Jesus\.nuget\packages\skiasharp.nativeassets.linux.nodependencies\2.88.2\runtimes\linux-musl-x64\native\libSkiaSharp.so" />
+		<None Remove="C:\Users\Jesus\.nuget\packages\skiasharp.nativeassets.linux.nodependencies\2.88.2\runtimes\linux-x64\native\libSkiaSharp.so" />
+		<None Remove="C:\Users\Jesus\.nuget\packages\skiasharp.nativeassets.win32\2.88.2\runtimes\win-arm64\native\libSkiaSharp.dll" />
+		<None Remove="C:\Users\Jesus\.nuget\packages\skiasharp.nativeassets.win32\2.88.2\runtimes\win-x64\native\libSkiaSharp.dll" />
+		<None Remove="C:\Users\Jesus\.nuget\packages\skiasharp.nativeassets.win32\2.88.2\runtimes\win-x86\native\libSkiaSharp.dll" />
+	</ItemGroup>
 </Project>
