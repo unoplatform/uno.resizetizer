@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.Resizetizer.Sample.Wind
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.Resizetizer.Sample.Skia.Wpf", "Uno.Resizetizer.Sample\Uno.Resizetizer.Sample.Skia.Wpf\Uno.Resizetizer.Sample.Skia.Wpf.csproj", "{8A93F8F2-A94B-4660-AE58-33AC72C15F97}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resizetizer", "..\..\src\Resizetizer\src\Resizetizer.csproj", "{D4048399-040B-47CE-9289-EB7E7E92CC36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resizetizer", "..\src\Resizetizer\src\Resizetizer.csproj", "{D4048399-040B-47CE-9289-EB7E7E92CC36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
