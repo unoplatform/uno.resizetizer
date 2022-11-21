@@ -9,7 +9,8 @@
 		<Description>.NET MAUI SDK support for images, fonts, etc. Enabled via &lt;UseMauiAssets&gt;true&lt;/UseMauiAssets&gt;.</Description>
 		<IsPackable>false</IsPackable>
 		<LangVersion>latest</LangVersion>
-		<!--<_SkiaPackagePath>build\</_SkiaPackagePath>-->
+		<_SkiaPackagePath>build\</_SkiaPackagePath>
+		<MauiNuSpecDirectory>$(MSBuildThisFileDirectory)..\..\.nuspec\</MauiNuSpecDirectory>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -22,7 +23,7 @@
 		<None Include="@(_ResizetizerFiles)" Visible="false" Pack="true" PackagePath="build/%(Arch)" CopyToOutputDirectory="PreserveNewest" />
 		<None Include="$(OutputPath)$(AssemblyName).dll" Visible="false" Pack="true" PackagePath="build" />
 		<None Include="$(OutputPath)$(AssemblyName).pdb" Visible="false" Pack="true" PackagePath="build" />
-		<None Include="../../../Uno.Resizetizer.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).targets" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="../../.nuspec/Microsoft.Maui.Resizetizer.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).targets" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
 	<Target Name="_CopyToNuspecDir" AfterTargets="Build">
@@ -33,4 +34,5 @@
 		</ItemGroup>
 		<Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(MauiNuSpecDirectory)%(RecursiveDir)" ContinueOnError="true" Retries="0" />
 	</Target>
+
 </Project>
