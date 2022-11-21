@@ -8,21 +8,41 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platforms", "Platforms", "{9E69AA48-0877-4777-BB17-D722E9A7B2AD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.Resizetizer.Sample.Wasm", "Uno.Resizetizer.Sample\Uno.Resizetizer.Sample.Wasm\Uno.Resizetizer.Sample.Wasm.csproj", "{806D40BB-FFCA-4CEE-B1A5-CB5E61DB6CF4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D4048399-040B-47CE-9289-EB7E7E92CC36} = {D4048399-040B-47CE-9289-EB7E7E92CC36}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.Resizetizer.Sample.Mobile", "Uno.Resizetizer.Sample\Uno.Resizetizer.Sample.Mobile\Uno.Resizetizer.Sample.Mobile.csproj", "{CFA4E1A1-129C-4DCC-B5DE-78EF33130E8F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D4048399-040B-47CE-9289-EB7E7E92CC36} = {D4048399-040B-47CE-9289-EB7E7E92CC36}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.Resizetizer.Sample.Skia.Gtk", "Uno.Resizetizer.Sample\Uno.Resizetizer.Sample.Skia.Gtk\Uno.Resizetizer.Sample.Skia.Gtk.csproj", "{F2E977DF-C739-4037-AF44-6277883A80EA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D4048399-040B-47CE-9289-EB7E7E92CC36} = {D4048399-040B-47CE-9289-EB7E7E92CC36}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.Resizetizer.Sample.Skia.Linux.FrameBuffer", "Uno.Resizetizer.Sample\Uno.Resizetizer.Sample.Skia.Linux.FrameBuffer\Uno.Resizetizer.Sample.Skia.Linux.FrameBuffer.csproj", "{F9E14DC3-CB0B-417C-89F0-D0D2E1913786}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D4048399-040B-47CE-9289-EB7E7E92CC36} = {D4048399-040B-47CE-9289-EB7E7E92CC36}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.Resizetizer.Sample.Windows", "Uno.Resizetizer.Sample\Uno.Resizetizer.Sample.Windows\Uno.Resizetizer.Sample.Windows.csproj", "{95E0839F-675E-4433-8640-50BDD5627520}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D4048399-040B-47CE-9289-EB7E7E92CC36} = {D4048399-040B-47CE-9289-EB7E7E92CC36}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.Resizetizer.Sample.Skia.Wpf", "Uno.Resizetizer.Sample\Uno.Resizetizer.Sample.Skia.Wpf\Uno.Resizetizer.Sample.Skia.Wpf.csproj", "{8A93F8F2-A94B-4660-AE58-33AC72C15F97}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D4048399-040B-47CE-9289-EB7E7E92CC36} = {D4048399-040B-47CE-9289-EB7E7E92CC36}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resizetizer", "..\src\Resizetizer\src\Resizetizer.csproj", "{D4048399-040B-47CE-9289-EB7E7E92CC36}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EE1D4524-1219-4F78-8CF2-2B9AD306FED3}"
 	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
+		Directory.build.props = Directory.build.props
 		Directory.build.targets = Directory.build.targets
 		..\Uno.Resizetizer.targets = ..\Uno.Resizetizer.targets
 	EndProjectSection

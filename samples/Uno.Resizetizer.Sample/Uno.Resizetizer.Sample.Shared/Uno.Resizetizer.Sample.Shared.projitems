@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <AfterMicrosoftNETSdkTargets>$(AfterMicrosoftNETSdkTargets);$(MSBuildThisFileDirectory)..\..\..\src\Microsoft.Maui.Resizetizer.targets</AfterMicrosoftNETSdkTargets>
+    <AfterMicrosoftNETSdkTargets>$(AfterMicrosoftNETSdkTargets);$(MSBuildThisFileDirectory)..\..\..\src\.nuspec\Microsoft.Maui.Resizetizer.targets</AfterMicrosoftNETSdkTargets>
   </PropertyGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
@@ -40,7 +40,7 @@
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Assets\Images\appiconfg.svg" />
     <None Include="$(MSBuildThisFileDirectory)Assets\Images\appicon.svg" />
-    <MauiIcon Include="$(MSBuildThisFileDirectory)Assets\Images\appicon.svg" ForegroundFile="Resources\Images\appiconfg.svg" Color="#512BD4" />
+    <MauiIcon Include="$(MSBuildThisFileDirectory)Assets\Images\appicon.svg" ForegroundFile="$(MSBuildThisFileDirectory)Assets\Images\appiconfg.svg" Color="#512BD4" />
     <None Include="$(MSBuildThisFileDirectory)Assets\SharedAssets.md" />
     <MauiImage Include="$(MSBuildThisFileDirectory)Assets\Images\*" />
     <!-- <MauiSplashScreen Include="$(MSBuildThisFileDirectory)Assets\Images\dotnet_bot.svg" BaseSize="128,128" Color="#512BD4" /> -->

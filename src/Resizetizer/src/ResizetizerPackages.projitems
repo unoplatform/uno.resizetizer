@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
-  <PropertyGroup>
-      <_HarfBuzzSharpVersion>2.8.2.2</_HarfBuzzSharpVersion>
-      <_SkiaSharpVersion>2.88.2</_SkiaSharpVersion>
-      <_SkiaSvg>0.5.13</_SkiaSvg>
-  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="HarfBuzzSharp" Version="$(_HarfBuzzSharpVersion)" GeneratePathProperty="true" PrivateAssets="all" />
     <PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" Version="$(_HarfBuzzSharpVersion)" GeneratePathProperty="true" PrivateAssets="all" />
@@ -17,11 +13,11 @@
     <PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="$(_SkiaSharpVersion)" GeneratePathProperty="true" PrivateAssets="all" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="$(_SkiaSharpVersion)" GeneratePathProperty="true" PrivateAssets="all" />
     <PackageReference Include="SkiaSharp.HarfBuzz" Version="$(_SkiaSharpVersion)" GeneratePathProperty="true" PrivateAssets="all" />
-    <PackageReference Include="Svg.Skia" Version="$(_SkiaSvg)" GeneratePathProperty="true" PrivateAssets="all" />
-    <PackageReference Include="Svg.Custom" Version="$(_SkiaSvg)" GeneratePathProperty="true" PrivateAssets="all" />
-    <PackageReference Include="Svg.Model" Version="$(_SkiaSvg)" GeneratePathProperty="true" PrivateAssets="all" />
-    <PackageReference Include="ShimSkiaSharp" Version="$(_SkiaSvg)" GeneratePathProperty="true" PrivateAssets="all" />
-    <PackageReference Include="Fizzler" Version="1.2.0" GeneratePathProperty="true" PrivateAssets="all" />
+    <PackageReference Include="Svg.Skia" Version="$(SvgSkiaPackageVersion)" GeneratePathProperty="true" PrivateAssets="all" />
+    <PackageReference Include="Svg.Custom" Version="$(SvgSkiaPackageVersion)" GeneratePathProperty="true" PrivateAssets="all" />
+    <PackageReference Include="Svg.Model" Version="$(SvgSkiaPackageVersion)" GeneratePathProperty="true" PrivateAssets="all" />
+    <PackageReference Include="ShimSkiaSharp" Version="$(SvgSkiaPackageVersion)" GeneratePathProperty="true" PrivateAssets="all" />
+    <PackageReference Include="Fizzler" Version="$(FizzlerPackageVersion)" GeneratePathProperty="true" PrivateAssets="all" />
     <PackageReference Include="System.Memory" Version="4.5.5" GeneratePathProperty="true" PrivateAssets="all" />
     <PackageReference Include="System.Buffers" Version="4.5.1" GeneratePathProperty="true" PrivateAssets="all" />
     <PackageReference Include="System.Text.Json" Version="6.0.5" GeneratePathProperty="true" PrivateAssets="all" />
