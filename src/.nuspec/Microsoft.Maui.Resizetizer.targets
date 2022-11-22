@@ -3,14 +3,14 @@
 
     <ItemGroup>
         <AvailableItemName Include="MauiAsset" />
-        <AvailableItemName Include="MauiImage" />
+        <AvailableItemName Include="UnoImage" />
         <AvailableItemName Include="MauiIcon" />
         <AvailableItemName Include="MauiFont" />
         <AvailableItemName Include="MauiSplashScreen" />
     </ItemGroup>
 
     <PropertyGroup>
-        <_ResizetizerTaskAssemblyName>$(MSBuildThisFileDirectory)\Microsoft.Maui.Resizetizer.dll</_ResizetizerTaskAssemblyName>
+        <_ResizetizerTaskAssemblyName>$(MSBuildThisFileDirectory)Microsoft.Maui.Resizetizer.dll</_ResizetizerTaskAssemblyName>
     </PropertyGroup>
 
     <UsingTask
@@ -59,8 +59,8 @@
             _CleanResizetizer;
         </CleanDependsOn>
 
-        <_ResizetizerInputsFile>$(IntermediateOutputPath)mauiimage.inputs</_ResizetizerInputsFile>
-        <_ResizetizerStampFile>$(IntermediateOutputPath)mauiimage.stamp</_ResizetizerStampFile>
+        <_ResizetizerInputsFile>$(IntermediateOutputPath)UnoImage.inputs</_ResizetizerInputsFile>
+        <_ResizetizerStampFile>$(IntermediateOutputPath)UnoImage.stamp</_ResizetizerStampFile>
         <_MauiFontInputsFile>$(IntermediateOutputPath)mauifont.inputs</_MauiFontInputsFile>
         <_MauiFontStampFile>$(IntermediateOutputPath)mauifont.stamp</_MauiFontStampFile>
         <_MauiSplashInputsFile>$(IntermediateOutputPath)mauisplash.inputs</_MauiSplashInputsFile>
@@ -218,12 +218,12 @@
         </ProcessMauiFontsAfterTargets>
     </PropertyGroup>
 
-    <!-- Finds absolute paths to any MauiImage in this project -->
+    <!-- Finds absolute paths to any UnoImage in this project -->
     <!-- App head projects will invoke this target on their project references to collect images -->
     <Target Name="GetMauiItems" Outputs="@(ExportedMauiItem)">
         <ItemGroup>
-            <MauiItem Include="@(MauiImage)" ItemGroupName="MauiImage" Condition="'%(MauiImage.ForegroundFile)' == ''" />
-            <MauiItem Include="@(MauiImage)" ItemGroupName="MauiImage" Condition="'%(MauiImage.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(MauiImage.ForegroundFile)'))" />
+            <MauiItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' == ''" />
+            <MauiItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoImage.ForegroundFile)'))" />
             <MauiItem Include="@(MauiIcon)" ItemGroupName="MauiIcon" Condition="'%(MauiIcon.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(MauiIcon.ForegroundFile)'))" />
             <MauiItem Include="@(MauiFont)"  ItemGroupName="MauiFont" />
             <MauiItem Include="@(MauiAsset)" ItemGroupName="MauiAsset" ProjectDirectory="$(MSBuildProjectDirectory)" />
@@ -250,7 +250,7 @@
         </CallTarget>
 
         <!-- Invoke the GetMauiItems target on all project references -->
-        <!-- This will accumulate images into our MauiImage group -->
+        <!-- This will accumulate images into our UnoImage group -->
         <!--<MSBuild Targets="GetMauiItems" Projects="@(_MSBuildProjectReferenceExistent)">-->
         <MSBuild
             Targets="GetMauiItems"
@@ -265,9 +265,9 @@
         </MSBuild>
 
         <ItemGroup>
-            <MauiImage
+            <UnoImage
                 Include="@(ImportedMauiItem)"
-                Condition="'%(ImportedMauiItem.ItemGroupName)' == 'MauiImage'" />
+                Condition="'%(ImportedMauiItem.ItemGroupName)' == 'UnoImage'" />
             <MauiIcon
                 Include="@(ImportedMauiItem)"
                 Condition="'%(ImportedMauiItem.ItemGroupName)' == 'MauiIcon'" />
@@ -284,19 +284,19 @@
 
         <!-- Make sure animated gifs are not resized by default -->
         <ItemGroup>
-            <MauiImage Update="@(MauiImage)" Resize="False" Condition="'%(MauiImage.Extension)' == '.gif' and '%(MauiImage.Resize)' == ''" />
+            <UnoImage Update="@(UnoImage)" Resize="False" Condition="'%(UnoImage.Extension)' == '.gif' and '%(UnoImage.Resize)' == ''" />
         </ItemGroup>
 
-        <!-- Map @(MauiIcon) to @(MauiImage IsAppIcon=true) -->
+        <!-- Map @(MauiIcon) to @(UnoImage IsAppIcon=true) -->
         <ItemGroup>
-            <MauiImage Include="@(MauiIcon)" IsAppIcon="True" />
+            <UnoImage Include="@(MauiIcon)" IsAppIcon="True" />
         </ItemGroup>
 
         <!-- Write out item spec and metadata to a file we can use as an inputs for the resize target -->
         <!-- This allows us to invalidate the build based on not just input image files changing but project item metadata as well -->
         <WriteLinesToFile
             File="$(_ResizetizerInputsFile)"
-            Lines="@(MauiImage->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);IsAppIcon=%(IsAppIcon);ForegroundScale=%(ForegroundScale);ForegroundFile=%(ForegroundFile)')"
+            Lines="@(UnoImage->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);IsAppIcon=%(IsAppIcon);ForegroundScale=%(ForegroundScale);ForegroundFile=%(ForegroundFile)')"
             Overwrite="true"
             WriteOnlyWhenDifferent="true" />
 
@@ -361,7 +361,7 @@
             MauiSplashScreen="@(MauiSplashScreen)"
         />
         <ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
-            <MauiImage Include="@(MauiSplashScreen)" />
+            <UnoImage Include="@(MauiSplashScreen)" />
             <LibraryResourceDirectories Condition="Exists('$(_MauiIntermediateSplashScreen)')" Include="$(_MauiIntermediateSplashScreen)">
                 <StampFile>$(_ResizetizerStampFile)</StampFile>
             </LibraryResourceDirectories>
@@ -378,7 +378,7 @@
             <_MauiStoryboardForPList>$(_MauiIntermediateStoryboard)</_MauiStoryboardForPList>
         </PropertyGroup>
         <ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'">
-            <MauiImage Include="@(MauiSplashScreen)" />
+            <UnoImage Include="@(MauiSplashScreen)" />
             <InterfaceDefinition Include="$(_MauiIntermediateStoryboard)" Link="$([System.IO.Path]::GetFileName($(_MauiIntermediateStoryboard)))" />
             <FileWrites Include="$(_MauiIntermediateStoryboard)" />
         </ItemGroup>
@@ -404,7 +404,7 @@
             MauiSplashScreen="@(MauiSplashScreen)" />
 
         <ItemGroup Condition="'$(_ResizetizerIsTizenApp)' == 'True'">
-            <MauiImage Include="@(MauiSplashScreen)" />
+            <UnoImage Include="@(MauiSplashScreen)" />
             <_MauiSplashScreens Include="$(_MauiIntermediateSplashScreen)splash\*" />
             <TizenTpkUserIncludeFiles Include="@(_MauiSplashScreens)" TizenTpkSubDir="shared\res\splash" />
         </ItemGroup>
@@ -516,14 +516,14 @@
     </Target>
 
     <Target Name="ResizetizeImages"
-        Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);@(MauiImage)"
+        Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);@(UnoImage)"
         Outputs="$(_ResizetizerStampFile)"
         AfterTargets="$(ResizetizeAfterTargets)"
         BeforeTargets="$(ResizetizeBeforeTargets)"
         DependsOnTargets="$(ResizetizeDependsOnTargets)">
 
         <DetectInvalidResourceOutputFilenamesTask
-            Items="@(MauiImage->Distinct())"
+            Items="@(UnoImage->Distinct())"
             ErrorMessage="$(_ResizetizerDefaultInvalidFilenamesErrorMessage)">
         </DetectInvalidResourceOutputFilenamesTask>
 
@@ -532,7 +532,7 @@
             PlatformType="$(ResizetizerPlatformType)"
             IntermediateOutputPath="$(_MauiIntermediateImages)"
             InputsFile="$(_ResizetizerInputsFile)"
-            Images="@(MauiImage->Distinct())">
+            Images="@(UnoImage->Distinct())">
         </ResizetizeImages>
 
         <ItemGroup>
@@ -567,14 +567,14 @@
         <!-- iOS Only -->
         <!-- If on Windows, using build host, copy the files over to build server host too -->
         <ItemGroup Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'">
-            <_MauiImagesToCopyToBuildServer Include="@(_ResizetizerCollectedBundleResourceImages)">
+            <_UnoImagesToCopyToBuildServer Include="@(_ResizetizerCollectedBundleResourceImages)">
                 <TargetPath>%(Identity)</TargetPath>
-            </_MauiImagesToCopyToBuildServer>
+            </_UnoImagesToCopyToBuildServer>
         </ItemGroup>
         <CopyFilesToBuildServer
             Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'"
             SessionId="$(BuildSessionId)"
-            Files="@(_MauiImagesToCopyToBuildServer)" />
+            Files="@(_UnoImagesToCopyToBuildServer)" />
 
         <!-- Android -->
         <ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
@@ -660,7 +660,7 @@
             ApplicationDisplayVersion="$(ApplicationDisplayVersion)"
             ApplicationVersion="$(ApplicationVersion)"
             ApplicationTitle="$(ApplicationTitle)"
-            AppIcon="@(MauiImage->WithMetadataValue('IsAppIcon', 'true'))"
+            AppIcon="@(UnoImage->WithMetadataValue('IsAppIcon', 'true'))"
             SplashScreen="@(MauiSplashScreen)" />
 
         <!-- replace user manifest -->
@@ -754,7 +754,7 @@
             ApplicationDisplayVersion="$(ApplicationDisplayVersion)"
             ApplicationVersion="$(ApplicationVersion)"
             ApplicationTitle="$(ApplicationTitle)"
-            AppIcon="@(MauiImage->WithMetadataValue('IsAppIcon', 'true'))"
+            AppIcon="@(UnoImage->WithMetadataValue('IsAppIcon', 'true'))"
             SplashScreen="@(MauiSplashScreen)" />
 
         <!-- replace user manifest -->
