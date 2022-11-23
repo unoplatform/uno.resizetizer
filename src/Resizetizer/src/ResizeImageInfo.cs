@@ -13,6 +13,14 @@ namespace Microsoft.Maui.Resizetizer
 
 		public string? Filename { get; set; }
 
+		public string OutputPath =>
+			string.IsNullOrWhiteSpace(Alias)
+				? string.IsNullOrWhiteSpace(Filename)
+					? Path.GetDirectoryName(ForegroundFilename)
+					: Path.GetDirectoryName(Filename)
+				: Path.GetDirectoryName(Alias);
+
+
 		public string OutputName =>
 			string.IsNullOrWhiteSpace(Alias)
 				? string.IsNullOrWhiteSpace(Filename)
@@ -53,6 +61,7 @@ namespace Microsoft.Maui.Resizetizer
 
 		public static List<ResizeImageInfo> Parse(IEnumerable<ITaskItem> images)
 		{
+            System.Diagnostics.Debugger.Launch();
 			var r = new List<ResizeImageInfo>();
 
 			if (images == null)

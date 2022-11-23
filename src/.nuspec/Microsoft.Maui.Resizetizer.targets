@@ -15,43 +15,43 @@
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Microsoft.Maui.Resizetizer.ResizetizeImages" />
+        TaskName="Microsoft.Maui.Resizetizer.ResizetizeImages" TaskFactory="TaskHostFactory" />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Microsoft.Maui.Resizetizer.DetectInvalidResourceOutputFilenamesTask" />
+        TaskName="Microsoft.Maui.Resizetizer.DetectInvalidResourceOutputFilenamesTask" TaskFactory="TaskHostFactory" />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Microsoft.Maui.Resizetizer.CreatePartialInfoPlistTask" />
+        TaskName="Microsoft.Maui.Resizetizer.CreatePartialInfoPlistTask" TaskFactory="TaskHostFactory" />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Microsoft.Maui.Resizetizer.GenerateSplashAndroidResources" />
+        TaskName="Microsoft.Maui.Resizetizer.GenerateSplashAndroidResources" TaskFactory="TaskHostFactory" />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Microsoft.Maui.Resizetizer.GenerateSplashStoryboard" />
+        TaskName="Microsoft.Maui.Resizetizer.GenerateSplashStoryboard" TaskFactory="TaskHostFactory" />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Microsoft.Maui.Resizetizer.TizenSplashUpdater" />
+        TaskName="Microsoft.Maui.Resizetizer.TizenSplashUpdater" TaskFactory="TaskHostFactory" />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Microsoft.Maui.Resizetizer.GenerateSplashAssets" />
+        TaskName="Microsoft.Maui.Resizetizer.GenerateSplashAssets" TaskFactory="TaskHostFactory" />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Microsoft.Maui.Resizetizer.GetMauiAssetPath" />
+        TaskName="Microsoft.Maui.Resizetizer.GetMauiAssetPath" TaskFactory="TaskHostFactory" />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Microsoft.Maui.Resizetizer.GeneratePackageAppxManifest" />
+        TaskName="Microsoft.Maui.Resizetizer.GeneratePackageAppxManifest" TaskFactory="TaskHostFactory" />
 
 	<UsingTask
 		  AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-		  TaskName="Microsoft.Maui.Resizetizer.GenerateTizenManifest" />
+		  TaskName="Microsoft.Maui.Resizetizer.GenerateTizenManifest" TaskFactory="TaskHostFactory" />
 
 	<PropertyGroup>
 		<CleanDependsOn>
@@ -231,7 +231,7 @@
 	<Target Name="GetMauiItems" Outputs="@(ExportedMauiItem)">
 		<ItemGroup>
 			<MauiItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' == ''" />
-			<MauiItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoImage.ForegroundFile)'))" />
+			<MauiItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoImage.ForegroundFile)'))" ProjectDirectory="$(MSBuildProjectDirectory)" />
 			<MauiItem Include="@(MauiIcon)" ItemGroupName="MauiIcon" Condition="'%(MauiIcon.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(MauiIcon.ForegroundFile)'))" />
 			<MauiItem Include="@(MauiFont)"  ItemGroupName="MauiFont" />
 			<MauiItem Include="@(MauiAsset)" ItemGroupName="MauiAsset" ProjectDirectory="$(MSBuildProjectDirectory)" />
@@ -547,7 +547,7 @@
 			<!-- Get Images that were generated -->
 			<!-- Either from the task, or if the task was skipped (up to date), use the wildcard lookup -->
 			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' != ''" Include="@(CopiedResources)" />
-			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' == ''" Include="$(_MauiIntermediateImages)**\*" />
+			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' == ''" Include="$(_MauiIntermediateImages)**\*"/>
 		</ItemGroup>
 
 		<!-- iOS -->
@@ -591,7 +591,7 @@
 				<StampFile>$(_ResizetizerStampFile)</StampFile>
 			</LibraryResourceDirectories>-->
 			<Content Include="@(_ResizetizerCollectedImages)"
-					 Link="%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
+					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
 				<!--<TargetPath>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</TargetPath>-->
 			</Content>
 
@@ -600,9 +600,13 @@
 
 		<!-- UWP / WinUI -->
 		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
-			<ContentWithTargetPath Include="@(_ResizetizerCollectedImages)">
+			<!--<ContentWithTargetPath Include="@(_ResizetizerCollectedImages)">
 				<TargetPath>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</TargetPath>
-			</ContentWithTargetPath>
+			</ContentWithTargetPath>-->
+			<Content Include="@(_ResizetizerCollectedImages)"
+		 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
+				<!--<TargetPath>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</TargetPath>-->
+			</Content>
 
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
 
