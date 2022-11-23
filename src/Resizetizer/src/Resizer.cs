@@ -26,7 +26,10 @@ namespace Microsoft.Maui.Resizetizer
 		{
 			var fullIntermediateOutputPath = new DirectoryInfo(intermediateOutputPath);
 
-			var destination = Path.Combine(fullIntermediateOutputPath.FullName, dpi.Path, info.OutputName + dpi.FileSuffix + info.OutputExtension);
+			var path = info.OutputPath;
+			path = Path.IsPathRooted(path)?string.Empty: path;
+
+            var destination = Path.Combine(fullIntermediateOutputPath.FullName, dpi.Path, path, info.OutputName + dpi.FileSuffix + info.OutputExtension);
 
 			var fileInfo = new FileInfo(destination);
 			if (!fileInfo.Directory.Exists)
