@@ -116,10 +116,14 @@
 
 	<!-- iOS -->
 	<PropertyGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True'">
-		<ResizetizerPlatformType>ios</ResizetizerPlatformType>
+		<ResizetizerPlatformType>uwp</ResizetizerPlatformType>
 
 		<!-- We don't want to resizetize anything for an inner build when building a universal app, it's enough to only do it in the outer build -->
 		<DisableResizetizer Condition="'$(_IsMultiRidBuild)' == 'true'">true</DisableResizetizer>
+
+		<ResizetizeBeforeTargets>
+			UnoAssetsGeneration;
+		</ResizetizeBeforeTargets>
 
 		<CollectBundleResourcesDependsOn>
 			$(CollectBundleResourcesDependsOn);
@@ -553,23 +557,23 @@
 		<!-- iOS -->
 		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True'">
 			<!-- Batch the collectd items into BundleResource which iOS expects -->
-			<_ResizetizerCollectedBundleResourceImages Include="@(_ResizetizerCollectedImages->'%(FullPath)')">
-				<LogicalName>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</LogicalName>
-				<TargetPath>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</TargetPath>
-			</_ResizetizerCollectedBundleResourceImages>
+			<Content Include="@(_ResizetizerCollectedImages)"
+					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
+				<!--<TargetPath>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</TargetPath>-->
+			</Content>
 
 			<!-- iOS Expects images in this group -->
-			<BundleResource Include="@(_ResizetizerCollectedBundleResourceImages)" Condition="'@(_ResizetizerCollectedBundleResourceImages->Contains('Assets.xcassets'))' != 'True' and '%(_ResizetizerCollectedBundleResourceImages.Identity)' != ''" />
+			<!-- <BundleResource Include="@(_ResizetizerCollectedBundleResourceImages)" Condition="'@(_ResizetizerCollectedBundleResourceImages->Contains('Assets.xcassets'))' != 'True' and '%(_ResizetizerCollectedBundleResourceImages.Identity)' != ''" /> -->
 
-			<ImageAsset
+			<!-- <ImageAsset
                 Include="@(_ResizetizerCollectedBundleResourceImages)"
                 Condition="'@(_ResizetizerCollectedBundleResourceImages->Contains('Assets.xcassets'))' == 'True' and '%(_ResizetizerCollectedBundleResourceImages.Identity)' != ''">
 				<LogicalName>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_ResizetizerCollectedBundleResourceImages.Identity)))))\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</LogicalName>
 				<TargetPath>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_ResizetizerCollectedBundleResourceImages.Identity)))))\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</TargetPath>
 				<Link>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_ResizetizerCollectedBundleResourceImages.Identity)))))\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</Link>
-			</ImageAsset>
+			</ImageAsset> -->
 
-			<FileWrites Include="@(_ResizetizerCollectedBundleResourceImages)" />
+			<!-- <FileWrites Include="@(_ResizetizerCollectedBundleResourceImages)" /> -->
 		</ItemGroup>
 
 		<!-- iOS Only -->
