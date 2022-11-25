@@ -15,6 +15,9 @@
 			<Image Width="300"
 				   Height="300"
 				   Source="ms-appx:///MyAssets/Nested/dotnet_bot.png" />
+			<Image Width="300"
+				   Height="300"
+				   Source="ms-appx:///Assets/Images/dotnet_bot2.png" />
 
 			<!--  This works on Android  -->
 

@@ -79,6 +79,15 @@ namespace Microsoft.Maui.Resizetizer
 
 				info.Alias = image.GetMetadata("Link");
 
+				if (string.IsNullOrWhiteSpace(info.Alias))
+				{
+					var projDirectory = image.GetMetadata("DefiningProjectDirectory");
+					if(!string.IsNullOrWhiteSpace(projDirectory))
+					{
+						info.Alias = fileInfo.FullName.Replace(projDirectory, string.Empty);
+					}
+				}
+
 				info.BaseSize = Utils.ParseSizeString(image.GetMetadata("BaseSize"));
 
 				if (bool.TryParse(image.GetMetadata("Resize"), out var rz))
