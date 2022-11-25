@@ -115,9 +115,15 @@
 		</ProcessMauiFontsDependsOnTargets>
 	</PropertyGroup>
 
-	<!-- Skia -->
+	<!-- Wasm -->
 	<PropertyGroup Condition="'$(_ResizetizerIsNetCore)' == 'True'">
 		<ResizetizerPlatformType>uwp</ResizetizerPlatformType>
+
+		<ResizetizeBeforeTargets>
+			$(ResizetizeBeforeTargets);
+			UnoAssetsGeneration;
+			AssignTargetPaths;
+		</ResizetizeBeforeTargets>
 	</PropertyGroup>
 
 	<!-- iOS -->
