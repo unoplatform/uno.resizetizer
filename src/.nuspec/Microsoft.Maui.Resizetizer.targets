@@ -115,6 +115,11 @@
 		</ProcessMauiFontsDependsOnTargets>
 	</PropertyGroup>
 
+	<!-- Skia -->
+	<PropertyGroup Condition="'$(_ResizetizerIsNetCore)' == 'True'">
+		<ResizetizerPlatformType>uwp</ResizetizerPlatformType>
+	</PropertyGroup>
+
 	<!-- iOS -->
 	<PropertyGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True'">
 		<ResizetizerPlatformType>uwp</ResizetizerPlatformType>
