@@ -118,12 +118,19 @@
 	<!-- Wasm -->
 	<PropertyGroup Condition="'$(_ResizetizerIsNetCore)' == 'True'">
 		<ResizetizerPlatformType>uwp</ResizetizerPlatformType>
+		<ResizetizerIncludeSelfProject>true</ResizetizerIncludeSelfProject>
 
 		<ResizetizeBeforeTargets>
 			$(ResizetizeBeforeTargets);
-			UnoAssetsGeneration;
 			AssignTargetPaths;
 		</ResizetizeBeforeTargets>
+
+		<ResizetizeAfterTargets>
+			ResizetizeCollectItems;
+			$(ResizetizeAfterTargets);
+			UnoAssetsGeneration;
+			BuildDist;
+		</ResizetizeAfterTargets>
 	</PropertyGroup>
 
 	<!-- iOS -->
@@ -566,6 +573,12 @@
 			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' == ''" Include="$(_MauiIntermediateImages)**\*"/>
 		</ItemGroup>
 
+		<!-- Wasm -->
+		<ItemGroup Condition="'$(_ResizetizerIsNetCore)' == 'True'">
+			<Content Include="@(_ResizetizerCollectedImages)"
+					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
+			</Content>
+		</ItemGroup>
 		<!-- iOS -->
 		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True'">
 			<!-- Batch the collectd items into BundleResource which iOS expects -->
