@@ -61,7 +61,9 @@ namespace Microsoft.Maui.Resizetizer
 
 		public static List<ResizeImageInfo> Parse(IEnumerable<ITaskItem> images)
 		{
-            System.Diagnostics.Debugger.Launch();
+#if DEBUG_RESIZETIZER
+			System.Diagnostics.Debugger.Launch();
+#endif
 			var r = new List<ResizeImageInfo>();
 
 			if (images == null)

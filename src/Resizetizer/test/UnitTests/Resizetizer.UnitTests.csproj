@@ -5,6 +5,7 @@
     <AssemblyName>Microsoft.Maui.Resizetizer.UnitTests</AssemblyName>
     <IsPackable>false</IsPackable>
     <DefineConstants Condition="'$(OS)' == 'Windows_NT'">$(DefineConstants);WINDOWS</DefineConstants>
+    <Configurations>Debug;Release;DEBUG_RESIZETIZER</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,7 +17,7 @@
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
-    <PackageReference Include="Svg.Skia" Version="$(SvgSkiaPackageVersion)"/>
+    <PackageReference Include="Svg.Skia" Version="$(SvgSkiaPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>

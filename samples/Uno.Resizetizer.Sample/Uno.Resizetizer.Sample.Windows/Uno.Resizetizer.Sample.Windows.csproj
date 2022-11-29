@@ -10,6 +10,7 @@
 		<PublishProfile>win10-$(Platform).pubxml</PublishProfile>
 		<UseWinUI>true</UseWinUI>
 		<EnableMsixTooling>true</EnableMsixTooling>
+		<Configurations>Debug;Release;DEBUG_RESIZETIZER</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -35,7 +36,7 @@
        Tools extension to be activated for this project even if the Windows App SDK Nuget
        package has not yet been restored -->
 	<ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
-		<ProjectCapability Include="Msix"/>
+		<ProjectCapability Include="Msix" />
 	</ItemGroup>
 	
 	<ItemGroup>

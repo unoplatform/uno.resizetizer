@@ -3,6 +3,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <NoWarn>NU1701</NoWarn>
+    <Configurations>Debug;Release;DEBUG_RESIZETIZER</Configurations>
 		
 	</PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -14,6 +15,13 @@
 		IL Linking is disabled in Debug configuration.
 		When building in Release, see https://platform.uno/docs/articles/features/using-il-linker-webassembly.html
 		-->
+    <WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='DEBUG_RESIZETIZER'">
+    <MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
+    <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
     <WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
   </PropertyGroup>
   <ItemGroup>
@@ -46,6 +54,9 @@
     <PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.4.0" />
     <PackageReference Include="Uno.WinUI.WebAssembly" Version="4.6.19" />
     <PackageReference Include="Uno.WinUI.RemoteControl" Version="4.6.19" Condition="'$(Configuration)'=='Debug'" />
+    <PackageReference Include="Uno.WinUI.RemoteControl" Condition="'$(Configuration)'=='DEBUG_RESIZETIZER'">
+      <Version>4.6.19</Version>
+    </PackageReference>
     <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.6.19" />
     <PackageReference Include="Uno.Wasm.Bootstrap" Version="7.0.3" />
     <PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="7.0.3" />
