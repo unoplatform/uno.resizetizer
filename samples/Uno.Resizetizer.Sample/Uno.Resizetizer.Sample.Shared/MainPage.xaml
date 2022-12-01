@@ -30,7 +30,7 @@
 			<Image Width="300"
 				   Height="300"
 				   Source="Assets\\Images\\dotnet_bot2" />
-			<!--<Image Source="TestImg-512.png" />-->
+			<!--<Image Source="ms-appx:///Assets/Images/TestImg-512.png" />-->
 		</StackPanel>
 	</ScrollViewer>
 </Page>
