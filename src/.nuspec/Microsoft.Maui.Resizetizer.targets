@@ -576,7 +576,7 @@
 
 		<!-- Wasm -->
 		<ItemGroup Condition="'$(_ResizetizerIsWasm)' == 'True'">
-			<Content Include="@(_ResizetizerCollectedImages)"
+			<Content Include="@(_ResizetizerCollectedImages->FullPath())"
 					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
 			</Content>
 		</ItemGroup>
