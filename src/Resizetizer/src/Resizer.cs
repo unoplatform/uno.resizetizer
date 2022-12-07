@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Microsoft.Maui.Resizetizer
 {
@@ -26,10 +27,20 @@ namespace Microsoft.Maui.Resizetizer
 		{
 			var fullIntermediateOutputPath = new DirectoryInfo(intermediateOutputPath);
 
-			var path = info.OutputPath;
-			path = Path.IsPathRooted(path)?string.Empty: path;
+			var platform = Environment.OSVersion.Platform;
 
-            var destination = Path.Combine(fullIntermediateOutputPath.FullName, dpi.Path, path, info.OutputName + dpi.FileSuffix + info.OutputExtension);
+			string path;
+			if (platform == PlatformID.MacOSX)
+			{
+				path = Path.GetFullPath(info.OutputPath);
+			}
+			else
+			{
+				path = info.OutputPath;
+			}
+			path = Path.IsPathRooted(path) ? string.Empty : path;
+
+			var destination = Path.Combine(fullIntermediateOutputPath.FullName, dpi.Path, path, info.OutputName + dpi.FileSuffix + info.OutputExtension);
 
 			var fileInfo = new FileInfo(destination);
 			if (!fileInfo.Directory.Exists)
