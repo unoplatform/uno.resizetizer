@@ -582,29 +582,10 @@
 		</ItemGroup>
 		<!-- iOS -->
 		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True'">
-			<!-- Batch the collectd items into BundleResource which iOS expects -->
-			<!-- <_ResizetizerCollectedBundleResourceImages Include="@(_ResizetizerCollectedImages->'%(FullPath)')">
-				<LogicalName>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</LogicalName>
-				<TargetPath>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</TargetPath>
-			</_ResizetizerCollectedBundleResourceImages> -->
-
+			
 			<Content Include="@(_ResizetizerCollectedImages)"
 					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
-				<!--<TargetPath>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</TargetPath>-->
 			</Content>
-
-			<!-- iOS Expects images in this group -->
-			<!-- <BundleResource Include="@(_ResizetizerCollectedBundleResourceImages)" Condition="'@(_ResizetizerCollectedBundleResourceImages->Contains('Assets.xcassets'))' != 'True' and '%(_ResizetizerCollectedBundleResourceImages.Identity)' != ''" /> -->
-
-			<!-- <ImageAsset
-                Include="@(_ResizetizerCollectedBundleResourceImages)"
-                Condition="'@(_ResizetizerCollectedBundleResourceImages->Contains('Assets.xcassets'))' == 'True' and '%(_ResizetizerCollectedBundleResourceImages.Identity)' != ''">
-				<LogicalName>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_ResizetizerCollectedBundleResourceImages.Identity)))))\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</LogicalName>
-				<TargetPath>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_ResizetizerCollectedBundleResourceImages.Identity)))))\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</TargetPath>
-				<Link>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_ResizetizerCollectedBundleResourceImages.Identity)))))\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</Link>
-			</ImageAsset> -->
-
-			<!-- <FileWrites Include="@(_ResizetizerCollectedBundleResourceImages)" /> -->
 		</ItemGroup>
 
 		<!-- iOS Only -->
@@ -621,13 +602,8 @@
 
 		<!-- Android -->
 		<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
-			<!-- If we had any images, add that obj/ folder as a resource directory -->
-			<!--<LibraryResourceDirectories Condition="Exists ('$(_MauiIntermediateImages)')" Include="$(_MauiIntermediateImages)">
-				<StampFile>$(_ResizetizerStampFile)</StampFile>
-			</LibraryResourceDirectories>-->
 			<Content Include="@(_ResizetizerCollectedImages)"
 					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
-				<!--<TargetPath>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</TargetPath>-->
 			</Content>
 
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
@@ -635,12 +611,9 @@
 
 		<!-- UWP / WinUI -->
 		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
-			<!--<ContentWithTargetPath Include="@(_ResizetizerCollectedImages)">
-				<TargetPath>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</TargetPath>
-			</ContentWithTargetPath>-->
+
 			<Content Include="@(_ResizetizerCollectedImages)"
-		 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
-				<!--<TargetPath>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</TargetPath>-->
+					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
 			</Content>
 
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
