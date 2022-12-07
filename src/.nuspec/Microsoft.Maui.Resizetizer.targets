@@ -15,43 +15,43 @@
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Microsoft.Maui.Resizetizer.ResizetizeImages" TaskFactory="TaskHostFactory" />
+        TaskName="Microsoft.Maui.Resizetizer.ResizetizeImages" />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Microsoft.Maui.Resizetizer.DetectInvalidResourceOutputFilenamesTask" TaskFactory="TaskHostFactory" />
+        TaskName="Microsoft.Maui.Resizetizer.DetectInvalidResourceOutputFilenamesTask"  />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Microsoft.Maui.Resizetizer.CreatePartialInfoPlistTask" TaskFactory="TaskHostFactory" />
+        TaskName="Microsoft.Maui.Resizetizer.CreatePartialInfoPlistTask"  />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Microsoft.Maui.Resizetizer.GenerateSplashAndroidResources" TaskFactory="TaskHostFactory" />
+        TaskName="Microsoft.Maui.Resizetizer.GenerateSplashAndroidResources"  />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Microsoft.Maui.Resizetizer.GenerateSplashStoryboard" TaskFactory="TaskHostFactory" />
+        TaskName="Microsoft.Maui.Resizetizer.GenerateSplashStoryboard"  />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Microsoft.Maui.Resizetizer.TizenSplashUpdater" TaskFactory="TaskHostFactory" />
+        TaskName="Microsoft.Maui.Resizetizer.TizenSplashUpdater"  />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Microsoft.Maui.Resizetizer.GenerateSplashAssets" TaskFactory="TaskHostFactory" />
+        TaskName="Microsoft.Maui.Resizetizer.GenerateSplashAssets"  />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Microsoft.Maui.Resizetizer.GetMauiAssetPath" TaskFactory="TaskHostFactory" />
+        TaskName="Microsoft.Maui.Resizetizer.GetMauiAssetPath"  />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Microsoft.Maui.Resizetizer.GeneratePackageAppxManifest" TaskFactory="TaskHostFactory" />
+        TaskName="Microsoft.Maui.Resizetizer.GeneratePackageAppxManifest"  />
 
 	<UsingTask
 		  AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-		  TaskName="Microsoft.Maui.Resizetizer.GenerateTizenManifest" TaskFactory="TaskHostFactory" />
+		  TaskName="Microsoft.Maui.Resizetizer.GenerateTizenManifest"  />
 
 	<PropertyGroup>
 		<CleanDependsOn>
