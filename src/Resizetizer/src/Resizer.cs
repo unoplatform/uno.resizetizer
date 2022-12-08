@@ -37,8 +37,8 @@ namespace Microsoft.Maui.Resizetizer
 			else
 			{
 				path = info.OutputPath;
+				path = Path.IsPathRooted(path) ? string.Empty : path;
 			}
-			path = Path.IsPathRooted(path) ? string.Empty : path;
 
 			var destination = Path.Combine(fullIntermediateOutputPath.FullName, dpi.Path, path, info.OutputName + dpi.FileSuffix + info.OutputExtension);
 
