@@ -339,6 +339,7 @@ namespace Uno.Resizetizer
 			switch (platform.ToLowerInvariant())
 			{
 				case "ios":
+				case "maccatalyst":
 					result = DpiPath.Ios.AppIcon;
 					break;
 				case "android":

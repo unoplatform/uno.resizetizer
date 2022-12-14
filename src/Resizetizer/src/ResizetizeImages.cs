@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Runtime.CompilerServices;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -13,6 +14,9 @@ namespace Uno.Resizetizer
 	{
 		[Required]
 		public string PlatformType { get; set; } = "android";
+
+		[Required]
+		public string PlatformIdentifier { get; set; } = "windows";
 
 		[Required]
 		public string IntermediateOutputPath { get; set; }
@@ -87,7 +91,7 @@ namespace Uno.Resizetizer
 				}
 			});
 
-			if (PlatformType == "tizen")
+			if (PlatformIdentifier == "tizen")
 			{
 				var tizenResourceXmlGenerator = new TizenResourceXmlGenerator(IntermediateOutputPath, Logger);
 				tizenResourceXmlGenerator.Generate();
@@ -121,12 +125,12 @@ namespace Uno.Resizetizer
 			var appIconName = img.OutputName;
 
 			// Generate the actual bitmap app icons themselves
-			var appIconDpis = DpiPath.GetAppIconDpis(PlatformType, appIconName);
+			var appIconDpis = DpiPath.GetAppIconDpis(PlatformIdentifier, appIconName);
 
 			LogDebugMessage($"App Icon");
 
 			// Apple and Android have special additional files to generate for app icons
-			if (PlatformType == "android")
+			if (PlatformIdentifier == "android")
 			{
 				LogDebugMessage($"Android Adaptive Icon Generator");
 
@@ -138,7 +142,7 @@ namespace Uno.Resizetizer
 				foreach (var iconGenerated in iconsGenerated)
 					resizedImages.Add(iconGenerated);
 			}
-			else if (PlatformType == "ios")
+			else if (PlatformIdentifier == "ios")
 			{
 				LogDebugMessage($"iOS Icon Assets Generator");
 
@@ -149,7 +153,7 @@ namespace Uno.Resizetizer
 				foreach (var assetGenerated in assetsGenerated)
 					resizedImages.Add(assetGenerated);
 			}
-			else if (PlatformType == "uwp")
+			else if (PlatformIdentifier == "uwp")
 			{
 				LogDebugMessage($"Windows Icon Generator");
 

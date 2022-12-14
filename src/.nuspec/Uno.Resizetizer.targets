@@ -562,6 +562,7 @@
 		<!-- Resize the images -->
 		<ResizetizeImages
             PlatformType="$(ResizetizerPlatformType)"
+			PlatformIdentifier="$(_ResizetizerPlatformIdentifier)"
             IntermediateOutputPath="$(_MauiIntermediateImages)"
             InputsFile="$(_ResizetizerInputsFile)"
             Images="@(UnoImage->Distinct())">
