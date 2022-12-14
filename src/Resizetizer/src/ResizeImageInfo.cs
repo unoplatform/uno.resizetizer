@@ -13,6 +13,14 @@ namespace Microsoft.Maui.Resizetizer
 
 		public string? Filename { get; set; }
 
+		public string OutputPath =>
+			string.IsNullOrWhiteSpace(Alias)
+				? string.IsNullOrWhiteSpace(Filename)
+					? Path.GetDirectoryName(ForegroundFilename)
+					: Path.GetDirectoryName(Filename)
+				: Path.GetDirectoryName(Alias);
+
+
 		public string OutputName =>
 			string.IsNullOrWhiteSpace(Alias)
 				? string.IsNullOrWhiteSpace(Filename)
@@ -53,6 +61,9 @@ namespace Microsoft.Maui.Resizetizer
 
 		public static List<ResizeImageInfo> Parse(IEnumerable<ITaskItem> images)
 		{
+#if DEBUG_RESIZETIZER
+			System.Diagnostics.Debugger.Launch();
+#endif
 			var r = new List<ResizeImageInfo>();
 
 			if (images == null)
@@ -69,6 +80,15 @@ namespace Microsoft.Maui.Resizetizer
 				info.Filename = fileInfo.FullName;
 
 				info.Alias = image.GetMetadata("Link");
+
+				if (string.IsNullOrWhiteSpace(info.Alias))
+				{
+					var projDirectory = image.GetMetadata("DefiningProjectDirectory");
+					if(!string.IsNullOrWhiteSpace(projDirectory))
+					{
+						info.Alias = fileInfo.FullName.Replace(projDirectory, string.Empty);
+					}
+				}
 
 				info.BaseSize = Utils.ParseSizeString(image.GetMetadata("BaseSize"));
 
