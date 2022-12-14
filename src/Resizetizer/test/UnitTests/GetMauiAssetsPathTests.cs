@@ -2,7 +2,7 @@
 using Microsoft.Build.Utilities;
 using Xunit;
 
-namespace Microsoft.Maui.Resizetizer.Tests
+namespace Uno.Resizetizer.Tests
 {
 	public class GetMauiAssetsPathTests : MSBuildTaskTestFixture<GetMauiAssetPath>
 	{

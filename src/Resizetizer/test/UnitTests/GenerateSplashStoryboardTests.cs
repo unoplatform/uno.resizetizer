@@ -7,7 +7,7 @@ using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Xunit;
 
-namespace Microsoft.Maui.Resizetizer.Tests
+namespace Uno.Resizetizer.Tests
 {
 	public class GenerateSplashStoryboardTests : MSBuildTaskTestFixture<GenerateSplashStoryboard>
 	{

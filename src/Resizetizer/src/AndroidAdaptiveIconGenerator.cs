@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 
-namespace Microsoft.Maui.Resizetizer
+namespace Uno.Resizetizer
 {
 	internal class AndroidAdaptiveIconGenerator
 	{

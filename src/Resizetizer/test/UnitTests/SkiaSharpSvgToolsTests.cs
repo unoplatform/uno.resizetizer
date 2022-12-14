@@ -3,7 +3,7 @@ using System.IO;
 using SkiaSharp;
 using Xunit;
 
-namespace Microsoft.Maui.Resizetizer.Tests
+namespace Uno.Resizetizer.Tests
 {
 	public class SkiaSharpSvgToolsTests
 	{

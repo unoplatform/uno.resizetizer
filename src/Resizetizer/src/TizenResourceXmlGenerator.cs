@@ -2,7 +2,7 @@
 using System.IO;
 using System.Xml;
 
-namespace Microsoft.Maui.Resizetizer
+namespace Uno.Resizetizer
 {
 	internal class TizenResourceXmlGenerator
 	{

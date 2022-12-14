@@ -6,7 +6,7 @@ using Microsoft.Build.Utilities;
 using SkiaSharp;
 using Xunit;
 
-namespace Microsoft.Maui.Resizetizer.Tests
+namespace Uno.Resizetizer.Tests
 {
 	public class GenerateSplashAssetsTests : MSBuildTaskTestFixture<GenerateSplashAssets>
 	{

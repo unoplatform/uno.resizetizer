@@ -2,10 +2,10 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<RootNamespace>Microsoft.Maui.Resizetizer</RootNamespace>
-		<AssemblyName>Microsoft.Maui.Resizetizer</AssemblyName>
+		<RootNamespace>Uno.Resizetizer</RootNamespace>
+		<AssemblyName>Uno.Resizetizer</AssemblyName>
 		<!--<Nullable>enable</Nullable>-->
-		<PackageId>Microsoft.Maui.Resizetizer.Sdk</PackageId>
+		<PackageId>Uno.Resizetizer.Sdk</PackageId>
 		<Description>.NET MAUI SDK support for images, fonts, etc. Enabled via &lt;UseMauiAssets&gt;true&lt;/UseMauiAssets&gt;.</Description>
 		<IsPackable>false</IsPackable>
 		<LangVersion>latest</LangVersion>

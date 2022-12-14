@@ -3,7 +3,7 @@
 using System;
 using static System.Threading.Tasks.TaskExtensions;
 
-namespace Microsoft.Maui.Resizetizer
+namespace Uno.Resizetizer
 {
 	public abstract class MauiAsyncTask : AsyncTask
 	{
