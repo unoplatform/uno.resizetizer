@@ -38,7 +38,7 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
-    <MauiIcon Include="$(MSBuildThisFileDirectory)Assets\Images\appicon.svg" ForegroundFile="$(MSBuildThisFileDirectory)Assets\Images\appiconfg.svg" Color="#512BD4" />
+    <MauiIcon Include="$(MSBuildThisFileDirectory)Assets\Images\iconapp.svg" ForegroundFile="$(MSBuildThisFileDirectory)Assets\Images\appconfig.svg" Color="#512BD4" />
     <None Include="$(MSBuildThisFileDirectory)Assets\SharedAssets.md" />
     <UnoImage Include="$(MSBuildThisFileDirectory)Assets\Images\dotnet_bot.svg" BaseSize="600x600" Link="MyAssets\Nested\dotnet_bot.svg" />
     <UnoImage Include="$(MSBuildThisFileDirectory)Assets\Images\dotnet_bot2.svg" BaseSize="600x600" />
