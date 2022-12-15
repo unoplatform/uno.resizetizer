@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using SkiaSharp;
 
-namespace Microsoft.Maui.Resizetizer
+namespace Uno.Resizetizer
 {
 	internal abstract class SkiaSharpTools
 	{

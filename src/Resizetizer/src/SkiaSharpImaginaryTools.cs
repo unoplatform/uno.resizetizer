@@ -1,7 +1,7 @@
 ﻿using System;
 using SkiaSharp;
 
-namespace Microsoft.Maui.Resizetizer
+namespace Uno.Resizetizer
 {
 	internal class SkiaSharpImaginaryTools : SkiaSharpTools, IDisposable
 	{

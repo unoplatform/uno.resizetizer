@@ -4,7 +4,7 @@ using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using SkiaSharp;
 
-namespace Microsoft.Maui.Resizetizer
+namespace Uno.Resizetizer
 {
 	/// <summary>
 	/// Generates the MauiSplash.storyboard file for iOS splash screens

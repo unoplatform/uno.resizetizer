@@ -5,7 +5,7 @@ using System.Threading;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
-namespace Microsoft.Maui.Resizetizer
+namespace Uno.Resizetizer
 {
 	/// <summary>
 	/// Don't use AsyncTask directly, use MauiAsyncTask instead and override ExecuteAsync().

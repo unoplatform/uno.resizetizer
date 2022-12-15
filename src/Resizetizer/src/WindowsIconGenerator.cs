@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using SkiaSharp;
 
-namespace Microsoft.Maui.Resizetizer
+namespace Uno.Resizetizer
 {
 	/// <summary>
 	/// Generates a .ico file for the image.

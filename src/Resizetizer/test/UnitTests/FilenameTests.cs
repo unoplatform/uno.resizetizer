@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using Xunit;
 
-namespace Microsoft.Maui.Resizetizer.Tests
+namespace Uno.Resizetizer.Tests
 {
 	public sealed class WindowsTheory : TheoryAttribute
 	{

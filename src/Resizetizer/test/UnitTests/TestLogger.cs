@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace Microsoft.Maui.Resizetizer.Tests
+namespace Uno.Resizetizer.Tests
 {
 	public class TestLogger : ILogger
 	{

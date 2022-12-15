@@ -7,7 +7,7 @@ using SkiaSharp;
 using SkiaSharp.Extended;
 using Xunit;
 
-namespace Microsoft.Maui.Resizetizer.Tests
+namespace Uno.Resizetizer.Tests
 {
 	public class BaseTest : IDisposable
 	{

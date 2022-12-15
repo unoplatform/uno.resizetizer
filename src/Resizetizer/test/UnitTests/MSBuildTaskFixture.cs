@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Build.Framework;
 
-namespace Microsoft.Maui.Resizetizer.Tests
+namespace Uno.Resizetizer.Tests
 {
 	public abstract class MSBuildTaskTestFixture<TTask> : BaseTest, IBuildEngine
 		where TTask : Microsoft.Build.Framework.ITask

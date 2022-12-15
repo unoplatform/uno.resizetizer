@@ -7,7 +7,7 @@ using System.IO;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
-namespace Microsoft.Maui.Resizetizer
+namespace Uno.Resizetizer
 {
 	public class ResizetizeImages : MauiAsyncTask, ILogger
 	{

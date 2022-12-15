@@ -5,7 +5,7 @@ using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using SkiaSharp;
 
-namespace Microsoft.Maui.Resizetizer
+namespace Uno.Resizetizer
 {
 	/// <summary>
 	/// Generates Resources/values/maui_colors.xml and Resources/drawable/maui_splash_image.xml for Android splash screens

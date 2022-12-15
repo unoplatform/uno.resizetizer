@@ -5,7 +5,7 @@ using System.IO;
 using Microsoft.Build.Framework;
 using SkiaSharp;
 
-namespace Microsoft.Maui.Resizetizer
+namespace Uno.Resizetizer
 {
 	internal class ResizeImageInfo
 	{

@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using SkiaSharp;
 
-namespace Microsoft.Maui.Resizetizer
+namespace Uno.Resizetizer
 {
 	internal class SkiaSharpBitmapTools : SkiaSharpTools, IDisposable
 	{

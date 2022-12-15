@@ -3,7 +3,7 @@ using System.Diagnostics;
 using SkiaSharp;
 using Svg.Skia;
 
-namespace Microsoft.Maui.Resizetizer
+namespace Uno.Resizetizer
 {
 	internal class SkiaSharpSvgTools : SkiaSharpTools, IDisposable
 	{

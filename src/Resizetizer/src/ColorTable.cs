@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using SkiaSharp;
 
-namespace Microsoft.Maui.Resizetizer
+namespace Uno.Resizetizer
 {
 	static class ColorTable
 	{

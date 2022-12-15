@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using SkiaSharp;
 
-namespace Microsoft.Maui.Resizetizer
+namespace Uno.Resizetizer
 {
 	internal class DpiPath
 	{

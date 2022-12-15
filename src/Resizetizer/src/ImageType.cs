@@ -1,4 +1,4 @@
-﻿namespace Microsoft.Maui.Resizetizer
+﻿namespace Uno.Resizetizer
 {
 	public enum ImageType
 	{
