@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using SkiaSharp;
 
 namespace Uno.Resizetizer
 {
+	[DebuggerDisplay("Path: {Path}, ")]
 	internal class DpiPath
 	{
 		public DpiPath(string path, decimal scale, string nameSuffix = null, string scaleSuffix = null, SKSize? size = null, string[] idioms = null)
@@ -114,7 +116,7 @@ namespace Uno.Resizetizer
 		public static class Windows
 		{
 			public const string OutputPath = "";
-
+			public const string IconOutputPath = "Images/";
 			public static DpiPath Original =>
 				new DpiPath(OutputPath, 1.0m, null, ".scale-100");
 
@@ -143,95 +145,95 @@ namespace Uno.Resizetizer
 				=> new[]
 				{
 					// normal
-					new DpiPath(OutputPath, 1.00m, "Logo", ".scale-100", new SKSize(44, 44)),
-					new DpiPath(OutputPath, 1.25m, "Logo", ".scale-125", new SKSize(44, 44)),
-					new DpiPath(OutputPath, 1.50m, "Logo", ".scale-150", new SKSize(44, 44)),
-					new DpiPath(OutputPath, 2.00m, "Logo", ".scale-200", new SKSize(44, 44)),
-					new DpiPath(OutputPath, 4.00m, "Logo", ".scale-400", new SKSize(44, 44)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".scale-100", new SKSize(44, 44)),
+					new DpiPath(IconOutputPath, 1.25m, "Logo", ".scale-125", new SKSize(44, 44)),
+					new DpiPath(IconOutputPath, 1.50m, "Logo", ".scale-150", new SKSize(44, 44)),
+					new DpiPath(IconOutputPath, 2.00m, "Logo", ".scale-200", new SKSize(44, 44)),
+					new DpiPath(IconOutputPath, 4.00m, "Logo", ".scale-400", new SKSize(44, 44)),
 					// targetsize
-					new DpiPath(OutputPath, 1.00m, "Logo", ".targetsize-16", new SKSize(16, 16)),
-					new DpiPath(OutputPath, 1.00m, "Logo", ".targetsize-24", new SKSize(24, 24)),
-					new DpiPath(OutputPath, 1.00m, "Logo", ".targetsize-32", new SKSize(32, 32)),
-					new DpiPath(OutputPath, 1.00m, "Logo", ".targetsize-48", new SKSize(48, 48)),
-					new DpiPath(OutputPath, 1.00m, "Logo", ".targetsize-256", new SKSize(256, 256)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".targetsize-16", new SKSize(16, 16)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".targetsize-24", new SKSize(24, 24)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".targetsize-32", new SKSize(32, 32)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".targetsize-48", new SKSize(48, 48)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".targetsize-256", new SKSize(256, 256)),
 					// altform-unplated_targetsize
-					new DpiPath(OutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-16", new SKSize(16, 16)),
-					new DpiPath(OutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-24", new SKSize(24, 24)),
-					new DpiPath(OutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-32", new SKSize(32, 32)),
-					new DpiPath(OutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-48", new SKSize(48, 48)),
-					new DpiPath(OutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-256", new SKSize(256, 256)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-16", new SKSize(16, 16)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-24", new SKSize(24, 24)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-32", new SKSize(32, 32)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-48", new SKSize(48, 48)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-256", new SKSize(256, 256)),
 					// altform-lightunplated_targetsize
-					new DpiPath(OutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-16", new SKSize(16, 16)),
-					new DpiPath(OutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-24", new SKSize(24, 24)),
-					new DpiPath(OutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-32", new SKSize(32, 32)),
-					new DpiPath(OutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-48", new SKSize(48, 48)),
-					new DpiPath(OutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-256", new SKSize(256, 256)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-16", new SKSize(16, 16)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-24", new SKSize(24, 24)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-32", new SKSize(32, 32)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-48", new SKSize(48, 48)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-256", new SKSize(256, 256)),
 				};
 
 			// Store Logo
 			public static DpiPath[] StoreLogo
 				=> new[]
 				{
-					new DpiPath(OutputPath, 1.00m, "StoreLogo", ".scale-100", new SKSize(50, 50)),
-					new DpiPath(OutputPath, 1.25m, "StoreLogo", ".scale-125", new SKSize(50, 50)),
-					new DpiPath(OutputPath, 1.50m, "StoreLogo", ".scale-150", new SKSize(50, 50)),
-					new DpiPath(OutputPath, 2.00m, "StoreLogo", ".scale-200", new SKSize(50, 50)),
-					new DpiPath(OutputPath, 4.00m, "StoreLogo", ".scale-400", new SKSize(50, 50)),
+					new DpiPath(IconOutputPath, 1.00m, "StoreLogo", ".scale-100", new SKSize(50, 50)),
+					new DpiPath(IconOutputPath, 1.25m, "StoreLogo", ".scale-125", new SKSize(50, 50)),
+					new DpiPath(IconOutputPath, 1.50m, "StoreLogo", ".scale-150", new SKSize(50, 50)),
+					new DpiPath(IconOutputPath, 2.00m, "StoreLogo", ".scale-200", new SKSize(50, 50)),
+					new DpiPath(IconOutputPath, 4.00m, "StoreLogo", ".scale-400", new SKSize(50, 50)),
 				};
 
 			// Small Tile
 			public static DpiPath[] SmallTile
 				=> new[]
 				{
-					new DpiPath(OutputPath, 1.00m, "SmallTile", ".scale-100", new SKSize(71, 71)),
-					new DpiPath(OutputPath, 1.25m, "SmallTile", ".scale-125", new SKSize(71, 71)),
-					new DpiPath(OutputPath, 1.50m, "SmallTile", ".scale-150", new SKSize(71, 71)),
-					new DpiPath(OutputPath, 2.00m, "SmallTile", ".scale-200", new SKSize(71, 71)),
-					new DpiPath(OutputPath, 4.00m, "SmallTile", ".scale-400", new SKSize(71, 71)),
+					new DpiPath(IconOutputPath, 1.00m, "SmallTile", ".scale-100", new SKSize(71, 71)),
+					new DpiPath(IconOutputPath, 1.25m, "SmallTile", ".scale-125", new SKSize(71, 71)),
+					new DpiPath(IconOutputPath, 1.50m, "SmallTile", ".scale-150", new SKSize(71, 71)),
+					new DpiPath(IconOutputPath, 2.00m, "SmallTile", ".scale-200", new SKSize(71, 71)),
+					new DpiPath(IconOutputPath, 4.00m, "SmallTile", ".scale-400", new SKSize(71, 71)),
 				};
 
 			// Medium Tile
 			public static DpiPath[] MediumTile
 				=> new[]
 				{
-					new DpiPath(OutputPath, 1.00m, "MediumTile", ".scale-100", new SKSize(150, 150)),
-					new DpiPath(OutputPath, 1.25m, "MediumTile", ".scale-125", new SKSize(150, 150)),
-					new DpiPath(OutputPath, 1.50m, "MediumTile", ".scale-150", new SKSize(150, 150)),
-					new DpiPath(OutputPath, 2.00m, "MediumTile", ".scale-200", new SKSize(150, 150)),
-					new DpiPath(OutputPath, 4.00m, "MediumTile", ".scale-400", new SKSize(150, 150)),
+					new DpiPath(IconOutputPath, 1.00m, "MediumTile", ".scale-100", new SKSize(150, 150)),
+					new DpiPath(IconOutputPath, 1.25m, "MediumTile", ".scale-125", new SKSize(150, 150)),
+					new DpiPath(IconOutputPath, 1.50m, "MediumTile", ".scale-150", new SKSize(150, 150)),
+					new DpiPath(IconOutputPath, 2.00m, "MediumTile", ".scale-200", new SKSize(150, 150)),
+					new DpiPath(IconOutputPath, 4.00m, "MediumTile", ".scale-400", new SKSize(150, 150)),
 				};
 
 			// Wide Tile
 			public static DpiPath[] WideTile
 				=> new[]
 				{
-					new DpiPath(OutputPath, 1.00m, "WideTile", ".scale-100", new SKSize(310, 150)),
-					new DpiPath(OutputPath, 1.25m, "WideTile", ".scale-125", new SKSize(310, 150)),
-					new DpiPath(OutputPath, 1.50m, "WideTile", ".scale-150", new SKSize(310, 150)),
-					new DpiPath(OutputPath, 2.00m, "WideTile", ".scale-200", new SKSize(310, 150)),
-					new DpiPath(OutputPath, 4.00m, "WideTile", ".scale-400", new SKSize(310, 150)),
+					new DpiPath(IconOutputPath, 1.00m, "WideTile", ".scale-100", new SKSize(310, 150)),
+					new DpiPath(IconOutputPath, 1.25m, "WideTile", ".scale-125", new SKSize(310, 150)),
+					new DpiPath(IconOutputPath, 1.50m, "WideTile", ".scale-150", new SKSize(310, 150)),
+					new DpiPath(IconOutputPath, 2.00m, "WideTile", ".scale-200", new SKSize(310, 150)),
+					new DpiPath(IconOutputPath, 4.00m, "WideTile", ".scale-400", new SKSize(310, 150)),
 				};
 
 			// Large Tile
 			public static DpiPath[] LargeTile
 				=> new[]
 				{
-					new DpiPath(OutputPath, 1.00m, "LargeTile", ".scale-100", new SKSize(310, 310)),
-					new DpiPath(OutputPath, 1.25m, "LargeTile", ".scale-125", new SKSize(310, 310)),
-					new DpiPath(OutputPath, 1.50m, "LargeTile", ".scale-150", new SKSize(310, 310)),
-					new DpiPath(OutputPath, 2.00m, "LargeTile", ".scale-200", new SKSize(310, 310)),
-					new DpiPath(OutputPath, 4.00m, "LargeTile", ".scale-400", new SKSize(310, 310)),
+					new DpiPath(IconOutputPath, 1.00m, "LargeTile", ".scale-100", new SKSize(310, 310)),
+					new DpiPath(IconOutputPath, 1.25m, "LargeTile", ".scale-125", new SKSize(310, 310)),
+					new DpiPath(IconOutputPath, 1.50m, "LargeTile", ".scale-150", new SKSize(310, 310)),
+					new DpiPath(IconOutputPath, 2.00m, "LargeTile", ".scale-200", new SKSize(310, 310)),
+					new DpiPath(IconOutputPath, 4.00m, "LargeTile", ".scale-400", new SKSize(310, 310)),
 				};
 
 			// Badge
 			public static DpiPath[] Badge
 				=> new[]
 				{
-					new DpiPath(OutputPath, 1.00m, "Badge", ".scale-100", new SKSize(24, 24)),
-					new DpiPath(OutputPath, 1.25m, "Badge", ".scale-125", new SKSize(24, 24)),
-					new DpiPath(OutputPath, 1.50m, "Badge", ".scale-150", new SKSize(24, 24)),
-					new DpiPath(OutputPath, 2.00m, "Badge", ".scale-200", new SKSize(24, 24)),
-					new DpiPath(OutputPath, 4.00m, "Badge", ".scale-400", new SKSize(24, 24)),
+					new DpiPath(IconOutputPath, 1.00m, "Badge", ".scale-100", new SKSize(24, 24)),
+					new DpiPath(IconOutputPath, 1.25m, "Badge", ".scale-125", new SKSize(24, 24)),
+					new DpiPath(IconOutputPath, 1.50m, "Badge", ".scale-150", new SKSize(24, 24)),
+					new DpiPath(IconOutputPath, 2.00m, "Badge", ".scale-200", new SKSize(24, 24)),
+					new DpiPath(IconOutputPath, 4.00m, "Badge", ".scale-400", new SKSize(24, 24)),
 				};
 
 			// TODO: logo variants (targetsize, altform-unplated, altform-lightunplated)
@@ -346,6 +348,7 @@ namespace Uno.Resizetizer
 					result = DpiPath.Android.AppIcon;
 					break;
 				case "uwp":
+				case "windows":
 					result = DpiPath.Windows.AppIcon;
 					break;
 				case "wpf":

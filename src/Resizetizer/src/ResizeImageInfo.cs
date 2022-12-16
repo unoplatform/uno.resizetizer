@@ -1,12 +1,14 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Microsoft.Build.Framework;
 using SkiaSharp;
 
 namespace Uno.Resizetizer
 {
+	[DebuggerDisplay("OutputName: {OutputName}, OutputPath: {OutputPath}, IsAppIcon: {IsAppIcon}")]
 	internal class ResizeImageInfo
 	{
 		public string? Alias { get; set; }

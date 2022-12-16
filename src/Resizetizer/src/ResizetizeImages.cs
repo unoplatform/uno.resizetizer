@@ -153,7 +153,7 @@ namespace Uno.Resizetizer
 				foreach (var assetGenerated in assetsGenerated)
 					resizedImages.Add(assetGenerated);
 			}
-			else if (PlatformIdentifier == "uwp")
+			else if (PlatformIdentifier == "windows")
 			{
 				LogDebugMessage($"Windows Icon Generator");
 
