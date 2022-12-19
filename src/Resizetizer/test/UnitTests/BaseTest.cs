@@ -11,7 +11,7 @@ namespace Uno.Resizetizer.Tests
 {
 	public class BaseTest : IDisposable
 	{
-		private const string TestFolderName = "Microsoft.Maui.Resizetizer.Tests";
+		private const string TestFolderName = "Uno.Resizetizer.Tests";
 		private const string TestImagesFolderName = "imageresults";
 		private const double ImageErrorThreshold = 0.0027;
 
@@ -179,7 +179,8 @@ namespace Uno.Resizetizer.Tests
 			if (name.StartsWith(TestFolderName + ".", StringComparison.OrdinalIgnoreCase))
 				name = name.Substring(TestFolderName.Length + 1);
 
-			return Path.Combine(TestImagesFolderName, name, methodName, filename);
+			var path = Path.Combine(TestImagesFolderName, name, methodName, filename);
+			return path;
 		}
 	}
 }
