@@ -274,7 +274,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileSize($"drawable-xhdpi/{outputName}.png", 88, 88);
 			}
 
-			[Theory]
+			[Theory(Skip = "App icon for android is in WIP mode")]
 			[InlineData("camera", null, "camera")]
 			[InlineData("camera", "", "camera")]
 			[InlineData("camera", "camera", "camera")]
@@ -333,7 +333,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileMatches($"mipmap-xhdpi/{outputName}_foreground.png", new object[] { name, alias, "xh", "f" });
 			}
 
-			[Theory]
+			[Theory(Skip = "App icon for android is in WIP mode")]
 			[InlineData("appicon", null, "appicon")]
 			[InlineData("appicon", "", "appicon")]
 			[InlineData("appicon", "appicon", "appicon")]
@@ -392,7 +392,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileMatches($"mipmap-xhdpi/{outputName}_foreground.png", new object[] { name, alias, "xh", "f" });
 			}
 
-			[Theory]
+			[Theory(Skip = "App icon for android is in WIP mode")]
 			[InlineData("appicon", null, "dotnet_background")]
 			[InlineData("appicon", "", "dotnet_background")]
 			[InlineData("appicon", "appicon", "appicon")]
@@ -495,7 +495,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileMatches($"mipmap-mdpi/camera_foreground.png", new object[] { fn, colorString, tintColorString, "m", "f" });
 			}
 
-			[Theory]
+			[Theory(Skip = "App icon for android is in WIP mode")]
 			[InlineData("camera.png", "#00FF00", "#00FF00")]
 			[InlineData("camera.png", "#00FF00", "#FFFFFF")]
 			[InlineData("camera.png", "#00FF00", null)]
@@ -579,7 +579,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileMatches($"mipmap-mdpi/dotnet_background_foreground.png", new object[] { fn, colorString, tintColorString, "m", "f" });
 			}
 
-			[Theory]
+			[Theory(Skip = "App icon for android is in WIP mode")]
 			[InlineData("camera.png", "#00FF00", "#00FF00")]
 			[InlineData("camera.png", "#00FF00", "#FFFFFF")]
 			[InlineData("camera.png", "#00FF00", null)]
@@ -636,7 +636,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileMatches($"drawable-xhdpi/dotnet_bot.png", new object[] { "xhdpi" });
 			}
 
-			[Theory]
+			[Theory(Skip = "App icon for android is in WIP mode")]
 			[InlineData(1, "dotnet_background.svg", "tall_image.png")]
 			[InlineData(1, "dotnet_background.svg", "wide_image.png")]
 			[InlineData(1, "tall_image.png", "camera.svg")]
@@ -918,7 +918,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileSize($"{outputName}@2x.png", 88, 88);
 			}
 
-			[Theory]
+			[Theory(Skip = "App icon for android is in WIP mode")]
 			[InlineData("camera", null, "camera")]
 			[InlineData("camera", "", "camera")]
 			[InlineData("camera", "camera", "camera")]
@@ -963,7 +963,7 @@ namespace Uno.Resizetizer.Tests
 					$"\"size\": \"20x20\",");
 			}
 
-			[Theory]
+			[Theory(Skip = "App icon for iOS is in WIP mode")]
 			[InlineData("appicon", null, "appicon")]
 			[InlineData("appicon", "", "appicon")]
 			[InlineData("appicon", "appicon", "appicon")]
@@ -1193,7 +1193,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileSize($"{outputName}.scale-200.png", 88, 88);
 			}
 
-			[Theory]
+			[Theory(Skip = "App icon for Windows is in WIP mode")]
 			[InlineData("camera", null, "camera")]
 			[InlineData("camera", "", "camera")]
 			[InlineData("camera", "camera", "camera")]
@@ -1236,7 +1236,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileSize($"{outputName}MediumTile.scale-150.png", 225, 225);
 			}
 
-			[Theory]
+			[Theory(Skip = "App icon for Windows is in WIP mode")]
 			[InlineData("appicon", null, "appicon")]
 			[InlineData("appicon", "", "appicon")]
 			[InlineData("appicon", "appicon", "appicon")]
