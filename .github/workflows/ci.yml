@@ -48,6 +48,10 @@ jobs:
       with:
         name: NuGet
         path: .\artifacts
+    
+    - name: Run UnitTests
+      run: |
+        dotnet test src/Resizetizer/test/UnitTests/Resizetizer.UnitTests.csproj
 
   publish:
     name: Publish
