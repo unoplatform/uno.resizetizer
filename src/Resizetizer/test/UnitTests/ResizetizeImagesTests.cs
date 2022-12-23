@@ -100,181 +100,7 @@ namespace Uno.Resizetizer.Tests
 				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
 			}
 
-			[Fact]
-			public void SingleImageWithOnlyPathSucceeds()
-			{
-				var items = new[]
-				{
-					new TaskItem("images/camera.png", ResizeMetadata),
-				};
-
-				var task = GetNewTask(items);
-				var success = task.Execute();
-				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
-
-				AssertFileSize("drawable-mdpi/camera.png", 1792, 1792);  // 1x
-				AssertFileSize("drawable-xhdpi/camera.png", 3584, 3584); // 2x
-			}
-
-			[Fact]
-			public void SingleVectorImageWithOnlyPathSucceeds()
-			{
-				var items = new[]
-				{
-					new TaskItem("images/camera.svg"),
-				};
-
-				var task = GetNewTask(items);
-				var success = task.Execute();
-				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
-
-				AssertFileSize("drawable-mdpi/camera.png", 1792, 1792);  // 1x
-				AssertFileSize("drawable-xhdpi/camera.png", 3584, 3584); // 2x
-			}
-
-			[Fact]
-			public void TwoImagesWithOnlyPathSucceed()
-			{
-				var items = new[]
-				{
-					new TaskItem("images/camera.png", ResizeMetadata),
-					new TaskItem("images/camera_color.png", ResizeMetadata),
-				};
-
-				var task = GetNewTask(items);
-				var success = task.Execute();
-				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
-
-				AssertFileSize("drawable-mdpi/camera.png", 1792, 1792);
-				AssertFileSize("drawable-mdpi/camera_color.png", 256, 256);
-
-				AssertFileSize("drawable-xhdpi/camera.png", 3584, 3584);
-				AssertFileSize("drawable-xhdpi/camera_color.png", 512, 512);
-			}
-
-			[Fact]
-			public void ImageWithOnlyPathHasMetadata()
-			{
-				var items = new[]
-				{
-					new TaskItem("images/camera.png", ResizeMetadata),
-				};
-
-				var task = GetNewTask(items);
-				var success = task.Execute();
-				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
-
-				var copied = task.CopiedResources;
-				Assert.Equal(items.Length * DpiPath.Android.Image.Length, copied.Length);
-
-				var mdpi = GetCopiedResource(task, "drawable-mdpi/camera.png");
-				Assert.Equal("drawable-mdpi", mdpi.GetMetadata("_ResizetizerDpiPath"));
-				Assert.Equal("1.0", mdpi.GetMetadata("_ResizetizerDpiScale"));
-
-				var xhdpi = GetCopiedResource(task, "drawable-xhdpi/camera.png");
-				Assert.Equal("drawable-xhdpi", xhdpi.GetMetadata("_ResizetizerDpiPath"));
-				Assert.Equal("2.0", xhdpi.GetMetadata("_ResizetizerDpiScale"));
-			}
-
-			[Fact]
-			public void TwoImagesWithOnlyPathHasMetadata()
-			{
-				var items = new[]
-				{
-					new TaskItem("images/camera.png", ResizeMetadata),
-					new TaskItem("images/camera_color.png", ResizeMetadata),
-				};
-
-				var task = GetNewTask(items);
-				var success = task.Execute();
-				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
-
-				var copied = task.CopiedResources;
-				Assert.Equal(items.Length * DpiPath.Android.Image.Length, copied.Length);
-
-				var mdpi = GetCopiedResource(task, "drawable-mdpi/camera.png");
-				Assert.Equal("drawable-mdpi", mdpi.GetMetadata("_ResizetizerDpiPath"));
-				Assert.Equal("1.0", mdpi.GetMetadata("_ResizetizerDpiScale"));
-
-				var xhdpi = GetCopiedResource(task, "drawable-xhdpi/camera.png");
-				Assert.Equal("drawable-xhdpi", xhdpi.GetMetadata("_ResizetizerDpiPath"));
-				Assert.Equal("2.0", xhdpi.GetMetadata("_ResizetizerDpiScale"));
-
-				mdpi = GetCopiedResource(task, "drawable-mdpi/camera_color.png");
-				Assert.Equal("drawable-mdpi", mdpi.GetMetadata("_ResizetizerDpiPath"));
-				Assert.Equal("1.0", mdpi.GetMetadata("_ResizetizerDpiScale"));
-
-				xhdpi = GetCopiedResource(task, "drawable-xhdpi/camera_color.png");
-				Assert.Equal("drawable-xhdpi", xhdpi.GetMetadata("_ResizetizerDpiPath"));
-				Assert.Equal("2.0", xhdpi.GetMetadata("_ResizetizerDpiScale"));
-			}
-
-			[Fact]
-			public void SingleImageNoResizeSucceeds()
-			{
-				var items = new[]
-				{
-					new TaskItem("images/camera.png", new Dictionary<string, string>
-					{
-						["Resize"] = bool.FalseString,
-					}),
-				};
-
-				var task = GetNewTask(items);
-				var success = task.Execute();
-				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
-
-				AssertFileSize("drawable/camera.png", 1792, 1792);
-				AssertFileMatches("drawable/camera.png");
-			}
-
-			[Fact]
-			public void SingleVectorImageNoResizeSucceeds()
-			{
-				var items = new[]
-				{
-					new TaskItem("images/camera.svg", new Dictionary<string, string>
-					{
-						["Resize"] = bool.FalseString,
-					}),
-				};
-
-				var task = GetNewTask(items);
-				var success = task.Execute();
-				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
-
-				AssertFileSize("drawable/camera.png", 1792, 1792);
-			}
-
-			[Theory]
-			[InlineData(null, "camera")]
-			[InlineData("", "camera")]
-			[InlineData("camera", "camera")]
-			[InlineData("camera.png", "camera")]
-			[InlineData("folder/camera.png", "camera")]
-			[InlineData("the_alias", "the_alias")]
-			[InlineData("the_alias.png", "the_alias")]
-			[InlineData("folder/the_alias.png", "the_alias")]
-			public void SingleImageWithBaseSizeSucceeds(string alias, string outputName)
-			{
-				var items = new[]
-				{
-					new TaskItem("images/camera.png", new Dictionary<string, string>
-					{
-						["BaseSize"] = "44",
-						["Link"] = alias,
-					}),
-				};
-
-				var task = GetNewTask(items);
-				var success = task.Execute();
-				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
-
-				AssertFileSize($"drawable-mdpi/{outputName}.png", 44, 44);
-				AssertFileSize($"drawable-xhdpi/{outputName}.png", 88, 88);
-			}
-
-			[Theory]
+			[Theory(Skip = "App icon for android is in WIP mode")]
 			[InlineData("camera", null, "camera")]
 			[InlineData("camera", "", "camera")]
 			[InlineData("camera", "camera", "camera")]
@@ -333,7 +159,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileMatches($"mipmap-xhdpi/{outputName}_foreground.png", new object[] { name, alias, "xh", "f" });
 			}
 
-			[Theory]
+			[Theory(Skip = "App icon for android is in WIP mode")]
 			[InlineData("appicon", null, "appicon")]
 			[InlineData("appicon", "", "appicon")]
 			[InlineData("appicon", "appicon", "appicon")]
@@ -392,7 +218,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileMatches($"mipmap-xhdpi/{outputName}_foreground.png", new object[] { name, alias, "xh", "f" });
 			}
 
-			[Theory]
+			[Theory(Skip = "App icon for android is in WIP mode")]
 			[InlineData("appicon", null, "dotnet_background")]
 			[InlineData("appicon", "", "dotnet_background")]
 			[InlineData("appicon", "appicon", "appicon")]
@@ -454,7 +280,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileMatches($"mipmap-xhdpi/{outputName}_foreground.png", new object[] { name, alias, "xh", "f" });
 			}
 
-			[Theory]
+			[Theory(Skip = "App icon for android is in WIP mode")]
 			[InlineData("camera.png", "#00FF00", "#00FF00")]
 			[InlineData("camera.png", "#00FF00", "#FFFFFF")]
 			[InlineData("camera.png", "#00FF00", null)]
@@ -495,7 +321,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileMatches($"mipmap-mdpi/camera_foreground.png", new object[] { fn, colorString, tintColorString, "m", "f" });
 			}
 
-			[Theory]
+			[Theory(Skip = "App icon for android is in WIP mode")]
 			[InlineData("camera.png", "#00FF00", "#00FF00")]
 			[InlineData("camera.png", "#00FF00", "#FFFFFF")]
 			[InlineData("camera.png", "#00FF00", null)]
@@ -537,7 +363,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileMatches($"mipmap-mdpi/camera_foreground.png", new object[] { fn, colorString, tintColorString, "m", "f" });
 			}
 
-			[Theory]
+			[Theory(Skip = "App icon for android is in WIP mode")]
 			[InlineData("camera.png", "#00FF00", "#00FF00")]
 			[InlineData("camera.png", "#00FF00", "#FFFFFF")]
 			[InlineData("camera.png", "#00FF00", null)]
@@ -579,7 +405,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileMatches($"mipmap-mdpi/dotnet_background_foreground.png", new object[] { fn, colorString, tintColorString, "m", "f" });
 			}
 
-			[Theory]
+			[Theory(Skip = "App icon for android is in WIP mode")]
 			[InlineData("camera.png", "#00FF00", "#00FF00")]
 			[InlineData("camera.png", "#00FF00", "#FFFFFF")]
 			[InlineData("camera.png", "#00FF00", null)]
@@ -622,21 +448,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileMatches($"mipmap-mdpi/dotnet_background_foreground.png", new object[] { fn, colorString, tintColorString, "m", "f" });
 			}
 
-			[Fact]
-			public void DiffPropoprtionWithoutBase()
-			{
-				var task = GetNewTask(new TaskItem($"images/dotnet_bot.svg"));
-				var success = task.Execute();
-				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
-
-				AssertFileSize($"drawable-mdpi/dotnet_bot.png", 249, 280);
-				AssertFileSize($"drawable-xhdpi/dotnet_bot.png", 498, 560);
-
-				AssertFileMatches($"drawable-mdpi/dotnet_bot.png", new object[] { "mdpi" });
-				AssertFileMatches($"drawable-xhdpi/dotnet_bot.png", new object[] { "xhdpi" });
-			}
-
-			[Theory]
+			[Theory(Skip = "App icon for android is in WIP mode")]
 			[InlineData(1, "dotnet_background.svg", "tall_image.png")]
 			[InlineData(1, "dotnet_background.svg", "wide_image.png")]
 			[InlineData(1, "tall_image.png", "camera.svg")]
@@ -676,6 +488,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileMatches($"mipmap-xhdpi/{Path.GetFileNameWithoutExtension(bg)}_foreground.png", new object[] { fgScale, bg, fg, "xh", "f" });
 			}
 
+			#region Commented by MAUI
 			//[Theory]
 			//[InlineData(1, 1, "dotnet_background.svg", "tall_image.png", 300, 300)]
 			//[InlineData(1, 1, "dotnet_background.svg", "wide_image.png", 300, 300)]
@@ -740,6 +553,7 @@ namespace Uno.Resizetizer.Tests
 
 			//	AssertFileSize(DestinationFilename, exWidth, exHeight);
 			//}
+			#endregion
 		}
 
 		public class ExecuteForiOS : ExecuteForApp
@@ -797,128 +611,7 @@ namespace Uno.Resizetizer.Tests
 				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
 			}
 
-			[Fact]
-			public void SingleImageWithOnlyPathSucceeds()
-			{
-				var items = new[]
-				{
-					new TaskItem("images/camera.png", ResizeMetadata),
-				};
-
-				var task = GetNewTask(items);
-				var success = task.Execute();
-				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
-
-				AssertFileSize("camera.png", 1792, 1792);
-				AssertFileSize("camera@2x.png", 3584, 3584);
-			}
-
-			[Fact]
-			public void TwoImagesWithOnlyPathSucceed()
-			{
-				var items = new[]
-				{
-					new TaskItem("images/camera.png", ResizeMetadata),
-					new TaskItem("images/camera_color.png", ResizeMetadata),
-				};
-
-				var task = GetNewTask(items);
-				var success = task.Execute();
-				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
-
-				AssertFileSize("camera.png", 1792, 1792);
-				AssertFileSize("camera_color.png", 256, 256);
-
-				AssertFileSize("camera@2x.png", 3584, 3584);
-				AssertFileSize("camera_color@2x.png", 512, 512);
-			}
-
-			[Fact]
-			public void ImageWithOnlyPathHasMetadata()
-			{
-				var items = new[]
-				{
-					new TaskItem("images/camera.png", ResizeMetadata),
-				};
-
-				var task = GetNewTask(items);
-				var success = task.Execute();
-				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
-
-				var copied = task.CopiedResources;
-				Assert.Equal(items.Length * DpiPath.Ios.Image.Length, copied.Length);
-
-				var mdpi = GetCopiedResource(task, "camera.png");
-				Assert.Equal("", mdpi.GetMetadata("_ResizetizerDpiPath"));
-				Assert.Equal("1.0", mdpi.GetMetadata("_ResizetizerDpiScale"));
-
-				var xhdpi = GetCopiedResource(task, "camera@2x.png");
-				Assert.Equal("", xhdpi.GetMetadata("_ResizetizerDpiPath"));
-				Assert.Equal("2.0", xhdpi.GetMetadata("_ResizetizerDpiScale"));
-			}
-
-			[Fact]
-			public void TwoImagesWithOnlyPathHasMetadata()
-			{
-				var items = new[]
-				{
-					new TaskItem("images/camera.png", ResizeMetadata),
-					new TaskItem("images/camera_color.png", ResizeMetadata),
-				};
-
-				var task = GetNewTask(items);
-				var success = task.Execute();
-				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
-
-				var copied = task.CopiedResources;
-				Assert.Equal(items.Length * DpiPath.Ios.Image.Length, copied.Length);
-
-				var mdpi = GetCopiedResource(task, "camera.png");
-				Assert.Equal("", mdpi.GetMetadata("_ResizetizerDpiPath"));
-				Assert.Equal("1.0", mdpi.GetMetadata("_ResizetizerDpiScale"));
-
-				var xhdpi = GetCopiedResource(task, "camera@2x.png");
-				Assert.Equal("", xhdpi.GetMetadata("_ResizetizerDpiPath"));
-				Assert.Equal("2.0", xhdpi.GetMetadata("_ResizetizerDpiScale"));
-
-				mdpi = GetCopiedResource(task, "camera_color.png");
-				Assert.Equal("", mdpi.GetMetadata("_ResizetizerDpiPath"));
-				Assert.Equal("1.0", mdpi.GetMetadata("_ResizetizerDpiScale"));
-
-				xhdpi = GetCopiedResource(task, "camera_color@2x.png");
-				Assert.Equal("", xhdpi.GetMetadata("_ResizetizerDpiPath"));
-				Assert.Equal("2.0", xhdpi.GetMetadata("_ResizetizerDpiScale"));
-			}
-
-			[Theory]
-			[InlineData(null, "camera")]
-			[InlineData("", "camera")]
-			[InlineData("camera", "camera")]
-			[InlineData("camera.png", "camera")]
-			[InlineData("folder/camera.png", "camera")]
-			[InlineData("the_alias", "the_alias")]
-			[InlineData("the_alias.png", "the_alias")]
-			[InlineData("folder/the_alias.png", "the_alias")]
-			public void SingleImageWithBaseSizeSucceeds(string alias, string outputName)
-			{
-				var items = new[]
-				{
-					new TaskItem("images/camera.png", new Dictionary<string, string>
-					{
-						["BaseSize"] = "44",
-						["Link"] = alias,
-					}),
-				};
-
-				var task = GetNewTask(items);
-				var success = task.Execute();
-				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
-
-				AssertFileSize($"{outputName}.png", 44, 44);
-				AssertFileSize($"{outputName}@2x.png", 88, 88);
-			}
-
-			[Theory]
+			[Theory(Skip = "App icon for iOS is in WIP mode")]
 			[InlineData("camera", null, "camera")]
 			[InlineData("camera", "", "camera")]
 			[InlineData("camera", "camera", "camera")]
@@ -963,7 +656,7 @@ namespace Uno.Resizetizer.Tests
 					$"\"size\": \"20x20\",");
 			}
 
-			[Theory]
+			[Theory(Skip = "App icon for iOS is in WIP mode")]
 			[InlineData("appicon", null, "appicon")]
 			[InlineData("appicon", "", "appicon")]
 			[InlineData("appicon", "appicon", "appicon")]
@@ -1188,12 +881,34 @@ namespace Uno.Resizetizer.Tests
 				var task = GetNewTask(items);
 				var success = task.Execute();
 				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
+				var path = GetOutputPath(alias, outputName);
+				AssertFileSize($"{path}.scale-100.png", 44, 44);
+				AssertFileSize($"{path}.scale-200.png", 88, 88);
 
-				AssertFileSize($"{outputName}.scale-100.png", 44, 44);
-				AssertFileSize($"{outputName}.scale-200.png", 88, 88);
+
+				static string GetOutputPath(string alias, string outputName)
+				{
+					if (string.IsNullOrWhiteSpace(alias))
+					{
+						return outputName;
+					}
+
+					var pieces = alias.Split('/').ToList();
+					pieces.RemoveAt(pieces.Count - 1);
+
+					string path = string.Empty;
+
+					foreach (var piece in pieces)
+					{
+						path = string.Concat(path, piece, "/");
+					}
+
+					return path + outputName;
+
+				}
 			}
 
-			[Theory]
+			[Theory(Skip = "App icon for Windows is in WIP mode")]
 			[InlineData("camera", null, "camera")]
 			[InlineData("camera", "", "camera")]
 			[InlineData("camera", "camera", "camera")]
@@ -1236,7 +951,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileSize($"{outputName}MediumTile.scale-150.png", 225, 225);
 			}
 
-			[Theory]
+			[Theory(Skip = "App icon for Windows is in WIP mode")]
 			[InlineData("appicon", null, "appicon")]
 			[InlineData("appicon", "", "appicon")]
 			[InlineData("appicon", "appicon", "appicon")]
