@@ -4,7 +4,7 @@
 	<ItemGroup>
 		<AvailableItemName Include="MauiAsset" />
 		<AvailableItemName Include="UnoImage" />
-		<AvailableItemName Include="MauiIcon" />
+		<AvailableItemName Include="UnoIcon" />
 		<AvailableItemName Include="MauiFont" />
 		<AvailableItemName Include="MauiSplashScreen" />
 	</ItemGroup>
@@ -256,7 +256,7 @@
 		<ItemGroup>
 			<MauiItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' == ''" />
 			<MauiItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoImage.ForegroundFile)'))" ProjectDirectory="$(MSBuildProjectDirectory)" />
-			<MauiItem Include="@(MauiIcon)" ItemGroupName="MauiIcon" Condition="'%(MauiIcon.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(MauiIcon.ForegroundFile)'))" />
+			<MauiItem Include="@(UnoIcon)" ItemGroupName="UnoIcon" Condition="'%(UnoIcon.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoIcon.ForegroundFile)'))" />
 			<MauiItem Include="@(MauiFont)"  ItemGroupName="MauiFont" />
 			<MauiItem Include="@(MauiAsset)" ItemGroupName="MauiAsset" ProjectDirectory="$(MSBuildProjectDirectory)" />
 			<MauiItem Include="@(MauiSplashScreen)" ItemGroupName="MauiSplashScreen" />
@@ -300,9 +300,9 @@
 			<UnoImage
                 Include="@(ImportedMauiItem)"
                 Condition="'%(ImportedMauiItem.ItemGroupName)' == 'UnoImage'" />
-			<MauiIcon
+			<UnoIcon
                 Include="@(ImportedMauiItem)"
-                Condition="'%(ImportedMauiItem.ItemGroupName)' == 'MauiIcon'" />
+                Condition="'%(ImportedMauiItem.ItemGroupName)' == 'UnoIcon'" />
 			<MauiFont
                 Include="@(ImportedMauiItem)"
                 Condition="'%(ImportedMauiItem.ItemGroupName)' == 'MauiFont'" />
@@ -319,9 +319,9 @@
 			<UnoImage Update="@(UnoImage)" Resize="False" Condition="'%(UnoImage.Extension)' == '.gif' and '%(UnoImage.Resize)' == ''" />
 		</ItemGroup>
 
-		<!-- Map @(MauiIcon) to @(UnoImage IsAppIcon=true) -->
+		<!-- Map @(UnoIcon) to @(UnoImage IsAppIcon=true) -->
 		<ItemGroup>
-			<UnoImage Include="@(MauiIcon)" IsAppIcon="True" />
+			<UnoImage Include="@(UnoIcon)" IsAppIcon="True" />
 		</ItemGroup>
 
 		<!-- Write out item spec and metadata to a file we can use as an inputs for the resize target -->
