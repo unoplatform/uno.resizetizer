@@ -619,12 +619,12 @@
 
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
 
-			<_MauiAppIconFile Include="@(_ResizetizerCollectedImages)"
+			<_UnoAppIconFile Include="@(_ResizetizerCollectedImages)"
                               Condition="'%(Extension)' == '.ico'" />
 		</ItemGroup>
 
 		<PropertyGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
-			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">%(_MauiAppIconFile.Identity)</ApplicationIcon>
+			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">%(_UnoAppIconFile.Identity)</ApplicationIcon>
 		</PropertyGroup>
 
 		<!-- WPF -->
@@ -634,12 +634,12 @@
 				<Link>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</Link>
 			</Resource>
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
-			<_MauiAppIconFile Include="@(_ResizetizerCollectedImages)"
+			<_UnoAppIconFile Include="@(_ResizetizerCollectedImages)"
                               Condition="'%(Extension)' == '.ico'" />
 		</ItemGroup>
 
 		<PropertyGroup>
-			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">%(_MauiAppIconFile.Identity)</ApplicationIcon>
+			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">%(_UnoAppIconFile.Identity)</ApplicationIcon>
 		</PropertyGroup>
 
 		<!-- Tizen -->
