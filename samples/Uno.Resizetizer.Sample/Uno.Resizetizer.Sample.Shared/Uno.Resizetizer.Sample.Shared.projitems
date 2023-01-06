@@ -32,13 +32,15 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Assets\AppIcon\Icon\appconfig.svg" />
+    <None Include="$(MSBuildThisFileDirectory)Assets\AppIcon\Icon\iconapp.svg" />
     <None Include="$(MSBuildThisFileDirectory)Assets\SharedAssets.md" />
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
-    <!-- <MauiIcon Include="$(MSBuildThisFileDirectory)Assets\Images\appicon.svg" ForegroundFile="$(MSBuildThisFileDirectory)Assets\Images\appiconfg.svg" Color="#512BD4" /> -->
+    <UnoIcon Include="$(MSBuildThisFileDirectory)Assets\AppIcon\Icon\iconapp.svg" ForegroundFile="$(MSBuildThisFileDirectory)Assets\AppIcon\Icon\appconfig.svg" Color="#512BD4" />
     <None Include="$(MSBuildThisFileDirectory)Assets\SharedAssets.md" />
     <UnoImage Include="$(MSBuildThisFileDirectory)Assets\Images\dotnet_bot.svg" BaseSize="600x600" Link="MyAssets\Nested\dotnet_bot.svg" />
     <UnoImage Include="$(MSBuildThisFileDirectory)Assets\Images\dotnet_bot2.svg" BaseSize="600x600" />
@@ -46,6 +48,9 @@
     <!-- <MauiSplashScreen Include="$(MSBuildThisFileDirectory)Assets\Images\dotnet_bot.svg" BaseSize="128,128" Color="#512BD4" /> -->
     <None Include="$(MSBuildThisFileDirectory)Assets\Images\dotnet_bot.svg" />
     <None Include="$(MSBuildThisFileDirectory)Assets\Images\dotnet_bot2.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Assets\AppIcon\Icon\" />
   </ItemGroup>
   <Import Project="Uno.Resizetizer.Sample.Shared.globs.props" Condition="'$(IsCodeSharingProject)'!='true'" />
 </Project>
