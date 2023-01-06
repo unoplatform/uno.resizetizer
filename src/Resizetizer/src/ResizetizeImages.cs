@@ -21,9 +21,6 @@ namespace Uno.Resizetizer
 		public string PlatformIdentifier { get; set; } = "windows";
 
 		[Required]
-		public string PlatformIdentifier { get; set; } = "windows";
-
-		[Required]
 		public string IntermediateOutputPath { get; set; }
 
 		public string InputsFile { get; set; }
