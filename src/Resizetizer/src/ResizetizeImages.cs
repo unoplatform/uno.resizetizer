@@ -15,7 +15,9 @@ namespace Uno.Resizetizer
 		[Required]
 		public string PlatformType { get; set; } = "android";
 
-		[Required]
+		// TODO: When we refactor the code we can remove this property (?)
+		// this doesn't work for net6.0 targets
+		//[Required]
 		public string PlatformIdentifier { get; set; } = "windows";
 
 		[Required]
