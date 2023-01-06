@@ -136,7 +136,7 @@
 
 	<!-- iOS -->
 	<PropertyGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True'">
-		<ResizetizerPlatformType>uwp</ResizetizerPlatformType>
+		<ResizetizerPlatformType>ios</ResizetizerPlatformType>
 
 		<!-- We don't want to resizetize anything for an inner build when building a universal app, it's enough to only do it in the outer build -->
 		<DisableResizetizer Condition="'$(_IsMultiRidBuild)' == 'true'">true</DisableResizetizer>
@@ -169,7 +169,7 @@
 
 	<!-- Android -->
 	<PropertyGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
-		<ResizetizerPlatformType>uwp</ResizetizerPlatformType>
+		<ResizetizerPlatformType>android</ResizetizerPlatformType>
 		<ResizetizeBeforeTargets>
 			UnoAssetsGeneration;
 			$(ResizetizeBeforeTargets);
@@ -217,7 +217,7 @@
 
 	<!-- WPF -->
 	<PropertyGroup Condition="'$(_ResizetizerIsWPFApp)' == 'True'">
-		<ResizetizerPlatformType>wpf</ResizetizerPlatformType>
+		<ResizetizerPlatformType>uwp</ResizetizerPlatformType>
 
 		<ResizetizeBeforeTargets>
 			$(ResizetizeBeforeTargets);
@@ -562,7 +562,6 @@
 		<!-- Resize the images -->
 		<ResizetizeImages
             PlatformType="$(ResizetizerPlatformType)"
-			PlatformIdentifier="$(_ResizetizerPlatformIdentifier)"
             IntermediateOutputPath="$(_MauiIntermediateImages)"
             InputsFile="$(_ResizetizerInputsFile)"
             Images="@(UnoImage->Distinct())">
