@@ -217,7 +217,7 @@
 
 	<!-- WPF -->
 	<PropertyGroup Condition="'$(_ResizetizerIsWPFApp)' == 'True'">
-		<ResizetizerPlatformType>uwp</ResizetizerPlatformType>
+		<ResizetizerPlatformType>wpf</ResizetizerPlatformType>
 
 		<ResizetizeBeforeTargets>
 			$(ResizetizeBeforeTargets);
