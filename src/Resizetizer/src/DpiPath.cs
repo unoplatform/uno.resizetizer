@@ -77,14 +77,6 @@ namespace Uno.Resizetizer
 			public static DpiPath Original =>
 				new DpiPath("Resources", 1.0m);
 
-			public static DpiPath[] Image
-				=> new[]
-				{
-					new DpiPath("", 1.0m),
-					new DpiPath("", 2.0m, null,"@2x"),
-					new DpiPath("", 3.0m, null,"@3x"),
-				};
-
 			public static DpiPath[] AppIcon
 				=> new[]
 				{
@@ -252,12 +244,6 @@ namespace Uno.Resizetizer
 			public static DpiPath Original =>
 				new DpiPath("", 4.0m);
 
-			public static DpiPath[] Image
-				=> new[]
-				{
-					new DpiPath("", 4.0m),
-				};
-
 			public static DpiPath[] AppIcon
 				=> new[]
 				{
@@ -269,16 +255,6 @@ namespace Uno.Resizetizer
 		public static class Tizen
 		{
 			public static DpiPath Original => new DpiPath("res", 1.0m);
-
-			public static DpiPath[] Image
-				=> new[]
-				{
-				new DpiPath("res/contents/default_All-LDPI", 0.8m),
-				new DpiPath("res/contents/default_All-MDPI", 1.0m),
-				new DpiPath("res/contents/default_All-HDPI", 1.5m),
-				new DpiPath("res/contents/default_All-XHDPI", 2.0m),
-				new DpiPath("res/contents/default_All-XXHDPI", 3.0m),
-				};
 
 			public static DpiPath[] AppIcon
 				=> new[]
@@ -296,42 +272,14 @@ namespace Uno.Resizetizer
 
 		}
 
-		public static DpiPath GetOriginal(string platform)
+		public static DpiPath GetOriginal()
 		{
-			switch (platform.ToLowerInvariant())
-			{
-				case "ios":
-					return DpiPath.Ios.Original;
-				case "android":
-					return DpiPath.Android.Original;
-				case "uwp":
-					return DpiPath.Windows.Original;
-				case "wpf":
-					return DpiPath.Wpf.Original;
-				case "tizen":
-					return DpiPath.Tizen.Original;
-			}
-
-			return null;
+			return DpiPath.Windows.Original;
 		}
 
-		public static DpiPath[] GetDpis(string platform)
+		public static DpiPath[] GetDpis()
 		{
-			switch (platform.ToLowerInvariant())
-			{
-				case "ios":
-					return DpiPath.Ios.Image;
-				case "android":
-					return DpiPath.Android.Image;
-				case "uwp":
-					return DpiPath.Windows.Image;
-				case "wpf":
-					return DpiPath.Wpf.Image;
-				case "tizen":
-					return DpiPath.Tizen.Image;
-			}
-
-			return null;
+			return DpiPath.Windows.Image; ;
 		}
 
 		public static DpiPath[] GetAppIconDpis(string platform, string appIconName)

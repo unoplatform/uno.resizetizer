@@ -15,11 +15,6 @@ namespace Uno.Resizetizer
 		[Required]
 		public string PlatformType { get; set; } = "android";
 
-		// TODO: When we refactor the code we can remove this property (?)
-		// this doesn't work for net6.0 targets
-		//[Required]
-		public string PlatformIdentifier { get; set; } = "windows";
-
 		[Required]
 		public string IntermediateOutputPath { get; set; }
 
@@ -41,12 +36,12 @@ namespace Uno.Resizetizer
 		{
 			var images = ResizeImageInfo.Parse(Images);
 
-			var dpis = DpiPath.GetDpis(PlatformType);
+			var dpis = DpiPath.GetDpis();
 
 			if (dpis == null || dpis.Length <= 0)
 				return System.Threading.Tasks.Task.CompletedTask;
 
-			var originalScaleDpi = DpiPath.GetOriginal(PlatformType);
+			var originalScaleDpi = DpiPath.GetOriginal();
 
 			var resizedImages = new ConcurrentBag<ResizedImageInfo>();
 
