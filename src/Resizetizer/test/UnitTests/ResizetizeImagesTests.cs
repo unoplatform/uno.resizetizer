@@ -1019,7 +1019,7 @@ namespace Uno.Resizetizer.Tests
 				var task = GetNewTask(items);
 				var success = task.Execute();
 				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
-
+				bg += "Images\\";
 				AssertFileSize($"{bg}Logo.scale-100.png", 44, 44);
 				AssertFileSize($"{bg}Logo.scale-125.png", 55, 55);
 				AssertFileSize($"{bg}Logo.scale-200.png", 88, 88);

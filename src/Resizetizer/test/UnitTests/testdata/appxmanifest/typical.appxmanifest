@@ -7,7 +7,7 @@
     <Properties>
         <PublisherDisplayName>.NET Foundation</PublisherDisplayName>
         <DisplayName>Sample App</DisplayName>
-        <Logo>appiconStoreLogo.png</Logo>
+        <Logo>Images/appiconStoreLogo.png</Logo>
     </Properties>
     <Dependencies>
         <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19041.0" />
@@ -18,8 +18,8 @@
     </Resources>
     <Applications>
         <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="$targetentrypoint$">
-            <uap:VisualElements DisplayName="Sample App" Description="Sample App" BackgroundColor="transparent" Square150x150Logo="appiconMediumTile.png" Square44x44Logo="appiconLogo.png">
-                <uap:DefaultTile Wide310x150Logo="appiconWideTile.png" Square71x71Logo="appiconSmallTile.png" Square310x310Logo="appiconLargeTile.png" ShortName="Sample App">
+            <uap:VisualElements DisplayName="Sample App" Description="Sample App" BackgroundColor="transparent" Square150x150Logo="Images/appiconMediumTile.png" Square44x44Logo="Images/appiconLogo.png">
+                <uap:DefaultTile Wide310x150Logo="Images/appiconWideTile.png" Square71x71Logo="Images/appiconSmallTile.png" Square310x310Logo="Images/appiconLargeTile.png" ShortName="Sample App">
                     <uap:ShowNameOnTiles>
                         <uap:ShowOn Tile="square150x150Logo" />
                         <uap:ShowOn Tile="wide310x150Logo" />
