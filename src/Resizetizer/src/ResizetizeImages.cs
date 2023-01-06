@@ -30,6 +30,9 @@ namespace Uno.Resizetizer
 		[Output]
 		public ITaskItem[] CopiedResources { get; set; }
 
+		[Output]
+		public string GeneratedIconPath { get; set; } = null;
+
 		public string IsMacEnabled { get; set; }
 
 		public ILogger Logger => this;
@@ -161,7 +164,10 @@ namespace Uno.Resizetizer
 
 				var windowsIconGen = new WindowsIconGenerator(img, IntermediateOutputPath, this);
 
-				resizedImages.Add(windowsIconGen.Generate());
+				var icon = windowsIconGen.Generate();
+				GeneratedIconPath = icon.Filename;
+
+				resizedImages.Add(icon);
 			}
 
 			LogDebugMessage($"Generating App Icon Bitmaps for DPIs");
