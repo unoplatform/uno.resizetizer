@@ -566,8 +566,11 @@
             IntermediateOutputPath="$(_MauiIntermediateImages)"
             InputsFile="$(_ResizetizerInputsFile)"
             Images="@(UnoImage->Distinct())">
-		</ResizetizeImages>
 
+			<Output PropertyName="AppIconPath"
+					TaskParameter="GeneratedIconPath" />
+		</ResizetizeImages>
+		
 		<ItemGroup>
 			<!-- Get Images that were generated -->
 			<!-- Either from the task, or if the task was skipped (up to date), use the wildcard lookup -->
@@ -634,12 +637,10 @@
 				<Link>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</Link>
 			</Resource>
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
-			<_UnoAppIconFile Include="@(_ResizetizerCollectedImages)"
-                              Condition="'%(Extension)' == '.ico'" />
 		</ItemGroup>
 
 		<PropertyGroup>
-			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">%(_UnoAppIconFile.Identity)</ApplicationIcon>
+			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">$(AppIconPath)</ApplicationIcon>
 		</PropertyGroup>
 
 		<!-- Tizen -->

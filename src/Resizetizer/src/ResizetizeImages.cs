@@ -31,7 +31,7 @@ namespace Uno.Resizetizer
 		public ITaskItem[] CopiedResources { get; set; }
 
 		[Output]
-		public string GeneratedIconPath { get; set; } = null;
+		public ITaskItem GeneratedIconPath { get; set; } = null;
 
 		public string IsMacEnabled { get; set; }
 
@@ -165,7 +165,7 @@ namespace Uno.Resizetizer
 				var windowsIconGen = new WindowsIconGenerator(img, IntermediateOutputPath, this);
 
 				var icon = windowsIconGen.Generate();
-				GeneratedIconPath = icon.Filename;
+				GeneratedIconPath = new TaskItem(icon.Filename);
 
 				resizedImages.Add(icon);
 			}
