@@ -621,13 +621,10 @@
 			</Content>
 
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
-
-			<_UnoAppIconFile Include="@(_ResizetizerCollectedImages)"
-                              Condition="'%(Extension)' == '.ico'" />
 		</ItemGroup>
 
 		<PropertyGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
-			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">%(_UnoAppIconFile.Identity)</ApplicationIcon>
+			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">$(AppIconPath)</ApplicationIcon>
 		</PropertyGroup>
 
 		<!-- WPF -->
