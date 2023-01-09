@@ -31,7 +31,7 @@ namespace Uno.Resizetizer
 		public ITaskItem[] CopiedResources { get; set; }
 
 		[Output]
-		public ITaskItem GeneratedIconPath { get; set; } = null;
+		public ITaskItem GeneratedIconPath { get; set; }
 
 		public string IsMacEnabled { get; set; }
 
