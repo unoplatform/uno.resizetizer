@@ -97,8 +97,8 @@
 		<_ResizetizerIsWindowsAppSdk Condition="('$(ProjectReunionWinUI)'=='True' Or '$(WindowsAppSDKWinUI)'=='True') And '$(_ResizetizerPlatformIsWindows)' == 'True' And ('$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe')">True</_ResizetizerIsWindowsAppSdk>
 		<_ResizetizerIsTizenApp Condition="'$(_ResizetizerPlatformIsTizen)' == 'True' And ( '$(OutputType)' == 'Exe' )">True</_ResizetizerIsTizenApp>
 		<_ResizetizerIsWasm Condition="'$(_ResizetizerIsAndroidApp)' != 'True' And '$(_ResizetizerIsiOSApp)' != 'True' And '$(_ResizetizerIsWPFApp)' != 'True' And '$(_ResizetizerIsWindowsAppSdk)' != 'True'">True</_ResizetizerIsWasm>
-	
-</PropertyGroup>
+
+	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True' Or '$(_ResizetizerIsiOSApp)' == 'True' Or '$(_ResizetizerIsWPFApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsTizenApp)' == 'True' Or '$(_ResizetizerIsWasm)' == 'True'">
 		<_ResizetizerIsCompatibleApp>True</_ResizetizerIsCompatibleApp>
@@ -569,7 +569,7 @@
 			<Output PropertyName="AppIconPath"
 					TaskParameter="GeneratedIconPath" />
 		</ResizetizeImages>
-		
+
 		<ItemGroup>
 			<!-- Get Images that were generated -->
 			<!-- Either from the task, or if the task was skipped (up to date), use the wildcard lookup -->
@@ -582,6 +582,7 @@
 			<Content Include="@(_ResizetizerCollectedImages->FullPath())"
 					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
 			</Content>
+			<FileWrites Include="@(_ResizetizerCollectedImages)" />
 		</ItemGroup>
 		<!-- iOS -->
 		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True'">
@@ -589,6 +590,7 @@
 			<Content Include="@(_ResizetizerCollectedImages)"
 					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
 			</Content>
+			<FileWrites Include="@(_ResizetizerCollectedImages)" />
 		</ItemGroup>
 
 		<!-- iOS Only -->
@@ -628,10 +630,10 @@
 
 		<!-- WPF -->
 		<ItemGroup Condition="'$(_ResizetizerIsWPFApp)' == 'True'">
-			<Resource Include="@(_ResizetizerCollectedImages)">
-				<LogicalName>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</LogicalName>
-				<Link>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</Link>
-			</Resource>
+			<Content Include="@(_ResizetizerCollectedImages)"
+					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
+			</Content>
+
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
 		</ItemGroup>
 
