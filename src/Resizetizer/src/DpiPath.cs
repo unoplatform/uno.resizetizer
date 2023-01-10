@@ -4,7 +4,7 @@ using SkiaSharp;
 
 namespace Uno.Resizetizer
 {
-	[DebuggerDisplay("Path: {Path}, ")]
+	[DebuggerDisplay("Path: {Path}")]
 	internal class DpiPath
 	{
 		public DpiPath(string path, decimal scale, string nameSuffix = null, string scaleSuffix = null, SKSize? size = null, string[] idioms = null)
@@ -36,19 +36,6 @@ namespace Uno.Resizetizer
 
 		public static class Android
 		{
-			public static DpiPath Original =>
-				new DpiPath("drawable", 1.0m);
-
-			public static DpiPath[] Image
-				=> new[]
-				{
-					new DpiPath("drawable-mdpi", 1.0m),
-					new DpiPath("drawable-hdpi", 1.5m),
-					new DpiPath("drawable-xhdpi", 2.0m),
-					new DpiPath("drawable-xxhdpi", 3.0m),
-					new DpiPath("drawable-xxxhdpi", 4.0m),
-				};
-
 			public static DpiPath[] AppIcon
 				=> new[]
 				{
@@ -109,6 +96,7 @@ namespace Uno.Resizetizer
 		{
 			public const string OutputPath = "";
 			public const string IconOutputPath = "Images/";
+
 			public static DpiPath Original =>
 				new DpiPath(OutputPath, 1.0m, null, ".scale-100");
 
@@ -241,9 +229,6 @@ namespace Uno.Resizetizer
 
 		public static class Wpf
 		{
-			public static DpiPath Original =>
-				new DpiPath("", 4.0m);
-
 			public static DpiPath[] AppIcon
 				=> new[]
 				{
@@ -279,7 +264,7 @@ namespace Uno.Resizetizer
 
 		public static DpiPath[] GetDpis()
 		{
-			return DpiPath.Windows.Image; ;
+			return DpiPath.Windows.Image;
 		}
 
 		public static DpiPath[] GetAppIconDpis(string platform, string appIconName)
