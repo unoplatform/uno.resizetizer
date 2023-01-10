@@ -606,15 +606,6 @@
             SessionId="$(BuildSessionId)"
             Files="@(_UnoImagesToCopyToBuildServer)" />
 
-		
-		<PropertyGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
-			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">$(AppIconPath)</ApplicationIcon>
-		</PropertyGroup>
-
-		<PropertyGroup>
-			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">$(AppIconPath)</ApplicationIcon>
-		</PropertyGroup>
-
 		<PropertyGroup>
 			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">$(AppIconPath)</ApplicationIcon>
 		</PropertyGroup>
