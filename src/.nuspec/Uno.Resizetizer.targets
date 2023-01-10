@@ -569,7 +569,7 @@
 			<Output PropertyName="AppIconPath"
 					TaskParameter="GeneratedIconPath" />
 		</ResizetizeImages>
-
+		
 		<ItemGroup>
 			<!-- Get Images that were generated -->
 			<!-- Either from the task, or if the task was skipped (up to date), use the wildcard lookup -->
@@ -608,6 +608,10 @@
 
 		
 		<PropertyGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
+			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">$(AppIconPath)</ApplicationIcon>
+		</PropertyGroup>
+
+		<PropertyGroup>
 			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">$(AppIconPath)</ApplicationIcon>
 		</PropertyGroup>
 
