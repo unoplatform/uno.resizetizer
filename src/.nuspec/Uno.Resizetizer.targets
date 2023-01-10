@@ -93,7 +93,7 @@
 		<_ResizetizerIsNetCore>True</_ResizetizerIsNetCore>
 		<_ResizetizerIsAndroidApp Condition=" '$(_ResizetizerPlatformIsAndroid)' == 'True' And '$(AndroidApplication)' == 'True'">True</_ResizetizerIsAndroidApp>
 		<_ResizetizerIsiOSApp Condition="( '$(_ResizetizerPlatformIsiOS)' == 'True' OR '$(_ResizetizerPlatformIsMacCatalyst)' == 'True' ) And ('$(OutputType)' == 'Exe' Or '$(IsAppExtension)' == 'True')">True</_ResizetizerIsiOSApp>
-		<_ResizetizerIsWPFApp Condition="'$(IsApplication)' == 'True' And '$(NuGetRuntimeIdentifier)' == 'win' And '$(_ResizetizerPlatformIsWindows)' == 'True'">True</_ResizetizerIsWPFApp>
+		<_ResizetizerIsWPFApp Condition="'$(UseWPF)' == 'True'">True</_ResizetizerIsWPFApp>
 		<_ResizetizerIsWindowsAppSdk Condition="('$(ProjectReunionWinUI)'=='True' Or '$(WindowsAppSDKWinUI)'=='True') And '$(_ResizetizerPlatformIsWindows)' == 'True' And ('$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe')">True</_ResizetizerIsWindowsAppSdk>
 		<_ResizetizerIsTizenApp Condition="'$(_ResizetizerPlatformIsTizen)' == 'True' And ( '$(OutputType)' == 'Exe' )">True</_ResizetizerIsTizenApp>
 		<_ResizetizerIsWasm Condition="'$(_ResizetizerIsAndroidApp)' != 'True' And '$(_ResizetizerIsiOSApp)' != 'True' And '$(_ResizetizerIsWPFApp)' != 'True' And '$(_ResizetizerIsWindowsAppSdk)' != 'True'">True</_ResizetizerIsWasm>
@@ -566,8 +566,11 @@
             IntermediateOutputPath="$(_MauiIntermediateImages)"
             InputsFile="$(_ResizetizerInputsFile)"
             Images="@(UnoImage->Distinct())">
-		</ResizetizeImages>
 
+			<Output PropertyName="AppIconPath"
+					TaskParameter="GeneratedIconPath" />
+		</ResizetizeImages>
+		
 		<ItemGroup>
 			<!-- Get Images that were generated -->
 			<!-- Either from the task, or if the task was skipped (up to date), use the wildcard lookup -->
@@ -618,13 +621,10 @@
 			</Content>
 
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
-
-			<_MauiAppIconFile Include="@(_ResizetizerCollectedImages)"
-                              Condition="'%(Extension)' == '.ico'" />
 		</ItemGroup>
 
 		<PropertyGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
-			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">%(_MauiAppIconFile.Identity)</ApplicationIcon>
+			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">$(AppIconPath)</ApplicationIcon>
 		</PropertyGroup>
 
 		<!-- WPF -->
@@ -635,6 +635,10 @@
 			</Resource>
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
 		</ItemGroup>
+
+		<PropertyGroup>
+			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">$(AppIconPath)</ApplicationIcon>
+		</PropertyGroup>
 
 		<!-- Tizen -->
 		<PropertyGroup>
