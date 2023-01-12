@@ -611,11 +611,12 @@ namespace Uno.Resizetizer.Tests
 				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
 			}
 
-			[Theory(Skip = "App icon for iOS is in WIP mode")]
+			[Theory]
 			[InlineData("camera", null, "camera")]
 			[InlineData("camera", "", "camera")]
 			[InlineData("camera", "camera", "camera")]
 			[InlineData("camera", "camera.png", "camera")]
+			// Should we remove the `folder` path or keep it? We do keep for images, should we do it for icons?
 			[InlineData("camera", "folder/camera.png", "camera")]
 			[InlineData("camera", "the_alias", "the_alias")]
 			[InlineData("camera", "the_alias.png", "the_alias")]
@@ -656,7 +657,8 @@ namespace Uno.Resizetizer.Tests
 					$"\"size\": \"20x20\",");
 			}
 
-			[Theory(Skip = "App icon for iOS is in WIP mode")]
+			// Should we remove the `folder` path or keep it? We do keep for images, should we do it for icons?
+			[Theory]
 			[InlineData("appicon", null, "appicon")]
 			[InlineData("appicon", "", "appicon")]
 			[InlineData("appicon", "appicon", "appicon")]
