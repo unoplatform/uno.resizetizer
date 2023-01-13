@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -18,6 +19,8 @@ namespace Uno.Resizetizer
 		[Required]
 		public string IntermediateOutputPath { get; set; }
 
+		public string IntermediateOutputAndroidIconPath { get; set; }
+
 		public string InputsFile { get; set; }
 
 		public ITaskItem[] Images { get; set; }
@@ -28,6 +31,9 @@ namespace Uno.Resizetizer
 		[Output]
 		public ITaskItem GeneratedIconPath { get; set; }
 
+		[Output]
+		public ITaskItem[] AndroidAppIcons { get; set; }
+		
 		public string IsMacEnabled { get; set; }
 
 		public ILogger Logger => this;
@@ -112,7 +118,12 @@ namespace Uno.Resizetizer
 				attr.Add("_ResizetizerDpiPath", img.Dpi.Path);
 				attr.Add("_ResizetizerDpiScale", img.Dpi.Scale.ToString("0.0", CultureInfo.InvariantCulture));
 
-				copiedResources.Add(new TaskItem(itemSpec, attr));
+				var taskItem = new TaskItem(itemSpec, attr);
+
+				if (img.Filename.Contains("mipmap"))
+					taskItem.SetMetadata("IsAppIcon", bool.TrueString);
+
+				copiedResources.Add(taskItem);
 			}
 
 			CopiedResources = copiedResources.ToArray();
@@ -136,11 +147,24 @@ namespace Uno.Resizetizer
 
 				appIconName = appIconName.ToLowerInvariant();
 
-				var adaptiveIconGen = new AndroidAdaptiveIconGenerator(img, appIconName, IntermediateOutputPath, this);
+				var adaptiveIconGen = new AndroidAdaptiveIconGenerator(img, appIconName, IntermediateOutputAndroidIconPath, this);
 				var iconsGenerated = adaptiveIconGen.Generate();
 
-				foreach (var iconGenerated in iconsGenerated)
-					resizedImages.Add(iconGenerated);
+				// We don't need to add the icons to the ResizedImages, they're just for images (Content)
+				
+				//foreach (var iconGenerated in iconsGenerated)
+				//	resizedImages.Add(iconGenerated);
+
+				AndroidAppIcons = IconstToTaskItem(iconsGenerated).ToArray();
+
+
+				static IEnumerable<ITaskItem> IconstToTaskItem(IEnumerable<ResizedImageInfo> icons)
+				{
+					foreach (var icon in icons)
+					{
+						yield return new TaskItem(icon.Filename);
+					}
+				}
 			}
 			else if (PlatformType == "ios")
 			{

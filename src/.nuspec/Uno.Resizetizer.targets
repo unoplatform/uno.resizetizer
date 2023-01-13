@@ -69,6 +69,7 @@
 
 		<_ResizetizerIntermediateOutputRoot>$(IntermediateOutputPath)resizetizer\</_ResizetizerIntermediateOutputRoot>
 		<_MauiIntermediateImages>$(_ResizetizerIntermediateOutputRoot)r\</_MauiIntermediateImages>
+		<_MauiIntermediateAndroidAppIcon>$(_ResizetizerIntermediateOutputRoot)AndroidIcons\</_MauiIntermediateAndroidAppIcon>
 		<_MauiIntermediateFonts>$(_ResizetizerIntermediateOutputRoot)f\</_MauiIntermediateFonts>
 		<_MauiIntermediateSplashScreen>$(_ResizetizerIntermediateOutputRoot)sp\</_MauiIntermediateSplashScreen>
 		<_MauiIntermediateManifest>$(_ResizetizerIntermediateOutputRoot)m\</_MauiIntermediateManifest>
@@ -565,21 +566,25 @@
 		<ResizetizeImages
             PlatformType="$(ResizetizerPlatformType)"
             IntermediateOutputPath="$(_MauiIntermediateImages)"
+			IntermediateOutputAndroidIconPath="$(_MauiIntermediateAndroidAppIcon)"
             InputsFile="$(_ResizetizerInputsFile)"
             Images="@(UnoImage->Distinct())">
 
 			<Output PropertyName="AppIconPath"
 					TaskParameter="GeneratedIconPath" />
+			<Output PropertyName="AndroidIcons"
+					TaskParameter="AndroidAppIcons"/>
 		</ResizetizeImages>
-		
+
 		<ItemGroup>
 			<!-- Get Images that were generated -->
 			<!-- Either from the task, or if the task was skipped (up to date), use the wildcard lookup -->
 			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' != ''" Include="@(CopiedResources)" />
 			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' == ''" Include="$(_MauiIntermediateImages)**\*"/>
+			<_ResizetizerAndroidIcons Include="$(_MauiIntermediateAndroidAppIcon)**\*"/>
 		</ItemGroup>
 
-		
+
 		<ItemGroup Condition="'$(_ResizetizerIsWasm)' != 'True'">
 			<Content Include="@(_ResizetizerCollectedImages)"
 					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
@@ -587,7 +592,7 @@
 
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
 		</ItemGroup>
-			
+
 		<!-- Wasm -->
 		<ItemGroup Condition="'$(_ResizetizerIsWasm)' == 'True'">
 			<Content Include="@(_ResizetizerCollectedImages->FullPath())"
@@ -595,6 +600,19 @@
 			</Content>
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
 		</ItemGroup>
+
+		<!-- Android -->
+		<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
+			<!--<AndroidResource Include="@(_ResizetizerCollectedImages)" Condition="'@(_ResizetizerCollectedImages)->Contains('mipmap')' != ''">
+				<Link>%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</Link>
+			</AndroidResource>-->
+
+			<AndroidResource Include="@(_ResizetizerAndroidIcons)"
+					 Link="%(_ResizetizerAndroidIcons.RecursiveDir)%(_ResizetizerAndroidIcons.Filename)%(_ResizetizerAndroidIcons.Extension)" >
+			</AndroidResource>
+
+		</ItemGroup>
+
 
 		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True'">
 			<_ResizetizerCollectedBundleResourceImages Include="@(_ResizetizerCollectedImages->'%(FullPath)')">
