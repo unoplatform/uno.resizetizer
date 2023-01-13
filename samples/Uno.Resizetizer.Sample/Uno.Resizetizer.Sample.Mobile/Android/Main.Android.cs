@@ -14,7 +14,7 @@ using System.Text;
 namespace Uno.Resizetizer.Sample.Droid;
 [global::Android.App.ApplicationAttribute(
 	Label = "@string/ApplicationName",
-	Icon = "@mipmap/icon",
+	//Icon = "@mipmap/icon",
 	LargeHeap = true,
 	HardwareAccelerated = true,
 	Theme = "@style/AppTheme"
