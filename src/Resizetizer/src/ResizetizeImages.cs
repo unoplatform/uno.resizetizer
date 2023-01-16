@@ -148,20 +148,11 @@ namespace Uno.Resizetizer
 				var iconsGenerated = adaptiveIconGen.Generate();
 
 				// We don't need to add the icons to the ResizedImages, they're just for images (Content)
-				
-				//foreach (var iconGenerated in iconsGenerated)
-				//	resizedImages.Add(iconGenerated);
+				var androidAppIcons = new List<TaskItem>();
+				foreach (var iconGenerated in iconsGenerated)
+					androidAppIcons.Add(new TaskItem(iconGenerated.Filename));
 
-				AndroidAppIcons = IconstToTaskItem(iconsGenerated).ToArray();
-
-
-				static IEnumerable<ITaskItem> IconstToTaskItem(IEnumerable<ResizedImageInfo> icons)
-				{
-					foreach (var icon in icons)
-					{
-						yield return new TaskItem(icon.Filename);
-					}
-				}
+				AndroidAppIcons = androidAppIcons.ToArray();
 			}
 			else if (PlatformType == "ios")
 			{
@@ -191,12 +182,12 @@ namespace Uno.Resizetizer
 			var appTool = new SkiaSharpAppIconTools(img, this);
 
 			LogDebugMessage($"App Icon: Intermediate Path " + IntermediateOutputPath);
-
+			var iconPath = PlatformType == "android" ? IntermediateOutputAndroidIconPath : IntermediateOutputPath;
 			foreach (var dpi in appIconDpis)
 			{
 				LogDebugMessage($"App Icon: " + dpi);
 
-				var destination = Resizer.GetFileDestination(img, dpi, IntermediateOutputPath)
+				var destination = Resizer.GetFileDestination(img, dpi, iconPath)
 					.Replace("{name}", appIconName);
 
 				LogDebugMessage($"App Icon Destination: " + destination);
