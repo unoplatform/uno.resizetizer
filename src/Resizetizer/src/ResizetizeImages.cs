@@ -120,9 +120,6 @@ namespace Uno.Resizetizer
 
 				var taskItem = new TaskItem(itemSpec, attr);
 
-				if (img.Filename.Contains("mipmap"))
-					taskItem.SetMetadata("IsAppIcon", bool.TrueString);
-
 				copiedResources.Add(taskItem);
 			}
 

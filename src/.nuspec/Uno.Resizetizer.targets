@@ -603,14 +603,9 @@
 
 		<!-- Android -->
 		<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
-			<!--<AndroidResource Include="@(_ResizetizerCollectedImages)" Condition="'@(_ResizetizerCollectedImages)->Contains('mipmap')' != ''">
-				<Link>%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</Link>
-			</AndroidResource>-->
-
 			<AndroidResource Include="@(_ResizetizerAndroidIcons)"
 					 Link="%(_ResizetizerAndroidIcons.RecursiveDir)%(_ResizetizerAndroidIcons.Filename)%(_ResizetizerAndroidIcons.Extension)" >
 			</AndroidResource>
-
 		</ItemGroup>
 
 
