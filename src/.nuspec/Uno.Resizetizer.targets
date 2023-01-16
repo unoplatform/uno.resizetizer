@@ -175,7 +175,9 @@
 		<ResizetizerPlatformType>android</ResizetizerPlatformType>
 		<ResizetizeBeforeTargets>
 			UnoAssetsGeneration;
+			UnoResourcesGeneration;
 			$(ResizetizeBeforeTargets);
+			_GenerateAndroidResourceDir;
 		</ResizetizeBeforeTargets>
 
 		<ResizetizeCollectItemsBeforeTargets>
