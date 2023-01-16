@@ -33,7 +33,7 @@ namespace Uno.Resizetizer
 
 		[Output]
 		public ITaskItem[] AndroidAppIcons { get; set; }
-		
+
 		public string IsMacEnabled { get; set; }
 
 		public ILogger Logger => this;
@@ -130,6 +130,9 @@ namespace Uno.Resizetizer
 
 		void ProcessAppIcon(ResizeImageInfo img, ConcurrentBag<ResizedImageInfo> resizedImages)
 		{
+#if DEBUG_RESIZETIZER
+			System.Diagnostics.Debugger.Launch();
+#endif
 			var appIconName = img.OutputName;
 
 			// Generate the actual bitmap app icons themselves
