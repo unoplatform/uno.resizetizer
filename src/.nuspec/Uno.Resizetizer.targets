@@ -119,7 +119,7 @@
 
 	<!-- Wasm -->
 	<PropertyGroup Condition="'$(_ResizetizerIsWasm)' == 'True'">
-		<ResizetizerPlatformType>uwp</ResizetizerPlatformType>
+		<ResizetizerPlatformType>wasm</ResizetizerPlatformType>
 		<ResizetizerIncludeSelfProject>true</ResizetizerIncludeSelfProject>
 
 		<ResizetizeBeforeTargets>

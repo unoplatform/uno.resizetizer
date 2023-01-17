@@ -237,6 +237,16 @@ namespace Uno.Resizetizer
 		}
 
 
+		public static class Wasm
+		{
+			public static DpiPath[] AppIcon => new[]
+			{
+					new DpiPath("", 1.92m, size: new SKSize(192, 192)),
+					new DpiPath("", 5.12m, size: new SKSize(512, 512)),
+			};
+		}
+
+
 		public static class Tizen
 		{
 			public static DpiPath Original => new DpiPath("res", 1.0m);
@@ -282,6 +292,7 @@ namespace Uno.Resizetizer
 					break;
 				case "uwp":
 				case "windows":
+				case "wasm":
 					result = DpiPath.Windows.AppIcon;
 					break;
 				case "wpf":
