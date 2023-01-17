@@ -15,11 +15,6 @@ namespace Uno.Resizetizer
 		[Required]
 		public string PlatformType { get; set; } = "android";
 
-		// TODO: When we refactor the code we can remove this property (?)
-		// this doesn't work for net6.0 targets
-		//[Required]
-		public string PlatformIdentifier { get; set; } = "windows";
-
 		[Required]
 		public string IntermediateOutputPath { get; set; }
 
@@ -41,12 +36,12 @@ namespace Uno.Resizetizer
 		{
 			var images = ResizeImageInfo.Parse(Images);
 
-			var dpis = DpiPath.GetDpis(PlatformType);
+			var dpis = DpiPath.GetDpis();
 
 			if (dpis == null || dpis.Length <= 0)
 				return System.Threading.Tasks.Task.CompletedTask;
 
-			var originalScaleDpi = DpiPath.GetOriginal(PlatformType);
+			var originalScaleDpi = DpiPath.GetOriginal();
 
 			var resizedImages = new ConcurrentBag<ResizedImageInfo>();
 
@@ -96,7 +91,7 @@ namespace Uno.Resizetizer
 				}
 			});
 
-			if (PlatformIdentifier == "tizen")
+			if (PlatformType == "tizen")
 			{
 				var tizenResourceXmlGenerator = new TizenResourceXmlGenerator(IntermediateOutputPath, Logger);
 				tizenResourceXmlGenerator.Generate();
@@ -130,12 +125,12 @@ namespace Uno.Resizetizer
 			var appIconName = img.OutputName;
 
 			// Generate the actual bitmap app icons themselves
-			var appIconDpis = DpiPath.GetAppIconDpis(PlatformIdentifier, appIconName);
+			var appIconDpis = DpiPath.GetAppIconDpis(PlatformType, appIconName);
 
 			LogDebugMessage($"App Icon");
 
 			// Apple and Android have special additional files to generate for app icons
-			if (PlatformIdentifier == "android")
+			if (PlatformType == "android")
 			{
 				LogDebugMessage($"Android Adaptive Icon Generator");
 
@@ -147,7 +142,7 @@ namespace Uno.Resizetizer
 				foreach (var iconGenerated in iconsGenerated)
 					resizedImages.Add(iconGenerated);
 			}
-			else if (PlatformIdentifier == "ios")
+			else if (PlatformType == "ios")
 			{
 				LogDebugMessage($"iOS Icon Assets Generator");
 
@@ -158,7 +153,7 @@ namespace Uno.Resizetizer
 				foreach (var assetGenerated in assetsGenerated)
 					resizedImages.Add(assetGenerated);
 			}
-			else if (PlatformIdentifier == "windows")
+			else if (PlatformType == "uwp" || PlatformType == "wpf")
 			{
 				LogDebugMessage($"Windows Icon Generator");
 

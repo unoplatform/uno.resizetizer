@@ -97,8 +97,8 @@
 		<_ResizetizerIsWindowsAppSdk Condition="('$(ProjectReunionWinUI)'=='True' Or '$(WindowsAppSDKWinUI)'=='True') And '$(_ResizetizerPlatformIsWindows)' == 'True' And ('$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe')">True</_ResizetizerIsWindowsAppSdk>
 		<_ResizetizerIsTizenApp Condition="'$(_ResizetizerPlatformIsTizen)' == 'True' And ( '$(OutputType)' == 'Exe' )">True</_ResizetizerIsTizenApp>
 		<_ResizetizerIsWasm Condition="'$(_ResizetizerIsAndroidApp)' != 'True' And '$(_ResizetizerIsiOSApp)' != 'True' And '$(_ResizetizerIsWPFApp)' != 'True' And '$(_ResizetizerIsWindowsAppSdk)' != 'True'">True</_ResizetizerIsWasm>
-	
-</PropertyGroup>
+
+	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True' Or '$(_ResizetizerIsiOSApp)' == 'True' Or '$(_ResizetizerIsWPFApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsTizenApp)' == 'True' Or '$(_ResizetizerIsWasm)' == 'True'">
 		<_ResizetizerIsCompatibleApp>True</_ResizetizerIsCompatibleApp>
@@ -136,7 +136,7 @@
 
 	<!-- iOS -->
 	<PropertyGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True'">
-		<ResizetizerPlatformType>uwp</ResizetizerPlatformType>
+		<ResizetizerPlatformType>ios</ResizetizerPlatformType>
 
 		<!-- We don't want to resizetize anything for an inner build when building a universal app, it's enough to only do it in the outer build -->
 		<DisableResizetizer Condition="'$(_IsMultiRidBuild)' == 'true'">true</DisableResizetizer>
@@ -169,7 +169,7 @@
 
 	<!-- Android -->
 	<PropertyGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
-		<ResizetizerPlatformType>uwp</ResizetizerPlatformType>
+		<ResizetizerPlatformType>android</ResizetizerPlatformType>
 		<ResizetizeBeforeTargets>
 			UnoAssetsGeneration;
 			$(ResizetizeBeforeTargets);
@@ -562,7 +562,6 @@
 		<!-- Resize the images -->
 		<ResizetizeImages
             PlatformType="$(ResizetizerPlatformType)"
-			PlatformIdentifier="$(_ResizetizerPlatformIdentifier)"
             IntermediateOutputPath="$(_MauiIntermediateImages)"
             InputsFile="$(_ResizetizerInputsFile)"
             Images="@(UnoImage->Distinct())">
@@ -578,18 +577,21 @@
 			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' == ''" Include="$(_MauiIntermediateImages)**\*"/>
 		</ItemGroup>
 
+		
+		<ItemGroup Condition="'$(_ResizetizerIsWasm)' != 'True'">
+			<Content Include="@(_ResizetizerCollectedImages)"
+					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
+			</Content>
+
+			<FileWrites Include="@(_ResizetizerCollectedImages)" />
+		</ItemGroup>
+			
 		<!-- Wasm -->
 		<ItemGroup Condition="'$(_ResizetizerIsWasm)' == 'True'">
 			<Content Include="@(_ResizetizerCollectedImages->FullPath())"
 					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
 			</Content>
-		</ItemGroup>
-		<!-- iOS -->
-		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True'">
-			
-			<Content Include="@(_ResizetizerCollectedImages)"
-					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
-			</Content>
+			<FileWrites Include="@(_ResizetizerCollectedImages)" />
 		</ItemGroup>
 
 		<!-- iOS Only -->
@@ -603,38 +605,6 @@
             Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'"
             SessionId="$(BuildSessionId)"
             Files="@(_UnoImagesToCopyToBuildServer)" />
-
-		<!-- Android -->
-		<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
-			<Content Include="@(_ResizetizerCollectedImages)"
-					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
-			</Content>
-
-			<FileWrites Include="@(_ResizetizerCollectedImages)" />
-		</ItemGroup>
-
-		<!-- UWP / WinUI -->
-		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
-
-			<Content Include="@(_ResizetizerCollectedImages)"
-					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
-			</Content>
-
-			<FileWrites Include="@(_ResizetizerCollectedImages)" />
-		</ItemGroup>
-
-		<PropertyGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
-			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">$(AppIconPath)</ApplicationIcon>
-		</PropertyGroup>
-
-		<!-- WPF -->
-		<ItemGroup Condition="'$(_ResizetizerIsWPFApp)' == 'True'">
-			<Resource Include="@(_ResizetizerCollectedImages)">
-				<LogicalName>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</LogicalName>
-				<Link>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</Link>
-			</Resource>
-			<FileWrites Include="@(_ResizetizerCollectedImages)" />
-		</ItemGroup>
 
 		<PropertyGroup>
 			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">$(AppIconPath)</ApplicationIcon>
