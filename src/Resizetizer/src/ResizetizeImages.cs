@@ -168,13 +168,24 @@ namespace Uno.Resizetizer
 				foreach (var assetGenerated in assetsGenerated)
 					resizedImages.Add(assetGenerated);
 			}
-			else if (PlatformType == "uwp" || PlatformType == "wpf" || PlatformType == "wasm")
+			else if (PlatformType == "uwp" || PlatformType == "wpf")
 			{
 				LogDebugMessage($"Windows Icon Generator");
 
 				var windowsIconGen = new WindowsIconGenerator(img, IntermediateOutputPath, this);
 
 				var icon = windowsIconGen.Generate();
+				GeneratedIconPath = new TaskItem(icon.Filename);
+
+				resizedImages.Add(icon);
+			}
+			else if (PlatformType == "wasm")
+			{
+				LogDebugMessage($"Wasm Icon Generator");
+
+				var wasmIconGen = new WasmIconGenerator(img, IntermediateOutputPath, this);
+
+				var icon = wasmIconGen.Generate();
 				GeneratedIconPath = new TaskItem(icon.Filename);
 
 				resizedImages.Add(icon);
