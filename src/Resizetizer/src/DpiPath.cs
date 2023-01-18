@@ -4,7 +4,7 @@ using SkiaSharp;
 
 namespace Uno.Resizetizer
 {
-	[DebuggerDisplay("Path: {Path}")]
+	[DebuggerDisplay("Path: {Path}, Size: {Size}, Scale: {Scale}")]
 	internal class DpiPath
 	{
 		public DpiPath(string path, decimal scale, string nameSuffix = null, string scaleSuffix = null, SKSize? size = null, string[] idioms = null)
