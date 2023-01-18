@@ -21,6 +21,8 @@ namespace Uno.Resizetizer
 
 		public string IntermediateOutputIconPath { get; set; }
 
+		public string PWAManifestPath { get; set; }
+
 		public string InputsFile { get; set; }
 
 		public ITaskItem[] Images { get; set; }

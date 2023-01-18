@@ -92,6 +92,7 @@
 
 		<_WasmHasPWAManifest>False</_WasmHasPWAManifest>
 		<_WasmHasPWAManifest Condition="'$(WasmPWAManifestFile)' != ''">True</_WasmHasPWAManifest>
+		<_WasmPwaManifestPath Condition="'$(_WasmHasPWAManifest)' == 'True'">$(MSBuildProjectDirectory)\$(WasmPWAManifestFile)</_WasmPwaManifestPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
@@ -574,6 +575,7 @@
             PlatformType="$(ResizetizerPlatformType)"
             IntermediateOutputPath="$(_MauiIntermediateImages)"
 			IntermediateOutputIconPath="$(_UnoIntermediateAppIcon)"
+			PWAManifestPath="$(_WasmPwaManifestPath)"
             InputsFile="$(_ResizetizerInputsFile)"
             Images="@(UnoImage->Distinct())">
 
