@@ -183,12 +183,14 @@ namespace Uno.Resizetizer
 			{
 				LogDebugMessage($"Wasm Icon Generator");
 
-				var wasmIconGen = new WasmIconGenerator(img, IntermediateOutputPath, this);
+				var wasmIconGen = new WasmIconGenerator(img, IntermediateOutputAndroidIconPath, this);
 
 				var icon = wasmIconGen.Generate();
-				GeneratedIconPath = new TaskItem(icon.Filename);
 
-				resizedImages.Add(icon);
+				string itemSpec = Path.GetFullPath(icon.Filename);
+				GeneratedIconPath = new TaskItem(itemSpec);
+
+				//resizedImages.Add(icon);
 			}
 
 			LogDebugMessage($"Generating App Icon Bitmaps for DPIs");

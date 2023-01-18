@@ -125,8 +125,9 @@
 		<ResizetizeBeforeTargets>
 			$(ResizetizeBeforeTargets);
 			AssignTargetPaths;
-		</ResizetizeBeforeTargets>
 
+		</ResizetizeBeforeTargets>
+	
 		<ResizetizeAfterTargets>
 			ResizetizeCollectItems;
 			$(ResizetizeAfterTargets);
@@ -600,6 +601,11 @@
 			<Content Include="@(_ResizetizerCollectedImages->FullPath())"
 					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
 			</Content>
+
+			<Content Include="@(_ResizetizerAndroidIcons->FullPath())"
+					 UnoDeploy="Root"
+					 Link="%(_ResizetizerAndroidIcons.RecursiveDir)%(_ResizetizerAndroidIcons.Filename)%(_ResizetizerAndroidIcons.Extension)"/>
+			
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
 		</ItemGroup>
 
