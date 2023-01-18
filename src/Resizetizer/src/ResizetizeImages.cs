@@ -19,7 +19,7 @@ namespace Uno.Resizetizer
 		[Required]
 		public string IntermediateOutputPath { get; set; }
 
-		public string IntermediateOutputAndroidIconPath { get; set; }
+		public string IntermediateOutputIconPath { get; set; }
 
 		public string InputsFile { get; set; }
 
@@ -147,7 +147,7 @@ namespace Uno.Resizetizer
 
 				appIconName = appIconName.ToLowerInvariant();
 
-				var adaptiveIconGen = new AndroidAdaptiveIconGenerator(img, appIconName, IntermediateOutputAndroidIconPath, this);
+				var adaptiveIconGen = new AndroidAdaptiveIconGenerator(img, appIconName, IntermediateOutputIconPath, this);
 				var iconsGenerated = adaptiveIconGen.Generate();
 
 				// We don't need to add the icons to the ResizedImages, they're just for images (Content)
@@ -183,14 +183,12 @@ namespace Uno.Resizetizer
 			{
 				LogDebugMessage($"Wasm Icon Generator");
 
-				var wasmIconGen = new WasmIconGenerator(img, IntermediateOutputAndroidIconPath, this);
+				var wasmIconGen = new WasmIconGenerator(img, IntermediateOutputIconPath, this);
 
 				var icon = wasmIconGen.Generate();
 
 				string itemSpec = Path.GetFullPath(icon.Filename);
 				GeneratedIconPath = new TaskItem(itemSpec);
-
-				//resizedImages.Add(icon);
 			}
 
 			LogDebugMessage($"Generating App Icon Bitmaps for DPIs");
@@ -198,7 +196,7 @@ namespace Uno.Resizetizer
 			var appTool = new SkiaSharpAppIconTools(img, this);
 
 			LogDebugMessage($"App Icon: Intermediate Path " + IntermediateOutputPath);
-			var iconPath = PlatformType == "android" ? IntermediateOutputAndroidIconPath : IntermediateOutputPath;
+			var iconPath = PlatformType == "android" ? IntermediateOutputIconPath : IntermediateOutputPath;
 			foreach (var dpi in appIconDpis)
 			{
 				LogDebugMessage($"App Icon: " + dpi);
