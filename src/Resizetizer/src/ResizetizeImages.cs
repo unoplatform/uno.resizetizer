@@ -21,7 +21,7 @@ namespace Uno.Resizetizer
 
 		public string IntermediateOutputIconPath { get; set; }
 
-		public string PWAManifestPath { get; set; }
+		public string PWAManifestPath { get; set; } = string.Empty;
 
 		public string InputsFile { get; set; }
 
@@ -185,7 +185,7 @@ namespace Uno.Resizetizer
 			{
 				LogDebugMessage($"Wasm Icon Generator");
 
-				var wasmIconGen = new WasmIconGenerator(img, IntermediateOutputIconPath, this);
+				var wasmIconGen = new WasmIconGenerator(img, IntermediateOutputIconPath, this, PWAManifestPath, appIconDpis);
 
 				var icon = wasmIconGen.Generate();
 

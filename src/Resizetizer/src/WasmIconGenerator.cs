@@ -1,21 +1,32 @@
 ﻿using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace Uno.Resizetizer;
 internal sealed class WasmIconGenerator
 {
+	readonly string pwaManifestPath;
+	readonly DpiPath[] dpiPaths;
+
 	public ResizeImageInfo Info { get; private set; }
 	public string IntermediateOutputPath { get; private set; }
 	public ILogger Logger { get; private set; }
 
-	public WasmIconGenerator(ResizeImageInfo info, string intermediateOutputPath, ILogger logger)
+	public WasmIconGenerator(ResizeImageInfo info, string intermediateOutputPath, ILogger logger, string pWAManifestPath, DpiPath[] dpiPaths)
 	{
 		Info = info;
 		IntermediateOutputPath = intermediateOutputPath;
 		Logger = logger;
+		this.pwaManifestPath = pWAManifestPath;
+		this.dpiPaths = dpiPaths;
 	}
 
 	public ResizedImageInfo Generate()
@@ -56,6 +67,73 @@ internal sealed class WasmIconGenerator
 		memoryStream.CopyTo(writer.BaseStream);
 		writer.Flush();
 
+		if (!string.IsNullOrWhiteSpace(pwaManifestPath))
+			ProcessThePwaManifest();
+
 		return new ResizedImageInfo { Dpi = dpi, Filename = destination };
+	}
+
+	void ProcessThePwaManifest()
+	{
+		var json = File.ReadAllText(pwaManifestPath);
+
+		var value = json.Contains("icons");
+
+		var documentOptions = new JsonDocumentOptions
+		{
+			CommentHandling = JsonCommentHandling.Skip
+		};
+		using var appSettings = JsonDocument.Parse(json, documentOptions);
+		var iconsProperty = appSettings.RootElement.TryGetProperty("icons", out _);
+
+		if (iconsProperty)
+		{
+			Logger.Log("The PWA manifest already contains an icons property, skipping the generation of the icons property.");
+			return;
+		}
+
+		var appIconImagesJson = new JsonArray();
+
+		foreach (var dpi in dpiPaths)
+		{
+			var w = dpi.Size.Value.Width.ToString("0.#", CultureInfo.InvariantCulture);
+			var h = dpi.Size.Value.Height.ToString("0.#", CultureInfo.InvariantCulture);
+
+			string fileName = Path.GetFileNameWithoutExtension(Info.OutputName);
+			var imageIcon = new JsonObject
+			{
+				["src"] = $"{fileName}{dpi.ScaleSuffix}.png",
+				["size"] = $"{w}x{h}",
+				["type"] = "image/png",
+			};
+
+			appIconImagesJson.Add(imageIcon);
+		}
+
+		var jsonIconsObject = new JsonObject	
+		{
+			["icons"] = appIconImagesJson
+		};
+
+		var writeOptions = new JsonWriterOptions
+		{
+			Indented = true
+		};
+
+		using var fs = File.Create(pwaManifestPath);
+		using var writer = new Utf8JsonWriter(fs, writeOptions);
+		var root = appSettings.RootElement;
+		new JsonObject(root).Merge(jsonIconsObject);
+		jsonIconsObject.WriteTo(writer);
+		
+
+		var jsonFinal = JsonSerializer.Serialize(appSettings, new JsonSerializerOptions()
+		{
+			DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+		});
+
+		//writer.WriteEndObject();
+
+		writer.Flush();
 	}
 }
