@@ -67,6 +67,7 @@
 		<_MauiSplashStampFile>$(IntermediateOutputPath)mauisplash.stamp</_MauiSplashStampFile>
 		<_MauiManifestStampFile>$(IntermediateOutputPath)mauimanifest.stamp</_MauiManifestStampFile>
 
+
 		<_ResizetizerIntermediateOutputRoot>$(IntermediateOutputPath)resizetizer\</_ResizetizerIntermediateOutputRoot>
 		<_MauiIntermediateImages>$(_ResizetizerIntermediateOutputRoot)r\</_MauiIntermediateImages>
 		<_UnoIntermediateAppIcon>$(_ResizetizerIntermediateOutputRoot)AppIcons\</_UnoIntermediateAppIcon>
@@ -88,6 +89,9 @@
 		<ResizetizerIncludeSelfProject Condition="'$(ResizetizerIncludeSelfProject)' == ''">False</ResizetizerIncludeSelfProject>
 
 		<_ResizetizerDefaultInvalidFilenamesErrorMessage>One or more invalid file names were detected.  File names must be lowercase, start and end with a letter character, and contain only alphanumeric characters or underscores: </_ResizetizerDefaultInvalidFilenamesErrorMessage>
+
+		<_WasmHasPWAManifest>False</_WasmHasPWAManifest>
+		<_WasmHasPWAManifest Condition="'$(WasmPWAManifestFile)' != ''">True</_WasmHasPWAManifest>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
