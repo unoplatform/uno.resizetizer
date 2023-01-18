@@ -77,8 +77,6 @@ internal sealed class WasmIconGenerator
 	{
 		var json = File.ReadAllText(pwaManifestPath);
 
-		var value = json.Contains("icons");
-
 		var documentOptions = new JsonDocumentOptions
 		{
 			CommentHandling = JsonCommentHandling.Skip
@@ -123,7 +121,6 @@ internal sealed class WasmIconGenerator
 		using var fs = File.Create(pwaManifestPath);
 		using var writer = new Utf8JsonWriter(fs, writeOptions);
 		var root = appSettings.RootElement;
-		new JsonObject(root).Merge(jsonIconsObject);
 		jsonIconsObject.WriteTo(writer);
 		
 
