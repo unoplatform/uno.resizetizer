@@ -1,6 +1,6 @@
 ﻿using SkiaSharp;
-using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.IO;
@@ -77,14 +77,9 @@ internal sealed class WasmIconGenerator
 	{
 		var json = File.ReadAllText(pwaManifestPath);
 
-		var documentOptions = new JsonDocumentOptions
-		{
-			CommentHandling = JsonCommentHandling.Skip
-		};
-		using var appSettings = JsonDocument.Parse(json, documentOptions);
-		var iconsProperty = appSettings.RootElement.TryGetProperty("icons", out _);
+		var jsonNodeManifest = JsonNode.Parse(json);
 
-		if (iconsProperty)
+		if (!IconPropertyIsEmpty(jsonNodeManifest))
 		{
 			Logger.Log("The PWA manifest already contains an icons property, skipping the generation of the icons property.");
 			return;
@@ -97,7 +92,7 @@ internal sealed class WasmIconGenerator
 			var w = dpi.Size.Value.Width.ToString("0.#", CultureInfo.InvariantCulture);
 			var h = dpi.Size.Value.Height.ToString("0.#", CultureInfo.InvariantCulture);
 
-			string fileName = Path.GetFileNameWithoutExtension(Info.OutputName);
+			var fileName = Path.GetFileNameWithoutExtension(Info.OutputName);
 			var imageIcon = new JsonObject
 			{
 				["src"] = $"{fileName}{dpi.ScaleSuffix}.png",
@@ -108,9 +103,9 @@ internal sealed class WasmIconGenerator
 			appIconImagesJson.Add(imageIcon);
 		}
 
-		var jsonIconsObject = new JsonObject	
+		var jsonIconsObject = new JsonObject
 		{
-			["icons"] = appIconImagesJson
+			["icons"] = appIconImagesJson,
 		};
 
 		var writeOptions = new JsonWriterOptions
@@ -118,19 +113,24 @@ internal sealed class WasmIconGenerator
 			Indented = true
 		};
 
-		using var fs = File.Create(pwaManifestPath);
+		var newPwaManifestName = Path.GetFileName(pwaManifestPath) + "Uno";
+		var outputPath = Path.Combine(IntermediateOutputPath, newPwaManifestName);
+		// Change this in the future
+		using var fs = File.Create(outputPath);
 		using var writer = new Utf8JsonWriter(fs, writeOptions);
-		var root = appSettings.RootElement;
-		jsonIconsObject.WriteTo(writer);
+
+		JsonHelper.Merge(json, jsonIconsObject.ToJsonString(), writer);
 		
-
-		var jsonFinal = JsonSerializer.Serialize(appSettings, new JsonSerializerOptions()
-		{
-			DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-		});
-
-		//writer.WriteEndObject();
-
 		writer.Flush();
+
+		static bool IconPropertyIsEmpty(JsonNode node)
+		{
+			var value = node["icons"];
+
+			if (value is null)
+				return true;
+
+			return !(value.AsArray().Count > 0);
+		}
 	}
 }
