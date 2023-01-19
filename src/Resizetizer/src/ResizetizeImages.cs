@@ -198,7 +198,7 @@ namespace Uno.Resizetizer
 			var appTool = new SkiaSharpAppIconTools(img, this);
 
 			LogDebugMessage($"App Icon: Intermediate Path " + IntermediateOutputPath);
-			var iconPath = PlatformType == "android" ? IntermediateOutputIconPath : IntermediateOutputPath;
+			var iconPath = GetIconPath(PlatformType);
 			foreach (var dpi in appIconDpis)
 			{
 				LogDebugMessage($"App Icon: " + dpi);
@@ -211,6 +211,12 @@ namespace Uno.Resizetizer
 				appTool.Resize(dpi, Path.ChangeExtension(destination, ".png"));
 			}
 		}
+
+		string GetIconPath(string platformType) => platformType switch
+		{
+			"wasm" or "android" => IntermediateOutputIconPath,
+			_ => IntermediateOutputPath
+		};
 
 		void ProcessImageResize(ResizeImageInfo img, DpiPath[] dpis, ConcurrentBag<ResizedImageInfo> resizedImages)
 		{
