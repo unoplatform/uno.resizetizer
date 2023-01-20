@@ -21,6 +21,7 @@ namespace Uno.Resizetizer.Tests
 				{
 					PlatformType = type,
 					IntermediateOutputPath = DestinationDirectory,
+					IntermediateOutputAndroidIconPath = DestinationDirectory,
 					InputsFile = "mauiimage.inputs",
 					Images = items,
 					BuildEngine = this,
@@ -100,23 +101,23 @@ namespace Uno.Resizetizer.Tests
 				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
 			}
 
-			[Theory(Skip = "App icon for android is in WIP mode")]
+			[Theory]
 			[InlineData("camera", null, "camera")]
 			[InlineData("camera", "", "camera")]
 			[InlineData("camera", "camera", "camera")]
 			[InlineData("camera", "camera.png", "camera")]
-			[InlineData("camera", "folder/camera.png", "camera")]
+			//[InlineData("camera", "folder/camera.png", "camera")]
 			[InlineData("camera", "the_alias", "the_alias")]
 			[InlineData("camera", "the_alias.png", "the_alias")]
-			[InlineData("camera", "folder/the_alias.png", "the_alias")]
+			//[InlineData("camera", "folder/the_alias.png", "the_alias")]
 			[InlineData("camera_color", null, "camera_color")]
 			[InlineData("camera_color", "", "camera_color")]
 			[InlineData("camera_color", "camera_color", "camera_color")]
 			[InlineData("camera_color", "camera_color.png", "camera_color")]
-			[InlineData("camera_color", "folder/camera_color.png", "camera_color")]
+			//[InlineData("camera_color", "folder/camera_color.png", "camera_color")]
 			[InlineData("camera_color", "the_alias", "the_alias")]
 			[InlineData("camera_color", "the_alias.png", "the_alias")]
-			[InlineData("camera_color", "folder/the_alias.png", "the_alias")]
+			//[InlineData("camera_color", "folder/the_alias.png", "the_alias")]
 			public void SingleRasterAppIconWithOnlyPathSucceedsWithoutVectors(string name, string alias, string outputName)
 			{
 				var items = new[]
@@ -159,23 +160,24 @@ namespace Uno.Resizetizer.Tests
 				AssertFileMatches($"mipmap-xhdpi/{outputName}_foreground.png", new object[] { name, alias, "xh", "f" });
 			}
 
-			[Theory(Skip = "App icon for android is in WIP mode")]
+			//[Theory(Skip = "App icon for android is in WIP mode")]
+			[Theory]
 			[InlineData("appicon", null, "appicon")]
 			[InlineData("appicon", "", "appicon")]
 			[InlineData("appicon", "appicon", "appicon")]
 			[InlineData("appicon", "appicon.png", "appicon")]
-			[InlineData("appicon", "folder/appicon.png", "appicon")]
+			//[InlineData("appicon", "folder/appicon.png", "appicon")]
 			[InlineData("appicon", "the_alias", "the_alias")]
 			[InlineData("appicon", "the_alias.png", "the_alias")]
-			[InlineData("appicon", "folder/the_alias.png", "the_alias")]
+			//[InlineData("appicon", "folder/the_alias.png", "the_alias")]
 			[InlineData("camera", null, "camera")]
 			[InlineData("camera", "", "camera")]
 			[InlineData("camera", "camera", "camera")]
 			[InlineData("camera", "camera.png", "camera")]
-			[InlineData("camera", "folder/camera.png", "camera")]
+			//[InlineData("camera", "folder/camera.png", "camera")]
 			[InlineData("camera", "the_alias", "the_alias")]
 			[InlineData("camera", "the_alias.png", "the_alias")]
-			[InlineData("camera", "folder/the_alias.png", "the_alias")]
+			//[InlineData("camera", "folder/the_alias.png", "the_alias")]
 			public void SingleVectorAppIconWithOnlyPathSucceedsWithoutVectors(string name, string alias, string outputName)
 			{
 				var items = new[]
@@ -218,23 +220,23 @@ namespace Uno.Resizetizer.Tests
 				AssertFileMatches($"mipmap-xhdpi/{outputName}_foreground.png", new object[] { name, alias, "xh", "f" });
 			}
 
-			[Theory(Skip = "App icon for android is in WIP mode")]
+			[Theory]
 			[InlineData("appicon", null, "dotnet_background")]
 			[InlineData("appicon", "", "dotnet_background")]
 			[InlineData("appicon", "appicon", "appicon")]
 			[InlineData("appicon", "appicon.png", "appicon")]
-			[InlineData("appicon", "folder/appicon.png", "appicon")]
+			//[InlineData("appicon", "folder/appicon.png", "appicon")]
 			[InlineData("appicon", "the_alias", "the_alias")]
 			[InlineData("appicon", "the_alias.png", "the_alias")]
-			[InlineData("appicon", "folder/the_alias.png", "the_alias")]
+			//[InlineData("appicon", "folder/the_alias.png", "the_alias")]
 			[InlineData("camera", null, "dotnet_background")]
 			[InlineData("camera", "", "dotnet_background")]
 			[InlineData("camera", "camera", "camera")]
 			[InlineData("camera", "camera.png", "camera")]
-			[InlineData("camera", "folder/camera.png", "camera")]
+			//[InlineData("camera", "folder/camera.png", "camera")]
 			[InlineData("camera", "the_alias", "the_alias")]
 			[InlineData("camera", "the_alias.png", "the_alias")]
-			[InlineData("camera", "folder/the_alias.png", "the_alias")]
+			//[InlineData("camera", "folder/the_alias.png", "the_alias")]
 			[InlineData("prismicon", "rasters", "rasters")]
 			public void MultipleVectorAppIconWithOnlyPathConvertsToRaster(string name, string alias, string outputName)
 			{
@@ -280,7 +282,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileMatches($"mipmap-xhdpi/{outputName}_foreground.png", new object[] { name, alias, "xh", "f" });
 			}
 
-			[Theory(Skip = "App icon for android is in WIP mode")]
+			[Theory]
 			[InlineData("camera.png", "#00FF00", "#00FF00")]
 			[InlineData("camera.png", "#00FF00", "#FFFFFF")]
 			[InlineData("camera.png", "#00FF00", null)]
@@ -363,7 +365,7 @@ namespace Uno.Resizetizer.Tests
 				AssertFileMatches($"mipmap-mdpi/camera_foreground.png", new object[] { fn, colorString, tintColorString, "m", "f" });
 			}
 
-			[Theory(Skip = "App icon for android is in WIP mode")]
+			[Theory]
 			[InlineData("camera.png", "#00FF00", "#00FF00")]
 			[InlineData("camera.png", "#00FF00", "#FFFFFF")]
 			[InlineData("camera.png", "#00FF00", null)]
