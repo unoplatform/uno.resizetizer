@@ -583,6 +583,8 @@
 					TaskParameter="GeneratedIconPath" />
 			<Output PropertyName="AndroidIcons"
 					TaskParameter="AndroidAppIcons"/>
+			<Output PropertyName="ResizetizerPwaManifest"
+					TaskParameter="PwaGeneratedManifestPath"/>
 		</ResizetizeImages>
 
 		<ItemGroup>

@@ -67,14 +67,17 @@ internal sealed class WasmIconGenerator
 		memoryStream.CopyTo(writer.BaseStream);
 		writer.Flush();
 
-		if (!string.IsNullOrWhiteSpace(pwaManifestPath))
-			ProcessThePwaManifest();
-
 		return new ResizedImageInfo { Dpi = dpi, Filename = destination };
 	}
 
-	void ProcessThePwaManifest()
+	public string ProcessThePwaManifest()
 	{
+		if (string.IsNullOrWhiteSpace(pwaManifestPath))
+		{
+			Logger.Log("There's no PWA Manifest file.");
+			return string.Empty;
+		}
+
 		var json = File.ReadAllText(pwaManifestPath);
 
 		var jsonNodeManifest = JsonNode.Parse(json);
@@ -82,7 +85,7 @@ internal sealed class WasmIconGenerator
 		if (!IconPropertyIsEmpty(jsonNodeManifest))
 		{
 			Logger.Log("The PWA manifest already contains an icons property, skipping the generation of the icons property.");
-			return;
+			return string.Empty;
 		}
 
 		var appIconImagesJson = new JsonArray();
@@ -113,16 +116,18 @@ internal sealed class WasmIconGenerator
 			Indented = true
 		};
 
-		var newPwaManifestName = Path.GetFileName(pwaManifestPath) + "Uno";
+		var newPwaManifestName = "Uno" + Path.GetFileName(pwaManifestPath);
 		var outputPath = Path.Combine(IntermediateOutputPath, newPwaManifestName);
 		// Change this in the future
 		using var fs = File.Create(outputPath);
 		using var writer = new Utf8JsonWriter(fs, writeOptions);
 
 		JsonHelper.Merge(json, jsonIconsObject.ToJsonString(), writer);
-		
+
 		writer.Flush();
 
+		return Path.GetFullPath(outputPath);
+		
 		static bool IconPropertyIsEmpty(JsonNode node)
 		{
 			var value = node["icons"];

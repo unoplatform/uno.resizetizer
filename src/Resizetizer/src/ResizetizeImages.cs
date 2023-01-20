@@ -36,6 +36,9 @@ namespace Uno.Resizetizer
 		[Output]
 		public ITaskItem[] AndroidAppIcons { get; set; }
 
+		[Output]
+		public ITaskItem PwaGeneratedManifestPath { get; set; }
+
 		public string IsMacEnabled { get; set; }
 
 		public ILogger Logger => this;
@@ -191,6 +194,10 @@ namespace Uno.Resizetizer
 
 				string itemSpec = Path.GetFullPath(icon.Filename);
 				GeneratedIconPath = new TaskItem(itemSpec);
+
+				var manifestPath = wasmIconGen.ProcessThePwaManifest();
+
+				PwaGeneratedManifestPath = new TaskItem(manifestPath);
 			}
 
 			LogDebugMessage($"Generating App Icon Bitmaps for DPIs");
