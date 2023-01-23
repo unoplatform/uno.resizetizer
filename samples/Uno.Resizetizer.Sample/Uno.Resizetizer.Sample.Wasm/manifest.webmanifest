@@ -1,9 +1,9 @@
 {
   "background_color": "#ffffff",
-  "description": "$ext_safeprojectname$",
+  "description": "MySuperApp",
   "display": "standalone",
-  "name": "$ext_safeprojectname$",
-  "short_name": "$ext_safeprojectname$",
+  "name": "MySuperApp",
+  "short_name": "MySuperApp",
   "start_url": "/index.html",
   "theme_color": "#ffffff",
   "scope": "/"
