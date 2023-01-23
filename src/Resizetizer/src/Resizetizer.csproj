@@ -7,7 +7,7 @@
 		<!--<Nullable>enable</Nullable>-->
 		<PackageId>Uno.Resizetizer.Sdk</PackageId>
 		<Description>.NET MAUI SDK support for images, fonts, etc. Enabled via &lt;UseMauiAssets&gt;true&lt;/UseMauiAssets&gt;.</Description>
-		<IsPackable>false</IsPackable>
+		<IsPackable>true</IsPackable>
 		<LangVersion>latest</LangVersion>
 		<_SkiaPackagePath>build\</_SkiaPackagePath>
 		<MauiNuSpecDirectory>$(MSBuildThisFileDirectory)..\..\.nuspec\</MauiNuSpecDirectory>
