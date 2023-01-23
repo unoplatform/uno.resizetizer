@@ -4,7 +4,7 @@ using SkiaSharp;
 
 namespace Uno.Resizetizer
 {
-	[DebuggerDisplay("Path: {Path}")]
+	[DebuggerDisplay("Path: {Path}, Size: {Size}, Scale: {Scale}")]
 	internal class DpiPath
 	{
 		public DpiPath(string path, decimal scale, string nameSuffix = null, string scaleSuffix = null, SKSize? size = null, string[] idioms = null)
@@ -237,6 +237,18 @@ namespace Uno.Resizetizer
 		}
 
 
+		public static class Wasm
+		{
+			public static DpiPath[] AppIcon => new[]
+			{
+					new DpiPath("", 1.00m, scaleSuffix:"-16", size: new SKSize(16, 16)),
+					new DpiPath("", 1.00m,scaleSuffix:"-32", size: new SKSize(32, 32)),
+					new DpiPath("", 1.00m,scaleSuffix:"-128", size: new SKSize(128, 128)),
+					new DpiPath("", 1.00m,scaleSuffix:"-512", size: new SKSize(512, 512)),
+			};
+		}
+
+
 		public static class Tizen
 		{
 			public static DpiPath Original => new DpiPath("res", 1.0m);
@@ -289,6 +301,9 @@ namespace Uno.Resizetizer
 					break;
 				case "tizen":
 					result = DpiPath.Tizen.AppIcon;
+					break;
+				case "wasm":
+					result = DpiPath.Wasm.AppIcon;
 					break;
 			}
 

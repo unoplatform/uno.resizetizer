@@ -67,9 +67,10 @@
 		<_MauiSplashStampFile>$(IntermediateOutputPath)mauisplash.stamp</_MauiSplashStampFile>
 		<_MauiManifestStampFile>$(IntermediateOutputPath)mauimanifest.stamp</_MauiManifestStampFile>
 
+
 		<_ResizetizerIntermediateOutputRoot>$(IntermediateOutputPath)resizetizer\</_ResizetizerIntermediateOutputRoot>
 		<_MauiIntermediateImages>$(_ResizetizerIntermediateOutputRoot)r\</_MauiIntermediateImages>
-		<_MauiIntermediateAndroidAppIcon>$(_ResizetizerIntermediateOutputRoot)AndroidIcons\</_MauiIntermediateAndroidAppIcon>
+		<_UnoIntermediateAppIcon>$(_ResizetizerIntermediateOutputRoot)AppIcons\</_UnoIntermediateAppIcon>
 		<_MauiIntermediateFonts>$(_ResizetizerIntermediateOutputRoot)f\</_MauiIntermediateFonts>
 		<_MauiIntermediateSplashScreen>$(_ResizetizerIntermediateOutputRoot)sp\</_MauiIntermediateSplashScreen>
 		<_MauiIntermediateManifest>$(_ResizetizerIntermediateOutputRoot)m\</_MauiIntermediateManifest>
@@ -88,6 +89,10 @@
 		<ResizetizerIncludeSelfProject Condition="'$(ResizetizerIncludeSelfProject)' == ''">False</ResizetizerIncludeSelfProject>
 
 		<_ResizetizerDefaultInvalidFilenamesErrorMessage>One or more invalid file names were detected.  File names must be lowercase, start and end with a letter character, and contain only alphanumeric characters or underscores: </_ResizetizerDefaultInvalidFilenamesErrorMessage>
+
+		<_WasmHasPWAManifest>False</_WasmHasPWAManifest>
+		<_WasmHasPWAManifest Condition="'$(WasmPWAManifestFile)' != ''">True</_WasmHasPWAManifest>
+		<_WasmPwaManifestPath Condition="'$(_WasmHasPWAManifest)' == 'True'">$(MSBuildProjectDirectory)\$(WasmPWAManifestFile)</_WasmPwaManifestPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
@@ -119,14 +124,15 @@
 
 	<!-- Wasm -->
 	<PropertyGroup Condition="'$(_ResizetizerIsWasm)' == 'True'">
-		<ResizetizerPlatformType>uwp</ResizetizerPlatformType>
+		<ResizetizerPlatformType>wasm</ResizetizerPlatformType>
 		<ResizetizerIncludeSelfProject>true</ResizetizerIncludeSelfProject>
 
 		<ResizetizeBeforeTargets>
 			$(ResizetizeBeforeTargets);
 			AssignTargetPaths;
-		</ResizetizeBeforeTargets>
 
+		</ResizetizeBeforeTargets>
+	
 		<ResizetizeAfterTargets>
 			ResizetizeCollectItems;
 			$(ResizetizeAfterTargets);
@@ -568,7 +574,8 @@
 		<ResizetizeImages
             PlatformType="$(ResizetizerPlatformType)"
             IntermediateOutputPath="$(_MauiIntermediateImages)"
-			IntermediateOutputAndroidIconPath="$(_MauiIntermediateAndroidAppIcon)"
+			IntermediateOutputIconPath="$(_UnoIntermediateAppIcon)"
+			PWAManifestPath="$(_WasmPwaManifestPath)"
             InputsFile="$(_ResizetizerInputsFile)"
             Images="@(UnoImage->Distinct())">
 
@@ -576,6 +583,8 @@
 					TaskParameter="GeneratedIconPath" />
 			<Output PropertyName="AndroidIcons"
 					TaskParameter="AndroidAppIcons"/>
+			<Output PropertyName="ResizetizerPwaManifest"
+					TaskParameter="PwaGeneratedManifestPath"/>
 		</ResizetizeImages>
 
 		<ItemGroup>
@@ -583,7 +592,7 @@
 			<!-- Either from the task, or if the task was skipped (up to date), use the wildcard lookup -->
 			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' != ''" Include="@(CopiedResources)" />
 			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' == ''" Include="$(_MauiIntermediateImages)**\*"/>
-			<_ResizetizerAndroidIcons Include="$(_MauiIntermediateAndroidAppIcon)**\*"/>
+			<_ResizetizerCollectedAppIcons Include="$(_UnoIntermediateAppIcon)**\*"/>
 		</ItemGroup>
 
 
@@ -600,13 +609,30 @@
 			<Content Include="@(_ResizetizerCollectedImages->FullPath())"
 					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
 			</Content>
+
+			<Content Include="@(_ResizetizerCollectedAppIcons->FullPath())"
+					 Condition="'%(Extension)' != '.ico'"
+					 Link="%(_ResizetizerCollectedAppIcons.RecursiveDir)%(_ResizetizerCollectedAppIcons.Filename)%(_ResizetizerCollectedAppIcons.Extension)"/>
+
+			<Content Include="@(_ResizetizerCollectedAppIcons->FullPath())"
+					 Condition="'%(Extension)' == '.ico'"
+					 UnoDeploy="Root"
+					 Link="%(_ResizetizerCollectedAppIcons.RecursiveDir)%(_ResizetizerCollectedAppIcons.Filename)%(_ResizetizerCollectedAppIcons.Extension)"/>
+			
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
+		</ItemGroup>
+
+		<ItemGroup Condition="'$(_ResizetizerIsWasm)' == 'True'">
+			<Content Remove="$(WasmPWAManifestFile)" />
+			<!-- <WasmPWAManifestFile>$(ResizetizerPwaManifest)</WasmPWAManifestFile> -->
+			<Content Include="$(ResizetizerPwaManifest)"
+					 Link="$(WasmPWAManifestFile)" />
 		</ItemGroup>
 
 		<!-- Android -->
 		<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
-			<AndroidResource Include="@(_ResizetizerAndroidIcons)"
-					 Link="%(_ResizetizerAndroidIcons.RecursiveDir)%(_ResizetizerAndroidIcons.Filename)%(_ResizetizerAndroidIcons.Extension)" >
+			<AndroidResource Include="@(_ResizetizerCollectedAppIcons)"
+					 Link="%(_ResizetizerCollectedAppIcons.RecursiveDir)%(_ResizetizerCollectedAppIcons.Filename)%(_ResizetizerCollectedAppIcons.Extension)" >
 			</AndroidResource>
 		</ItemGroup>
 

@@ -19,7 +19,9 @@ namespace Uno.Resizetizer
 		[Required]
 		public string IntermediateOutputPath { get; set; }
 
-		public string IntermediateOutputAndroidIconPath { get; set; }
+		public string IntermediateOutputIconPath { get; set; }
+
+		public string PWAManifestPath { get; set; } = string.Empty;
 
 		public string InputsFile { get; set; }
 
@@ -33,6 +35,9 @@ namespace Uno.Resizetizer
 
 		[Output]
 		public ITaskItem[] AndroidAppIcons { get; set; }
+
+		[Output]
+		public ITaskItem PwaGeneratedManifestPath { get; set; }
 
 		public string IsMacEnabled { get; set; }
 
@@ -147,7 +152,7 @@ namespace Uno.Resizetizer
 
 				appIconName = appIconName.ToLowerInvariant();
 
-				var adaptiveIconGen = new AndroidAdaptiveIconGenerator(img, appIconName, IntermediateOutputAndroidIconPath, this);
+				var adaptiveIconGen = new AndroidAdaptiveIconGenerator(img, appIconName, IntermediateOutputIconPath, this);
 				var iconsGenerated = adaptiveIconGen.Generate();
 
 				// We don't need to add the icons to the ResizedImages, they're just for images (Content)
@@ -179,13 +184,28 @@ namespace Uno.Resizetizer
 
 				resizedImages.Add(icon);
 			}
+			else if (PlatformType == "wasm")
+			{
+				LogDebugMessage($"Wasm Icon Generator");
+
+				var wasmIconGen = new WasmIconGenerator(img, IntermediateOutputIconPath, this, PWAManifestPath, appIconDpis);
+
+				var icon = wasmIconGen.Generate();
+
+				string itemSpec = Path.GetFullPath(icon.Filename);
+				GeneratedIconPath = new TaskItem(itemSpec);
+
+				var manifestPath = wasmIconGen.ProcessThePwaManifest();
+
+				PwaGeneratedManifestPath = new TaskItem(manifestPath);
+			}
 
 			LogDebugMessage($"Generating App Icon Bitmaps for DPIs");
 
 			var appTool = new SkiaSharpAppIconTools(img, this);
 
 			LogDebugMessage($"App Icon: Intermediate Path " + IntermediateOutputPath);
-			var iconPath = PlatformType == "android" ? IntermediateOutputAndroidIconPath : IntermediateOutputPath;
+			var iconPath = GetIconPath(PlatformType);
 			foreach (var dpi in appIconDpis)
 			{
 				LogDebugMessage($"App Icon: " + dpi);
@@ -198,6 +218,12 @@ namespace Uno.Resizetizer
 				appTool.Resize(dpi, Path.ChangeExtension(destination, ".png"));
 			}
 		}
+
+		string GetIconPath(string platformType) => platformType switch
+		{
+			"wasm" or "android" => IntermediateOutputIconPath,
+			_ => IntermediateOutputPath
+		};
 
 		void ProcessImageResize(ResizeImageInfo img, DpiPath[] dpis, ConcurrentBag<ResizedImageInfo> resizedImages)
 		{

@@ -21,7 +21,7 @@ namespace Uno.Resizetizer.Tests
 				{
 					PlatformType = type,
 					IntermediateOutputPath = DestinationDirectory,
-					IntermediateOutputAndroidIconPath = DestinationDirectory,
+					IntermediateOutputIconPath = DestinationDirectory,
 					InputsFile = "mauiimage.inputs",
 					Images = items,
 					BuildEngine = this,

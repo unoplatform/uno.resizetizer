@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "MySuperApp",
+  "display": "standalone",
+  "name": "MySuperApp",
+  "short_name": "MySuperApp",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}
