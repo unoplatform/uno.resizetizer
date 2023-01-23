@@ -63,9 +63,6 @@ namespace Uno.Resizetizer
 
 		public static List<ResizeImageInfo> Parse(IEnumerable<ITaskItem> images)
 		{
-#if DEBUG_RESIZETIZER
-			System.Diagnostics.Debugger.Launch();
-#endif
 			var r = new List<ResizeImageInfo>();
 
 			if (images == null)

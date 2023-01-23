@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -18,6 +19,8 @@ namespace Uno.Resizetizer
 		[Required]
 		public string IntermediateOutputPath { get; set; }
 
+		public string IntermediateOutputAndroidIconPath { get; set; }
+
 		public string InputsFile { get; set; }
 
 		public ITaskItem[] Images { get; set; }
@@ -27,6 +30,9 @@ namespace Uno.Resizetizer
 
 		[Output]
 		public ITaskItem GeneratedIconPath { get; set; }
+
+		[Output]
+		public ITaskItem[] AndroidAppIcons { get; set; }
 
 		public string IsMacEnabled { get; set; }
 
@@ -112,7 +118,9 @@ namespace Uno.Resizetizer
 				attr.Add("_ResizetizerDpiPath", img.Dpi.Path);
 				attr.Add("_ResizetizerDpiScale", img.Dpi.Scale.ToString("0.0", CultureInfo.InvariantCulture));
 
-				copiedResources.Add(new TaskItem(itemSpec, attr));
+				var taskItem = new TaskItem(itemSpec, attr);
+
+				copiedResources.Add(taskItem);
 			}
 
 			CopiedResources = copiedResources.ToArray();
@@ -122,6 +130,9 @@ namespace Uno.Resizetizer
 
 		void ProcessAppIcon(ResizeImageInfo img, ConcurrentBag<ResizedImageInfo> resizedImages)
 		{
+#if DEBUG_RESIZETIZER
+			System.Diagnostics.Debugger.Launch();
+#endif
 			var appIconName = img.OutputName;
 
 			// Generate the actual bitmap app icons themselves
@@ -136,11 +147,15 @@ namespace Uno.Resizetizer
 
 				appIconName = appIconName.ToLowerInvariant();
 
-				var adaptiveIconGen = new AndroidAdaptiveIconGenerator(img, appIconName, IntermediateOutputPath, this);
+				var adaptiveIconGen = new AndroidAdaptiveIconGenerator(img, appIconName, IntermediateOutputAndroidIconPath, this);
 				var iconsGenerated = adaptiveIconGen.Generate();
 
+				// We don't need to add the icons to the ResizedImages, they're just for images (Content)
+				var androidAppIcons = new List<TaskItem>();
 				foreach (var iconGenerated in iconsGenerated)
-					resizedImages.Add(iconGenerated);
+					androidAppIcons.Add(new TaskItem(iconGenerated.Filename));
+
+				AndroidAppIcons = androidAppIcons.ToArray();
 			}
 			else if (PlatformType == "ios")
 			{
@@ -170,12 +185,12 @@ namespace Uno.Resizetizer
 			var appTool = new SkiaSharpAppIconTools(img, this);
 
 			LogDebugMessage($"App Icon: Intermediate Path " + IntermediateOutputPath);
-
+			var iconPath = PlatformType == "android" ? IntermediateOutputAndroidIconPath : IntermediateOutputPath;
 			foreach (var dpi in appIconDpis)
 			{
 				LogDebugMessage($"App Icon: " + dpi);
 
-				var destination = Resizer.GetFileDestination(img, dpi, IntermediateOutputPath)
+				var destination = Resizer.GetFileDestination(img, dpi, iconPath)
 					.Replace("{name}", appIconName);
 
 				LogDebugMessage($"App Icon Destination: " + destination);
