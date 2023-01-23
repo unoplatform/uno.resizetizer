@@ -242,9 +242,9 @@ namespace Uno.Resizetizer
 			public static DpiPath[] AppIcon => new[]
 			{
 					new DpiPath("", 1.00m, scaleSuffix:"-16", size: new SKSize(16, 16)),
-					new DpiPath("", 2.00m,scaleSuffix:"-32", size: new SKSize(32, 32)),
-					new DpiPath("", 8.00m,scaleSuffix:"-128", size: new SKSize(128, 128)),
-					new DpiPath("", 32.00m,scaleSuffix:"-512", size: new SKSize(512, 512)),
+					new DpiPath("", 1.00m,scaleSuffix:"-32", size: new SKSize(32, 32)),
+					new DpiPath("", 1.00m,scaleSuffix:"-128", size: new SKSize(128, 128)),
+					new DpiPath("", 1.00m,scaleSuffix:"-512", size: new SKSize(512, 512)),
 			};
 		}
 

@@ -99,7 +99,7 @@ internal sealed class WasmIconGenerator
 			var imageIcon = new JsonObject
 			{
 				["src"] = $"{fileName}{dpi.ScaleSuffix}.png",
-				["size"] = $"{w}x{h}",
+				["sizes"] = $"{w}x{h}",
 				["type"] = "image/png",
 			};
 
