@@ -611,10 +611,22 @@
 			</Content>
 
 			<Content Include="@(_ResizetizerCollectedAppIcons->FullPath())"
+					 Condition="'%(Extension)' != '.ico'"
+					 Link="%(_ResizetizerCollectedAppIcons.RecursiveDir)%(_ResizetizerCollectedAppIcons.Filename)%(_ResizetizerCollectedAppIcons.Extension)"/>
+
+			<Content Include="@(_ResizetizerCollectedAppIcons->FullPath())"
+					 Condition="'%(Extension)' == '.ico'"
 					 UnoDeploy="Root"
 					 Link="%(_ResizetizerCollectedAppIcons.RecursiveDir)%(_ResizetizerCollectedAppIcons.Filename)%(_ResizetizerCollectedAppIcons.Extension)"/>
 			
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
+		</ItemGroup>
+
+		<ItemGroup Condition="'$(_ResizetizerIsWasm)' == 'True'">
+			<Content Remove="$(WasmPWAManifestFile)" />
+			<!-- <WasmPWAManifestFile>$(ResizetizerPwaManifest)</WasmPWAManifestFile> -->
+			<Content Include="$(ResizetizerPwaManifest)"
+					 Link="$(WasmPWAManifestFile)" />
 		</ItemGroup>
 
 		<!-- Android -->
