@@ -31,8 +31,8 @@
 
 	<ItemGroup>
 		<None Include="@(_ResizetizerFiles)" Visible="false" Pack="true" PackagePath="build/%(Arch)" CopyToOutputDirectory="PreserveNewest" />
-		<!-- <None Include="$(OutputPath)$(AssemblyName).dll" Visible="false" Pack="true" PackagePath="build" />
-		<None Include="$(OutputPath)$(AssemblyName).pdb" Visible="false" Pack="true" PackagePath="build" /> -->
+		<None Include="$(OutputPath)$(AssemblyName).dll" Visible="false" Pack="true" PackagePath="build" />
+		<None Include="$(OutputPath)$(AssemblyName).pdb" Visible="false" Pack="true" PackagePath="build" />
 		<None Include="../../.nuspec/Uno.Resizetizer.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).targets" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
