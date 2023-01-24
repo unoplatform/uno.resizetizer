@@ -3,15 +3,23 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<RootNamespace>Uno.Resizetizer</RootNamespace>
-		<AssemblyName>Uno.Resizetizer</AssemblyName>
-		<!--<Nullable>enable</Nullable>-->
+		<AssemblyName>Uno.Resizetizer</AssemblyName>		
 		<PackageId>Uno.Resizetizer.Sdk</PackageId>
-		<Description>.NET MAUI SDK support for images, fonts, etc. Enabled via &lt;UseMauiAssets&gt;true&lt;/UseMauiAssets&gt;.</Description>
-		<IsPackable>true</IsPackable>
+		<Description>UnoPlatform SDK support for images, enabled via &lt;UseUnoAssets&gt;true&lt;/UseMauiAssets&gt;.</Description>
+		<!-- <IsPackable>true</IsPackable> -->
 		<LangVersion>latest</LangVersion>
 		<_SkiaPackagePath>build\</_SkiaPackagePath>
 		<MauiNuSpecDirectory>$(MSBuildThisFileDirectory)..\..\.nuspec\</MauiNuSpecDirectory>
 		<Configurations>Debug;Release;DEBUG_RESIZETIZER</Configurations>
+
+		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform - all rights reserved</Copyright>
+		<Version>255.255.255.255</Version><!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
+		<DefaultLanguage>en-US</DefaultLanguage>
+		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
