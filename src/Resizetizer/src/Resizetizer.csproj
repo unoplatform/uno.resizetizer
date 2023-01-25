@@ -5,11 +5,9 @@
 		<RootNamespace>Uno.Resizetizer</RootNamespace>
 		<AssemblyName>Uno.Resizetizer</AssemblyName>		
 		<PackageId>Uno.Resizetizer.Sdk</PackageId>
-		<Description>UnoPlatform SDK support for images, enabled via &lt;UseUnoAssets&gt;true&lt;/UseMauiAssets&gt;.</Description>
-		<!-- <IsPackable>true</IsPackable> -->
+		<Description>UnoPlatform SDK support for images, enabled via &lt;UseUnoAssets&gt;true&lt;/UseUnoAssets&gt;.</Description>
 		<LangVersion>latest</LangVersion>
 		<_SkiaPackagePath>build\</_SkiaPackagePath>
-		<!-- <MauiNuSpecDirectory>$(MSBuildThisFileDirectory)..\..\.nuspec\</MauiNuSpecDirectory> -->
 		<Configurations>Debug;Release;DEBUG_RESIZETIZER</Configurations>
 
 		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform - all rights reserved</Copyright>
@@ -19,7 +17,6 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
-		<!-- <GeneratePackageOnBuild>true</GeneratePackageOnBuild> -->
 		<IsPackable>true</IsPackable>
 	</PropertyGroup>
 
@@ -42,7 +39,6 @@
 			<_CopyItems Include="$(TargetDir)**\*.so" />
 			<_CopyItems Include="$(TargetDir)**\*.dylib" />
 		</ItemGroup>
-		<Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(MauiNuSpecDirectory)%(RecursiveDir)" ContinueOnError="true" Retries="0" />
 	</Target>
 
 </Project>
