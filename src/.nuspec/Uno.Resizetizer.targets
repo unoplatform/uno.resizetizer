@@ -43,7 +43,7 @@
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Uno.Resizetizer.GetMauiAssetPath"  />
+        TaskName="Uno.Resizetizer.GetUnoAssetPath"  />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
@@ -362,7 +362,7 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="ProcessMauiAssets">
+	<Target Name="ProcessUnoAssets">
 		<PropertyGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
 			<_MauiAssetItemMetadata>TargetPath</_MauiAssetItemMetadata>
 		</PropertyGroup>
@@ -376,7 +376,7 @@
 		<ItemGroup Condition="'$(_ResizetizerIsTizenApp)' == 'True'">
 			<MauiAsset Update="@(MauiAsset)" Link="%(MauiAsset.LogicalName)" Condition="'%(MauiAsset.Link)' == '' And '%(MauiAsset.LogicalName)' != ''" />
 		</ItemGroup>
-		<GetMauiAssetPath
+		<GetUnoAssetPath
             ProjectDirectory="$(MSBuildProjectDirectory)"
             ItemMetadata="$(_MauiAssetItemMetadata)"
             Input="@(MauiAsset)">
@@ -384,7 +384,7 @@
 			<Output ItemName="Content"               TaskParameter="Output" Condition="'$(_ResizetizerIsiOSApp)' == 'True'" />
 			<Output ItemName="ContentWithTargetPath" TaskParameter="Output" Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'" />
 			<Output ItemName="TizenResource" TaskParameter="Output" Condition="'$(_ResizetizerIsTizenApp)' == 'True'" />
-		</GetMauiAssetPath>
+		</GetUnoAssetPath>
 	</Target>
 
 	<Target Name="ProcessMauiSplashScreens"
