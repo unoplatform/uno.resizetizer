@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<ItemGroup>
-		<AvailableItemName Include="MauiAsset" />
+		<AvailableItemName Include="UnoAsset" />
 		<AvailableItemName Include="UnoImage" />
 		<AvailableItemName Include="UnoIcon" />
 		<AvailableItemName Include="MauiFont" />
@@ -69,7 +69,7 @@
 
 
 		<_ResizetizerIntermediateOutputRoot>$(IntermediateOutputPath)resizetizer\</_ResizetizerIntermediateOutputRoot>
-		<_MauiIntermediateImages>$(_ResizetizerIntermediateOutputRoot)r\</_MauiIntermediateImages>
+		<_UnoIntermediateImages>$(_ResizetizerIntermediateOutputRoot)r\</_UnoIntermediateImages>
 		<_UnoIntermediateAppIcon>$(_ResizetizerIntermediateOutputRoot)AppIcons\</_UnoIntermediateAppIcon>
 		<_MauiIntermediateFonts>$(_ResizetizerIntermediateOutputRoot)f\</_MauiIntermediateFonts>
 		<_MauiIntermediateSplashScreen>$(_ResizetizerIntermediateOutputRoot)sp\</_MauiIntermediateSplashScreen>
@@ -117,7 +117,7 @@
 		<ProcessMauiFontsDependsOnTargets>
 			$(ProcessMauiFontsDependsOnTargets);
 			ResizetizeCollectItems;
-			ProcessMauiAssets;
+			ProcessUnoAssets;
 			ProcessMauiSplashScreens;
 		</ProcessMauiFontsDependsOnTargets>
 	</PropertyGroup>
@@ -269,7 +269,7 @@
 			<MauiItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoImage.ForegroundFile)'))" ProjectDirectory="$(MSBuildProjectDirectory)" />
 			<MauiItem Include="@(UnoIcon)" ItemGroupName="UnoIcon" Condition="'%(UnoIcon.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoIcon.ForegroundFile)'))" />
 			<MauiItem Include="@(MauiFont)"  ItemGroupName="MauiFont" />
-			<MauiItem Include="@(MauiAsset)" ItemGroupName="MauiAsset" ProjectDirectory="$(MSBuildProjectDirectory)" />
+			<MauiItem Include="@(UnoAsset)" ItemGroupName="UnoAsset" ProjectDirectory="$(MSBuildProjectDirectory)" />
 			<MauiItem Include="@(MauiSplashScreen)" ItemGroupName="MauiSplashScreen" />
 		</ItemGroup>
 
@@ -317,9 +317,9 @@
 			<MauiFont
                 Include="@(ImportedMauiItem)"
                 Condition="'%(ImportedMauiItem.ItemGroupName)' == 'MauiFont'" />
-			<MauiAsset
+			<UnoAsset
                 Include="@(ImportedMauiItem)"
-                Condition="'%(ImportedMauiItem.ItemGroupName)' == 'MauiAsset'" />
+                Condition="'%(ImportedMauiItem.ItemGroupName)' == 'UnoAsset'" />
 			<MauiSplashScreen
                 Include="@(ImportedMauiItem)"
                 Condition="'%(ImportedMauiItem.ItemGroupName)' == 'MauiSplashScreen'" />
@@ -364,22 +364,22 @@
 
 	<Target Name="ProcessUnoAssets">
 		<PropertyGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
-			<_MauiAssetItemMetadata>TargetPath</_MauiAssetItemMetadata>
+			<_UnoAssetItemMetadata>TargetPath</_UnoAssetItemMetadata>
 		</PropertyGroup>
 		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
 			<!-- Windows does not recognize %(LogicalName), so we must copy it to %(Link) -->
-			<MauiAsset Update="@(MauiAsset)" Link="%(MauiAsset.LogicalName)" Condition="'%(MauiAsset.Link)' == '' And '%(MauiAsset.LogicalName)' != ''" />
+			<UnoAsset Update="@(UnoAsset)" Link="%(UnoAsset.LogicalName)" Condition="'%(UnoAsset.Link)' == '' And '%(UnoAsset.LogicalName)' != ''" />
 		</ItemGroup>
 		<PropertyGroup Condition="'$(_ResizetizerIsTizenApp)' == 'True'">
-			<_MauiAssetItemMetadata>TizenTpkFileName</_MauiAssetItemMetadata>
+			<_UnoAssetItemMetadata>TizenTpkFileName</_UnoAssetItemMetadata>
 		</PropertyGroup>
 		<ItemGroup Condition="'$(_ResizetizerIsTizenApp)' == 'True'">
-			<MauiAsset Update="@(MauiAsset)" Link="%(MauiAsset.LogicalName)" Condition="'%(MauiAsset.Link)' == '' And '%(MauiAsset.LogicalName)' != ''" />
+			<UnoAsset Update="@(UnoAsset)" Link="%(UnoAsset.LogicalName)" Condition="'%(UnoAsset.Link)' == '' And '%(UnoAsset.LogicalName)' != ''" />
 		</ItemGroup>
 		<GetUnoAssetPath
             ProjectDirectory="$(MSBuildProjectDirectory)"
-            ItemMetadata="$(_MauiAssetItemMetadata)"
-            Input="@(MauiAsset)">
+            ItemMetadata="$(_UnoAssetItemMetadata)"
+            Input="@(UnoAsset)">
 			<Output ItemName="AndroidAsset"          TaskParameter="Output" Condition="'$(_ResizetizerIsAndroidApp)' == 'True'" />
 			<Output ItemName="Content"               TaskParameter="Output" Condition="'$(_ResizetizerIsiOSApp)' == 'True'" />
 			<Output ItemName="ContentWithTargetPath" TaskParameter="Output" Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'" />
@@ -573,7 +573,7 @@
 		<!-- Resize the images -->
 		<ResizetizeImages
             PlatformType="$(ResizetizerPlatformType)"
-            IntermediateOutputPath="$(_MauiIntermediateImages)"
+            IntermediateOutputPath="$(_UnoIntermediateImages)"
 			IntermediateOutputIconPath="$(_UnoIntermediateAppIcon)"
 			PWAManifestPath="$(_WasmPwaManifestPath)"
             InputsFile="$(_ResizetizerInputsFile)"
@@ -591,7 +591,7 @@
 			<!-- Get Images that were generated -->
 			<!-- Either from the task, or if the task was skipped (up to date), use the wildcard lookup -->
 			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' != ''" Include="@(CopiedResources)" />
-			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' == ''" Include="$(_MauiIntermediateImages)**\*"/>
+			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' == ''" Include="$(_UnoIntermediateImages)**\*"/>
 			<_ResizetizerCollectedAppIcons Include="$(_UnoIntermediateAppIcon)**\*"/>
 		</ItemGroup>
 
@@ -670,7 +670,7 @@
 
 		<!-- Tizen -->
 		<PropertyGroup>
-			<ResizetizerIntermediateOutputAbsolutePath>$([System.IO.Path]::GetFullPath('$(_MauiIntermediateImages)'))</ResizetizerIntermediateOutputAbsolutePath>
+			<ResizetizerIntermediateOutputAbsolutePath>$([System.IO.Path]::GetFullPath('$(_UnoIntermediateImages)'))</ResizetizerIntermediateOutputAbsolutePath>
 		</PropertyGroup>
 		<ItemGroup Condition="'$(_ResizetizerIsTizenApp)' == 'True' And '@(_ResizetizerCollectedImages)' != ''">
 			<TizenTpkUserIncludeFiles Include="$(ResizetizerIntermediateOutputAbsolutePath)res\res.xml" TizenTpkSubDir="res\" />
