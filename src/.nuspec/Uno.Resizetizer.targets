@@ -5,7 +5,6 @@
 		<AvailableItemName Include="UnoAsset" />
 		<AvailableItemName Include="UnoImage" />
 		<AvailableItemName Include="UnoIcon" />
-		<AvailableItemName Include="MauiFont" />
 		<AvailableItemName Include="MauiSplashScreen" />
 	</ItemGroup>
 
@@ -61,8 +60,6 @@
 
 		<_ResizetizerInputsFile>$(IntermediateOutputPath)UnoImage.inputs</_ResizetizerInputsFile>
 		<_ResizetizerStampFile>$(IntermediateOutputPath)UnoImage.stamp</_ResizetizerStampFile>
-		<_MauiFontInputsFile>$(IntermediateOutputPath)mauifont.inputs</_MauiFontInputsFile>
-		<_MauiFontStampFile>$(IntermediateOutputPath)mauifont.stamp</_MauiFontStampFile>
 		<_MauiSplashInputsFile>$(IntermediateOutputPath)mauisplash.inputs</_MauiSplashInputsFile>
 		<_MauiSplashStampFile>$(IntermediateOutputPath)mauisplash.stamp</_MauiSplashStampFile>
 		<_MauiManifestStampFile>$(IntermediateOutputPath)mauimanifest.stamp</_MauiManifestStampFile>
@@ -71,7 +68,6 @@
 		<_ResizetizerIntermediateOutputRoot>$(IntermediateOutputPath)resizetizer\</_ResizetizerIntermediateOutputRoot>
 		<_UnoIntermediateImages>$(_ResizetizerIntermediateOutputRoot)r\</_UnoIntermediateImages>
 		<_UnoIntermediateAppIcon>$(_ResizetizerIntermediateOutputRoot)AppIcons\</_UnoIntermediateAppIcon>
-		<_MauiIntermediateFonts>$(_ResizetizerIntermediateOutputRoot)f\</_MauiIntermediateFonts>
 		<_MauiIntermediateSplashScreen>$(_ResizetizerIntermediateOutputRoot)sp\</_MauiIntermediateSplashScreen>
 		<_MauiIntermediateManifest>$(_ResizetizerIntermediateOutputRoot)m\</_MauiIntermediateManifest>
 		<_MauiIntermediateStoryboard>$(_MauiIntermediateSplashScreen)MauiSplash.storyboard</_MauiIntermediateStoryboard>
@@ -114,12 +110,6 @@
 			ResizetizeCollectItems;
 			ProcessMauiSplashScreens;
 		</ResizetizeDependsOnTargets>
-		<ProcessMauiFontsDependsOnTargets>
-			$(ProcessMauiFontsDependsOnTargets);
-			ResizetizeCollectItems;
-			ProcessUnoAssets;
-			ProcessMauiSplashScreens;
-		</ProcessMauiFontsDependsOnTargets>
 	</PropertyGroup>
 
 	<!-- Wasm -->
@@ -170,7 +160,6 @@
 		</ResizetizeAfterTargets>
 
 		<CollectAppManifestsDependsOn>
-			ProcessMauiFonts;
 			ProcessMauiSplashScreens;
 			$(CollectAppManifestsDependsOn)
 		</CollectAppManifestsDependsOn>
@@ -197,12 +186,6 @@
 			$(ResizetizeAfterTargets);
 			UnoAssetsGeneration;
 		</ResizetizeAfterTargets>
-
-		<ProcessMauiFontsAfterTargets>
-			ResizetizeCollectItems;
-			$(ProcessMauiFontsAfterTargets);
-			UnoAssetsGeneration;
-		</ProcessMauiFontsAfterTargets>
 	</PropertyGroup>
 
 	<!-- UWP / WinUI -->
@@ -214,11 +197,6 @@
 			$(ResizetizeBeforeTargets);
 			AssignTargetPaths;
 		</ResizetizeBeforeTargets>
-
-		<ProcessMauiFontsBeforeTargets>
-			$(ProcessMauiFontsBeforeTargets);
-			AssignTargetPaths;
-		</ProcessMauiFontsBeforeTargets>
 
 		<MauiGeneratePackageAppxManifestDependsOnTargets>
 			$(MauiGeneratePackageAppxManifestDependsOnTargets);
@@ -234,11 +212,6 @@
 			$(ResizetizeBeforeTargets);
 			FileClassification;
 		</ResizetizeBeforeTargets>
-
-		<ProcessMauiFontsBeforeTargets>
-			$(ProcessMauiFontsBeforeTargets);
-			FileClassification;
-		</ProcessMauiFontsBeforeTargets>
 	</PropertyGroup>
 
 	<!-- Tizen -->
@@ -254,11 +227,6 @@
 			$(ResizetizeAfterTargets);
 			ResizetizeCollectItems;
 		</ResizetizeAfterTargets>
-
-		<ProcessMauiFontsAfterTargets>
-			$(ProcessMauiFontsAfterTargets);
-			ResizetizeCollectItems;
-		</ProcessMauiFontsAfterTargets>
 	</PropertyGroup>
 
 	<!-- Finds absolute paths to any UnoImage in this project -->
@@ -268,7 +236,6 @@
 			<UnoItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' == ''" />
 			<UnoItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoImage.ForegroundFile)'))" ProjectDirectory="$(MSBuildProjectDirectory)" />
 			<UnoItem Include="@(UnoIcon)" ItemGroupName="UnoIcon" Condition="'%(UnoIcon.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoIcon.ForegroundFile)'))" />
-			<UnoItem Include="@(MauiFont)"  ItemGroupName="MauiFont" />
 			<UnoItem Include="@(UnoAsset)" ItemGroupName="UnoAsset" ProjectDirectory="$(MSBuildProjectDirectory)" />
 			<UnoItem Include="@(MauiSplashScreen)" ItemGroupName="MauiSplashScreen" />
 		</ItemGroup>
@@ -314,9 +281,6 @@
 			<UnoIcon
                 Include="@(ImportedUnoItem)"
                 Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoIcon'" />
-			<MauiFont
-                Include="@(ImportedUnoItem)"
-                Condition="'%(ImportedUnoItem.ItemGroupName)' == 'MauiFont'" />
 			<UnoAsset
                 Include="@(ImportedUnoItem)"
                 Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoAsset'" />
@@ -344,12 +308,6 @@
             WriteOnlyWhenDifferent="true" />
 
 		<WriteLinesToFile
-            File="$(_MauiFontInputsFile)"
-            Lines="@(MauiFont->'File=%(Identity);Link=%(Link);Alias=%(Alias)')"
-            Overwrite="true"
-            WriteOnlyWhenDifferent="true" />
-
-		<WriteLinesToFile
             File="$(_MauiSplashInputsFile)"
             Lines="@(MauiSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);ForegroundScale=%(ForegroundScale)')"
             Overwrite="true"
@@ -357,7 +315,6 @@
 
 		<ItemGroup>
 			<FileWrites Include="$(_ResizetizerInputsFile)" />
-			<FileWrites Include="$(_MauiFontInputsFile)" />
 			<FileWrites Include="$(_MauiSplashInputsFile)" />
 		</ItemGroup>
 	</Target>
@@ -456,105 +413,6 @@
 		<Touch Files="$(_MauiSplashStampFile)" AlwaysCreate="True" />
 		<ItemGroup>
 			<FileWrites Include="$(_MauiSplashStampFile)" />
-		</ItemGroup>
-	</Target>
-
-	<Target Name="ProcessMauiFonts"
-        Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_MauiFontInputsFile);@(MauiFont)"
-        Outputs="$(_MauiFontStampFile)"
-        AfterTargets="$(ProcessMauiFontsAfterTargets)"
-        BeforeTargets="$(ProcessMauiFontsBeforeTargets)"
-        DependsOnTargets="$(ProcessMauiFontsDependsOnTargets)">
-
-		<!-- Copy font files over -->
-		<Copy
-            SourceFiles="@(MauiFont)"
-            DestinationFolder="$(_MauiIntermediateFonts)"
-            SkipUnchangedFiles="true" />
-
-		<ItemGroup>
-			<_MauiFontCopied Include="$(_MauiIntermediateFonts)*" />
-		</ItemGroup>
-
-		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' And '@(_MauiFontCopied)' != ''">
-
-			<!-- iOS Expects fonts to be in this group -->
-			<_MauiFontBundleResource Include="@(_MauiFontCopied)">
-				<LogicalName>$([System.IO.Path]::GetFileName(%(_MauiFontCopied.Identity)))</LogicalName>
-				<TargetPath>$([System.IO.Path]::GetFileName(%(_MauiFontCopied.Identity)))</TargetPath>
-			</_MauiFontBundleResource>
-
-			<BundleResource Include="@(_MauiFontBundleResource)" />
-
-		</ItemGroup>
-
-		<!-- Create a partial info.plist for iOS -->
-		<CreatePartialInfoPlistTask
-            Condition="'$(_ResizetizerIsiOSApp)' == 'True' And ('@(_MauiFontCopied)' != '' Or '$(_MauiStoryboardForPList)' != '')"
-            IntermediateOutputPath="$(_MauiIntermediateFonts)"
-            PlistName="MauiInfo.plist"
-            Storyboard="$(_MauiStoryboardForPList)"
-            CustomFonts="@(_MauiFontCopied)" />
-
-		<!-- iOS - Partial Info.plist for font registration  -->
-		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' ">
-			<_MauiFontPListFiles Include="$(_MauiIntermediateFonts)MauiInfo.plist" Condition="Exists('$(_MauiIntermediateFonts)MauiInfo.plist')" />
-			<PartialAppManifest Include="@(_MauiFontPListFiles)" Condition="'@(_MauiFontPListFiles)' != ''" />
-			<FileWrites Include="@(_MauiFontPListFiles)" Condition="'@(_MauiFontPListFiles)' != ''" />
-		</ItemGroup>
-
-		<!-- Android -->
-		<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
-
-			<AndroidAsset Include="@(_MauiFontCopied)" Condition="'@(_MauiFontCopied)' != ''">
-				<Link>$([System.IO.Path]::GetFileName(%(_MauiFontCopied.Identity)))</Link>
-			</AndroidAsset>
-
-		</ItemGroup>
-
-		<!-- UWP / WinUI -->
-		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
-
-			<ContentWithTargetPath Include="@(_MauiFontCopied)" Condition="'@(_MauiFontCopied)' != ''">
-				<TargetPath>$([System.IO.Path]::GetFileName(%(_MauiFontCopied.Identity)))</TargetPath>
-			</ContentWithTargetPath>
-
-		</ItemGroup>
-
-		<!-- WPF -->
-		<ItemGroup Condition="'$(_ResizetizerIsWPFApp)' == 'True'">
-
-			<Resource Include="@(_MauiFontCopied)" Condition="'@(_MauiFontCopied)' != ''">
-				<LogicalName>$([System.IO.Path]::GetFileName(%(_MauiFontCopied.Identity)))</LogicalName>
-				<Link>$([System.IO.Path]::GetFileName(%(_MauiFontCopied.Identity)))</Link>
-			</Resource>
-
-		</ItemGroup>
-
-		<!-- Tizen -->
-		<ItemGroup Condition="'$(_ResizetizerIsTizenApp)' == 'True'">
-			<TizenTpkUserIncludeFiles Include="@(_MauiFontCopied)"  Condition="'@(_MauiFontCopied)' != ''" TizenTpkSubDir="res\fonts\" />
-		</ItemGroup>
-
-		<!-- iOS Only -->
-		<!-- If on Windows, using build host, copy the files over to build server host too -->
-		<ItemGroup Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'">
-			<_MauiFontsToCopyToBuildServer Include="@(_MauiFontBundleResource);@(_MauiFontPListFiles)">
-				<TargetPath>%(Identity)</TargetPath>
-			</_MauiFontsToCopyToBuildServer>
-		</ItemGroup>
-		<CopyFilesToBuildServer
-            Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'"
-            SessionId="$(BuildSessionId)"
-            Files="@(_MauiFontsToCopyToBuildServer)" />
-
-		<!-- Touch/create our stamp file for outputs -->
-		<Touch Files="$(_MauiFontStampFile)" AlwaysCreate="True" />
-
-		<!-- Include our fonts and stamp file as filewrites so they don't get rm'd -->
-		<ItemGroup>
-			<FileWrites Include="$(_MauiFontStampFile)" />
-			<FileWrites Include="@(_MauiFontCopied)" />
 		</ItemGroup>
 	</Target>
 
