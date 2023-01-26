@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.1;net6.0-ios;net6.0-android;net6.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows')) or '$(EnableWindowsTargeting)' == 'true'">$(TargetFrameworks);net6.0-windows10.0.19041</TargetFrameworks>
@@ -13,8 +13,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="..\Resizetizer.Extensions.Sample.Base\IsExternalInit.cs"
-						 Visible="false" />
+		<Compile Include="..\Resizetizer.Extensions.Sample.Base\IsExternalInit.cs" Visible="false" />
 	</ItemGroup>
 
 	<Choose>
@@ -45,6 +44,8 @@
 
 			<ItemGroup>
 				<Content Include="Assets\**" />
+				<UnoImage Include="$(MSBuildThisFileDirectory)Images\dotnet_bot.svg" />
+				<!--<UnoIcon Include="$(MSBuildThisFileDirectory)Images\Icons\appicon.svg" ForegroundFile="$(MSBuildThisFileDirectory)Images\Icons\appiconfg.svg" Color="#FF0000" />-->
 				<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 				<Compile Update="**\*.xaml.cs">
 					<DependentUpon>%(Filename)</DependentUpon>
