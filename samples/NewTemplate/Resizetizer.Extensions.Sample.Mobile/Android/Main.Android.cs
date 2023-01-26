@@ -15,7 +15,7 @@ namespace Resizetizer.Extensions.Sample.Droid;
 
 [global::Android.App.ApplicationAttribute(
 	Label = "@string/ApplicationName",
-	Icon = "@mipmap/icon",
+	Icon = "@mipmap/appicon",
 	LargeHeap = true,
 	HardwareAccelerated = true,
 	Theme = "@style/AppTheme"
