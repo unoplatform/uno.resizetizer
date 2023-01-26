@@ -2,14 +2,10 @@
 	<PropertyGroup>
 		<LangVersion>10</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
 
 		<DebugType>portable</DebugType>
 		<DebugSymbols>True</DebugSymbols>
 		<SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
-
-		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-		<NoWarn>$(NoWarn);Uno0001;CS1998;CA1416;NU1507</NoWarn>
 
 		<DefaultLanguage>en</DefaultLanguage>
 
