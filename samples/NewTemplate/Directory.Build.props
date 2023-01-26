@@ -21,6 +21,11 @@
 		<IsWinAppSdk Condition="$(TargetFramework.Contains('windows10'))">true</IsWinAppSdk>
 	</PropertyGroup>
 
+
+	<PropertyGroup>
+		<AfterMicrosoftNETSdkTargets>$(AfterMicrosoftNETSdkTargets);$(MSBuildThisFileDirectory)..\..\src\.nuspec\Uno.Resizetizer.targets</AfterMicrosoftNETSdkTargets>
+	</PropertyGroup>
+
 	<PropertyGroup>
 		<RuntimeIdentifier Condition="$(IsIOS)">iossimulator-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="$(IsMacCatalyst)">maccatalyst-x64</RuntimeIdentifier>
