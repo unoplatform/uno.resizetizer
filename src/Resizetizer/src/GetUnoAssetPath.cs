@@ -14,7 +14,7 @@ namespace Uno.Resizetizer
 	/// C:\src\code\MyProject\Resources\foo.mp3 -> Resources\foo.mp3
 	/// C:\some\random\path\foo.mp3 -> foo.mp3
 	/// </summary>
-	public class GetMauiAssetPath : Task
+	public class GetUnoAssetPath : Task
 	{
 		/// <summary>
 		/// The value for $(MSBuildProjectDirectory) in the current project
