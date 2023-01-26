@@ -263,18 +263,18 @@
 
 	<!-- Finds absolute paths to any UnoImage in this project -->
 	<!-- App head projects will invoke this target on their project references to collect images -->
-	<Target Name="GetMauiItems" Outputs="@(ExportedMauiItem)">
+	<Target Name="GetUnoItems" Outputs="@(ExportedUnoItem)">
 		<ItemGroup>
-			<MauiItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' == ''" />
-			<MauiItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoImage.ForegroundFile)'))" ProjectDirectory="$(MSBuildProjectDirectory)" />
-			<MauiItem Include="@(UnoIcon)" ItemGroupName="UnoIcon" Condition="'%(UnoIcon.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoIcon.ForegroundFile)'))" />
-			<MauiItem Include="@(MauiFont)"  ItemGroupName="MauiFont" />
-			<MauiItem Include="@(UnoAsset)" ItemGroupName="UnoAsset" ProjectDirectory="$(MSBuildProjectDirectory)" />
-			<MauiItem Include="@(MauiSplashScreen)" ItemGroupName="MauiSplashScreen" />
+			<UnoItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' == ''" />
+			<UnoItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoImage.ForegroundFile)'))" ProjectDirectory="$(MSBuildProjectDirectory)" />
+			<UnoItem Include="@(UnoIcon)" ItemGroupName="UnoIcon" Condition="'%(UnoIcon.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoIcon.ForegroundFile)'))" />
+			<UnoItem Include="@(MauiFont)"  ItemGroupName="MauiFont" />
+			<UnoItem Include="@(UnoAsset)" ItemGroupName="UnoAsset" ProjectDirectory="$(MSBuildProjectDirectory)" />
+			<UnoItem Include="@(MauiSplashScreen)" ItemGroupName="MauiSplashScreen" />
 		</ItemGroup>
 
-		<ConvertToAbsolutePath Paths="@(MauiItem)">
-			<Output TaskParameter="AbsolutePaths" ItemName="ExportedMauiItem" />
+		<ConvertToAbsolutePath Paths="@(UnoItem)">
+			<Output TaskParameter="AbsolutePaths" ItemName="ExportedUnoItem" />
 		</ConvertToAbsolutePath>
 
 	</Target>
@@ -286,17 +286,17 @@
         BeforeTargets="$(ResizetizeCollectItemsBeforeTargets)"
         AfterTargets="$(ResizetizeCollectItemsAfterTargets)">
 
-		<CallTarget Targets="GetMauiItems" Condition="'$(ResizetizerIncludeSelfProject)' == 'True'">
+		<CallTarget Targets="GetUnoItems" Condition="'$(ResizetizerIncludeSelfProject)' == 'True'">
 			<Output
                 TaskParameter="TargetOutputs"
-                ItemName="ImportedMauiItem" />
+                ItemName="ImportedUnoItem" />
 		</CallTarget>
 
-		<!-- Invoke the GetMauiItems target on all project references -->
+		<!-- Invoke the GetUnoItems target on all project references -->
 		<!-- This will accumulate images into our UnoImage group -->
-		<!--<MSBuild Targets="GetMauiItems" Projects="@(_MSBuildProjectReferenceExistent)">-->
+		<!--<MSBuild Targets="GetUnoItems" Projects="@(_MSBuildProjectReferenceExistent)">-->
 		<MSBuild
-            Targets="GetMauiItems"
+            Targets="GetUnoItems"
             Projects="@(ProjectReference)"
             BuildInParallel="true"
             Properties="TargetFramework=$(TargetFramework)"
@@ -304,25 +304,25 @@
             SkipNonexistentTargets="true">
 			<Output
                 TaskParameter="TargetOutputs"
-                ItemName="ImportedMauiItem" />
+                ItemName="ImportedUnoItem" />
 		</MSBuild>
 
 		<ItemGroup>
 			<UnoImage
-                Include="@(ImportedMauiItem)"
-                Condition="'%(ImportedMauiItem.ItemGroupName)' == 'UnoImage'" />
+                Include="@(ImportedUnoItem)"
+                Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoImage'" />
 			<UnoIcon
-                Include="@(ImportedMauiItem)"
-                Condition="'%(ImportedMauiItem.ItemGroupName)' == 'UnoIcon'" />
+                Include="@(ImportedUnoItem)"
+                Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoIcon'" />
 			<MauiFont
-                Include="@(ImportedMauiItem)"
-                Condition="'%(ImportedMauiItem.ItemGroupName)' == 'MauiFont'" />
+                Include="@(ImportedUnoItem)"
+                Condition="'%(ImportedUnoItem.ItemGroupName)' == 'MauiFont'" />
 			<UnoAsset
-                Include="@(ImportedMauiItem)"
-                Condition="'%(ImportedMauiItem.ItemGroupName)' == 'UnoAsset'" />
+                Include="@(ImportedUnoItem)"
+                Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoAsset'" />
 			<MauiSplashScreen
-                Include="@(ImportedMauiItem)"
-                Condition="'%(ImportedMauiItem.ItemGroupName)' == 'MauiSplashScreen'" />
+                Include="@(ImportedUnoItem)"
+                Condition="'%(ImportedUnoItem.ItemGroupName)' == 'MauiSplashScreen'" />
 		</ItemGroup>
 
 		<!-- Make sure animated gifs are not resized by default -->
