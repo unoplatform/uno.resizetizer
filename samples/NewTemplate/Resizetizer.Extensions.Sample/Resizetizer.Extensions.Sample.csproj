@@ -45,7 +45,6 @@
 			<ItemGroup>
 				<Content Include="Assets\**" />
 				<UnoImage Include="$(MSBuildThisFileDirectory)Images\dotnet_bot.svg" />
-				<!--<UnoIcon Include="$(MSBuildThisFileDirectory)Images\Icons\appicon.svg" ForegroundFile="$(MSBuildThisFileDirectory)Images\Icons\appiconfg.svg" Color="#FF0000" />-->
 				<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 				<Compile Update="**\*.xaml.cs">
 					<DependentUpon>%(Filename)</DependentUpon>
