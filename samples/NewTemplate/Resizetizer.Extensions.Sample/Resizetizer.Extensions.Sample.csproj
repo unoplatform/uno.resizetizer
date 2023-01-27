@@ -44,7 +44,7 @@
 
 			<ItemGroup>
 				<Content Include="Assets\**" />
-				<UnoImage Include="$(MSBuildThisFileDirectory)Images\dotnet_bot.svg" />
+				<UnoImage Include="Images\dotnet_bot.svg" />
 				<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 				<Compile Update="**\*.xaml.cs">
 					<DependentUpon>%(Filename)</DependentUpon>
