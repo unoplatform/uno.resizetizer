@@ -1,7 +1,0 @@
-{
-  "profiles": {
-    "Resizetizer.Windows": {
-      "commandName": "MsixPackage"
-    }
-  }
-}
