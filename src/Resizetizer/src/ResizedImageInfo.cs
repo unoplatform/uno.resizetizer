@@ -2,7 +2,7 @@
 
 namespace Uno.Resizetizer
 {
-	[DebuggerDisplay("{FileName}")]
+	[DebuggerDisplay("{Filename}")]
 	internal class ResizedImageInfo
 	{
 		public string Filename { get; set; }
