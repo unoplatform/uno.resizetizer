@@ -27,8 +27,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<UnoIcon Include="$(MSBuildThisFileDirectory)Resizetizer.Extensions.Sample\Images\Icons\iconapp.svg"
-				 ForegroundFile="$(MSBuildThisFileDirectory)Resizetizer.Extensions.Sample\Images\Icons\appconfig.svg"
+		<UnoIcon Include="$(MSBuildThisFileDirectory)Resizetizer.Extensions.Sample.Base\Icons\iconapp.svg"
+				 ForegroundFile="$(MSBuildThisFileDirectory)Resizetizer.Extensions.Sample.Base\Icons\appconfig.svg"
 				 Color="#FF0000" />
 	</ItemGroup>
 
