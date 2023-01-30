@@ -26,12 +26,6 @@
 		<AfterMicrosoftNETSdkTargets>$(AfterMicrosoftNETSdkTargets);$(MSBuildThisFileDirectory)..\..\src\.nuspec\Uno.Resizetizer.targets</AfterMicrosoftNETSdkTargets>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<UnoIcon Include="$(MSBuildThisFileDirectory)Resizetizer.Extensions.Sample\Images\Icons\iconapp.svg"
-				 ForegroundFile="$(MSBuildThisFileDirectory)Resizetizer.Extensions.Sample\Images\Icons\appconfig.svg"
-				 Color="#FF0000" />
-	</ItemGroup>
-
 	<PropertyGroup>
 		<RuntimeIdentifier Condition="$(IsIOS)">iossimulator-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="$(IsMacCatalyst)">maccatalyst-x64</RuntimeIdentifier>
