@@ -112,6 +112,24 @@
 		</ResizetizeDependsOnTargets>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="$(_ResizetizerNoTargetPlatform) == 'True'">
+		<ResizetizerIncludeSelfProject>true</ResizetizerIncludeSelfProject>
+		<ResizetizerPlatformType>netstandard</ResizetizerPlatformType>
+
+		<ResizetizeBeforeTargets>
+			$(ResizetizeBeforeTargets);
+			AssignTargetPaths;
+
+		</ResizetizeBeforeTargets>
+	
+		<ResizetizeAfterTargets>
+			ResizetizeCollectItems;
+			$(ResizetizeAfterTargets);
+			UnoAssetsGeneration;
+			BuildDist;
+		</ResizetizeAfterTargets>
+	</PropertyGroup>
+
 	<!-- Wasm -->
 	<PropertyGroup Condition="'$(_ResizetizerIsWasm)' == 'True'">
 		<ResizetizerPlatformType>wasm</ResizetizerPlatformType>

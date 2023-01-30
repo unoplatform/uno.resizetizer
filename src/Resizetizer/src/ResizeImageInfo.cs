@@ -83,9 +83,9 @@ namespace Uno.Resizetizer
 				if (string.IsNullOrWhiteSpace(info.Alias))
 				{
 					// why "C:\\Git\\uno.resizetizer\\src\\.nuspec\\"
-					var projDirectory = image.GetMetadata("ProjectOriginPath");
+					var projDirectory = image.GetMetadata("DefiningProjectDirectory");
 
-					projDirectory = string.IsNullOrWhiteSpace(projDirectory) ? image.GetMetadata("DefiningProjectDirectory") : projDirectory;
+					//projDirectory = string.IsNullOrWhiteSpace(projDirectory) ? image.GetMetadata("DefiningProjectDirectory") : projDirectory;
 					if (!string.IsNullOrWhiteSpace(projDirectory))
 					{
 						info.Alias = fileInfo.FullName.Replace(projDirectory, string.Empty);
