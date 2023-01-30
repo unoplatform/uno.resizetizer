@@ -11,4 +11,10 @@
 				DependentUpon="App.xaml"
 				Link="App.xaml.cs" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<UnoIcon Include="$(MSBuildThisFileDirectory)Icons\iconapp.svg"
+				 ForegroundFile="$(MSBuildThisFileDirectory)Icons\appconfig.svg"
+				 Color="#FF0000" />
+	</ItemGroup>
 </Project>
