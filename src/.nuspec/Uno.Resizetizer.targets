@@ -261,7 +261,6 @@
 		<ConvertToAbsolutePath Paths="@(UnoItem)">
 			<Output TaskParameter="AbsolutePaths" ItemName="ExportedUnoItem" />
 		</ConvertToAbsolutePath>
-
 	</Target>
 
 
@@ -276,21 +275,6 @@
                 TaskParameter="TargetOutputs"
                 ItemName="ImportedUnoItem" />
 		</CallTarget>
-
-		<!-- Invoke the GetUnoItems target on all project references -->
-		<!-- This will accumulate images into our UnoImage group -->
-		<!--<MSBuild Targets="GetUnoItems" Projects="@(_MSBuildProjectReferenceExistent)">-->
-		<MSBuild
-            Targets="GetUnoItems"
-            Projects="@(ProjectReference)"
-            BuildInParallel="true"
-            Properties="TargetFramework=$(TargetFramework)"
-            SkipNonexistentProjects="true"
-            SkipNonexistentTargets="true">
-			<Output
-                TaskParameter="TargetOutputs"
-                ItemName="ImportedUnoItem" />
-		</MSBuild>
 
 		<ItemGroup>
 			<UnoImage
