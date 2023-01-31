@@ -44,7 +44,6 @@
 
 			<ItemGroup>
 				<Content Include="Assets\**" />
-				<UnoImage Include="Images\dotnet_bot.svg" />
 				<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 				<Compile Update="**\*.xaml.cs">
 					<DependentUpon>%(Filename)</DependentUpon>
@@ -56,5 +55,6 @@
 	<ItemGroup>
 		<PRIResource Include="Strings\**\*.resw" />
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+		<UnoImage Include="Images\dotnet_bot.svg" />
 	</ItemGroup>
 </Project>

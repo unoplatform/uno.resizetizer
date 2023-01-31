@@ -112,6 +112,24 @@
 		</ResizetizeDependsOnTargets>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="$(_ResizetizerNoTargetPlatform) == 'True'">
+		<ResizetizerIncludeSelfProject>true</ResizetizerIncludeSelfProject>
+		<ResizetizerPlatformType>netstandard</ResizetizerPlatformType>
+
+		<ResizetizeBeforeTargets>
+			$(ResizetizeBeforeTargets);
+			AssignTargetPaths;
+
+		</ResizetizeBeforeTargets>
+	
+		<ResizetizeAfterTargets>
+			ResizetizeCollectItems;
+			$(ResizetizeAfterTargets);
+			UnoAssetsGeneration;
+			BuildDist;
+		</ResizetizeAfterTargets>
+	</PropertyGroup>
+
 	<!-- Wasm -->
 	<PropertyGroup Condition="'$(_ResizetizerIsWasm)' == 'True'">
 		<ResizetizerPlatformType>wasm</ResizetizerPlatformType>
@@ -243,7 +261,6 @@
 		<ConvertToAbsolutePath Paths="@(UnoItem)">
 			<Output TaskParameter="AbsolutePaths" ItemName="ExportedUnoItem" />
 		</ConvertToAbsolutePath>
-
 	</Target>
 
 
@@ -259,25 +276,10 @@
                 ItemName="ImportedUnoItem" />
 		</CallTarget>
 
-		<!-- Invoke the GetUnoItems target on all project references -->
-		<!-- This will accumulate images into our UnoImage group -->
-		<!--<MSBuild Targets="GetUnoItems" Projects="@(_MSBuildProjectReferenceExistent)">-->
-		<MSBuild
-            Targets="GetUnoItems"
-            Projects="@(ProjectReference)"
-            BuildInParallel="true"
-            Properties="TargetFramework=$(TargetFramework)"
-            SkipNonexistentProjects="true"
-            SkipNonexistentTargets="true">
-			<Output
-                TaskParameter="TargetOutputs"
-                ItemName="ImportedUnoItem" />
-		</MSBuild>
-
 		<ItemGroup>
 			<UnoImage
                 Include="@(ImportedUnoItem)"
-                Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoImage'" />
+                Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoImage'"/>
 			<UnoIcon
                 Include="@(ImportedUnoItem)"
                 Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoIcon'" />

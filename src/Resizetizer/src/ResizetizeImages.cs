@@ -45,6 +45,9 @@ namespace Uno.Resizetizer
 
 		public override System.Threading.Tasks.Task ExecuteAsync()
 		{
+#if DEBUG_RESIZETIZER
+			System.Diagnostics.Debugger.Launch();
+#endif
 			var images = ResizeImageInfo.Parse(Images);
 
 			var dpis = DpiPath.GetDpis();
@@ -135,9 +138,6 @@ namespace Uno.Resizetizer
 
 		void ProcessAppIcon(ResizeImageInfo img, ConcurrentBag<ResizedImageInfo> resizedImages)
 		{
-#if DEBUG_RESIZETIZER
-			System.Diagnostics.Debugger.Launch();
-#endif
 			var appIconName = img.OutputName;
 
 			// Generate the actual bitmap app icons themselves

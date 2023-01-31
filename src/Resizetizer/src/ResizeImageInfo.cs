@@ -83,7 +83,8 @@ namespace Uno.Resizetizer
 				if (string.IsNullOrWhiteSpace(info.Alias))
 				{
 					var projDirectory = image.GetMetadata("DefiningProjectDirectory");
-					if(!string.IsNullOrWhiteSpace(projDirectory))
+
+					if (!string.IsNullOrWhiteSpace(projDirectory))
 					{
 						info.Alias = fileInfo.FullName.Replace(projDirectory, string.Empty);
 					}
