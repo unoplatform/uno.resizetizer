@@ -485,6 +485,9 @@
 		<ItemGroup Condition="'$(_ResizetizerIsWasm)' == 'True' And '$(ResizetizerPwaManifest)' != ''">
 			<Content Remove="$(WasmPWAManifestFile)" />
 			<Content Include="$(ResizetizerPwaManifest)"
+					 CopyToOutputDirectory="PreserveNewest"
+					 ExcludeFromSingleFile ="True"
+					 CopyToPublishDirectory ="PreserveNewest"
 					 Link="$(WasmPWAManifestFile)" />
 		</ItemGroup>
 
