@@ -50,7 +50,8 @@ internal sealed class WasmIconGenerator
 		}
 
 		var appIconImagesJson = new JsonArray();
-
+		Logger.Log("Creating the icons property for the PWA manifest.");
+		
 		foreach (var dpi in dpiPaths)
 		{
 			var w = dpi.Size.Value.Width.ToString("0.#", CultureInfo.InvariantCulture);
@@ -77,18 +78,25 @@ internal sealed class WasmIconGenerator
 			Indented = true
 		};
 
+		Logger.Log("Writing the PWA manifest with the icons property.");
 		var newPwaManifestName = "Uno" + Path.GetFileName(pwaManifestPath);
 		var outputPath = Path.Combine(IntermediateOutputPath, newPwaManifestName);
-		// Change this in the future
+
 		using var fs = File.Create(outputPath);
 		using var writer = new Utf8JsonWriter(fs, writeOptions);
 
+		Logger.Log("Merging the original PWA manifest with the icons property.");
+		
 		JsonHelper.Merge(json, jsonIconsObject.ToJsonString(), writer);
 
 		writer.Flush();
 
-		return Path.GetFullPath(outputPath);
-		
+		var path = Path.GetFullPath(outputPath);
+
+		Logger.Log($"PWA manifest path: {path}.");
+
+		return path;
+
 		static bool IconPropertyIsEmpty(JsonNode node)
 		{
 			var value = node["icons"];
