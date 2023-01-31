@@ -482,9 +482,8 @@
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
 		</ItemGroup>
 
-		<ItemGroup Condition="'$(_ResizetizerIsWasm)' == 'True'">
+		<ItemGroup Condition="'$(_ResizetizerIsWasm)' == 'True' And '$(ResizetizerPwaManifest)' != ''">
 			<Content Remove="$(WasmPWAManifestFile)" />
-			<!-- <WasmPWAManifestFile>$(ResizetizerPwaManifest)</WasmPWAManifestFile> -->
 			<Content Include="$(ResizetizerPwaManifest)"
 					 Link="$(WasmPWAManifestFile)" />
 		</ItemGroup>
