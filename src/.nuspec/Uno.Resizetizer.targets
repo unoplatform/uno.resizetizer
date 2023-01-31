@@ -279,8 +279,7 @@
 		<ItemGroup>
 			<UnoImage
                 Include="@(ImportedUnoItem)"
-                Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoImage'"
-				DirectoryPath="$(_SharedProjectPath)"/>
+                Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoImage'"/>
 			<UnoIcon
                 Include="@(ImportedUnoItem)"
                 Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoIcon'" />
