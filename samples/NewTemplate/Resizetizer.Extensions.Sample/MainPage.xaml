@@ -18,18 +18,22 @@
 				Height="300"
 				Source="ms-appx:///Images/dotnet_bot.png" />
 
+			<Image
+				Width="300"
+				Height="300"
+				Source="Images\\dotnet_bot.png" />
+
+			<Image
+				Width="300"
+				Height="300"
+				Source="ms-appx:///Resizetizer.Extensions.Sample/Images/dotnet_bot.png" />
+
 			<!--  This works on Android  -->
 
 			<Image
 				Width="300"
 				Height="300"
 				Source="dotnet_bot.png" />
-
-			<!--  This works on iOS  -->
-			<Image
-				Width="300"
-				Height="300"
-				Source="Images\\dotnet_bot" />
 		</StackPanel>
 	</ScrollViewer>
 </Page>
