@@ -81,6 +81,13 @@ jobs:
         shell: pwsh
         run: |
           build\SignClient sign -i artifacts\*.nupkg -c build\SignClient.json -r "${{ secrets.UNO_PLATFORM_CODESIGN_USERNAME }}" -s "${{ secrets.UNO_PLATFORM_CODESIGN_SECRET }}" -n "uno.resizetizer" -d "uno.resizetizer" -u "https://github.com/unoplatform/uno.resizetizer"
+
+      - name: Upload Signed Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: NuGet-Signed
+          path: .\artifacts
+
       - name: NuGet Push
         shell: pwsh
         run: |
