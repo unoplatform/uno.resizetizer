@@ -4,8 +4,8 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<RootNamespace>Uno.Resizetizer</RootNamespace>
 		<AssemblyName>Uno.Resizetizer</AssemblyName>		
-		<PackageId>Uno.Resizetizer.Sdk</PackageId>
-		<Description>UnoPlatform SDK support for images, enabled via &lt;UseUnoAssets&gt;true&lt;/UseUnoAssets&gt;.</Description>
+		<PackageId>Uno.Resizetizer</PackageId>
+		<Description>UnoPlatform package support for images.</Description>
 		<LangVersion>latest</LangVersion>
 		<_SkiaPackagePath>build\</_SkiaPackagePath>
 		<Configurations>Debug;Release;DEBUG_RESIZETIZER</Configurations>
