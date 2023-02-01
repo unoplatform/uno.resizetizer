@@ -191,13 +191,11 @@ namespace Uno.Resizetizer
 				var wasmIconGen = new WasmIconGenerator(img, IntermediateOutputIconPath, this, PWAManifestPath, appIconDpis);
 
 				var icon = wasmIconGen.Generate();
+				var manifestPath = wasmIconGen.ProcessThePwaManifest();
+				PwaGeneratedManifestPath = new TaskItem(manifestPath);
 
 				string itemSpec = Path.GetFullPath(icon.Filename);
 				GeneratedIconPath = new TaskItem(itemSpec);
-
-				var manifestPath = wasmIconGen.ProcessThePwaManifest();
-
-				PwaGeneratedManifestPath = new TaskItem(manifestPath);
 			}
 
 			LogDebugMessage($"Generating App Icon Bitmaps for DPIs");
