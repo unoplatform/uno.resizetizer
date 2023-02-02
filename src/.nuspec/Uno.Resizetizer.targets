@@ -99,7 +99,6 @@
 		<_ResizetizerIsWindowsAppSdk Condition="('$(ProjectReunionWinUI)'=='True' Or '$(WindowsAppSDKWinUI)'=='True') And '$(_ResizetizerPlatformIsWindows)' == 'True' And ('$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe')">True</_ResizetizerIsWindowsAppSdk>
 		<_ResizetizerIsTizenApp Condition="'$(_ResizetizerPlatformIsTizen)' == 'True' And ( '$(OutputType)' == 'Exe' )">True</_ResizetizerIsTizenApp>
 		<_ResizetizerIsWasmApp Condition="'$(UnoRuntimeIdentifier)' == 'WebAssembly'">True</_ResizetizerIsWasmApp>
-		<_ResizetizerIsSharedProject>True</_ResizetizerIsSharedProject>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True' Or '$(_ResizetizerIsiOSApp)' == 'True' Or '$(_ResizetizerIsWPFApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsTizenApp)' == 'True' Or '$(_ResizetizerIsWasmApp)' == 'True'">
@@ -112,7 +111,7 @@
 		</ResizetizeDependsOnTargets>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(_ResizetizerNoTargetPlatform) == 'True' Or '$(_ResizetizerIsSharedProject)' == 'True'">
+	<PropertyGroup Condition="$(_ResizetizerNoTargetPlatform) == 'True'">
 		<ResizetizerIncludeSelfProject>true</ResizetizerIncludeSelfProject>
 		<ResizetizerPlatformType>netstandard</ResizetizerPlatformType>
 
