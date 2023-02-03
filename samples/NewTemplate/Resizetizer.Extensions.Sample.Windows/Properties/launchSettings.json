@@ -1,7 +1,7 @@
 {
-	"profiles": {
-		"Resizetizer.Extensions.Sample.Windows (Package)": {
-			"commandName": "MsixPackage"
-		}
-	}
+  "profiles": {
+    "Resizetizer.Extensions.Sample.Windows": {
+      "commandName": "MsixPackage"
+    }
+  }
 }
