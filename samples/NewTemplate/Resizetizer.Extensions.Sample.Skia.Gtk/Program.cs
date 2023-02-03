@@ -2,20 +2,21 @@ using System;
 using GLib;
 using Uno.UI.Runtime.Skia;
 
-namespace Resizetizer.Extensions.Sample.Skia.Gtk;
-
-public class Program
+namespace Resizetizer.Extensions.Sample.Skia.Gtk
 {
-	public static void Main(string[] args)
+	public sealed class Program
 	{
-		ExceptionManager.UnhandledException += delegate (UnhandledExceptionArgs expArgs)
+		static void Main(string[] args)
 		{
-			Console.WriteLine("GLIB UNHANDLED EXCEPTION" + expArgs.ExceptionObject.ToString());
-			expArgs.ExitApplication = true;
-		};
+			ExceptionManager.UnhandledException += delegate (UnhandledExceptionArgs expArgs)
+			{
+				Console.WriteLine("GLIB UNHANDLED EXCEPTION" + expArgs.ExceptionObject.ToString());
+				expArgs.ExitApplication = true;
+			};
 
-		var host = new GtkHost(() => new App(), args);
+			var host = new GtkHost(() => new AppHead());
 
-		host.Run();
+			host.Run();
+		}
 	}
 }

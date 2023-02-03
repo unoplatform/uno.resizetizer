@@ -1,18 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project>
 	<ItemGroup>
-		<None Include="$(MSBuildThisFileDirectory)App.xaml" />
-		<ApplicationDefinition Include="$(MSBuildThisFileDirectory)App.xaml"
-								SubType="Designer"
-								XamlRuntime="WinUI"
-								Generator="MSBuild:Compile"
-								Link="App.xaml" />
-		<Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs"
-				XamlRuntime="WinUI"
-				DependentUpon="App.xaml"
-				Link="App.xaml.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
+		<None Include="$(MSBuildThisFileDirectory)AppHead.xaml" />
+		<ApplicationDefinition
+			Include="$(MSBuildThisFileDirectory)AppHead.xaml"
+			SubType="Designer"
+			XamlRuntime="WinUI"
+			Generator="MSBuild:Compile"
+			Link="AppHead.xaml" />
+		<Compile
+			Include="$(MSBuildThisFileDirectory)AppHead.xaml.cs"
+			XamlRuntime="WinUI"
+			DependentUpon="AppHead.xaml"
+			Link="AppHead.xaml.cs" />
 		<UnoIcon Include="$(MSBuildThisFileDirectory)Icons\iconapp.svg"
 				 ForegroundFile="$(MSBuildThisFileDirectory)Icons\appconfig.svg"
 				 Color="#FF0000" />

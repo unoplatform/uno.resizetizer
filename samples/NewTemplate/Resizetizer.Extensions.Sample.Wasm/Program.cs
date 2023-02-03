@@ -1,13 +1,17 @@
-namespace Resizetizer.Extensions.Sample.Wasm;
+using System;
+using Microsoft.UI.Xaml;
 
-public class Program
+namespace Resizetizer.Extensions.Sample.Wasm
 {
-	private static App? _app;
-
-	public static int Main(string[] args)
+	public sealed class Program
 	{
-		Microsoft.UI.Xaml.Application.Start(_ => _app = new App());
+		private static App _app;
 
-		return 0;
+		static int Main(string[] args)
+		{
+			Microsoft.UI.Xaml.Application.Start(_ => _app = new AppHead());
+
+			return 0;
+		}
 	}
 }
