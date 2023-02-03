@@ -96,8 +96,7 @@
 		<_ResizetizerIsAndroidApp Condition=" '$(_ResizetizerPlatformIsAndroid)' == 'True' And '$(AndroidApplication)' == 'True'">True</_ResizetizerIsAndroidApp>
 		<_ResizetizerIsiOSApp Condition="( '$(_ResizetizerPlatformIsiOS)' == 'True' OR '$(_ResizetizerPlatformIsMacCatalyst)' == 'True' ) And ('$(OutputType)' == 'Exe' Or '$(IsAppExtension)' == 'True')">True</_ResizetizerIsiOSApp>
 		<_ResizetizerIsWPFApp Condition="'$(UseWPF)' == 'True'">True</_ResizetizerIsWPFApp>
-		<_ResizetizerIsWindowsAppSdk Condition="('$(ProjectReunionWinUI)'=='True' Or '$(WindowsAppSDKWinUI)'=='True') And '$(_ResizetizerPlatformIsWindows)' == 'True'">True</_ResizetizerIsWindowsAppSdk>
-		<_ResizetizerIsTizenApp Condition="'$(_ResizetizerPlatformIsTizen)' == 'True' And ( '$(OutputType)' == 'Exe' )">True</_ResizetizerIsTizenApp>
+		<_ResizetizerIsWindowsAppSdk Condition="('$(ProjectReunionWinUI)'=='True' Or '$(WindowsAppSDKWinUI)'=='True') And '$(_ResizetizerPlatformIsWindows)' == 'True' And ('$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe')">True</_ResizetizerIsWindowsAppSdk>		<_ResizetizerIsTizenApp Condition="'$(_ResizetizerPlatformIsTizen)' == 'True' And ( '$(OutputType)' == 'Exe' )">True</_ResizetizerIsTizenApp>
 		<_ResizetizerIsWasmApp Condition="'$(UnoRuntimeIdentifier)' == 'WebAssembly'">True</_ResizetizerIsWasmApp>
 	</PropertyGroup>
 
@@ -111,14 +110,13 @@
 		</ResizetizeDependsOnTargets>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(_ResizetizerNoTargetPlatform) == 'True'">
+	<PropertyGroup Condition="$(_ResizetizerNoTargetPlatform) == 'True' Or '$(_ResizetizerIsCompatibleApp)' != 'True'">
 		<ResizetizerIncludeSelfProject>true</ResizetizerIncludeSelfProject>
 		<ResizetizerPlatformType>netstandard</ResizetizerPlatformType>
 
 		<ResizetizeBeforeTargets>
 			$(ResizetizeBeforeTargets);
 			AssignTargetPaths;
-
 		</ResizetizeBeforeTargets>
 
 		<ResizetizeAfterTargets>
@@ -214,9 +212,6 @@
 			UnoAssetsGeneration;
 			$(ResizetizeBeforeTargets);
 			AssignTargetPaths;
-			XamlPreCompile;
-			CalculateAppxGenerateProjectPriEnabled;
-			MarkupCompilePass1
 		</ResizetizeBeforeTargets>
 
 		<MauiGeneratePackageAppxManifestDependsOnTargets>
