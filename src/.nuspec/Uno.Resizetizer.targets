@@ -98,11 +98,10 @@
 		<_ResizetizerIsWPFApp Condition="'$(UseWPF)' == 'True'">True</_ResizetizerIsWPFApp>
 		<_ResizetizerIsWindowsAppSdk Condition="('$(ProjectReunionWinUI)'=='True' Or '$(WindowsAppSDKWinUI)'=='True') And '$(_ResizetizerPlatformIsWindows)' == 'True' And ('$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe')">True</_ResizetizerIsWindowsAppSdk>
 		<_ResizetizerIsTizenApp Condition="'$(_ResizetizerPlatformIsTizen)' == 'True' And ( '$(OutputType)' == 'Exe' )">True</_ResizetizerIsTizenApp>
-		<_ResizetizerIsWasm Condition="'$(_ResizetizerIsAndroidApp)' != 'True' And '$(_ResizetizerIsiOSApp)' != 'True' And '$(_ResizetizerIsWPFApp)' != 'True' And '$(_ResizetizerIsWindowsAppSdk)' != 'True'">True</_ResizetizerIsWasm>
-
+		<_ResizetizerIsWasmApp Condition="'$(UnoRuntimeIdentifier)' == 'WebAssembly'">True</_ResizetizerIsWasmApp>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True' Or '$(_ResizetizerIsiOSApp)' == 'True' Or '$(_ResizetizerIsWPFApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsTizenApp)' == 'True' Or '$(_ResizetizerIsWasm)' == 'True'">
+	<PropertyGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True' Or '$(_ResizetizerIsiOSApp)' == 'True' Or '$(_ResizetizerIsWPFApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsTizenApp)' == 'True' Or '$(_ResizetizerIsWasmApp)' == 'True'">
 		<_ResizetizerIsCompatibleApp>True</_ResizetizerIsCompatibleApp>
 
 		<ResizetizeDependsOnTargets>
@@ -131,7 +130,7 @@
 	</PropertyGroup>
 
 	<!-- Wasm -->
-	<PropertyGroup Condition="'$(_ResizetizerIsWasm)' == 'True'">
+	<PropertyGroup Condition="'$(_ResizetizerIsWasmApp)' == 'True'">
 		<ResizetizerPlatformType>wasm</ResizetizerPlatformType>
 		<ResizetizerIncludeSelfProject>true</ResizetizerIncludeSelfProject>
 
@@ -456,16 +455,17 @@
 		</ItemGroup>
 
 
-		<ItemGroup Condition="'$(_ResizetizerIsWasm)' != 'True'">
+		<ItemGroup Condition="'$(_ResizetizerIsWasmApp)' != 'True'">
 			<Content Include="@(_ResizetizerCollectedImages)"
-					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
+					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)"
+					 TargetPath="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)">
 			</Content>
 
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
 		</ItemGroup>
 
 		<!-- Wasm -->
-		<ItemGroup Condition="'$(_ResizetizerIsWasm)' == 'True'">
+		<ItemGroup Condition="'$(_ResizetizerIsWasmApp)' == 'True'">
 			<Content Include="@(_ResizetizerCollectedImages->FullPath())"
 					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
 			</Content>
@@ -482,7 +482,7 @@
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
 		</ItemGroup>
 
-		<ItemGroup Condition="'$(_ResizetizerIsWasm)' == 'True' And '$(ResizetizerPwaManifest)' != ''">
+		<ItemGroup Condition="'$(_ResizetizerIsWasmApp)' == 'True' And '$(ResizetizerPwaManifest)' != ''">
 			<Content Remove="$(WasmPWAManifestFile)" />
 			<Content Include="$(ResizetizerPwaManifest)"
 					 CopyToOutputDirectory="PreserveNewest"
