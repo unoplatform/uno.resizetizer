@@ -103,7 +103,8 @@ namespace Uno.Resizetizer
 			public static DpiPath[] Image
 				=> new[]
 				{
-					new DpiPath(OutputPath, 1.00m, null, ".scale-100"),
+                    new DpiPath(OutputPath, 1.00m, null, ""), // Include a 1x version without the scale suffix
+                    new DpiPath(OutputPath, 1.00m, null, ".scale-100"),
 					new DpiPath(OutputPath, 1.25m, null, ".scale-125"),
 					new DpiPath(OutputPath, 1.50m, null, ".scale-150"),
 					new DpiPath(OutputPath, 2.00m, null, ".scale-200"),

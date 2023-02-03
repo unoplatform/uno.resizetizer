@@ -93,15 +93,14 @@
 
 	<PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
 		<_ResizetizerIsNetCore>True</_ResizetizerIsNetCore>
+		<_ResizetizerIsSkiaApp Condition="'$(UnoRuntimeIdentifier)' == 'Skia'">True</_ResizetizerIsSkiaApp>
 		<_ResizetizerIsAndroidApp Condition=" '$(_ResizetizerPlatformIsAndroid)' == 'True' And '$(AndroidApplication)' == 'True'">True</_ResizetizerIsAndroidApp>
 		<_ResizetizerIsiOSApp Condition="( '$(_ResizetizerPlatformIsiOS)' == 'True' OR '$(_ResizetizerPlatformIsMacCatalyst)' == 'True' ) And ('$(OutputType)' == 'Exe' Or '$(IsAppExtension)' == 'True')">True</_ResizetizerIsiOSApp>
-		<_ResizetizerIsWPFApp Condition="'$(UseWPF)' == 'True'">True</_ResizetizerIsWPFApp>
-		<_ResizetizerIsWindowsAppSdk Condition="('$(ProjectReunionWinUI)'=='True' Or '$(WindowsAppSDKWinUI)'=='True') And '$(_ResizetizerPlatformIsWindows)' == 'True' And ('$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe')">True</_ResizetizerIsWindowsAppSdk>
-		<_ResizetizerIsTizenApp Condition="'$(_ResizetizerPlatformIsTizen)' == 'True' And ( '$(OutputType)' == 'Exe' )">True</_ResizetizerIsTizenApp>
+		<_ResizetizerIsWindowsAppSdk Condition="('$(ProjectReunionWinUI)'=='True' Or '$(WindowsAppSDKWinUI)'=='True') And '$(_ResizetizerPlatformIsWindows)' == 'True' And ('$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe')">True</_ResizetizerIsWindowsAppSdk>		<_ResizetizerIsTizenApp Condition="'$(_ResizetizerPlatformIsTizen)' == 'True' And ( '$(OutputType)' == 'Exe' )">True</_ResizetizerIsTizenApp>
 		<_ResizetizerIsWasmApp Condition="'$(UnoRuntimeIdentifier)' == 'WebAssembly'">True</_ResizetizerIsWasmApp>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True' Or '$(_ResizetizerIsiOSApp)' == 'True' Or '$(_ResizetizerIsWPFApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsTizenApp)' == 'True' Or '$(_ResizetizerIsWasmApp)' == 'True'">
+	<PropertyGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True' Or '$(_ResizetizerIsiOSApp)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsTizenApp)' == 'True' Or '$(_ResizetizerIsWasmApp)' == 'True'">
 		<_ResizetizerIsCompatibleApp>True</_ResizetizerIsCompatibleApp>
 
 		<ResizetizeDependsOnTargets>
@@ -111,16 +110,15 @@
 		</ResizetizeDependsOnTargets>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(_ResizetizerNoTargetPlatform) == 'True'">
+	<PropertyGroup Condition="$(_ResizetizerNoTargetPlatform) == 'True' Or '$(_ResizetizerIsCompatibleApp)' != 'True'">
 		<ResizetizerIncludeSelfProject>true</ResizetizerIncludeSelfProject>
 		<ResizetizerPlatformType>netstandard</ResizetizerPlatformType>
 
 		<ResizetizeBeforeTargets>
 			$(ResizetizeBeforeTargets);
 			AssignTargetPaths;
-
 		</ResizetizeBeforeTargets>
-	
+
 		<ResizetizeAfterTargets>
 			ResizetizeCollectItems;
 			$(ResizetizeAfterTargets);
@@ -139,7 +137,7 @@
 			AssignTargetPaths;
 
 		</ResizetizeBeforeTargets>
-	
+
 		<ResizetizeAfterTargets>
 			ResizetizeCollectItems;
 			$(ResizetizeAfterTargets);
@@ -222,8 +220,8 @@
 		</MauiGeneratePackageAppxManifestDependsOnTargets>
 	</PropertyGroup>
 
-	<!-- WPF -->
-	<PropertyGroup Condition="'$(_ResizetizerIsWPFApp)' == 'True'">
+	<!-- WPF/ SKIA -->
+	<PropertyGroup Condition="'$(_ResizetizerIsSkiaApp)' == 'True'">
 		<ResizetizerPlatformType>wpf</ResizetizerPlatformType>
 
 		<ResizetizeBeforeTargets>
@@ -458,6 +456,7 @@
 
 		<ItemGroup Condition="'$(_ResizetizerIsWasmApp)' != 'True'">
 			<Content Include="@(_ResizetizerCollectedImages)"
+					  CopyToOutputDirectory="Always"
 					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)"
 					 TargetPath="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)">
 			</Content>
@@ -479,7 +478,7 @@
 					 Condition="'%(Extension)' == '.ico'"
 					 UnoDeploy="Root"
 					 Link="%(_ResizetizerCollectedAppIcons.RecursiveDir)%(_ResizetizerCollectedAppIcons.Filename)%(_ResizetizerCollectedAppIcons.Extension)"/>
-			
+
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
 		</ItemGroup>
 

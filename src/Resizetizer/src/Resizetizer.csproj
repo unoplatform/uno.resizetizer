@@ -37,7 +37,9 @@
 		<ItemGroup>
 			<_CopyItems Include="$(TargetDir)**\*.dll" Exclude="$(TargetDir)System.*.dll" />
 			<_CopyItems Include="$(TargetDir)**\*.so" />
+			<_CopyItems Include="$(TargetDir)**\*.pdb" />
 			<_CopyItems Include="$(TargetDir)**\*.dylib" />
+			<_CopyItems Include="$(TargetDir)**\*.pdb" />
 		</ItemGroup>
 		<Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(UnoNuSpecDirectory)%(RecursiveDir)" ContinueOnError="true" Retries="0" />
 	</Target>
