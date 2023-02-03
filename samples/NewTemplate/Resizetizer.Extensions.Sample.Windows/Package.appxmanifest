@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
@@ -7,19 +7,19 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="C4C5D369-37BE-4A41-B902-B1502127DB2C"
-    Publisher="O=Resizetizer.Extensions.Sample"
+    Name="1EF15D5A-5A9B-4A7D-8917-E7B212AFAC4C"
+    Publisher="O=Resizetizer.Extensions.Sample.Windows"
     Version="1.0.0.0" />
 
   <Properties>
-	<DisplayName>Resizetizer.Extensions.Sample</DisplayName>
-	<PublisherDisplayName>Resizetizer.Extensions.Sample</PublisherDisplayName>
+	<DisplayName>Resizetizer.Extensions.Sample.Windows</DisplayName>
+	<PublisherDisplayName>Resizetizer.Extensions.Sample.Windows</PublisherDisplayName>
 	<Logo>Images\StoreLogo.png</Logo>
   </Properties>
 
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19041.0" />
-    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19041.0" />
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.18362.0" MaxVersionTested="10.0.19041.0" />
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.18362.0" MaxVersionTested="10.0.19041.0" />
   </Dependencies>
 
   <Resources>
@@ -31,13 +31,13 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="Resizetizer.Extensions.Sample"
-        Description="Resizetizer.Extensions.Sample"
-        BackgroundColor="#086AD1"
+        DisplayName="Resizetizer.Extensions.Sample.Windows"
+        Description="Resizetizer.Extensions.Sample.Windows"
+        BackgroundColor="transparent"
         Square150x150Logo="Images\Square150x150Logo.png"
         Square44x44Logo="Images\Square44x44Logo.png">
         <uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png" />
-        <uap:SplashScreen Image="Images\SplashScreen.png"  BackgroundColor="#086AD1"/>
+        <uap:SplashScreen Image="Images\SplashScreen.png" />
       </uap:VisualElements>
     </Application>
   </Applications>
