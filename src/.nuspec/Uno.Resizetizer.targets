@@ -190,6 +190,7 @@
 			UnoResourcesGeneration;
 			$(ResizetizeBeforeTargets);
 			_GenerateAndroidResourceDir;
+			AssignTargetPaths;
 		</ResizetizeBeforeTargets>
 
 		<ResizetizeCollectItemsBeforeTargets>
