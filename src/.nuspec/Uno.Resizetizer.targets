@@ -456,7 +456,7 @@
 
 		<ItemGroup Condition="'$(_ResizetizerIsWasmApp)' != 'True'">
 			<Content Include="@(_ResizetizerCollectedImages)"
-					  CopyToOutputDirectory="Always"
+					  CopyToOutputDirectory="PreserveNewest"
 					 Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)"
 					 TargetPath="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)">
 			</Content>

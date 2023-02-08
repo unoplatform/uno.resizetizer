@@ -48,7 +48,6 @@
 		<Content Include="Images\dotnet_bot_img.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-		<UnoImage Include="Images\dotnet_bot.svg" />
 		<Content Include="..\dotnet_bot_link.png">
 			<Link>MyImages\dotnet_bot_link.png</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
