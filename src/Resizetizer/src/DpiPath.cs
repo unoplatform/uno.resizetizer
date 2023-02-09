@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
+﻿using SkiaSharp;
+using System.Diagnostics;
 using System.Linq;
-using SkiaSharp;
 
 namespace Uno.Resizetizer
 {
@@ -103,8 +103,8 @@ namespace Uno.Resizetizer
 			public static DpiPath[] Image
 				=> new[]
 				{
-                    new DpiPath(OutputPath, 1.00m, null, ""), // Include a 1x version without the scale suffix
-                    new DpiPath(OutputPath, 1.00m, null, ".scale-100"),
+					new DpiPath(OutputPath, 1.00m, null, ""), // Include a 1x version without the scale suffix
+					new DpiPath(OutputPath, 1.00m, null, ".scale-100"),
 					new DpiPath(OutputPath, 1.25m, null, ".scale-125"),
 					new DpiPath(OutputPath, 1.50m, null, ".scale-150"),
 					new DpiPath(OutputPath, 2.00m, null, ".scale-200"),
@@ -118,6 +118,7 @@ namespace Uno.Resizetizer
 					new DpiPath(OutputPath, 1.25m, "SplashScreen", ".scale-125", new SKSize(620, 300)),
 					new DpiPath(OutputPath, 1.50m, "SplashScreen", ".scale-150", new SKSize(620, 300)),
 					new DpiPath(OutputPath, 2.00m, "SplashScreen", ".scale-200", new SKSize(620, 300)),
+					new DpiPath(OutputPath, 3.00m, "SplashScreen", ".scale-300", new SKSize(620, 300)),
 					new DpiPath(OutputPath, 4.00m, "SplashScreen", ".scale-400", new SKSize(620, 300)),
 				};
 
