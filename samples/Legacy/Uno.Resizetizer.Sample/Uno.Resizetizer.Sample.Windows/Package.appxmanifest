@@ -34,7 +34,8 @@
         DisplayName="Uno.Resizetizer.Sample"
         Description="Uno.Resizetizer.Sample"
         BackgroundColor="transparent">
-        <uap:SplashScreen Image="Images\SplashScreen.png" />
+        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:DefaultTile/>
       </uap:VisualElements>
     </Application>
   </Applications>
