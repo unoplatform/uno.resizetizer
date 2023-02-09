@@ -12,71 +12,77 @@
 					VerticalAlignment="Center">
 			<TextBlock Text="Hello Uno Platform" />
 
-			<!--  These Should work everywere  -->
-			<Border BorderThickness="2" BorderBrush="Red">
+			<!--  ms-appx:///Folder/Image.png does not get modified, so this should
+				fail unless the Image is marked as copy to Always or PreserveNewest -->
+			<Grid BorderThickness="2" BorderBrush="Red">
 				<Image Width="300"
 					   Height="300"
 					   Source="ms-appx:///Images/dotnet_bot.png" />
-			</Border>
-			<Border BorderThickness="2"
+				<TextBlock Text="This image should NOT be shown!" />
+			</Grid>
+			<Grid BorderThickness="2"
 					BorderBrush="Pink">
 				<Image Width="300"
 					   Height="300"
 					   Source="Images\\dotnet_bot.png" />
-			</Border>
-			<Border BorderThickness="2"
+				<TextBlock Text="This image SHOULD be visible!" />
+			</Grid>
+			<Grid BorderThickness="2"
 					BorderBrush="Blue">
 				<Image Width="300"
 					   Height="300"
 					   Source="ms-appx:///Resizetizer.Extensions.Sample/Images/dotnet_bot.png" />
-			</Border>
-			<!--  This works on Android  -->
+				<TextBlock Text="This image SHOULD be visible!" />
+			</Grid>
 
-			<Image Width="300"
-				   Height="300"
-				   Source="dotnet_bot.png" />
-
-
-
-
-			<Border BorderThickness="2"
+			<!--  ms-appx:///Folder/Image.png does not get modified, so this should
+				fail unless the Image is marked as copy to Always or PreserveNewest -->
+			<Grid BorderThickness="2"
 					BorderBrush="Red">
 				<Image Width="300"
 					   Height="300"
 					   Source="ms-appx:///Images/dotnet_bot_img.png" />
-			</Border>
-			<Border BorderThickness="2"
+				<TextBlock Text="This image should NOT be shown!" />
+			</Grid>
+			<Grid BorderThickness="2"
 					BorderBrush="Pink">
 				<Image Width="300"
 					   Height="300"
 					   Source="Images\\dotnet_bot_img.png" />
-			</Border>
-			<Border BorderThickness="2"
+				<TextBlock Text="This image SHOULD be visible!" />
+			</Grid>
+			<Grid BorderThickness="2"
 					BorderBrush="Blue">
 				<Image Width="300"
 					   Height="300"
 					   Source="ms-appx:///Resizetizer.Extensions.Sample/Images/dotnet_bot_img.png" />
-			</Border>
+				<TextBlock Text="This image SHOULD be visible!" />
+			</Grid>
 
 
-			<Border BorderThickness="2"
+			<!--  ms-appx:///Folder/Image.png does not get modified, so this should
+				fail unless the Image is marked as copy to Always or PreserveNewest -->
+			<Grid BorderThickness="2"
 					BorderBrush="Red">
 				<Image Width="300"
 					   Height="300"
 					   Source="ms-appx:///MyImages/dotnet_bot_link.png" />
-			</Border>
-			<Border BorderThickness="2"
+				<TextBlock Text="This image should NOT be shown!" />
+			</Grid>
+			<Grid BorderThickness="2"
 					BorderBrush="Pink">
 				<Image Width="300"
 					   Height="300"
 					   Source="MyImages\\dotnet_bot_link.png" />
-			</Border>
-			<Border BorderThickness="2"
+				<TextBlock Text="This image SHOULD be visible!" />
+			</Grid>
+			<Grid BorderThickness="2"
 					BorderBrush="Blue">
 				<Image Width="300"
 					   Height="300"
 					   Source="ms-appx:///Resizetizer.Extensions.Sample/MyImages/dotnet_bot_link.png" />
-			</Border>
+				<TextBlock Text="This image SHOULD be visible!" />
+			</Grid>
 		</StackPanel>
 	</ScrollViewer>
 </Page>
