@@ -19,6 +19,9 @@ namespace Uno.Resizetizer
 
 		public override bool Execute()
 		{
+#if DEBUG_RESIZETIZER
+			System.Diagnostics.Debugger.Launch();
+#endif
 			var splash = MauiSplashScreen[0];
 
 			var info = ResizeImageInfo.Parse(splash);

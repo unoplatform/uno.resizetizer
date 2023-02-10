@@ -30,11 +30,13 @@
     <Application Id="App"
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
-      <uap:VisualElements
-        DisplayName="Uno.Resizetizer.Sample"
-        Description="Uno.Resizetizer.Sample"
+		<uap:VisualElements
+		  DisplayName="$placeholder$"
+		  Description="$placeholder$"
+		  Square150x150Logo="$placeholder$.png"
+		  Square44x44Logo="$placeholder$.png"
         BackgroundColor="transparent">
-        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:SplashScreen Image="$placeholder$.png" />
         <uap:DefaultTile/>
       </uap:VisualElements>
     </Application>
