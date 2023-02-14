@@ -96,7 +96,8 @@
 		<_ResizetizerIsSkiaApp Condition="'$(UnoRuntimeIdentifier)' == 'Skia'">True</_ResizetizerIsSkiaApp>
 		<_ResizetizerIsAndroidApp Condition=" '$(_ResizetizerPlatformIsAndroid)' == 'True' And '$(AndroidApplication)' == 'True'">True</_ResizetizerIsAndroidApp>
 		<_ResizetizerIsiOSApp Condition="( '$(_ResizetizerPlatformIsiOS)' == 'True' OR '$(_ResizetizerPlatformIsMacCatalyst)' == 'True' ) And ('$(OutputType)' == 'Exe' Or '$(IsAppExtension)' == 'True')">True</_ResizetizerIsiOSApp>
-		<_ResizetizerIsWindowsAppSdk Condition="('$(ProjectReunionWinUI)'=='True' Or '$(WindowsAppSDKWinUI)'=='True') And '$(_ResizetizerPlatformIsWindows)' == 'True' And ('$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe')">True</_ResizetizerIsWindowsAppSdk>		<_ResizetizerIsTizenApp Condition="'$(_ResizetizerPlatformIsTizen)' == 'True' And ( '$(OutputType)' == 'Exe' )">True</_ResizetizerIsTizenApp>
+		<_ResizetizerIsWindowsAppSdk Condition="('$(ProjectReunionWinUI)'=='True' Or '$(WindowsAppSDKWinUI)'=='True') And '$(_ResizetizerPlatformIsWindows)' == 'True' And ('$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe')">True</_ResizetizerIsWindowsAppSdk>
+		<_ResizetizerIsTizenApp Condition="'$(_ResizetizerPlatformIsTizen)' == 'True' And ( '$(OutputType)' == 'Exe' )">True</_ResizetizerIsTizenApp>
 		<_ResizetizerIsWasmApp Condition="'$(UnoRuntimeIdentifier)' == 'WebAssembly'">True</_ResizetizerIsWasmApp>
 	</PropertyGroup>
 
