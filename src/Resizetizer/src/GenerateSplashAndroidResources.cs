@@ -72,14 +72,18 @@ namespace Uno.Resizetizer
 			writer.WriteComment(Comment);
 			writer.WriteStartElement("layer-list");
 			writer.WriteAttributeString("xmlns", "android", ns: null, value: Namespace);
+			writer.WriteStartElement("item");
+			writer.WriteStartElement("color");
+			writer.WriteAttributeString("android", "color", Namespace, "#512BD4");
+			writer.WriteEndElement();
+			writer.WriteFullEndElement();
 
 			writer.WriteStartElement("item");
-
 			writer.WriteStartElement("bitmap");
 			writer.WriteAttributeString("android", "gravity", Namespace, "center");
 			writer.WriteAttributeString("android", "src", Namespace, "@drawable/" + splash.OutputName);
+			writer.WriteAttributeString("android", "tileMode", Namespace, "disabled");
 			writer.WriteAttributeString("android", "mipMap", Namespace, "true");
-
 			writer.WriteEndDocument();
 		}
 
@@ -105,6 +109,7 @@ namespace Uno.Resizetizer
 			writer.WriteAttributeString("android", "gravity", Namespace, "fill");
 			writer.WriteAttributeString("android", "src", Namespace, "@drawable/" + splash.OutputName);
 			writer.WriteAttributeString("android", "mipMap", Namespace, "true");
+			writer.WriteAttributeString("android", "tileMode", Namespace, "disabled");
 
 			writer.WriteEndDocument();
 		}
