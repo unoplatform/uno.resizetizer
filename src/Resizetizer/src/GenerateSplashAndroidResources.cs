@@ -72,9 +72,10 @@ namespace Uno.Resizetizer
 			writer.WriteComment(Comment);
 			writer.WriteStartElement("layer-list");
 			writer.WriteAttributeString("xmlns", "android", ns: null, value: Namespace);
+
 			writer.WriteStartElement("item");
 			writer.WriteStartElement("color");
-			writer.WriteAttributeString("android", "color", Namespace, splash.Color?.ToString() ?? "#FFFFFF");
+			writer.WriteAttributeString("android", "color", Namespace, "@color/maui_splash_color");
 			writer.WriteEndElement();
 			writer.WriteFullEndElement();
 
@@ -102,7 +103,7 @@ namespace Uno.Resizetizer
 
 			writer.WriteStartElement("item");
 			writer.WriteStartElement("color");
-			writer.WriteAttributeString("android", "color", Namespace, splash.Color?.ToString() ?? "#FFFFFF");
+			writer.WriteAttributeString("android", "color", Namespace, "@color/maui_splash_color");
 			writer.WriteEndElement();
 			writer.WriteFullEndElement();
 
