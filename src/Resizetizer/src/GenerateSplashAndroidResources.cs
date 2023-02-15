@@ -74,7 +74,7 @@ namespace Uno.Resizetizer
 			writer.WriteAttributeString("xmlns", "android", ns: null, value: Namespace);
 			writer.WriteStartElement("item");
 			writer.WriteStartElement("color");
-			writer.WriteAttributeString("android", "color", Namespace, "#512BD4");
+			writer.WriteAttributeString("android", "color", Namespace, splash.Color?.ToString() ?? "#FFFFFF");
 			writer.WriteEndElement();
 			writer.WriteFullEndElement();
 
@@ -99,6 +99,12 @@ namespace Uno.Resizetizer
 			writer.WriteComment(Comment);
 			writer.WriteStartElement("layer-list");
 			writer.WriteAttributeString("xmlns", "android", ns: null, value: Namespace);
+
+			writer.WriteStartElement("item");
+			writer.WriteStartElement("color");
+			writer.WriteAttributeString("android", "color", Namespace, splash.Color?.ToString() ?? "#FFFFFF");
+			writer.WriteEndElement();
+			writer.WriteFullEndElement();
 
 			writer.WriteStartElement("item");
 			writer.WriteAttributeString("android", "width", Namespace, size.Width.ToString("0", CultureInfo.InvariantCulture) + "dp");
