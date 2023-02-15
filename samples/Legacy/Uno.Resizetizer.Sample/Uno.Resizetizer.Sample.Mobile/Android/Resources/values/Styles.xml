@@ -14,8 +14,10 @@
           See: https://developer.android.com/guide/topics/ui/splash-screen#set-theme
 		  The SplashScreen image should be 200x80 dp
         -->
-		<item name="android:windowSplashScreenBackground">#FF00FF</item>
+		<item name="android:windowSplashScreenBackground">@color/maui_splash_color</item>
 		<item name="android:windowSplashScreenAnimatedIcon">@drawable/maui_splash_image</item>
+		<!-- Image at the footer -->
+		<item name="android:windowSplashScreenBrandingImage">@drawable/maui_splash_image</item>
 	</style>
 	<style name="Theme.AppCompat.Translucent">
 		<item name="android:windowIsTranslucent">true</item>
