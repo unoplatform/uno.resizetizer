@@ -108,6 +108,7 @@ namespace Uno.Resizetizer
 					new DpiPath(OutputPath, 1.25m, null, ".scale-125"),
 					new DpiPath(OutputPath, 1.50m, null, ".scale-150"),
 					new DpiPath(OutputPath, 2.00m, null, ".scale-200"),
+					new DpiPath(OutputPath, 3.00m, null, ".scale-300"),
 					new DpiPath(OutputPath, 4.00m, null, ".scale-400"),
 				};
 
