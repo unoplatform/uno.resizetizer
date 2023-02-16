@@ -17,9 +17,9 @@ namespace Uno.Resizetizer.Tests
 
 		public GenerateSplashAndroidResourcesTests()
 		{
-			_colors = Path.Combine(DestinationDirectory, "values", "maui_colors.xml");
-			_drawable = Path.Combine(DestinationDirectory, "drawable", "maui_splash_image.xml");
-			_drawable_v31 = Path.Combine(DestinationDirectory, "drawable-v31", "maui_splash_image.xml");
+			_colors = Path.Combine(DestinationDirectory, "values", "uno_colors.xml");
+			_drawable = Path.Combine(DestinationDirectory, "drawable", "uno_splash_image.xml");
+			_drawable_v31 = Path.Combine(DestinationDirectory, "drawable-v31", "uno_splash_image.xml");
 		}
 
 		protected GenerateSplashAndroidResources GetNewTask(ITaskItem splash) =>
@@ -44,9 +44,9 @@ namespace Uno.Resizetizer.Tests
 			var success = task.Execute();
 			Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
 
-			AssertColorsFile("maui_colors.xml", outputColor);
-			AssertImageFile("maui_splash_image.xml", _drawable, "@drawable/appiconfg");
-			AssertImageFile("maui_splash_image_v31.xml", _drawable_v31, "@drawable/appiconfg");
+			AssertColorsFile("uno_colors.xml", outputColor);
+			AssertImageFile("uno_splash_image.xml", _drawable, "@drawable/appiconfg");
+			AssertImageFile("uno_splash_image_v31.xml", _drawable_v31, "@drawable/appiconfg");
 		}
 
 		[Theory]
@@ -64,8 +64,8 @@ namespace Uno.Resizetizer.Tests
 			var success = task.Execute();
 			Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
 
-			AssertImageFile("maui_splash_image.xml", _drawable, "@drawable/splash_image_drawable", width, height);
-			AssertImageFile("maui_splash_image_v31.xml", _drawable_v31, "@drawable/splash_image_drawable", width, height);
+			AssertImageFile("uno_splash_image.xml", _drawable, "@drawable/splash_image_drawable", width, height);
+			AssertImageFile("uno_splash_image_v31.xml", _drawable_v31, "@drawable/splash_image_drawable", width, height);
 		}
 
 		[Theory]
@@ -82,14 +82,14 @@ namespace Uno.Resizetizer.Tests
 			var success = task.Execute();
 			Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
 
-			AssertImageFile("maui_splash_image.xml", _drawable, $"@drawable/{outputImage}");
-			AssertImageFile("maui_splash_image_v31.xml", _drawable_v31, $"@drawable/{outputImage}");
+			AssertImageFile("uno_splash_image.xml", _drawable, $"@drawable/{outputImage}");
+			AssertImageFile("uno_splash_image_v31.xml", _drawable_v31, $"@drawable/{outputImage}");
 		}
 
 		void AssertColorsFile(string expectedFilename, string color)
 		{
 			var expectedXml = File.ReadAllText($"testdata/androidsplash/" + expectedFilename)
-				.Replace("{maui_splash_color}", color, StringComparison.OrdinalIgnoreCase);
+				.Replace("{uno_splash_color}", color, StringComparison.OrdinalIgnoreCase);
 
 			var actual = XElement.Load(_colors);
 			var expected = XElement.Parse(expectedXml);
