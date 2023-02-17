@@ -372,41 +372,40 @@
 		<!-- iOS, but not Catalyst -->
 		<GenerateSplashStoryboard
             Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'"
-            OutputFile="$(_MauiIntermediateStoryboard)"
+            OutputFile="$(_UnoIntermediateStoryboard)"
             MauiSplashScreen="@(MauiSplashScreen)"
         />
 		<PropertyGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'">
-			<_MauiStoryboardForPList>$(_MauiIntermediateStoryboard)</_MauiStoryboardForPList>
+			<_UnoIntermediateSplashScreen>$(_UnoIntermediateStoryboard)</_UnoIntermediateSplashScreen>
 		</PropertyGroup>
 		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'">
 			<UnoImage Include="@(MauiSplashScreen)" />
-			<InterfaceDefinition Include="$(_MauiIntermediateStoryboard)" Link="$([System.IO.Path]::GetFileName($(_MauiIntermediateStoryboard)))" />
-			<FileWrites Include="$(_MauiIntermediateStoryboard)" />
+			<InterfaceDefinition Include="$(_UnoIntermediateStoryboard)" Link="$([System.IO.Path]::GetFileName($(_UnoIntermediateStoryboard)))" />
+			<FileWrites Include="$(_UnoIntermediateStoryboard)" />
 		</ItemGroup>
 
 		<!-- Create a partial info.plist for iOS -->
 		<CreatePartialInfoPlistTask
-            Condition="'$(_ResizetizerIsiOSApp)' == 'True' And ('@(_MauiFontCopied)' != '' Or '$(_MauiStoryboardForPList)' != '')"
-            IntermediateOutputPath="$(_MauiIntermediateFonts)"
-            PlistName="MauiInfo.plist"
-            Storyboard="$(_MauiStoryboardForPList)"
-            CustomFonts="@(_MauiFontCopied)" />
+            Condition="'$(_ResizetizerIsiOSApp)' == 'True' And '$(_UnoIntermediateSplashScreen)' != ''"
+            IntermediateOutputPath="$(_MauiIntermediateSplashScreen)"
+            PlistName="UnoInfo.plist"
+            Storyboard="$(_UnoIntermediateSplashScreen)" />
 
 		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' ">
-			<_MauiFontPListFiles Include="$(_MauiIntermediateFonts)MauiInfo.plist" Condition="Exists('$(_MauiIntermediateFonts)MauiInfo.plist')" />
-			<PartialAppManifest Include="@(_MauiFontPListFiles)" Condition="'@(_MauiFontPListFiles)' != ''" />
-			<FileWrites Include="@(_MauiFontPListFiles)" Condition="'@(_MauiFontPListFiles)' != ''" />
+			<_UnoSplashPListFiles Include="$(_MauiIntermediateSplashScreen)UnoInfo.plist" Condition="Exists('$(_MauiIntermediateSplashScreen)UnoInfo.plist')" />
+			<PartialAppManifest Include="@(_UnoSplashPListFiles)" Condition="'@(_UnoSplashPListFiles)' != ''" />
+			<FileWrites Include="@(_UnoSplashPListFiles)" Condition="'@(_UnoSplashPListFiles)' != ''" />
 		</ItemGroup>
 
 		<ItemGroup Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'">
-			<_MauiFontsToCopyToBuildServer Include="@(_MauiFontBundleResource);@(_MauiFontPListFiles)">
+			<_UnoAssetsToCopyToBuildServer Include="@(_UnoSplashPListFiles)">
 				<TargetPath>%(Identity)</TargetPath>
-			</_MauiFontsToCopyToBuildServer>
+			</_UnoAssetsToCopyToBuildServer>
 		</ItemGroup>
 		<CopyFilesToBuildServer
             Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'"
             SessionId="$(BuildSessionId)"
-            Files="@(_MauiFontsToCopyToBuildServer)" />
+            Files="@(_UnoAssetsToCopyToBuildServer)" />
 
 		<!-- UWP / WinUI -->
 		<GenerateSplashAssets
