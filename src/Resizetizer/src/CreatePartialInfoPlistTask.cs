@@ -27,6 +27,9 @@ namespace Uno.Resizetizer
 
 		public override bool Execute()
 		{
+#if DEBUG_RESIZETIZER
+			System.Diagnostics.Debugger.Launch();
+#endif
 			try
 			{
 				Directory.CreateDirectory(IntermediateOutputPath);
