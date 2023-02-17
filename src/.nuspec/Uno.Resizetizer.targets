@@ -71,6 +71,7 @@
 		<_MauiIntermediateSplashScreen>$(_ResizetizerIntermediateOutputRoot)sp\</_MauiIntermediateSplashScreen>
 		<_MauiIntermediateManifest>$(_ResizetizerIntermediateOutputRoot)m\</_MauiIntermediateManifest>
 		<_MauiIntermediateStoryboard>$(_MauiIntermediateSplashScreen)MauiSplash.storyboard</_MauiIntermediateStoryboard>
+		<_MauiIntermediateFonts>$(_ResizetizerIntermediateOutputRoot)f\</_MauiIntermediateFonts>
 
 		<_ResizetizerPlatformIdentifier>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</_ResizetizerPlatformIdentifier>
 		<_ResizetizerNoTargetPlatform Condition="'$(_ResizetizerPlatformIdentifier)' == ''">True</_ResizetizerNoTargetPlatform>
@@ -383,6 +384,30 @@
 			<InterfaceDefinition Include="$(_MauiIntermediateStoryboard)" Link="$([System.IO.Path]::GetFileName($(_MauiIntermediateStoryboard)))" />
 			<FileWrites Include="$(_MauiIntermediateStoryboard)" />
 		</ItemGroup>
+
+		<!-- Create a partial info.plist for iOS -->
+		<CreatePartialInfoPlistTask
+            Condition="'$(_ResizetizerIsiOSApp)' == 'True' And ('@(_MauiFontCopied)' != '' Or '$(_MauiStoryboardForPList)' != '')"
+            IntermediateOutputPath="$(_MauiIntermediateFonts)"
+            PlistName="MauiInfo.plist"
+            Storyboard="$(_MauiStoryboardForPList)"
+            CustomFonts="@(_MauiFontCopied)" />
+
+		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' ">
+			<_MauiFontPListFiles Include="$(_MauiIntermediateFonts)MauiInfo.plist" Condition="Exists('$(_MauiIntermediateFonts)MauiInfo.plist')" />
+			<PartialAppManifest Include="@(_MauiFontPListFiles)" Condition="'@(_MauiFontPListFiles)' != ''" />
+			<FileWrites Include="@(_MauiFontPListFiles)" Condition="'@(_MauiFontPListFiles)' != ''" />
+		</ItemGroup>
+
+		<ItemGroup Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'">
+			<_MauiFontsToCopyToBuildServer Include="@(_MauiFontBundleResource);@(_MauiFontPListFiles)">
+				<TargetPath>%(Identity)</TargetPath>
+			</_MauiFontsToCopyToBuildServer>
+		</ItemGroup>
+		<CopyFilesToBuildServer
+            Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'"
+            SessionId="$(BuildSessionId)"
+            Files="@(_MauiFontsToCopyToBuildServer)" />
 
 		<!-- UWP / WinUI -->
 		<GenerateSplashAssets
