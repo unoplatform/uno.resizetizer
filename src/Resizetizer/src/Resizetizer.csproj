@@ -21,7 +21,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="Resources\MauiSplash.storyboard" LogicalName="MauiSplash.storyboard" />
+		<EmbeddedResource Include="Resources\UnoSplash.storyboard" LogicalName="UnoSplash.storyboard" />
 	</ItemGroup>
 
 	<Import Project="ResizetizerPackages.projitems" />
