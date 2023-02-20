@@ -53,7 +53,7 @@ namespace Uno.Resizetizer
 
 		internal static void SubstituteStoryboard(TextWriter writer, string image, string r, string g, string b, string a)
 		{
-			using var resourceStream = typeof(GenerateSplashStoryboard).Assembly.GetManifestResourceStream("MauiSplash.storyboard");
+			using var resourceStream = typeof(GenerateSplashStoryboard).Assembly.GetManifestResourceStream("UnoSplash.storyboard");
 			using var reader = new StreamReader(resourceStream);
 
 			while (!reader.EndOfStream)

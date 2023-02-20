@@ -7,8 +7,6 @@ namespace Uno.Resizetizer
 {
 	public class CreatePartialInfoPlistTask : Task
 	{
-		public ITaskItem[] CustomFonts { get; set; }
-
 		[Required]
 		public string IntermediateOutputPath { get; set; }
 
@@ -27,6 +25,9 @@ namespace Uno.Resizetizer
 
 		public override bool Execute()
 		{
+#if DEBUG_RESIZETIZER
+			System.Diagnostics.Debugger.Launch();
+#endif
 			try
 			{
 				Directory.CreateDirectory(IntermediateOutputPath);
@@ -36,21 +37,6 @@ namespace Uno.Resizetizer
 				using (var f = File.CreateText(plistFilename))
 				{
 					f.WriteLine(plistHeader);
-
-					if (CustomFonts != null && CustomFonts.Length > 0)
-					{
-						f.WriteLine("  <key>UIAppFonts</key>");
-						f.WriteLine("  <array>");
-
-						foreach (var font in CustomFonts)
-						{
-							var fontFile = new FileInfo(font.ItemSpec);
-
-							f.WriteLine("	<string>" + fontFile.Name + "</string>");
-						}
-
-						f.WriteLine("  </array>");
-					}
 
 					if (!string.IsNullOrEmpty(Storyboard))
 					{
