@@ -1,5 +1,7 @@
 ﻿using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using SkiaSharp;
+using System;
 using System.IO;
 using System.Linq;
 
@@ -67,15 +69,37 @@ public class GenerateWasmSplashAssets : Task
 		{
 			var line = reader.ReadLine();
 			if (line.TrimStart().StartsWith("splashScreenImage:"))
-				line = ProcessLine(line, info);
+				line = ProcessSplashScreenImageLine(line, info);
+			if (line.TrimStart().StartsWith("splashScreenColor:"))
+				line = ProcessSplashScreenColor(line, info);
 
 			writer.WriteLine(line);
 		}
 	}
 
-	static string ProcessLine(in string line, ResizeImageInfo info)
+	static string ProcessSplashScreenColor(string line, ResizeImageInfo info)
 	{
-		var newLine = $"    splashScreenImage: \"{info.OutputPath}/{info.OutputName}.png\",";
+		var color = ColorWithoutAlpha(info.Color);
+		var newLine = $"    splashScreenColor: \"{color}\",";
+		return line.Replace(line, newLine);
+
+
+		// Wasm doesn't support alpha
+		static string ColorWithoutAlpha(SKColor? color)
+		{
+			var result = color?.ToString() ?? "transparent";
+			if (!result.StartsWith("#"))
+				return result;
+
+			// Getting everything after '#ff'
+			result = result.Substring(3);
+			return "#" + result;
+		}
+	}
+
+	static string ProcessSplashScreenImageLine(in string line, ResizeImageInfo info)
+	{
+		var newLine = $"    splashScreenImage: \"{info.OutputName}.scale-400.png\",";
 		return line.Replace(line, newLine);
 	}
 }
