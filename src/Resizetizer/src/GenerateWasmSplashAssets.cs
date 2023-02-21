@@ -70,7 +70,7 @@ public class GenerateWasmSplashAssets : Task
 			var line = reader.ReadLine();
 			if (line.TrimStart().StartsWith("splashScreenImage:"))
 				line = ProcessSplashScreenImageLine(line, info);
-			if (line.TrimStart().StartsWith("splashScreenColor:"))
+			else if (line.TrimStart().StartsWith("splashScreenColor:"))
 				line = ProcessSplashScreenColor(line, info);
 
 			writer.WriteLine(line);
