@@ -359,14 +359,14 @@
             Text="More than one 'MauiSplashScreen' is defined; only the first will be used."
         />
 
-		<!-- Wasm -->
+		 <!--Wasm--> 
 
-		<!-- <ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True'">
-
-			<_WasmAppManifest Include="@(EmbeddedResource)"
-							  Condition="%(EmbeddedResource.EndsWith('js'))"/>
+		 <ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True'">
+			<UnoImage Include="@(MauiSplashScreen)" />
+			<!--<_WasmAppManifest Include="@(EmbeddedResource)"
+							  Condition="%(EmbeddedResource.EndsWith('js'))"/>-->
 		</ItemGroup>
-		 -->
+		 
 		<GenerateWasmSplashAssets
 			Condition="$(_ResizetizerIsWasmApp) == 'True'"
 			IntermediateOutputPath="$(_MauiIntermediateSplashScreen)"
