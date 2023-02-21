@@ -374,6 +374,12 @@
 			MauiSplashScreen="@(MauiSplashScreen)"
 			OutputFile="$(_UnoIntermediateAppManifestWasm)"
 			/>
+		
+		<ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True'">
+			<EmbeddedResource Remove="WasmScripts\AppManifest.js" />
+			<EmbeddedResource Include="$(_UnoIntermediateAppManifestWasm)"
+							  Link="WasmScripts\AppManifest.js"/>
+		</ItemGroup>
 
 		<!-- Android -->
 		<GenerateSplashAndroidResources
