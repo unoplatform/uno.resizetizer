@@ -20,6 +20,9 @@ public class GenerateWasmSplashAssets : Task
 	[Required]
 	public ITaskItem[] EmbeddedResources { get; set; }
 
+	[Output]
+	public ITaskItem UserAppManifest { get; set; }
+
 
 	public override bool Execute()
 	{
@@ -42,9 +45,15 @@ public class GenerateWasmSplashAssets : Task
 
 		var info = ResizeImageInfo.Parse(splash);
 
-		var appManifestJsPath = EmbeddedResources.FirstOrDefault(x => x.ToString().EndsWith(".js"));
+		UserAppManifest = EmbeddedResources.FirstOrDefault(x => 
+		{
+			var name = x.ToString();
 
-		if (appManifestJsPath is null)
+			return name.EndsWith("AppManifest.js", StringComparison.OrdinalIgnoreCase)
+			|| name.EndsWith("AppManifest", StringComparison.OrdinalIgnoreCase);
+		});
+
+		if (UserAppManifest is null)
 		{
 			Log.LogWarning("Didn't find AppManifest.js file.");
 			return false;
@@ -55,7 +64,7 @@ public class GenerateWasmSplashAssets : Task
 
 		using var writer = File.CreateText(OutputFile);
 
-		ProcessAppManifestFile(appManifestJsPath.ToString(), info, writer);
+		ProcessAppManifestFile(UserAppManifest.ToString(), info, writer);
 
 		return true;
 	}

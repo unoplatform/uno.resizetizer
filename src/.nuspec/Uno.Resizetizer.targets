@@ -363,22 +363,24 @@
 
 		 <ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True'">
 			<UnoImage Include="@(MauiSplashScreen)" />
-			<!--<_WasmAppManifest Include="@(EmbeddedResource)"
-							  Condition="%(EmbeddedResource.EndsWith('js'))"/>-->
 		</ItemGroup>
-		 
+
 		<GenerateWasmSplashAssets
 			Condition="$(_ResizetizerIsWasmApp) == 'True'"
 			IntermediateOutputPath="$(_MauiIntermediateSplashScreen)"
 			EmbeddedResources="@(EmbeddedResource)"
 			MauiSplashScreen="@(MauiSplashScreen)"
-			OutputFile="$(_UnoIntermediateAppManifestWasm)"
-			/>
+			OutputFile="$(_UnoIntermediateAppManifestWasm)">
+			
+			<Output PropertyName="UserAppManifest"
+					TaskParameter="UserAppManifest" />
+			
+		</GenerateWasmSplashAssets>
 		
-		<ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True'">
-			<EmbeddedResource Remove="WasmScripts\AppManifest.js" />
+		<ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True' And $(UserAppManifest) != ''">
+			<EmbeddedResource Remove="$(UserAppManifest)" />
 			<EmbeddedResource Include="$(_UnoIntermediateAppManifestWasm)"
-							  Link="WasmScripts\AppManifest.js"/>
+							  Link="$(UserAppManifest)"/>
 		</ItemGroup>
 
 		<!-- Android -->
