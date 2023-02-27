@@ -51,6 +51,9 @@
 	<UsingTask
 		  AssemblyFile="$(_ResizetizerTaskAssemblyName)"
 		  TaskName="Uno.Resizetizer.GenerateTizenManifest"  />
+	<UsingTask
+        AssemblyFile="$(_ResizetizerTaskAssemblyName)"
+        TaskName="Uno.Resizetizer.GenerateWasmSplashAssets"  />
 
 	<PropertyGroup>
 		<CleanDependsOn>
@@ -71,6 +74,7 @@
 		<_MauiIntermediateSplashScreen>$(_ResizetizerIntermediateOutputRoot)sp\</_MauiIntermediateSplashScreen>
 		<_MauiIntermediateManifest>$(_ResizetizerIntermediateOutputRoot)m\</_MauiIntermediateManifest>
 		<_UnoIntermediateStoryboard>$(_MauiIntermediateSplashScreen)UnoSplash.storyboard</_UnoIntermediateStoryboard>
+		<_UnoIntermediateAppManifestWasm>$(_MauiIntermediateSplashScreen)UnoAppManifest.js</_UnoIntermediateAppManifestWasm>
 
 		<_ResizetizerPlatformIdentifier>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</_ResizetizerPlatformIdentifier>
 		<_ResizetizerNoTargetPlatform Condition="'$(_ResizetizerPlatformIdentifier)' == ''">True</_ResizetizerNoTargetPlatform>
@@ -355,6 +359,30 @@
             Text="More than one 'MauiSplashScreen' is defined; only the first will be used."
         />
 
+		 <!--Wasm--> 
+
+		 <ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True'">
+			<UnoImage Include="@(MauiSplashScreen)" />
+		</ItemGroup>
+
+		<GenerateWasmSplashAssets
+			Condition="$(_ResizetizerIsWasmApp) == 'True'"
+			IntermediateOutputPath="$(_MauiIntermediateSplashScreen)"
+			EmbeddedResources="@(EmbeddedResource)"
+			MauiSplashScreen="@(MauiSplashScreen)"
+			OutputFile="$(_UnoIntermediateAppManifestWasm)">
+			
+			<Output PropertyName="UserAppManifest"
+					TaskParameter="UserAppManifest" />
+			
+		</GenerateWasmSplashAssets>
+		
+		<ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True' And $(UserAppManifest) != ''">
+			<EmbeddedResource Remove="$(UserAppManifest)" />
+			<EmbeddedResource Include="$(_UnoIntermediateAppManifestWasm)"
+							  Link="$(UserAppManifest)"/>
+		</ItemGroup>
+
 		<!-- Android -->
 		<GenerateSplashAndroidResources
             Condition="'$(_ResizetizerIsAndroidApp)' == 'True'"
@@ -420,7 +448,7 @@
 			</ContentWithTargetPath>
 			<FileWrites Include="@(_MauiSplashAssets)" />
 		</ItemGroup>
-
+		
 		<!-- Tizen -->
 		<TizenSplashUpdater
             Condition="'$(_ResizetizerIsTizenApp)' == 'True'"
