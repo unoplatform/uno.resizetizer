@@ -370,7 +370,7 @@
 
 		 <!--Wasm--> 
 
-		 <ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True'">
+		 <ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True' Or $(_ResizetizerIsSkiaApp) == 'True' ">
 			<UnoImage Include="@(MauiSplashScreen)" />
 		</ItemGroup>
 
