@@ -322,6 +322,10 @@
 			<FileWrites Include="$(_ResizetizerInputsFile)" />
 			<FileWrites Include="$(_MauiSplashInputsFile)" />
 		</ItemGroup>
+		<ItemGroup>
+			<_SkiaManifest Include="@(EmbeddedResource)"
+						   Condition="%(Extension) == '.appxmanifest'"/>
+		</ItemGroup>
 	</Target>
 
 	<Target Name="ProcessUnoAssets">
@@ -437,11 +441,11 @@
 
 		<!-- UWP / WinUI -->
 		<GenerateSplashAssets
-            Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'"
+            Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True'"
             IntermediateOutputPath="$(_MauiIntermediateSplashScreen)"
             MauiSplashScreen="@(MauiSplashScreen)"
         />
-		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
+		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True'">
 			<_MauiSplashAssets Include="$(_MauiIntermediateSplashScreen)**\*" />
 			<ContentWithTargetPath Include="@(_MauiSplashAssets)">
 				<TargetPath>%(_MauiSplashAssets.Filename)%(_MauiSplashAssets.Extension)</TargetPath>
@@ -609,13 +613,14 @@
 	<Target Name="_ValidatePresenceOfAppxManifestItemsBeforeTarget"
             BeforeTargets="_ValidatePresenceOfAppxManifestItems"
             DependsOnTargets="MauiGeneratePackageAppxManifest"
-            Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'" />
+            Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True'" />
 
 	<Target Name="MauiGeneratePackageAppxManifest"
-            Condition="('$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True') And ('@(AppxManifest)@(_MauiAppxManifest)' !='')"
+            Condition="('$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_MauiAppxManifest)' !='' Or @(_SkiaManifest) != '')"
             DependsOnTargets="$(MauiGeneratePackageAppxManifestDependsOnTargets)"
             Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);$(_MauiSplashInputsFile);@(AppxManifest);@(_MauiAppxManifest)"
             Outputs="$(_MauiManifestStampFile);$(_MauiIntermediateManifest)Package.appxmanifest">
+
 
 		<PropertyGroup>
 			<_MauiWindowsApplicationId Condition="'$(_MauiWindowsApplicationId)' == '' and '$(ApplicationIdGuid)' != ''">$(ApplicationIdGuid)</_MauiWindowsApplicationId>
@@ -624,7 +629,7 @@
 
 		<GeneratePackageAppxManifest
             IntermediateOutputPath="$(_MauiIntermediateManifest)"
-            AppxManifest="@(AppxManifest);@(_MauiAppxManifest)"
+            AppxManifest="@(AppxManifest);@(_MauiAppxManifest);@(_SkiaManifest)"
             GeneratedFilename="Package.appxmanifest"
             ApplicationId="$(_MauiWindowsApplicationId)"
             ApplicationDisplayVersion="$(ApplicationDisplayVersion)"
@@ -655,7 +660,7 @@
 	<Target Name="_GetAssemblyAttributesBeforeTarget"
             BeforeTargets="GetAssemblyAttributes"
             DependsOnTargets="MauiGeneratePackageAppxManifest;_MauiGetAssemblyAttributesFromAppxManifest"
-            Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'" />
+            Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True'" />
 
 	<Target Name="_MauiGetAssemblyAttributesFromAppxManifest"
             Condition="('@(AppxManifest)@(_MauiAppxManifest)' !='')">
