@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Uno.Resizetizer;
 public class GenerateWasmSplashAssets : Task
@@ -49,7 +47,7 @@ public class GenerateWasmSplashAssets : Task
 
 		var info = ResizeImageInfo.Parse(splash);
 
-		UserAppManifest = EmbeddedResources.FirstOrDefault(x => 
+		UserAppManifest = EmbeddedResources.FirstOrDefault(x =>
 		{
 			var name = x.ToString();
 
@@ -81,7 +79,7 @@ public class GenerateWasmSplashAssets : Task
 
 		var dic = FindWhatINeed(fileToProcess);
 
-		dic["splashScreenImage"] = $"{info.OutputName}.scale-400.png";
+		dic["splashScreenImage"] = $"\"{info.OutputName}.scale-400.png\"";
 		dic["splashScreenColor"] = ProcessSplashScreenColor(info);
 
 		WriteToFile(dic, writer);
@@ -94,7 +92,7 @@ public class GenerateWasmSplashAssets : Task
 		{
 			var key = kvp.Key;
 			var value = kvp.Value;
-			sb.AppendLine($"    {key}: \"{value}\",");
+			sb.AppendLine($"    {key}: {value},");
 		}
 		sb.Append('}');
 
@@ -106,36 +104,14 @@ public class GenerateWasmSplashAssets : Task
 	static Dictionary<string, string> FindWhatINeed(string fileToProcess)
 	{
 		var indexOfSymbol = fileToProcess.IndexOf('{');
-		var input = fileToProcess.Substring(indexOfSymbol);
-		// Remove whitespace and newlines from the input
-		input = input.Replace(" ", "").Replace("\r", "").Replace("\n", "");
+		var indexOfSymbolClose = fileToProcess.IndexOf('}');
+		var input = fileToProcess.Substring(++indexOfSymbol, indexOfSymbolClose - indexOfSymbol);
 
-		// Remove the opening and closing braces from the input
-		input = input.TrimStart('{').TrimEnd('}');
-
-		var dictionary = new Dictionary<string, string>();
-
-		// Split the input into key-value pairs
-		var pairs = input.Split(',');
-
-		foreach (var pair in pairs)
-		{
-			// Split each key-value pair into its components
-			var components = pair.Split(':');
-
-			// Remove the quotes from the key and value
-			var key = components[0].Replace("\"", "");
-			var value = components[1].Replace("\"", "");
-
-			// Add the key-value pair to the dictionary
-			dictionary.Add(key, value);
-		}
-
-		// Print the dictionary
-		foreach (var pair in dictionary)
-		{
-			Console.WriteLine($"{pair.Key}: {pair.Value}");
-		}
+		var dictionary = (from pair in input.Split(',')
+						  let component = pair.Split(':')
+						  where component.Length == 2
+						  select new { Key = component[0].Trim(), Value = component[1].Trim() })
+					  .ToDictionary(x => x.Key, x => x.Value);
 
 		return dictionary;
 	}
@@ -143,7 +119,7 @@ public class GenerateWasmSplashAssets : Task
 	static string ProcessSplashScreenColor(ResizeImageInfo info)
 	{
 		var color = ColorWithoutAlpha(info.Color);
-		return $"{color}";
+		return $"\"{color}\"";
 	}
 
 	// Wasm doesn't support alpha
