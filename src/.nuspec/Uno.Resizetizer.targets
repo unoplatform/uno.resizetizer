@@ -132,10 +132,15 @@
 		</ResizetizeAfterTargets>
 	</PropertyGroup>
 
+	<!-- Skia -->
+	<PropertyGroup Condition="'$(_ResizetizerIsSkiaApp)' == 'True'">
+		<ResizetizerIncludeSelfProject>false</ResizetizerIncludeSelfProject>
+	</PropertyGroup>
+
 	<!-- Wasm -->
 	<PropertyGroup Condition="'$(_ResizetizerIsWasmApp)' == 'True'">
 		<ResizetizerPlatformType>wasm</ResizetizerPlatformType>
-		<ResizetizerIncludeSelfProject>true</ResizetizerIncludeSelfProject>
+		<ResizetizerIncludeSelfProject>false</ResizetizerIncludeSelfProject>
 
 		<ResizetizeBeforeTargets>
 			$(ResizetizeBeforeTargets);
