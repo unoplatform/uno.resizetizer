@@ -5,7 +5,7 @@
 		<AvailableItemName Include="UnoAsset" />
 		<AvailableItemName Include="UnoImage" />
 		<AvailableItemName Include="UnoIcon" />
-		<AvailableItemName Include="MauiSplashScreen" />
+		<AvailableItemName Include="UnoSplashScreen" />
 	</ItemGroup>
 
 	<PropertyGroup>
@@ -111,7 +111,7 @@
 		<ResizetizeDependsOnTargets>
 			$(ResizetizeDependsOnTargets);
 			ResizetizeCollectItems;
-			ProcessMauiSplashScreens;
+			ProcessUnoSplashScreens;
 		</ResizetizeDependsOnTargets>
 	</PropertyGroup>
 
@@ -185,7 +185,7 @@
 		</ResizetizeAfterTargets>
 
 		<CollectAppManifestsDependsOn>
-			ProcessMauiSplashScreens;
+			ProcessUnoSplashScreens;
 			$(CollectAppManifestsDependsOn)
 		</CollectAppManifestsDependsOn>
 	</PropertyGroup>
@@ -263,7 +263,7 @@
 			<UnoItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoImage.ForegroundFile)'))" ProjectDirectory="$(MSBuildProjectDirectory)" />
 			<UnoItem Include="@(UnoIcon)" ItemGroupName="UnoIcon" Condition="'%(UnoIcon.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoIcon.ForegroundFile)'))" />
 			<UnoItem Include="@(UnoAsset)" ItemGroupName="UnoAsset" ProjectDirectory="$(MSBuildProjectDirectory)" />
-			<UnoItem Include="@(MauiSplashScreen)" ItemGroupName="MauiSplashScreen" />
+			<UnoItem Include="@(UnoSplashScreen)" ItemGroupName="UnoSplashScreen" />
 		</ItemGroup>
 
 		<ConvertToAbsolutePath Paths="@(UnoItem)">
@@ -294,9 +294,9 @@
 			<UnoAsset
                 Include="@(ImportedUnoItem)"
                 Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoAsset'" />
-			<MauiSplashScreen
+			<UnoSplashScreen
                 Include="@(ImportedUnoItem)"
-                Condition="'%(ImportedUnoItem.ItemGroupName)' == 'MauiSplashScreen'" />
+                Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoSplashScreen'" />
 		</ItemGroup>
 
 		<!-- Make sure animated gifs are not resized by default -->
@@ -319,7 +319,7 @@
 
 		<WriteLinesToFile
             File="$(_MauiSplashInputsFile)"
-            Lines="@(MauiSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);ForegroundScale=%(ForegroundScale)')"
+            Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);ForegroundScale=%(ForegroundScale)')"
             Overwrite="true"
             WriteOnlyWhenDifferent="true" />
 
@@ -358,27 +358,27 @@
 		</GetUnoAssetPath>
 	</Target>
 
-	<Target Name="ProcessMauiSplashScreens"
-        Condition="'@(MauiSplashScreen)' != ''"
-        Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_MauiSplashInputsFile);@(MauiSplashScreen)"
+	<Target Name="ProcessUnoSplashScreens"
+        Condition="'@(UnoSplashScreen)' != ''"
+        Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_MauiSplashInputsFile);@(UnoSplashScreen)"
         Outputs="$(_MauiSplashStampFile)">
 
 		<Warning
-            Condition="'@(MauiSplashScreen->Count())' &gt; '1'"
-            Text="More than one 'MauiSplashScreen' is defined; only the first will be used."
+            Condition="'@(UnoSplashScreen->Count())' &gt; '1'"
+            Text="More than one 'UnoSplashScreen' is defined; only the first will be used."
         />
 
 		 <!--Wasm--> 
 
 		 <ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True' Or $(_ResizetizerIsSkiaApp) == 'True' ">
-			<UnoImage Include="@(MauiSplashScreen)" />
+			<UnoImage Include="@(UnoSplashScreen)" />
 		</ItemGroup>
 
 		<GenerateWasmSplashAssets
 			Condition="$(_ResizetizerIsWasmApp) == 'True'"
 			IntermediateOutputPath="$(_MauiIntermediateSplashScreen)"
 			EmbeddedResources="@(EmbeddedResource)"
-			MauiSplashScreen="@(MauiSplashScreen)"
+			UnoSplashScreen="@(UnoSplashScreen)"
 			OutputFile="$(_UnoIntermediateAppManifestWasm)">
 			
 			<Output PropertyName="UserAppManifest"
@@ -396,10 +396,10 @@
 		<GenerateSplashAndroidResources
             Condition="'$(_ResizetizerIsAndroidApp)' == 'True'"
             IntermediateOutputPath="$(_MauiIntermediateSplashScreen)"
-            MauiSplashScreen="@(MauiSplashScreen)"
+            UnoSplashScreen="@(UnoSplashScreen)"
         />
 		<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
-			<UnoImage Include="@(MauiSplashScreen)" />
+			<UnoImage Include="@(UnoSplashScreen)" />
 			<LibraryResourceDirectories Condition="Exists('$(_MauiIntermediateSplashScreen)')" Include="$(_MauiIntermediateSplashScreen)">
 				<StampFile>$(_ResizetizerStampFile)</StampFile>
 			</LibraryResourceDirectories>
@@ -410,13 +410,13 @@
 		<GenerateSplashStoryboard
             Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'"
             OutputFile="$(_UnoIntermediateStoryboard)"
-            MauiSplashScreen="@(MauiSplashScreen)"
+            UnoSplashScreen="@(UnoSplashScreen)"
         />
 		<PropertyGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'">
 			<_UnoIntermediateSplashScreen>$(_UnoIntermediateStoryboard)</_UnoIntermediateSplashScreen>
 		</PropertyGroup>
 		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'">
-			<UnoImage Include="@(MauiSplashScreen)" />
+			<UnoImage Include="@(UnoSplashScreen)" />
 			<InterfaceDefinition Include="$(_UnoIntermediateStoryboard)" Link="$([System.IO.Path]::GetFileName($(_UnoIntermediateStoryboard)))" />
 			<FileWrites Include="$(_UnoIntermediateStoryboard)" />
 		</ItemGroup>
@@ -448,7 +448,7 @@
 		<GenerateSplashAssets
             Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'"
             IntermediateOutputPath="$(_MauiIntermediateSplashScreen)"
-            MauiSplashScreen="@(MauiSplashScreen)"
+            UnoSplashScreen="@(UnoSplashScreen)"
         />
 		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True'">
 			<_MauiSplashAssets Include="$(_MauiIntermediateSplashScreen)**\*" />
@@ -462,12 +462,12 @@
 		<TizenSplashUpdater
             Condition="'$(_ResizetizerIsTizenApp)' == 'True'"
             IntermediateOutputPath="$(_MauiIntermediateSplashScreen)"
-            MauiSplashScreen="@(MauiSplashScreen)" />
+            UnoSplashScreen="@(UnoSplashScreen)" />
 
 		<ItemGroup Condition="'$(_ResizetizerIsTizenApp)' == 'True'">
-			<UnoImage Include="@(MauiSplashScreen)" />
-			<_MauiSplashScreens Include="$(_MauiIntermediateSplashScreen)splash\*" />
-			<TizenTpkUserIncludeFiles Include="@(_MauiSplashScreens)" TizenTpkSubDir="shared\res\splash" />
+			<UnoImage Include="@(UnoSplashScreen)" />
+			<_UnoSplashScreens Include="$(_MauiIntermediateSplashScreen)splash\*" />
+			<TizenTpkUserIncludeFiles Include="@(_UnoSplashScreens)" TizenTpkSubDir="shared\res\splash" />
 		</ItemGroup>
 		<MakeDir Directories="$(IntermediateOutputPath)"/>
 		<!-- Stamp file for Outputs -->
@@ -641,7 +641,7 @@
             ApplicationVersion="$(ApplicationVersion)"
             ApplicationTitle="$(ApplicationTitle)"
             AppIcon="@(UnoImage->WithMetadataValue('IsAppIcon', 'true'))"
-            SplashScreen="@(MauiSplashScreen)" />
+            SplashScreen="@(UnoSplashScreen)" />
 
 		<!-- replace user manifest -->
 		<ItemGroup Condition="'@(AppxManifest)' != ''">
@@ -735,7 +735,7 @@
             ApplicationVersion="$(ApplicationVersion)"
             ApplicationTitle="$(ApplicationTitle)"
             AppIcon="@(UnoImage->WithMetadataValue('IsAppIcon', 'true'))"
-            SplashScreen="@(MauiSplashScreen)" />
+            SplashScreen="@(UnoSplashScreen)" />
 
 		<!-- replace user manifest -->
 		<PropertyGroup>

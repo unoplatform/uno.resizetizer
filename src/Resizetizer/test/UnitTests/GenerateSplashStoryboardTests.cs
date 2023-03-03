@@ -22,7 +22,7 @@ namespace Uno.Resizetizer.Tests
 			new()
 			{
 				OutputFile = _storyboard,
-				MauiSplashScreen = new[] { splash },
+				UnoSplashScreen = new[] { splash },
 				BuildEngine = this,
 			};
 

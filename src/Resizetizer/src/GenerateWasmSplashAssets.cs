@@ -17,7 +17,7 @@ public class GenerateWasmSplashAssets : Task
 	public string OutputFile { get; set; }
 
 	[Required]
-	public ITaskItem[] MauiSplashScreen { get; set; }
+	public ITaskItem[] UnoSplashScreen { get; set; }
 
 	[Required]
 	public ITaskItem[] EmbeddedResources { get; set; }
@@ -37,13 +37,13 @@ public class GenerateWasmSplashAssets : Task
 		System.Diagnostics.Debugger.Launch();
 
 #endif
-		if (MauiSplashScreen is null)
+		if (UnoSplashScreen is null)
 		{
-			Log.LogWarning("Didn't find MauiSplashScreen.");
+			Log.LogWarning("Didn't find UnoSplashScreen.");
 			return false;
 		}
 
-		var splash = MauiSplashScreen[0];
+		var splash = UnoSplashScreen[0];
 
 		var info = ResizeImageInfo.Parse(splash);
 

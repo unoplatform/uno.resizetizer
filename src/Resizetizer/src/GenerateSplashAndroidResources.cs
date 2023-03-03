@@ -16,14 +16,14 @@ namespace Uno.Resizetizer
 		public string IntermediateOutputPath { get; set; }
 
 		[Required]
-		public ITaskItem[] MauiSplashScreen { get; set; }
+		public ITaskItem[] UnoSplashScreen { get; set; }
 
 		public override bool Execute()
 		{
 #if DEBUG_RESIZETIZER
 			System.Diagnostics.Debugger.Launch();
 #endif
-			var splash = MauiSplashScreen[0];
+			var splash = UnoSplashScreen[0];
 
 			var info = ResizeImageInfo.Parse(splash);
 

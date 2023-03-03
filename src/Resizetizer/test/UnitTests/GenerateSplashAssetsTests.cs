@@ -14,7 +14,7 @@ namespace Uno.Resizetizer.Tests
 			new()
 			{
 				IntermediateOutputPath = DestinationDirectory,
-				MauiSplashScreen = new[] { splash },
+				UnoSplashScreen = new[] { splash },
 				BuildEngine = this,
 			};
 
