@@ -224,10 +224,10 @@
 			AssignTargetPaths;
 		</ResizetizeBeforeTargets>
 
-		<MauiGeneratePackageAppxManifestDependsOnTargets>
-			$(MauiGeneratePackageAppxManifestDependsOnTargets);
+		<UnoGeneratePackageAppxManifestDependsOnTargets>
+			$(UnoGeneratePackageAppxManifestDependsOnTargets);
 			ResizetizeCollectItems;
-		</MauiGeneratePackageAppxManifestDependsOnTargets>
+		</UnoGeneratePackageAppxManifestDependsOnTargets>
 	</PropertyGroup>
 
 	<!-- WPF/ SKIA -->
@@ -622,7 +622,7 @@
 
 	<Target Name="MauiGeneratePackageAppxManifest"
             Condition="('$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_MauiAppxManifest)' !='' Or @(_SkiaManifest) != '')"
-            DependsOnTargets="$(MauiGeneratePackageAppxManifestDependsOnTargets)"
+            DependsOnTargets="$(UnoGeneratePackageAppxManifestDependsOnTargets)"
             Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);$(_UnoSplashInputsFile);@(AppxManifest);@(_MauiAppxManifest)"
             Outputs="$(_UnoManifestStampFile);$(_UnoIntermediateManifest)Package.appxmanifest">
 
