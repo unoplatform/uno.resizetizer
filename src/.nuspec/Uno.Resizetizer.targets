@@ -451,11 +451,11 @@
             UnoSplashScreen="@(UnoSplashScreen)"
         />
 		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True'">
-			<_MauiSplashAssets Include="$(_UnoIntermediateSplashScreen)**\*" />
-			<ContentWithTargetPath Include="@(_MauiSplashAssets)">
-				<TargetPath>%(_MauiSplashAssets.Filename)%(_MauiSplashAssets.Extension)</TargetPath>
+			<_UnoSplashAssets Include="$(_UnoIntermediateSplashScreen)**\*" />
+			<ContentWithTargetPath Include="@(_UnoSplashAssets)">
+				<TargetPath>%(_UnoSplashAssets.Filename)%(_UnoSplashAssets.Extension)</TargetPath>
 			</ContentWithTargetPath>
-			<FileWrites Include="@(_MauiSplashAssets)" />
+			<FileWrites Include="@(_UnoSplashAssets)" />
 		</ItemGroup>
 		
 		<!-- Tizen -->
