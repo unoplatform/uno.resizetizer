@@ -413,7 +413,7 @@
             UnoSplashScreen="@(UnoSplashScreen)"
         />
 		<PropertyGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'">
-			<_UnoIntermediateSplashScreen>$(_UnoIntermediateStoryboard)</_UnoIntermediateSplashScreen>
+			<_UnoIntermediateSplashScreenFile>$(_UnoIntermediateStoryboard)</_UnoIntermediateSplashScreenFile>
 		</PropertyGroup>
 		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'">
 			<UnoImage Include="@(UnoSplashScreen)" />
@@ -423,10 +423,10 @@
 
 		<!-- Create a partial info.plist for iOS -->
 		<CreatePartialInfoPlistTask
-            Condition="'$(_ResizetizerIsiOSApp)' == 'True' And '$(_UnoIntermediateSplashScreen)' != ''"
+            Condition="'$(_ResizetizerIsiOSApp)' == 'True' And '$(_UnoIntermediateSplashScreenFile)' != ''"
             IntermediateOutputPath="$(_MauiIntermediateSplashScreen)"
             PlistName="UnoInfo.plist"
-            Storyboard="$(_UnoIntermediateSplashScreen)" />
+            Storyboard="$(_UnoIntermediateSplashScreenFile)" />
 
 		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' ">
 			<_UnoSplashPListFiles Include="$(_MauiIntermediateSplashScreen)UnoInfo.plist" Condition="Exists('$(_MauiIntermediateSplashScreen)UnoInfo.plist')" />
