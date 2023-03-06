@@ -63,7 +63,7 @@
 
 		<_ResizetizerInputsFile>$(IntermediateOutputPath)UnoImage.inputs</_ResizetizerInputsFile>
 		<_ResizetizerStampFile>$(IntermediateOutputPath)UnoImage.stamp</_ResizetizerStampFile>
-		<_MauiSplashInputsFile>$(IntermediateOutputPath)mauisplash.inputs</_MauiSplashInputsFile>
+		<_UnoSplashInputsFile>$(IntermediateOutputPath)mauisplash.inputs</_UnoSplashInputsFile>
 		<_MauiSplashStampFile>$(IntermediateOutputPath)mauisplash.stamp</_MauiSplashStampFile>
 		<_MauiManifestStampFile>$(IntermediateOutputPath)mauimanifest.stamp</_MauiManifestStampFile>
 
@@ -318,14 +318,14 @@
             WriteOnlyWhenDifferent="true" />
 
 		<WriteLinesToFile
-            File="$(_MauiSplashInputsFile)"
+            File="$(_UnoSplashInputsFile)"
             Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);ForegroundScale=%(ForegroundScale)')"
             Overwrite="true"
             WriteOnlyWhenDifferent="true" />
 
 		<ItemGroup>
 			<FileWrites Include="$(_ResizetizerInputsFile)" />
-			<FileWrites Include="$(_MauiSplashInputsFile)" />
+			<FileWrites Include="$(_UnoSplashInputsFile)" />
 		</ItemGroup>
 		<ItemGroup>
 			<_SkiaManifest Include="@(EmbeddedResource)"
@@ -360,7 +360,7 @@
 
 	<Target Name="ProcessUnoSplashScreens"
         Condition="'@(UnoSplashScreen)' != ''"
-        Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_MauiSplashInputsFile);@(UnoSplashScreen)"
+        Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_UnoSplashInputsFile);@(UnoSplashScreen)"
         Outputs="$(_MauiSplashStampFile)">
 
 		<Warning
@@ -623,7 +623,7 @@
 	<Target Name="MauiGeneratePackageAppxManifest"
             Condition="('$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_MauiAppxManifest)' !='' Or @(_SkiaManifest) != '')"
             DependsOnTargets="$(MauiGeneratePackageAppxManifestDependsOnTargets)"
-            Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);$(_MauiSplashInputsFile);@(AppxManifest);@(_MauiAppxManifest)"
+            Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);$(_UnoSplashInputsFile);@(AppxManifest);@(_MauiAppxManifest)"
             Outputs="$(_MauiManifestStampFile);$(_MauiIntermediateManifest)Package.appxmanifest">
 
 
@@ -723,7 +723,7 @@
             Condition="'$(_ResizetizerIsTizenApp)' == 'True'"
             BeforeTargets="$(ResizetizeBeforeTargets)"
             AfterTargets="$(ResizetizeImages)"
-            Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);$(_MauiSplashInputsFile);$(TizenManifestFile)"
+            Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);$(_UnoSplashInputsFile);$(TizenManifestFile)"
             Outputs="$(_MauiManifestStampFile);$(_MauiIntermediateManifest)tizen-manifest.xml">
 
 		<GenerateTizenManifest
