@@ -72,7 +72,7 @@
 		<_UnoIntermediateImages>$(_ResizetizerIntermediateOutputRoot)r\</_UnoIntermediateImages>
 		<_UnoIntermediateAppIcon>$(_ResizetizerIntermediateOutputRoot)AppIcons\</_UnoIntermediateAppIcon>
 		<_UnoIntermediateSplashScreen>$(_ResizetizerIntermediateOutputRoot)sp\</_UnoIntermediateSplashScreen>
-		<_MauiIntermediateManifest>$(_ResizetizerIntermediateOutputRoot)m\</_MauiIntermediateManifest>
+		<_UnoIntermediateManifest>$(_ResizetizerIntermediateOutputRoot)m\</_UnoIntermediateManifest>
 		<_UnoIntermediateStoryboard>$(_UnoIntermediateSplashScreen)UnoSplash.storyboard</_UnoIntermediateStoryboard>
 		<_UnoIntermediateAppManifestWasm>$(_UnoIntermediateSplashScreen)UnoAppManifest.js</_UnoIntermediateAppManifestWasm>
 
@@ -624,7 +624,7 @@
             Condition="('$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_MauiAppxManifest)' !='' Or @(_SkiaManifest) != '')"
             DependsOnTargets="$(MauiGeneratePackageAppxManifestDependsOnTargets)"
             Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);$(_UnoSplashInputsFile);@(AppxManifest);@(_MauiAppxManifest)"
-            Outputs="$(_UnoManifestStampFile);$(_MauiIntermediateManifest)Package.appxmanifest">
+            Outputs="$(_UnoManifestStampFile);$(_UnoIntermediateManifest)Package.appxmanifest">
 
 
 		<PropertyGroup>
@@ -633,7 +633,7 @@
 		</PropertyGroup>
 
 		<GeneratePackageAppxManifest
-            IntermediateOutputPath="$(_MauiIntermediateManifest)"
+            IntermediateOutputPath="$(_UnoIntermediateManifest)"
             AppxManifest="@(AppxManifest);@(_MauiAppxManifest);@(_SkiaManifest)"
             GeneratedFilename="Package.appxmanifest"
             ApplicationId="$(_MauiWindowsApplicationId)"
@@ -646,11 +646,11 @@
 		<!-- replace user manifest -->
 		<ItemGroup Condition="'@(AppxManifest)' != ''">
 			<AppxManifest Remove="@(AppxManifest)" />
-			<AppxManifest Include="$(_MauiIntermediateManifest)Package.appxmanifest" />
+			<AppxManifest Include="$(_UnoIntermediateManifest)Package.appxmanifest" />
 		</ItemGroup>
 		<ItemGroup Condition="'@(_MauiAppxManifest)' != ''">
 			<_MauiAppxManifest Remove="@(_MauiAppxManifest)" />
-			<_MauiAppxManifest Include="$(_MauiIntermediateManifest)Package.appxmanifest" />
+			<_MauiAppxManifest Include="$(_UnoIntermediateManifest)Package.appxmanifest" />
 		</ItemGroup>
 
 		<!-- Stamp file for Outputs -->
@@ -671,7 +671,7 @@
             Condition="('@(AppxManifest)@(_MauiAppxManifest)' !='')">
 
 		<PropertyGroup>
-			<_MauiAppxManifestContents>$([System.IO.File]::ReadAllText('$(_MauiIntermediateManifest)Package.appxmanifest'))</_MauiAppxManifestContents>
+			<_MauiAppxManifestContents>$([System.IO.File]::ReadAllText('$(_UnoIntermediateManifest)Package.appxmanifest'))</_MauiAppxManifestContents>
 		</PropertyGroup>
 
 		<XmlPeek
@@ -724,10 +724,10 @@
             BeforeTargets="$(ResizetizeBeforeTargets)"
             AfterTargets="$(ResizetizeImages)"
             Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);$(_UnoSplashInputsFile);$(TizenManifestFile)"
-            Outputs="$(_UnoManifestStampFile);$(_MauiIntermediateManifest)tizen-manifest.xml">
+            Outputs="$(_UnoManifestStampFile);$(_UnoIntermediateManifest)tizen-manifest.xml">
 
 		<GenerateTizenManifest
-            IntermediateOutputPath="$(_MauiIntermediateManifest)"
+            IntermediateOutputPath="$(_UnoIntermediateManifest)"
             TizenManifestFile="$(TizenManifestFile)"
             GeneratedFilename="tizen-manifest.xml"
             ApplicationId="$(ApplicationId)"
@@ -739,7 +739,7 @@
 
 		<!-- replace user manifest -->
 		<PropertyGroup>
-			<TizenManifestFile>$(_MauiIntermediateManifest)tizen-manifest.xml</TizenManifestFile>
+			<TizenManifestFile>$(_UnoIntermediateManifest)tizen-manifest.xml</TizenManifestFile>
 		</PropertyGroup>
 
 		<!-- Stamp file for Outputs -->
