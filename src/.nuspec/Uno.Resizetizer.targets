@@ -617,13 +617,13 @@
          on "_ValidatePresenceOfAppxManifestItems" and we need to get in before then. -->
 	<Target Name="_ValidatePresenceOfAppxManifestItemsBeforeTarget"
             BeforeTargets="_ValidatePresenceOfAppxManifestItems"
-            DependsOnTargets="MauiGeneratePackageAppxManifest"
+            DependsOnTargets="UnoGeneratePackageAppxManifest"
             Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True'" />
 
-	<Target Name="MauiGeneratePackageAppxManifest"
-            Condition="('$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_MauiAppxManifest)' !='' Or @(_SkiaManifest) != '')"
+	<Target Name="UnoGeneratePackageAppxManifest"
+            Condition="('$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_UnoAppxManifest)' !='' Or @(_SkiaManifest) != '')"
             DependsOnTargets="$(UnoGeneratePackageAppxManifestDependsOnTargets)"
-            Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);$(_UnoSplashInputsFile);@(AppxManifest);@(_MauiAppxManifest)"
+            Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);$(_UnoSplashInputsFile);@(AppxManifest);@(_UnoAppxManifest)"
             Outputs="$(_UnoManifestStampFile);$(_UnoIntermediateManifest)Package.appxmanifest">
 
 
@@ -664,7 +664,7 @@
 	<!-- This is required because the "GetAssemblyAttributes" target does not have an open DependsOnTargets. -->
 	<Target Name="_GetAssemblyAttributesBeforeTarget"
             BeforeTargets="GetAssemblyAttributes"
-            DependsOnTargets="MauiGeneratePackageAppxManifest;_MauiGetAssemblyAttributesFromAppxManifest"
+            DependsOnTargets="UnoGeneratePackageAppxManifest;_MauiGetAssemblyAttributesFromAppxManifest"
             Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True'" />
 
 	<Target Name="_MauiGetAssemblyAttributesFromAppxManifest"
