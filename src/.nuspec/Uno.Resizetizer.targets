@@ -634,7 +634,7 @@
 
 		<GeneratePackageAppxManifest
             IntermediateOutputPath="$(_UnoIntermediateManifest)"
-            AppxManifest="@(AppxManifest);@(_MauiAppxManifest);@(_SkiaManifest)"
+            AppxManifest="@(AppxManifest);@(_UnoAppxManifest);@(_SkiaManifest)"
             GeneratedFilename="Package.appxmanifest"
             ApplicationId="$(_MauiWindowsApplicationId)"
             ApplicationDisplayVersion="$(ApplicationDisplayVersion)"
@@ -648,9 +648,9 @@
 			<AppxManifest Remove="@(AppxManifest)" />
 			<AppxManifest Include="$(_UnoIntermediateManifest)Package.appxmanifest" />
 		</ItemGroup>
-		<ItemGroup Condition="'@(_MauiAppxManifest)' != ''">
-			<_MauiAppxManifest Remove="@(_MauiAppxManifest)" />
-			<_MauiAppxManifest Include="$(_UnoIntermediateManifest)Package.appxmanifest" />
+		<ItemGroup Condition="'@(_UnoAppxManifest)' != ''">
+			<_UnoAppxManifest Remove="@(_UnoAppxManifest)" />
+			<_UnoAppxManifest Include="$(_UnoIntermediateManifest)Package.appxmanifest" />
 		</ItemGroup>
 
 		<!-- Stamp file for Outputs -->
@@ -668,7 +668,7 @@
             Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True'" />
 
 	<Target Name="_MauiGetAssemblyAttributesFromAppxManifest"
-            Condition="('@(AppxManifest)@(_MauiAppxManifest)' !='')">
+            Condition="('@(AppxManifest)@(_UnoAppxManifest)' !='')">
 
 		<PropertyGroup>
 			<_MauiAppxManifestContents>$([System.IO.File]::ReadAllText('$(_UnoIntermediateManifest)Package.appxmanifest'))</_MauiAppxManifestContents>
