@@ -64,7 +64,7 @@
 		<_ResizetizerInputsFile>$(IntermediateOutputPath)UnoImage.inputs</_ResizetizerInputsFile>
 		<_ResizetizerStampFile>$(IntermediateOutputPath)UnoImage.stamp</_ResizetizerStampFile>
 		<_UnoSplashInputsFile>$(IntermediateOutputPath)mauisplash.inputs</_UnoSplashInputsFile>
-		<_MauiSplashStampFile>$(IntermediateOutputPath)mauisplash.stamp</_MauiSplashStampFile>
+		<_UnoSplashStampFile>$(IntermediateOutputPath)mauisplash.stamp</_UnoSplashStampFile>
 		<_MauiManifestStampFile>$(IntermediateOutputPath)mauimanifest.stamp</_MauiManifestStampFile>
 
 
@@ -361,7 +361,7 @@
 	<Target Name="ProcessUnoSplashScreens"
         Condition="'@(UnoSplashScreen)' != ''"
         Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_UnoSplashInputsFile);@(UnoSplashScreen)"
-        Outputs="$(_MauiSplashStampFile)">
+        Outputs="$(_UnoSplashStampFile)">
 
 		<Warning
             Condition="'@(UnoSplashScreen->Count())' &gt; '1'"
@@ -471,9 +471,9 @@
 		</ItemGroup>
 		<MakeDir Directories="$(IntermediateOutputPath)"/>
 		<!-- Stamp file for Outputs -->
-		<Touch Files="$(_MauiSplashStampFile)" AlwaysCreate="True" />
+		<Touch Files="$(_UnoSplashStampFile)" AlwaysCreate="True" />
 		<ItemGroup>
-			<FileWrites Include="$(_MauiSplashStampFile)" />
+			<FileWrites Include="$(_UnoSplashStampFile)" />
 		</ItemGroup>
 	</Target>
 
