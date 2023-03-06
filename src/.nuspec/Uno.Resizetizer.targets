@@ -65,7 +65,7 @@
 		<_ResizetizerStampFile>$(IntermediateOutputPath)UnoImage.stamp</_ResizetizerStampFile>
 		<_UnoSplashInputsFile>$(IntermediateOutputPath)mauisplash.inputs</_UnoSplashInputsFile>
 		<_UnoSplashStampFile>$(IntermediateOutputPath)mauisplash.stamp</_UnoSplashStampFile>
-		<_MauiManifestStampFile>$(IntermediateOutputPath)mauimanifest.stamp</_MauiManifestStampFile>
+		<_UnoManifestStampFile>$(IntermediateOutputPath)mauimanifest.stamp</_UnoManifestStampFile>
 
 
 		<_ResizetizerIntermediateOutputRoot>$(IntermediateOutputPath)resizetizer\</_ResizetizerIntermediateOutputRoot>
@@ -624,7 +624,7 @@
             Condition="('$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_MauiAppxManifest)' !='' Or @(_SkiaManifest) != '')"
             DependsOnTargets="$(MauiGeneratePackageAppxManifestDependsOnTargets)"
             Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);$(_UnoSplashInputsFile);@(AppxManifest);@(_MauiAppxManifest)"
-            Outputs="$(_MauiManifestStampFile);$(_MauiIntermediateManifest)Package.appxmanifest">
+            Outputs="$(_UnoManifestStampFile);$(_MauiIntermediateManifest)Package.appxmanifest">
 
 
 		<PropertyGroup>
@@ -654,9 +654,9 @@
 		</ItemGroup>
 
 		<!-- Stamp file for Outputs -->
-		<Touch Files="$(_MauiManifestStampFile)" AlwaysCreate="True" />
+		<Touch Files="$(_UnoManifestStampFile)" AlwaysCreate="True" />
 		<ItemGroup>
-			<FileWrites Include="$(_MauiManifestStampFile)" />
+			<FileWrites Include="$(_UnoManifestStampFile)" />
 		</ItemGroup>
 
 	</Target>
@@ -724,7 +724,7 @@
             BeforeTargets="$(ResizetizeBeforeTargets)"
             AfterTargets="$(ResizetizeImages)"
             Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);$(_UnoSplashInputsFile);$(TizenManifestFile)"
-            Outputs="$(_MauiManifestStampFile);$(_MauiIntermediateManifest)tizen-manifest.xml">
+            Outputs="$(_UnoManifestStampFile);$(_MauiIntermediateManifest)tizen-manifest.xml">
 
 		<GenerateTizenManifest
             IntermediateOutputPath="$(_MauiIntermediateManifest)"
@@ -743,9 +743,9 @@
 		</PropertyGroup>
 
 		<!-- Stamp file for Outputs -->
-		<Touch Files="$(_MauiManifestStampFile)" AlwaysCreate="True" />
+		<Touch Files="$(_UnoManifestStampFile)" AlwaysCreate="True" />
 		<ItemGroup>
-			<FileWrites Include="$(_MauiManifestStampFile)" />
+			<FileWrites Include="$(_UnoManifestStampFile)" />
 		</ItemGroup>
 	</Target>
 
