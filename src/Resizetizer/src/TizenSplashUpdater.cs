@@ -10,7 +10,7 @@ namespace Uno.Resizetizer
 	public class TizenSplashUpdater : Task
 	{
 		[Required]
-		public ITaskItem[] MauiSplashScreen { get; set; }
+		public ITaskItem[] UnoSplashScreen { get; set; }
 
 		[Required]
 		public string IntermediateOutputPath { get; set; }
@@ -26,7 +26,7 @@ namespace Uno.Resizetizer
 		public override bool Execute()
 		{
 			var orientations = new List<string>() { "portrait", "landscape" };
-			var splashInfo = ResizeImageInfo.Parse(MauiSplashScreen[0]);
+			var splashInfo = ResizeImageInfo.Parse(UnoSplashScreen[0]);
 			var image = splashInfo.OutputName + ".png";
 			var splashFullPath = Path.Combine(IntermediateOutputPath, splashDirectoryName);
 

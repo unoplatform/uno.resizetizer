@@ -25,7 +25,7 @@ namespace Uno.Resizetizer.Tests
 		protected GenerateSplashAndroidResources GetNewTask(ITaskItem splash) =>
 			new()
 			{
-				MauiSplashScreen = new[] { splash },
+				UnoSplashScreen = new[] { splash },
 				IntermediateOutputPath = DestinationDirectory,
 				BuildEngine = this,
 			};
