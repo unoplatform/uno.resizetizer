@@ -63,9 +63,9 @@
 
 		<_ResizetizerInputsFile>$(IntermediateOutputPath)UnoImage.inputs</_ResizetizerInputsFile>
 		<_ResizetizerStampFile>$(IntermediateOutputPath)UnoImage.stamp</_ResizetizerStampFile>
-		<_UnoSplashInputsFile>$(IntermediateOutputPath)mauisplash.inputs</_UnoSplashInputsFile>
-		<_UnoSplashStampFile>$(IntermediateOutputPath)mauisplash.stamp</_UnoSplashStampFile>
-		<_UnoManifestStampFile>$(IntermediateOutputPath)mauimanifest.stamp</_UnoManifestStampFile>
+		<_UnoSplashInputsFile>$(IntermediateOutputPath)Unosplash.inputs</_UnoSplashInputsFile>
+		<_UnoSplashStampFile>$(IntermediateOutputPath)Unosplash.stamp</_UnoSplashStampFile>
+		<_UnoManifestStampFile>$(IntermediateOutputPath)Unomanifest.stamp</_UnoManifestStampFile>
 
 
 		<_ResizetizerIntermediateOutputRoot>$(IntermediateOutputPath)resizetizer\</_ResizetizerIntermediateOutputRoot>
