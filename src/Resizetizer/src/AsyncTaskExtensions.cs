@@ -11,7 +11,7 @@ namespace Uno.Resizetizer
 		/// <summary>
 		/// Calls Parallel.ForEach() with appropriate ParallelOptions and exception handling.
 		/// </summary>
-		public static ParallelLoopResult ParallelForEach<TSource>(this MauiAsyncTask asyncTask, IEnumerable<TSource> source, Action<TSource> body)
+		public static ParallelLoopResult ParallelForEach<TSource>(this UnoAsyncTask asyncTask, IEnumerable<TSource> source, Action<TSource> body)
 		{
 			return Parallel.ForEach(source, ParallelOptions(asyncTask),
 				s =>
@@ -22,13 +22,13 @@ namespace Uno.Resizetizer
 					}
 					catch (Exception exc)
 					{
-						asyncTask.LogCodedError("MAUI0000", exc.ToString());
+						asyncTask.LogCodedError("Uno.Resizetizer0000", exc.ToString());
 						asyncTask.Cancel();
 					}
 				});
 		}
 
-		static ParallelOptions ParallelOptions(MauiAsyncTask asyncTask) => new ParallelOptions
+		static ParallelOptions ParallelOptions(UnoAsyncTask asyncTask) => new ParallelOptions
 		{
 			CancellationToken = asyncTask.CancellationToken,
 			TaskScheduler = TaskScheduler.Default,
@@ -37,14 +37,14 @@ namespace Uno.Resizetizer
 		/// <summary>
 		/// Calls Task.Run() with a proper CancellationToken.
 		/// </summary>
-		public static Task RunTask(this MauiAsyncTask asyncTask, Action body) =>
+		public static Task RunTask(this UnoAsyncTask asyncTask, Action body) =>
 			Task.Run(body, asyncTask.CancellationToken);
 
 
 		/// <summary>
 		/// Calls Task.Run<T>() with a proper CancellationToken.
 		/// </summary>
-		public static Task<TSource> RunTask<TSource>(this MauiAsyncTask asyncTask, Func<TSource> body) =>
+		public static Task<TSource> RunTask<TSource>(this UnoAsyncTask asyncTask, Func<TSource> body) =>
 			Task.Run(body, asyncTask.CancellationToken);
 	}
 }

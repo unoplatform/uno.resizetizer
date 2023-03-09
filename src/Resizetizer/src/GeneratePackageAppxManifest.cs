@@ -12,7 +12,7 @@ namespace Uno.Resizetizer
 	{
 		const string DefaultPlaceholder = "$placeholder$";
 		const string PngPlaceholder = "$placeholder$.png";
-		const string PackageNamePlaceholder = "maui-package-name-placeholder";
+		const string PackageNamePlaceholder = "uno-package-name-placeholder";
 		const string PackageVersionPlaceholder = "0.0.0.0";
 
 		const string ErrorInvalidApplicationId = "ApplicationId '{0}' was not a valid GUID. Windows apps use a GUID for an application ID instead of the reverse domain used by Android and/or iOS apps. Either set the <ApplicationIdGuid> property to a valid GUID or use a condition on <ApplicationId> for Windows apps.";

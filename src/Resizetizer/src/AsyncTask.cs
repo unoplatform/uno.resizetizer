@@ -8,7 +8,7 @@ using Microsoft.Build.Utilities;
 namespace Uno.Resizetizer
 {
 	/// <summary>
-	/// Don't use AsyncTask directly, use MauiAsyncTask instead and override ExecuteAsync().
+	/// Don't use AsyncTask directly, use UnoAsyncTask instead and override ExecuteAsync().
 	/// 
 	/// Base class for tasks that need long-running cancellable asynchronous tasks 
 	/// that don't block the UI thread in the IDE.
