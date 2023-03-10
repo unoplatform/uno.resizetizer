@@ -6,7 +6,7 @@ using Microsoft.Build.Utilities;
 namespace Uno.Resizetizer
 {
 	/// <summary>
-	/// Takes the incoming @(MauiAsset) item group, and returns the proper metadata to include it in the app.
+	/// Takes the incoming @(UnoAsset) item group, and returns the proper metadata to include it in the app.
 	/// The main reason we need a task for this is to preserve directory structure.
 	/// 
 	/// Some examples:

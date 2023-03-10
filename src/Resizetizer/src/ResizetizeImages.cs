@@ -11,7 +11,7 @@ using Microsoft.Build.Utilities;
 
 namespace Uno.Resizetizer
 {
-	public class ResizetizeImages : MauiAsyncTask, ILogger
+	public class ResizetizeImages : UnoAsyncTask, ILogger
 	{
 		[Required]
 		public string PlatformType { get; set; } = "android";
@@ -96,7 +96,7 @@ namespace Uno.Resizetizer
 				}
 				catch (Exception ex)
 				{
-					LogWarning("MAUI0000", ex.ToString());
+					LogWarning("Uno.Resizetizer0000", ex.ToString());
 
 					throw;
 				}

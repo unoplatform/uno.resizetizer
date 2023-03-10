@@ -5,7 +5,7 @@ using static System.Threading.Tasks.TaskExtensions;
 
 namespace Uno.Resizetizer
 {
-	public abstract class MauiAsyncTask : AsyncTask
+	public abstract class UnoAsyncTask : AsyncTask
 	{
 		/// <summary>
 		/// Typically `ExecuteAsync` will be the preferred method to override instead of this one.
@@ -24,7 +24,7 @@ namespace Uno.Resizetizer
 			}
 			catch (Exception exc)
 			{
-				LogCodedError("MAUI0000", exc.ToString());
+				LogCodedError("Uno.Resizetizer0000", exc.ToString());
 				return false;
 			}
 			finally
