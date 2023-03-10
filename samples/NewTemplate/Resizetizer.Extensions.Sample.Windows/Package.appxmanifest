@@ -33,8 +33,8 @@
       <uap:VisualElements
         DisplayName="Resizetizer.Extensions.Sample"
         Description="Resizetizer.Extensions.Sample">
-        <uap:SplashScreen Image="Resizetizer.Extensions.Sample/Assets/SplashScreen.png" />
-        <uap:DefaultTile/>
+        <uap:SplashScreen />
+        <uap:DefaultTile />
       </uap:VisualElements>
     </Application>
   </Applications>

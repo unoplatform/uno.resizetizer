@@ -135,6 +135,23 @@
 	<!-- Skia -->
 	<PropertyGroup Condition="'$(_ResizetizerIsSkiaApp)' == 'True'">
 		<ResizetizerIncludeSelfProject>false</ResizetizerIncludeSelfProject>
+
+		<ResizetizeBeforeTargets>
+			UnoAssetsGeneration;
+			$(ResizetizeBeforeTargets);
+			AssignTargetPaths;
+		</ResizetizeBeforeTargets>
+
+		<UnoGeneratePackageAppxManifestDependsOnTargets>
+			$(UnoGeneratePackageAppxManifestDependsOnTargets);
+			ResizetizeCollectItems;
+		</UnoGeneratePackageAppxManifestDependsOnTargets>
+
+		<UnoGeneratePackageAppxManifestBeforeTargets>
+			$(UnoGeneratePackageAppxManifestDependsOnTargets);
+			SplitResourcesByCulture;
+			AssignTargetPaths;
+		</UnoGeneratePackageAppxManifestBeforeTargets>
 	</PropertyGroup>
 
 	<!-- Wasm -->
@@ -330,6 +347,9 @@
 		<ItemGroup>
 			<_SkiaManifest Include="@(EmbeddedResource)"
 						   Condition="%(Extension) == '.appxmanifest'"/>
+			
+			<EmbeddedResource Remove="@(EmbeddedResource)"
+			                  Condition="%(Extension) == '.appxmanifest'"/>
 		</ItemGroup>
 	</Target>
 
@@ -623,6 +643,7 @@
 	<Target Name="UnoGeneratePackageAppxManifest"
             Condition="('$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_UnoAppxManifest)' !='' Or @(_SkiaManifest) != '')"
             DependsOnTargets="$(UnoGeneratePackageAppxManifestDependsOnTargets)"
+			BeforeTargets="$(UnoGeneratePackageAppxManifestBeforeTargets)"
             Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);$(_UnoSplashInputsFile);@(AppxManifest);@(_UnoAppxManifest)"
             Outputs="$(_UnoManifestStampFile);$(_UnoIntermediateManifest)Package.appxmanifest">
 
@@ -647,6 +668,14 @@
 		<ItemGroup Condition="'@(AppxManifest)' != ''">
 			<AppxManifest Remove="@(AppxManifest)" />
 			<AppxManifest Include="$(_UnoIntermediateManifest)Package.appxmanifest" />
+		</ItemGroup>
+		<ItemGroup Condition="'@(_SkiaManifest)' != '' ">
+			<AppxManifest Remove="@(AppxManifest)" />
+			<AppxManifest Include="$(_UnoIntermediateManifest)Package.appxmanifest" />
+			<EmbeddedResource Include="$(_UnoIntermediateManifest)Package.appxmanifest"
+			                  Link="%(_SkiaManifest.Link)"
+			                  LogicalName="%(_SkiaManifest.LogicalName)"/>
+
 		</ItemGroup>
 		<ItemGroup Condition="'@(_UnoAppxManifest)' != ''">
 			<_UnoAppxManifest Remove="@(_UnoAppxManifest)" />
