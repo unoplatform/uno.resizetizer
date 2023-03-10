@@ -83,4 +83,22 @@
 		<ProjectReference Include="..\Resizetizer.Extensions.Sample\Resizetizer.Extensions.Sample.csproj" />
 	</ItemGroup>
 	<Import Project="..\Resizetizer.Extensions.Sample.Base\base.props" />
+
+	<!--Android-->
+	<Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'=='net7.0-android'">
+		<PropertyGroup>
+			<_ResizetizerSplashScreenDrawablePath>$(_UnoIntermediateSplashScreen)\drawable\uno_splash_image.xml</_ResizetizerSplashScreenDrawablePath>
+			<_ResizetizerColorsPath>$(_UnoIntermediateSplashScreen)\values\uno_colors.xml</_ResizetizerColorsPath>
+			<_ResizetizerSplashScreenPath>$(_UnoIntermediateImages)\splash_screen.scale-150.png</_ResizetizerSplashScreenPath>
+			<_ResizetizerAppIconPath>$(_UnoIntermediateAppIcon)\mipmap-anydpi-v26\iconapp.xml</_ResizetizerAppIconPath>
+			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateAppIcon)\mipmap-hdpi\iconapp.png</_ResizetizerAppIconImagesPath>
+		</PropertyGroup>
+		<Message Text="Validating local assets at '$(_ResizetizerBasePath)'" Importance="high" />
+		<Error Condition="!Exists('$(_ResizetizerSplashScreenDrawablePath)')" Text="SplashScreen drawable file wasn't created." />
+		<Error Condition="!Exists('$(_ResizetizerColorsPath)')" Text="Uno_Coloras.xml file wasn't created." />
+		<Error Condition="!Exists('$(_ResizetizerSplashScreenPath)')" Text="SplashScreen image file wasn't created." />
+		<Error Condition="!Exists('$(_ResizetizerAppIconPath)')" Text="iconapp.xml file wasn't created." />
+		<Error Condition="!Exists('$(_ResizetizerAppIconImagesPath)')" Text="App icon image file wasn't created." />
+	</Target>
+
 </Project>
