@@ -39,6 +39,11 @@ jobs:
         useConfigFile: true
         configFilePath: gitversion.yml
 
+    - name: Adjust msbuild task name
+      run: |
+        cd src
+        gci -r -File -Include *.cs,*.targets,*.props,*.csproj | foreach-object { $a = $_.fullname; ( get-content $a ) | foreach-object { $_ -replace "v0","${{ steps.gitversion.outputs.VersionSourceSha }}" }  | set-content $a }
+
     - name: Build - CI
       run: |
         $adjustedPackageVersion="${{ steps.gitversion.outputs.semVer }}".ToLower();

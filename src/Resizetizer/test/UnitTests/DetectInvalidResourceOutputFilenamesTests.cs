@@ -12,10 +12,10 @@ namespace Uno.Resizetizer.Tests
 {
 	public class DetectInvalidResourceOutputFilenamesTests
 	{
-		public class ExecuteForApp : MSBuildTaskTestFixture<DetectInvalidResourceOutputFilenamesTask>
+		public class ExecuteForApp : MSBuildTaskTestFixture<DetectInvalidResourceOutputFilenamesTask_v0>
 		{
-			protected DetectInvalidResourceOutputFilenamesTask GetNewTask(params ITaskItem[] items) =>
-				new DetectInvalidResourceOutputFilenamesTask
+			protected DetectInvalidResourceOutputFilenamesTask_v0 GetNewTask(params ITaskItem[] items) =>
+				new DetectInvalidResourceOutputFilenamesTask_v0
 				{
 					Items = items,
 					ThrowsError = true,
@@ -23,13 +23,13 @@ namespace Uno.Resizetizer.Tests
 					BuildEngine = this,
 				};
 
-			protected string GetInvalidFilename(DetectInvalidResourceOutputFilenamesTask task, string path) =>
+			protected string GetInvalidFilename(DetectInvalidResourceOutputFilenamesTask_v0 task, string path) =>
 				task.InvalidItems.Single(c => c.Replace('\\', '/').EndsWith(path, StringComparison.Ordinal));
 
-			protected void AssertValidFilename(DetectInvalidResourceOutputFilenamesTask task, ITaskItem item)
+			protected void AssertValidFilename(DetectInvalidResourceOutputFilenamesTask_v0 task, ITaskItem item)
 				=> Assert.DoesNotContain(task.InvalidItems ?? Enumerable.Empty<string>(), c => c == item.ItemSpec);
 
-			protected void AssertInvalidFilename(DetectInvalidResourceOutputFilenamesTask task, ITaskItem item)
+			protected void AssertInvalidFilename(DetectInvalidResourceOutputFilenamesTask_v0 task, ITaskItem item)
 				=> Assert.Contains(task.InvalidItems ?? Enumerable.Empty<string>(), c => c == item.ItemSpec);
 
 			[Fact]

@@ -9,7 +9,7 @@ namespace Uno.Resizetizer
 	/// <summary>
 	/// Generates the MauiSplash.storyboard file for iOS splash screens
 	/// </summary>
-	public class GenerateSplashStoryboard : Task
+	public class GenerateSplashStoryboard_v0 : Task
 	{
 		[Required]
 		public string OutputFile { get; set; }
@@ -53,7 +53,7 @@ namespace Uno.Resizetizer
 
 		internal static void SubstituteStoryboard(TextWriter writer, string image, string r, string g, string b, string a)
 		{
-			using var resourceStream = typeof(GenerateSplashStoryboard).Assembly.GetManifestResourceStream("UnoSplash.storyboard");
+			using var resourceStream = typeof(GenerateSplashStoryboard_v0).Assembly.GetManifestResourceStream("UnoSplash.storyboard");
 			using var reader = new StreamReader(resourceStream);
 
 			while (!reader.EndOfStream)

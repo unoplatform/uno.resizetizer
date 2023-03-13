@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Uno.Resizetizer.Tests
 {
-	public class GenerateSplashStoryboardTests : MSBuildTaskTestFixture<GenerateSplashStoryboard>
+	public class GenerateSplashStoryboardTests : MSBuildTaskTestFixture<GenerateSplashStoryboard_v0>
 	{
 		readonly string _storyboard;
 
@@ -18,7 +18,7 @@ namespace Uno.Resizetizer.Tests
 			_storyboard = Path.Combine(DestinationDirectory, "MauiSplash.storyboard");
 		}
 
-		protected GenerateSplashStoryboard GetNewTask(ITaskItem splash) =>
+		protected GenerateSplashStoryboard_v0 GetNewTask(ITaskItem splash) =>
 			new()
 			{
 				OutputFile = _storyboard,
@@ -32,7 +32,7 @@ namespace Uno.Resizetizer.Tests
 			var actual = XElement.Load(actualStream);
 
 			using var expectedBuilder = new StringWriter();
-			GenerateSplashStoryboard.SubstituteStoryboard(expectedBuilder, image, r, g, b, a);
+			GenerateSplashStoryboard_v0.SubstituteStoryboard(expectedBuilder, image, r, g, b, a);
 			var expected = XElement.Parse(expectedBuilder.ToString());
 
 			Assert.True(XNode.DeepEquals(actual, expected), $"{actualPath} did not match:\n{actual}");

@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Uno.Resizetizer.Tests
 {
-	public class GetUnoAssetsPathTests : MSBuildTaskTestFixture<GetUnoAssetPath>
+	public class GetUnoAssetsPathTests : MSBuildTaskTestFixture<GetUnoAssetPath_v0>
 	{
 #if WINDOWS
 		const string ProjectDirectory = @"C:\src\code\MyProject";
@@ -14,7 +14,7 @@ namespace Uno.Resizetizer.Tests
 		const string LibraryProjectDirectory = ProjectDirectory + @"/ClassLibrary1";
 #endif
 
-		protected GetUnoAssetPath GetNewTask(string folderName, params ITaskItem[] input) => new()
+		protected GetUnoAssetPath_v0 GetNewTask(string folderName, params ITaskItem[] input) => new()
 		{
 			ProjectDirectory = ProjectDirectory,
 			FolderName = folderName,

@@ -5,7 +5,7 @@ using Microsoft.Build.Utilities;
 
 namespace Uno.Resizetizer
 {
-	public class CreatePartialInfoPlistTask : Task
+	public class CreatePartialInfoPlistTask_v0 : Task
 	{
 		[Required]
 		public string IntermediateOutputPath { get; set; }

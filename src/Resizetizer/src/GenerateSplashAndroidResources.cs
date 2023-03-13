@@ -10,7 +10,7 @@ namespace Uno.Resizetizer
 	/// <summary>
 	/// Generates Resources/values/uno_colors.xml and Resources/drawable/uno_splash_image.xml for Android splash screens
 	/// </summary>
-	public class GenerateSplashAndroidResources : Task, ILogger
+	public class GenerateSplashAndroidResources_v0 : Task, ILogger
 	{
 		[Required]
 		public string IntermediateOutputPath { get; set; }

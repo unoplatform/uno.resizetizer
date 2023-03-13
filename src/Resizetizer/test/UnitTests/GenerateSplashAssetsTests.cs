@@ -8,9 +8,9 @@ using Xunit;
 
 namespace Uno.Resizetizer.Tests
 {
-	public class GenerateSplashAssetsTests : MSBuildTaskTestFixture<GenerateSplashAssets>
+	public class GenerateSplashAssetsTests : MSBuildTaskTestFixture<GenerateSplashAssets_v0>
 	{
-		protected GenerateSplashAssets GetNewTask(ITaskItem splash) =>
+		protected GenerateSplashAssets_v0 GetNewTask(ITaskItem splash) =>
 			new()
 			{
 				IntermediateOutputPath = DestinationDirectory,

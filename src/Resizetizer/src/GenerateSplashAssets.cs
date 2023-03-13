@@ -8,7 +8,7 @@ namespace Uno.Resizetizer
 	/// <summary>
 	/// Generates the splash assets file for Windows
 	/// </summary>
-	public class GenerateSplashAssets : Task, ILogger
+	public class GenerateSplashAssets_v0 : Task, ILogger
 	{
 		[Required]
 		public string IntermediateOutputPath { get; set; }
