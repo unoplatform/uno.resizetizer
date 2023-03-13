@@ -18,7 +18,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<Authors>uno platform</Authors>
+		<Authors>Uno Platform</Authors>
 		<AssemblyName>Uno.Resizetizer</AssemblyName>
 		<PackageProjectUrl>https://github.com/unoplatform/uno.resizetizer</PackageProjectUrl>
 		<RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
