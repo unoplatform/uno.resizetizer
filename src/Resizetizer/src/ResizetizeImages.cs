@@ -11,7 +11,7 @@ using Microsoft.Build.Utilities;
 
 namespace Uno.Resizetizer
 {
-	public class ResizetizeImages : UnoAsyncTask, ILogger
+	public class ResizetizeImages_v0 : UnoAsyncTask, ILogger
 	{
 		[Required]
 		public string PlatformType { get; set; } = "android";
