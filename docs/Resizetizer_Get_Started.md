@@ -124,3 +124,13 @@ Now let's jump to the Apple's platform.
 > [!TIP]
 > Feel free to delete the old assets related to app icon in the project.
 
+## UnoSplashScreen
+
+`UnoSplashScreen` is the build action for the splash screen. There should only be one per application. The `UnoSplashScreen` has two more properties that you can use to adjust your asset, they are:
+
+* BaseSize: It's the size that will be used to perform the scaling of the image. The default value is the size of asset. So if you feel that your SplashScreen doesn't look right you can tweak this value.
+
+* Color: It's the background color of that will be used to fill the empty space on the final SplashScreen asset. The default value is `#FFFFFF`(transparent).
+
+### 5. Configuring the project to use generated splash screen
+
