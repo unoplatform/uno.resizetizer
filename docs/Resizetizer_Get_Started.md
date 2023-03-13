@@ -16,8 +16,10 @@ Uno.Resizeter is delivered [through NuGet](https://www.nuget.org/packages/Uno.Re
 
 * Open your favorite IDE, in this case it will be Visual Studio, after that open the Manage Nuget packages window
 * Search for `Uno.Resizetizer` and install it over your projects
+
 > [!NOTE]
 > Uno.Resizetizer is compatible with projects running .NET 6 and later.
+
 # Usage
 
 Uno.Resizetizer can handle:
@@ -35,6 +37,7 @@ The next sections will show how to use it for each use case.
 ### 2. Configure the project to use generated Images
 
 * In the App Class library, create a folder called `Assets` (if doesn't exist) and then create a folder called `Images`. We now need to add assets to this folder.
+
 > [!TIP]
 > Those folders names are examples. It is possible to create folders with any name and how many levels needed.
 
@@ -42,13 +45,14 @@ Make sure that the build assets are configured to be `UnoImage`. In the `csproj`
 
 ```xml
 <ItemGroup>
-	<UnoImage Include="Assets\Images\*" />
+    <UnoImage Include="Assets\Images\*" />
 </ItemGroup>
 ```
 
 ### 3. Using the assets on the project
 
 * `UnoImage` assets can now be used just like any regular image. For example:
+
 ```xml
 <Image Width="300"
        Height="300"
@@ -67,9 +71,9 @@ Make sure that the build assets are configured to be `UnoImage`. In the `csproj`
 * Now open the `base.props` file, inside the `MyApp.Base` folder project and add the following block
 ```xml
 <ItemGroup>
-	<UnoIcon Include="$(MSBuildThisFileDirectory)Icons\iconapp.svg"
-			 ForegroundFile="$(MSBuildThisFileDirectory)Icons\appconfig.svg"
-			 Color="#FF0000"
+    <UnoIcon Include="$(MSBuildThisFileDirectory)Icons\iconapp.svg"
+             ForegroundFile="$(MSBuildThisFileDirectory)Icons\appconfig.svg"
+             Color="#FF0000"
 </ItemGroup>
 ```
 
