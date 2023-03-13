@@ -3,17 +3,33 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<RootNamespace>Uno.Resizetizer</RootNamespace>
-		<AssemblyName>Uno.Resizetizer</AssemblyName>		
-		<PackageId>Uno.Resizetizer</PackageId>
-		<Description>UnoPlatform package support for images.</Description>
+		<IsTool>true</IsTool>
 		<LangVersion>latest</LangVersion>
-		<_SkiaPackagePath>build\</_SkiaPackagePath>
 		<Configurations>Debug;Release;DEBUG_RESIZETIZER</Configurations>
-		<UnoNuSpecDirectory>$(MSBuildThisFileDirectory)..\..\.nuspec\</UnoNuSpecDirectory> 
-		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform - all rights reserved</Copyright>
-		<Version>255.255.255.255</Version><!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
+		
+		<!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
+		<Version>255.255.255.255</Version>
+
+		<_SkiaPackagePath>build\</_SkiaPackagePath>
+		<UnoNuSpecDirectory>$(MSBuildThisFileDirectory)..\..\.nuspec\</UnoNuSpecDirectory>
 		<DefaultLanguage>en-US</DefaultLanguage>
+
+		<IsTool>true</IsTool>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Authors>uno platform</Authors>
+		<AssemblyName>Uno.Resizetizer</AssemblyName>
+		<PackageProjectUrl>https://github.com/unoplatform/uno.resizetizer</PackageProjectUrl>
+		<RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
+		<Product>$(AssemblyName) ($(TargetFramework))</Product>
+		<RepositoryCommit>$(GITVERSION_SHA)</RepositoryCommit>
+		<PackageId>Uno.Resizetizer</PackageId>
+		<Description>Uno Platform package support for images.</Description>
+		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform - all rights reserved</Copyright>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+		<PackageReadmeFile>../../../README.md</PackageReadmeFile>
+		<PackageIcon>logo.png</PackageIcon>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -27,6 +43,13 @@
 	<Import Project="ResizetizerPackages.projitems" />
 
 	<ItemGroup>
+		<None Include="$(MSBuildThisFileDirectory)../../.nuspec/logo.png" Pack="true" Visible="false" PackagePath="\"/>
+
+		<!-- Make the package reference-able, but without any reference-able assembly -->
+		<None Include="../../.nuspec/_._" Pack="true" PackagePath="lib/$(TargetFramework)" />
+
+		<None Include="../../../README.md" Pack="true" PackagePath="/" />
+
 		<None Include="@(_ResizetizerFiles)" Visible="false" Pack="true" PackagePath="build/%(Arch)" CopyToOutputDirectory="PreserveNewest" />
 		<None Include="$(OutputPath)$(AssemblyName).dll" Visible="false" Pack="true" PackagePath="build" />
 		<None Include="$(OutputPath)$(AssemblyName).pdb" Visible="false" Pack="true" PackagePath="build" />
