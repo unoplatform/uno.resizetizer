@@ -8,7 +8,7 @@ Uno.Resizetizer is a set of MSBuild tasks to manage the assets of an app. With i
 
 This tutorial will walk through how to use it on your Uno Platform app. To create an app, make sure to visit [our getting started tutorials](xref:Uno.GetStarted).
 
-# Installation
+## Installation
 
 Uno.Resizeter is delivered [through NuGet](https://www.nuget.org/packages/Uno.Resizetizer). In order to install it you can either download it using your IDE (this will be showed in the next steps) or added directly on your `.csproj` as showed in the [Nuget page](https://www.nuget.org/packages/Uno.Resizetizer/).
 
@@ -20,7 +20,7 @@ Uno.Resizeter is delivered [through NuGet](https://www.nuget.org/packages/Uno.Re
 > [!NOTE]
 > Uno.Resizetizer is compatible with projects running .NET 6 and later.
 
-# Usage
+## Usage
 
 Uno.Resizetizer can handle:
 
@@ -57,11 +57,12 @@ Make sure that the build assets are configured to be `UnoImage`. In the `csproj`
 <Image Width="300"
        Height="300"
        Source="Assets\Images\myImage.png" />
-> 
+```
+
 > [!TIP]
 > Make sure to add the `.png` at the end of the file name
 
-# UnoIcon
+## UnoIcon
 
 `UnoIcon` is the build action for the app icon. There should only be one per application. The `UnoIcon` accepts two assets, one that represents the `Foreground` and another that represents the `Background`. During the generation phase, those files will be merged into one `.png` image.
 
@@ -69,11 +70,12 @@ Make sure that the build assets are configured to be `UnoImage`. In the `csproj`
 
 * Create a `Icon` folder inside the Base project, and add the files related to app icon there.
 * Now open the `base.props` file, inside the `MyApp.Base` folder project and add the following block
+
 ```xml
 <ItemGroup>
     <UnoIcon Include="$(MSBuildThisFileDirectory)Icons\iconapp.svg"
              ForegroundFile="$(MSBuildThisFileDirectory)Icons\appconfig.svg"
-             Color="#FF0000"
+             Color="#FF0000"/>
 </ItemGroup>
 ```
 
@@ -89,14 +91,13 @@ Icon = "@mipmap/iconapp",
 )]
 ```
 
-
 > [!TIP]
 > Feel free to remove the old assets related to app icon on `Android` project
 
 Now let's jump to Windows platform.
 
-- Open the `Package.appxmanifest` file and look for the `Application` tag
-- And remove everything that's related to application icon. It should look like this:
+* Open the `Package.appxmanifest` file and look for the `Application` tag
+* And remove everything that's related to application icon. It should look like this:
 
 ```xml
 <Applications>
@@ -115,7 +116,7 @@ Now let's jump to Windows platform.
 
 Now let's jump to the Apple's platform.
 
-* For `mac-catalyst` and `iOS`, open the `info.plist` file and find for the `XSAppIconAsset` key, change its value to be `Assets.xcassets/iconapp.appiconset`. 
+* For `mac-catalyst` and `iOS`, open the `info.plist` file and find for the `XSAppIconAsset` key, change its value to be `Assets.xcassets/iconapp.appiconset`.
 
 > [!NOTE]
 > If your app icon has other name than `iconapp` use it instead.
