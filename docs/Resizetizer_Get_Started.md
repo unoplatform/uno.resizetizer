@@ -96,7 +96,22 @@ Icon = "@mipmap/iconapp",
 Now let's jump to Windows platform.
 
 - Open the `Package.appxmanifest` file and look for the `Application` tag
+- And remove everything that's related to application icon. It should look like this:
 
+```xml
+<Applications>
+   <Application Id="App"
+     Executable="$targetnametoken$.exe"
+     EntryPoint="$targetentrypoint$">
+     <uap:VisualElements
+       DisplayName="Resizetizer.Extensions.Sample"
+       Description="Resizetizer.Extensions.Sample">
+       <uap:SplashScreen Image="Resizetizer.Extensions.Sample/Assets/SplashScreen.png" />
+       <uap:DefaultTile/>
+     </uap:VisualElements>
+   </Application>
+ </Applications>
+```
 
 Now let's jump to the Apple's platform.
 
