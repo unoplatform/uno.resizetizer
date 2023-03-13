@@ -541,6 +541,9 @@
 					 TargetPath="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)">
 			</Content>
 
+			<FileWrites Include="@(_ResizetizerCollectedImages)" />
+		</ItemGroup>
+
 			<!--
 			Disables "XA0101 build action is not supported" as Uno handles Content items explicitly
 			https://github.com/xamarin/xamarin-android/blob/311b41e864a0162895d079477cb9398fbec5ca6e/src/Xamarin.Android.Build.Tasks/Xamarin.Android.Common.targets#L833
