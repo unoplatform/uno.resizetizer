@@ -166,7 +166,7 @@ namespace Uno.Resizetizer
 					uiApplicationElement.Add(splashscreensElement);
 				}
 
-				foreach (var image in TizenSplashUpdater.splashDpiMap)
+				foreach (var image in TizenSplashUpdater_v0.splashDpiMap)
 				{
 					var splashElements = splashscreensElement.Elements(xmlns + SplashScreenName).Where(
 						d => d.Attribute("type")?.Value == "img"
