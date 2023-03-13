@@ -101,8 +101,6 @@
 		<Error Condition="!Exists('$(_ResizetizerAppIconImagesPath)')" Text="App icon image file wasn't created." />
 	</Target>
 
-	
-
 	<!--iOS-->
 	<Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'=='net7.0-ios' or '$(TargetFramework)'=='net7.0-maccatalyst'">
 		<PropertyGroup>
@@ -130,5 +128,4 @@
 		<Error Condition="!Exists('$(_ResizetizerAppIconContentsPath)')" Text="Contents.json file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerAppIconImagesPath)')" Text="App icon image file wasn't created." />
 	</Target>
-
 </Project>
