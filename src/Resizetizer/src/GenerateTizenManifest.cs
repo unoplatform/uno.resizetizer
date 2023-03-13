@@ -8,7 +8,7 @@ using Microsoft.Build.Utilities;
 
 namespace Uno.Resizetizer
 {
-	public class GenerateTizenManifest : Task
+	public class GenerateTizenManifest_v0 : Task
 	{
 		const string ApplicationIdPlaceholder = "maui-application-id-placeholder";
 		const string LabelPlaceholder = "maui-application-title-placeholder";

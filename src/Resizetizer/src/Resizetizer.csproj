@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<RootNamespace>Uno.Resizetizer</RootNamespace>
-		<AssemblyName>Uno.Resizetizer</AssemblyName>		
+		<AssemblyName>Uno.Resizetizer_v0</AssemblyName>		
 		<PackageId>Uno.Resizetizer</PackageId>
 		<Description>UnoPlatform package support for images.</Description>
 		<LangVersion>latest</LangVersion>

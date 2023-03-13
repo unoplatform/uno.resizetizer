@@ -9,7 +9,7 @@ namespace Uno.Resizetizer
 	/// <summary>
 	/// Generates the MauiSplash.storyboard file for iOS splash screens
 	/// </summary>
-	public class GenerateSplashStoryboard : Task
+	public class GenerateSplashStoryboard_v0 : Task
 	{
 		[Required]
 		public string OutputFile { get; set; }

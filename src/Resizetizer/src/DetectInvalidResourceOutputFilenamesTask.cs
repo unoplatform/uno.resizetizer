@@ -7,7 +7,7 @@ using Microsoft.Build.Utilities;
 
 namespace Uno.Resizetizer
 {
-	public class DetectInvalidResourceOutputFilenamesTask : Task
+	public class DetectInvalidResourceOutputFilenamesTask_v0 : Task
 	{
 		public ITaskItem[] Items { get; set; }
 

@@ -8,7 +8,7 @@ using Microsoft.Build.Utilities;
 
 namespace Uno.Resizetizer
 {
-	public class GeneratePackageAppxManifest : Task
+	public class GeneratePackageAppxManifest_v0 : Task
 	{
 		const string DefaultPlaceholder = "$placeholder$";
 		const string PngPlaceholder = "$placeholder$.png";

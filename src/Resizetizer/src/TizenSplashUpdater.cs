@@ -7,7 +7,7 @@ using SkiaSharp;
 
 namespace Uno.Resizetizer
 {
-	public class TizenSplashUpdater : Task
+	public class TizenSplashUpdater_v0 : Task
 	{
 		[Required]
 		public ITaskItem[] UnoSplashScreen { get; set; }

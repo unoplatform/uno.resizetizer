@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 
 namespace Uno.Resizetizer;
-public class GenerateWasmSplashAssets : Task
+public class GenerateWasmSplashAssets_v0 : Task
 {
 	[Required]
 	public string IntermediateOutputPath { get; set; }

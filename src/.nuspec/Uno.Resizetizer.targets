@@ -9,51 +9,51 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-		<_ResizetizerTaskAssemblyName>$(MSBuildThisFileDirectory)Uno.Resizetizer.dll</_ResizetizerTaskAssemblyName>
+		<_ResizetizerTaskAssemblyName>$(MSBuildThisFileDirectory)Uno.Resizetizer_v0.dll</_ResizetizerTaskAssemblyName>
 	</PropertyGroup>
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Uno.Resizetizer.ResizetizeImages" />
+        TaskName="Uno.Resizetizer.ResizetizeImages_v0" />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Uno.Resizetizer.DetectInvalidResourceOutputFilenamesTask"  />
+        TaskName="Uno.Resizetizer.DetectInvalidResourceOutputFilenamesTask_v0"  />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Uno.Resizetizer.CreatePartialInfoPlistTask"  />
+        TaskName="Uno.Resizetizer.CreatePartialInfoPlistTask_v0"  />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Uno.Resizetizer.GenerateSplashAndroidResources"  />
+        TaskName="Uno.Resizetizer.GenerateSplashAndroidResources_v0"  />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Uno.Resizetizer.GenerateSplashStoryboard"  />
+        TaskName="Uno.Resizetizer.GenerateSplashStoryboard_v0"  />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Uno.Resizetizer.TizenSplashUpdater"  />
+        TaskName="Uno.Resizetizer.TizenSplashUpdater_v0"  />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Uno.Resizetizer.GenerateSplashAssets"  />
+        TaskName="Uno.Resizetizer.GenerateSplashAssets_v0"  />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Uno.Resizetizer.GetUnoAssetPath"  />
+        TaskName="Uno.Resizetizer.GetUnoAssetPath_v0"  />
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Uno.Resizetizer.GeneratePackageAppxManifest"  />
+        TaskName="Uno.Resizetizer.GeneratePackageAppxManifest_v0"  />
 
 	<UsingTask
 		  AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-		  TaskName="Uno.Resizetizer.GenerateTizenManifest"  />
+		  TaskName="Uno.Resizetizer.GenerateTizenManifest_v0"  />
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Uno.Resizetizer.GenerateWasmSplashAssets"  />
+        TaskName="Uno.Resizetizer.GenerateWasmSplashAssets_v0"  />
 
 	<PropertyGroup>
 		<CleanDependsOn>
