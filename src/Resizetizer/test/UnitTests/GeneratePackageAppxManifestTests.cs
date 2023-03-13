@@ -8,9 +8,9 @@ using Xunit;
 
 namespace Uno.Resizetizer.Tests
 {
-	public class GeneratePackageAppxManifestTests : MSBuildTaskTestFixture<GeneratePackageAppxManifest>
+	public class GeneratePackageAppxManifestTests : MSBuildTaskTestFixture<GeneratePackageAppxManifest_v0>
 	{
-		protected GeneratePackageAppxManifest GetNewTask(
+		protected GeneratePackageAppxManifest_v0 GetNewTask(
 			string manifest,
 			string? generatedFilename = null,
 			string? guid = null,
@@ -119,7 +119,7 @@ namespace Uno.Resizetizer.Tests
 		[InlineData("4.3.2.1", "", "4.3.2.1")]
 		public void ValidMergeVersionNumbers(string displayVersion, string appVersion, string expectedResult)
 		{
-			var result = GeneratePackageAppxManifest.TryMergeVersionNumbers(displayVersion, appVersion, out var merged);
+			var result = GeneratePackageAppxManifest_v0.TryMergeVersionNumbers(displayVersion, appVersion, out var merged);
 			Assert.True(result);
 			Assert.Equal(expectedResult, merged);
 		}
@@ -132,7 +132,7 @@ namespace Uno.Resizetizer.Tests
 		[InlineData("6.0-preview.7", "42")]
 		public void InvalidMergeVersionNumbers(string displayVersion, string appVersion)
 		{
-			var result = GeneratePackageAppxManifest.TryMergeVersionNumbers(displayVersion, appVersion, out var merged);
+			var result = GeneratePackageAppxManifest_v0.TryMergeVersionNumbers(displayVersion, appVersion, out var merged);
 			Assert.False(result);
 		}
 	}

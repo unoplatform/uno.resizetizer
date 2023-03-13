@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Uno.Resizetizer.Tests
 {
-	public class GenerateSplashAndroidResourcesTests : MSBuildTaskTestFixture<GenerateSplashAndroidResources>
+	public class GenerateSplashAndroidResourcesTests : MSBuildTaskTestFixture<GenerateSplashAndroidResources_v0>
 	{
 		readonly string _colors;
 		readonly string _drawable;
@@ -22,7 +22,7 @@ namespace Uno.Resizetizer.Tests
 			_drawable_v31 = Path.Combine(DestinationDirectory, "drawable-v31", "uno_splash_image.xml");
 		}
 
-		protected GenerateSplashAndroidResources GetNewTask(ITaskItem splash) =>
+		protected GenerateSplashAndroidResources_v0 GetNewTask(ITaskItem splash) =>
 			new()
 			{
 				UnoSplashScreen = new[] { splash },
