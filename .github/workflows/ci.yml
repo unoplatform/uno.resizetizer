@@ -12,6 +12,10 @@ on:
       - main
       - release/**
 
+env:
+  UnoCheck_Version: '1.11.0-dev.2'
+  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/146b0b4b23d866bef455494a12ad7ffd2f6f2d20/manifests/uno.ui.manifest.json'
+
 jobs:
   build_tool:
     name: Build
@@ -44,10 +48,16 @@ jobs:
         cd src
         gci -r -File -Include *.cs,*.targets,*.props,*.csproj | foreach-object { $a = $_.fullname; ( get-content $a ) | foreach-object { $_ -replace "v0","${{ steps.gitversion.outputs.VersionSourceSha }}" }  | set-content $a }
 
+    - run: |
+          & dotnet tool update --global uno.check --version ${{ env.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
+          & uno-check -v --ci --non-interactive --fix --skip xcode --skip androidemulator --skip gtk3 --skip vswin --skip vsmac --manifest ${{ env.UnoCheck_Manifest }}
+      name: Install .NET Workloads
+
     - name: Build - CI
       run: |
         $adjustedPackageVersion="${{ steps.gitversion.outputs.semVer }}".ToLower();
         dotnet pack  -c Release -p:PackageVersion=$adjustedPackageVersion -p:Version=${{ steps.gitversion.outputs.assemblySemVer }} -o .\artifacts src/Resizetizer/src/Resizetizer.csproj
+
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
       with:
@@ -57,6 +67,17 @@ jobs:
     - name: Run UnitTests
       run: |
         dotnet test src/Resizetizer/test/UnitTests/Resizetizer.UnitTests.csproj
+
+    - name: Validate sample app
+      run: |
+        $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+        & $msbuild /r /bl:.\logs\samples.binlog samples\NewTemplate\Resizetizer.Extensions.Sample.sln /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: logs
+        path: .\logs
 
   publish:
     name: Publish
