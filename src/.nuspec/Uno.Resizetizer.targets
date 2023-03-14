@@ -367,7 +367,7 @@
 		<ItemGroup Condition="'$(_ResizetizerIsTizenApp)' == 'True'">
 			<UnoAsset Update="@(UnoAsset)" Link="%(UnoAsset.LogicalName)" Condition="'%(UnoAsset.Link)' == '' And '%(UnoAsset.LogicalName)' != ''" />
 		</ItemGroup>
-		<GetUnoAssetPath
+		<GetUnoAssetPath_v0
             ProjectDirectory="$(MSBuildProjectDirectory)"
             ItemMetadata="$(_UnoAssetItemMetadata)"
             Input="@(UnoAsset)">
@@ -375,7 +375,7 @@
 			<Output ItemName="Content"               TaskParameter="Output" Condition="'$(_ResizetizerIsiOSApp)' == 'True'" />
 			<Output ItemName="ContentWithTargetPath" TaskParameter="Output" Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'" />
 			<Output ItemName="TizenResource" TaskParameter="Output" Condition="'$(_ResizetizerIsTizenApp)' == 'True'" />
-		</GetUnoAssetPath>
+		</GetUnoAssetPath_v0>
 	</Target>
 
 	<Target Name="ProcessUnoSplashScreens"
@@ -394,7 +394,7 @@
 			<UnoImage Include="@(UnoSplashScreen)" />
 		</ItemGroup>
 
-		<GenerateWasmSplashAssets
+		<GenerateWasmSplashAssets_v0
 			Condition="$(_ResizetizerIsWasmApp) == 'True'"
 			IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
 			EmbeddedResources="@(EmbeddedResource)"
@@ -404,7 +404,7 @@
 			<Output PropertyName="UserAppManifest"
 					TaskParameter="UserAppManifest" />
 			
-		</GenerateWasmSplashAssets>
+		</GenerateWasmSplashAssets_v0>
 		
 		<ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True' And $(UserAppManifest) != ''">
 			<EmbeddedResource Remove="$(UserAppManifest)" />
@@ -413,7 +413,7 @@
 		</ItemGroup>
 
 		<!-- Android -->
-		<GenerateSplashAndroidResources
+		<GenerateSplashAndroidResources_v0
             Condition="'$(_ResizetizerIsAndroidApp)' == 'True'"
             IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
             UnoSplashScreen="@(UnoSplashScreen)"
@@ -427,7 +427,7 @@
 		</ItemGroup>
 
 		<!-- iOS, but not Catalyst -->
-		<GenerateSplashStoryboard
+		<GenerateSplashStoryboard_v0
             Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'"
             OutputFile="$(_UnoIntermediateStoryboard)"
             UnoSplashScreen="@(UnoSplashScreen)"
@@ -442,7 +442,7 @@
 		</ItemGroup>
 
 		<!-- Create a partial info.plist for iOS -->
-		<CreatePartialInfoPlistTask
+		<CreatePartialInfoPlistTask_v0
             Condition="'$(_ResizetizerIsiOSApp)' == 'True' And '$(_UnoIntermediateSplashScreenFile)' != ''"
             IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
             PlistName="UnoInfo.plist"
@@ -465,7 +465,7 @@
             Files="@(_UnoAssetsToCopyToBuildServer)" />
 
 		<!-- UWP / WinUI -->
-		<GenerateSplashAssets
+		<GenerateSplashAssets_v0
             Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'"
             IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
             UnoSplashScreen="@(UnoSplashScreen)"
@@ -479,7 +479,7 @@
 		</ItemGroup>
 		
 		<!-- Tizen -->
-		<TizenSplashUpdater
+		<TizenSplashUpdater_v0
             Condition="'$(_ResizetizerIsTizenApp)' == 'True'"
             IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
             UnoSplashScreen="@(UnoSplashScreen)" />
@@ -497,20 +497,20 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="ResizetizeImages"
+	<Target Name="ResizetizeImages_v0"
         Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);@(UnoImage)"
         Outputs="$(_ResizetizerStampFile)"
         AfterTargets="$(ResizetizeAfterTargets)"
         BeforeTargets="$(ResizetizeBeforeTargets)"
         DependsOnTargets="$(ResizetizeDependsOnTargets)">
 
-		<DetectInvalidResourceOutputFilenamesTask
+		<DetectInvalidResourceOutputFilenamesTask_v0
             Items="@(UnoImage->Distinct())"
             ErrorMessage="$(_ResizetizerDefaultInvalidFilenamesErrorMessage)">
-		</DetectInvalidResourceOutputFilenamesTask>
+		</DetectInvalidResourceOutputFilenamesTask_v0>
 
 		<!-- Resize the images -->
-		<ResizetizeImages
+		<ResizetizeImages_v0
             PlatformType="$(ResizetizerPlatformType)"
             IntermediateOutputPath="$(_UnoIntermediateImages)"
 			IntermediateOutputIconPath="$(_UnoIntermediateAppIcon)"
@@ -524,7 +524,7 @@
 					TaskParameter="AndroidAppIcons"/>
 			<Output PropertyName="ResizetizerPwaManifest"
 					TaskParameter="PwaGeneratedManifestPath"/>
-		</ResizetizeImages>
+		</ResizetizeImages_v0>
 
 		<ItemGroup>
 			<!-- Get Images that were generated -->
@@ -541,15 +541,15 @@
 					 TargetPath="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)">
 			</Content>
 
-			<!--
-			Disables "XA0101 build action is not supported" as Uno handles Content items explicitly
-			https://github.com/xamarin/xamarin-android/blob/311b41e864a0162895d079477cb9398fbec5ca6e/src/Xamarin.Android.Build.Tasks/Xamarin.Android.Common.targets#L833
-			-->
-			<ItemGroup Condition="'$(MonoAndroidAssetsPrefix)'!=''">
-				<Content Update="@(_ResizetizerCollectedImages)" ExcludeFromContentCheck="true" />
-			</ItemGroup>
-
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
+		</ItemGroup>
+
+		<!--
+		Disables "XA0101 build action is not supported" as Uno handles Content items explicitly
+		https://github.com/xamarin/xamarin-android/blob/311b41e864a0162895d079477cb9398fbec5ca6e/src/Xamarin.Android.Build.Tasks/Xamarin.Android.Common.targets#L833
+		-->
+		<ItemGroup Condition="'$(MonoAndroidAssetsPrefix)'!=''">
+			<Content Update="@(_ResizetizerCollectedImages)" ExcludeFromContentCheck="true" />
 		</ItemGroup>
 
 		<!-- Wasm -->
@@ -661,7 +661,7 @@
 			<_MauiWindowsApplicationId Condition="'$(_MauiWindowsApplicationId)' == '' and '$(ApplicationId)' != ''">$(ApplicationId)</_MauiWindowsApplicationId>
 		</PropertyGroup>
 
-		<GeneratePackageAppxManifest
+		<GeneratePackageAppxManifest_v0
             IntermediateOutputPath="$(_UnoIntermediateManifest)"
             AppxManifest="@(AppxManifest);@(_UnoAppxManifest);@(_SkiaManifest)"
             GeneratedFilename="Package.appxmanifest"
@@ -759,11 +759,11 @@
 	<Target Name="MauiGenerateTizenManifest"
             Condition="'$(_ResizetizerIsTizenApp)' == 'True'"
             BeforeTargets="$(ResizetizeBeforeTargets)"
-            AfterTargets="$(ResizetizeImages)"
+            AfterTargets="$(ResizetizeImages_v0)"
             Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);$(_UnoSplashInputsFile);$(TizenManifestFile)"
             Outputs="$(_UnoManifestStampFile);$(_UnoIntermediateManifest)tizen-manifest.xml">
 
-		<GenerateTizenManifest
+		<GenerateTizenManifest_v0
             IntermediateOutputPath="$(_UnoIntermediateManifest)"
             TizenManifestFile="$(TizenManifestFile)"
             GeneratedFilename="tizen-manifest.xml"
