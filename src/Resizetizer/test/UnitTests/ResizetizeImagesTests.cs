@@ -12,12 +12,12 @@ namespace Uno.Resizetizer.Tests
 {
 	public class ResizetizeImagesTests
 	{
-		public abstract class ExecuteForApp : MSBuildTaskTestFixture<ResizetizeImages>
+		public abstract class ExecuteForApp : MSBuildTaskTestFixture<ResizetizeImages_v0>
 		{
 			protected static readonly Dictionary<string, string> ResizeMetadata = new() { ["Resize"] = "true" };
 
-			protected ResizetizeImages GetNewTask(string type, params ITaskItem[] items) =>
-				new ResizetizeImages
+			protected ResizetizeImages_v0 GetNewTask(string type, params ITaskItem[] items) =>
+				new ResizetizeImages_v0
 				{
 					PlatformType = type,
 					IntermediateOutputPath = DestinationDirectory,
@@ -27,13 +27,13 @@ namespace Uno.Resizetizer.Tests
 					BuildEngine = this,
 				};
 
-			protected ITaskItem GetCopiedResource(ResizetizeImages task, string path) =>
+			protected ITaskItem GetCopiedResource(ResizetizeImages_v0 task, string path) =>
 				task.CopiedResources.Single(c => c.ItemSpec.Replace('\\', '/').EndsWith(path, StringComparison.Ordinal));
 		}
 
 		public class ExecuteForAndroid : ExecuteForApp
 		{
-			ResizetizeImages GetNewTask(params ITaskItem[] items) =>
+			ResizetizeImages_v0 GetNewTask(params ITaskItem[] items) =>
 				GetNewTask("android", items);
 
 			[Fact]
@@ -560,7 +560,7 @@ namespace Uno.Resizetizer.Tests
 
 		public class ExecuteForiOS : ExecuteForApp
 		{
-			ResizetizeImages GetNewTask(params ITaskItem[] items) =>
+			ResizetizeImages_v0 GetNewTask(params ITaskItem[] items) =>
 				GetNewTask("ios", items);
 
 			[Fact]
@@ -716,7 +716,7 @@ namespace Uno.Resizetizer.Tests
 
 		public class ExecuteForWindows : ExecuteForApp
 		{
-			ResizetizeImages GetNewTask(params ITaskItem[] items) =>
+			ResizetizeImages_v0 GetNewTask(params ITaskItem[] items) =>
 				GetNewTask("uwp", items);
 
 			[Fact]
