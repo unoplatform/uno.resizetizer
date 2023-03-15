@@ -233,13 +233,17 @@ namespace Uno.Resizetizer
 				{
 					var xname = "BackgroundColor";
 					var attr = visual.Attribute(xname);
-					if (attr is null && splashInfo?.Color is not null)
+
+					if (attr is null || string.IsNullOrEmpty(attr.Value))
 					{
-						visual.SetAttributeValue(xname, Utils.SkiaColorWithoutAlpha(splashInfo.Color));
-					}
-					else if (attr is null || string.IsNullOrEmpty(attr.Value))
-					{
-						visual.SetAttributeValue(xname, "transparent");
+						if (splashInfo?.Color is not null)
+						{
+							visual.SetAttributeValue(xname, Utils.SkiaColorWithoutAlpha(splashInfo.Color));
+						}
+						else
+						{
+							visual.SetAttributeValue(xname, "transparent");
+						} 
 					}
 				}
 
