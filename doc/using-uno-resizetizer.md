@@ -79,7 +79,7 @@ Make sure that the build assets are configured to be `UnoImage`. In the `csproj`
 </ItemGroup>
 ```
 
-Next, some adjustments are needed on `Android`, `Windows`, `mac-catalyst` and `iOS`. Let's start with `Android`.
+Next, some adjustments are needed on `Android`, `Windows`, `wasm`, `mac-catalyst` and `iOS`. Let's start with `Android`.
 
 * Open the `Main.Android.cs` file (or the file that has the `Android.App.ApplicationAttribute`), and change the `Icon` property, in that attribute, to be the name of the file used in the `Include` property of `UnoIcon`, in our case will be:
 
@@ -112,6 +112,22 @@ Now let's jump to Windows platform.
      </uap:VisualElements>
    </Application>
  </Applications>
+```
+
+Now let's jump to the wasm platform.
+
+> [!NOTE]
+> You just need to configure it, if you want to ship it as PWA.
+
+* Opens the `manifest.webmanifest` file and look for the `icons` tag, now remove all the values inside it. And leave an empty array like this:
+
+```json
+{
+  "background_color": "#ffffff",
+  "description": "UnoResApp1",
+  "display": "standalone",
+  "icons": [ ],
+}
 ```
 
 Now let's jump to the Apple's platform.
