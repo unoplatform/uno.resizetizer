@@ -78,11 +78,45 @@ namespace Uno.Resizetizer.Tests
 				Assert.Equal(expectedDoc.ToString(), outputDoc.ToString());
 		}
 
-		[Theory]
-		[InlineData("typical", "typical")]
-		[InlineData("empty", "typical")]
-		public void CorrectGeneration(string input, string expected)
+		[Fact]
+		public void CorrectGenerationWhenUserSpecifyBackgroundColor()
 		{
+			var input = "empty";
+			var expected = "typicalWithNoBackground";
+			var appIcon = new TaskItem("images/appicon.svg");
+			appIcon.SetMetadata("ForegroundFile", "images/appiconfg.svg");
+			appIcon.SetMetadata("IsAppIcon", "true");
+
+			var splashScreen = new TaskItem("images/dotnet_bot.svg");
+			splashScreen.SetMetadata("Color", "#FFFFFF");
+
+			var inputFilename = $"testdata/appxmanifest/{input}.appxmanifest";
+			var task = GetNewTask(inputFilename,
+				guid: "f9e4fa3e-3505-4742-9b2b-d1acdaff4ec8",
+				displayVersion: "1.0.0",
+				version: "1",
+				displayName: "Sample App",
+				appIcon: appIcon,
+				splashScreen: splashScreen);
+
+			var success = task.Execute();
+			Assert.True(success, $"{task.GetType()}.Execute() failed: " + LogErrorEvents.FirstOrDefault()?.Message);
+
+			var outputFilename = Path.Combine(DestinationDirectory, "Package.appxmanifest");
+			var expectedFilename = $"testdata/appxmanifest/{expected}.appxmanifest";
+
+			var outputDoc = XDocument.Load(outputFilename);
+			var expectedDoc = XDocument.Load(expectedFilename);
+
+			if (!XNode.DeepEquals(outputDoc, expectedDoc))
+				Assert.Equal(expectedDoc.ToString(), outputDoc.ToString());
+		}
+
+		[Fact]
+		public void CorrectGenerationWhitOutBackgroundColor()
+		{
+			var input = "typical";
+			var expected = "typical";
 			var appIcon = new TaskItem("images/appicon.svg");
 			appIcon.SetMetadata("ForegroundFile", "images/appiconfg.svg");
 			appIcon.SetMetadata("IsAppIcon", "true");
