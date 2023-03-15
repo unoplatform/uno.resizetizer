@@ -118,19 +118,7 @@ public class GenerateWasmSplashAssets_v0 : Task
 
 	static string ProcessSplashScreenColor(ResizeImageInfo info)
 	{
-		var color = ColorWithoutAlpha(info.Color);
+		var color = Utils.SkiaColorWithoutAlpha(info.Color);
 		return $"\"{color}\"";
-	}
-
-	// Wasm doesn't support alpha
-	static string ColorWithoutAlpha(SKColor? color)
-	{
-		var result = color?.ToString() ?? "transparent";
-		if (!result.StartsWith("#"))
-			return result;
-
-		// Getting everything after '#ff'
-		result = result.Substring(3);
-		return "#" + result;
 	}
 }

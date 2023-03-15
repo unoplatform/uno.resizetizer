@@ -91,6 +91,15 @@ namespace Uno.Resizetizer
 			return new ResizedImageInfo { Dpi = dpi, Filename = destination };
 		}
 
+		public static string SkiaColorWithoutAlpha(SKColor? skColor)
+		{
+			var result = skColor?.ToString() ?? "transparent";
+			if (!result.StartsWith("#"))
+				return result;
 
+			// Getting everything after '#ff'
+			result = result.Substring(3);
+			return "#" + result;
+		}
 	}
 }
