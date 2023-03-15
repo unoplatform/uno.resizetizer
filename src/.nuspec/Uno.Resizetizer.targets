@@ -379,7 +379,7 @@
 	</Target>
 
 	<Target Name="ProcessUnoSplashScreens"
-        Condition="'@(UnoSplashScreen)' != ''"
+        Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'"
         Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_UnoSplashInputsFile);@(UnoSplashScreen)"
         Outputs="$(_UnoSplashStampFile)">
 
@@ -501,6 +501,7 @@
         Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);@(UnoImage)"
         Outputs="$(_ResizetizerStampFile)"
         AfterTargets="$(ResizetizeAfterTargets)"
+		Condition="'$(DesignTimeBuild)' != 'true'"
         BeforeTargets="$(ResizetizeBeforeTargets)"
         DependsOnTargets="$(ResizetizeDependsOnTargets)">
 
