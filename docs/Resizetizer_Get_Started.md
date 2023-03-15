@@ -79,7 +79,7 @@ Make sure that the build assets are configured to be `UnoImage`. In the `csproj`
 </ItemGroup>
 ```
 
-Next, some adjustments are needed on `Android`, `windows`, `mac-catalyst` and `iOS`. Let's start with `Android`.
+Next, some adjustments are needed on `Android`, `Windows`, `mac-catalyst` and `iOS`. Let's start with `Android`.
 
 * Open the `Main.Android.cs` file (or the file that has the `Android.App.ApplicationAttribute`), and change the `Icon` property, in that attribute, to be the name of the file used in the `Include` property of `UnoIcon`, in our case will be:
 
@@ -133,4 +133,16 @@ Now let's jump to the Apple's platform.
 * Color: It's the background color of that will be used to fill the empty space on the final SplashScreen asset. The default value is `#FFFFFF`(transparent).
 
 ### 5. Configuring the project to use generated splash screen
+
+* Create a `SplashScreen` folder inside the Base project, and add the file related to splash screen there.
+* Now open the `base.props` file, inside the `MyApp.Base` folder project and add the following block
+
+```xml
+<UnoSplashScreen
+         Include="$(MSBuildThisFileDirectory)Splash\splash_screen.svg"
+         BaseSize="128,128"
+         Color="#512BD4" />
+```
+
+Next some adjustments are needed on `Android`, `Windows`, `wasm`, `mac-catalyst` and `iOS`. Let's start with `Android`.
 
