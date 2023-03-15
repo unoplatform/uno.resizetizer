@@ -146,7 +146,9 @@ namespace Uno.Resizetizer
 					var xname = xmlns + "DisplayName";
 					var xelem = properties.Element(xname);
 					if (xelem == null || string.IsNullOrEmpty(xelem.Value) || xelem.Value == DefaultPlaceholder)
+					{
 						properties.SetElementValue(xname, ApplicationTitle);
+					}
 				}
 
 				// <Logo>
@@ -211,7 +213,9 @@ namespace Uno.Resizetizer
 						var xname = "DisplayName";
 						var attr = visual.Attribute(xname);
 						if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == DefaultPlaceholder)
+						{
 							visual.SetAttributeValue(xname, ApplicationTitle);
+						}
 					}
 
 					// Description=""
@@ -219,7 +223,9 @@ namespace Uno.Resizetizer
 						var xname = "Description";
 						var attr = visual.Attribute(xname);
 						if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == DefaultPlaceholder)
+						{
 							visual.SetAttributeValue(xname, ApplicationTitle);
+						}
 					}
 				}
 
@@ -228,9 +234,13 @@ namespace Uno.Resizetizer
 					var xname = "BackgroundColor";
 					var attr = visual.Attribute(xname);
 					if (attr is null && splashInfo?.Color is not null)
+					{
 						visual.SetAttributeValue(xname, Utils.SkiaColorWithoutAlpha(splashInfo.Color));
+					}
 					else if (attr is null || string.IsNullOrEmpty(attr.Value))
+					{
 						visual.SetAttributeValue(xname, "transparent");
+					}
 				}
 
 				if (appIconInfo != null)
@@ -314,7 +324,9 @@ namespace Uno.Resizetizer
 					var xname = "ShortName";
 					var attr = tile.Attribute(xname);
 					if (attr == null || string.IsNullOrEmpty(attr.Value))
+					{
 						tile.SetAttributeValue(xname, ApplicationTitle);
+					}
 				}
 
 				// <uap:ShowNameOnTiles>
@@ -330,9 +342,14 @@ namespace Uno.Resizetizer
 				var xshowon = xmlnsUap + "ShowOn";
 				var showons = showname.Elements(xshowon).ToArray();
 				if (showons.All(x => x.Attribute("Tile")?.Value != "square150x150Logo"))
+				{
 					showname.Add(new XElement(xshowon, new XAttribute("Tile", "square150x150Logo")));
+				}
+
 				if (showons.All(x => x.Attribute("Tile")?.Value != "wide310x150Logo"))
+				{
 					showname.Add(new XElement(xshowon, new XAttribute("Tile", "wide310x150Logo")));
+				}
 
 				if (splashInfo != null)
 				{
