@@ -1,24 +1,40 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
-    <OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup Condition="exists('..\Resizetizer.Extensions.Sample.Windows')">
-    <EmbeddedResource Include="..\Resizetizer.Extensions.Sample.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
-    <Content Include="..\Resizetizer.Extensions.Sample.Windows\Images\StoreLogo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-    <PackageReference Include="Uno.WinUI.Skia.Gtk" Version="4.7.37" />
-    <PackageReference Include="Uno.WinUI.RemoteControl" Version="4.7.37" Condition="'$(Configuration)'=='Debug'" />
-    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.7.37" />
-    <PackageReference Include="Uno.WinUI.Lottie" Version="4.7.37" />
-    <PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" />
-    <PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Resizetizer.Extensions.Sample\Resizetizer.Extensions.Sample.csproj" />
-  </ItemGroup>
-  <Import Project="..\Resizetizer.Extensions.Sample.Base\base.props" />
+	<PropertyGroup>
+		<OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
+		<OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
+		<TargetFramework>net7.0</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup Condition="exists('..\Resizetizer.Extensions.Sample.Windows')">
+		<EmbeddedResource Include="..\Resizetizer.Extensions.Sample.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
+		<Content Include="..\Resizetizer.Extensions.Sample.Windows\Images\StoreLogo.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+		<PackageReference Include="Uno.WinUI.Skia.Gtk" Version="4.7.37" />
+		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.7.37" Condition="'$(Configuration)'=='Debug'" />
+		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.7.37" />
+		<PackageReference Include="Uno.WinUI.Lottie" Version="4.7.37" />
+		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" />
+		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Resizetizer.Extensions.Sample\Resizetizer.Extensions.Sample.csproj" />
+	</ItemGroup>
+	<Import Project="..\Resizetizer.Extensions.Sample.Base\base.props" />
+
+
+	<Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'!=''">
+		<PropertyGroup>
+			<_ResizetizerManifestPath>$(_UnoIntermediateManifest)Package.appxmanifest</_ResizetizerManifestPath>
+			<_ResizetizerSplashScreenPath>$(_UnoIntermediateImages)splash_screen.scale-125.png</_ResizetizerSplashScreenPath>
+			<_ResizetizerAppIconPath>$(_UnoIntermediateImages)iconapp.ico</_ResizetizerAppIconPath>
+			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateImages)iconapp.png</_ResizetizerAppIconImagesPath>
+		</PropertyGroup>
+		<Message Text="Validating local assets at '$(_ResizetizerIntermediateOutputRoot)'" Importance="high" />
+		<Error Condition="!Exists('$(_ResizetizerManifestPath)')" Text="Manifest file wasn't created." />
+		<Error Condition="!Exists('$(_ResizetizerSplashScreenPath)')" Text="SplashScreen file wasn't created." />
+		<Error Condition="!Exists('$(_ResizetizerAppIconPath)')" Text=".ico file wasn't created." />
+		<Error Condition="!Exists('$(_ResizetizerAppIconImagesPath)')" Text="App icon image file wasn't created." />
+	</Target>
+
 </Project>
