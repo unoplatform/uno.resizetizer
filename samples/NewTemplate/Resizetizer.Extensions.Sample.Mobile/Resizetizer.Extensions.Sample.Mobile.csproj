@@ -87,11 +87,11 @@
 	<!--Android-->
 	<Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'=='net7.0-android'">
 		<PropertyGroup>
-			<_ResizetizerSplashScreenDrawablePath>$(_UnoIntermediateSplashScreen)\drawable\uno_splash_image.xml</_ResizetizerSplashScreenDrawablePath>
-			<_ResizetizerColorsPath>$(_UnoIntermediateSplashScreen)\values\uno_colors.xml</_ResizetizerColorsPath>
-			<_ResizetizerSplashScreenPath>$(_UnoIntermediateImages)\splash_screen.scale-150.png</_ResizetizerSplashScreenPath>
-			<_ResizetizerAppIconPath>$(_UnoIntermediateAppIcon)\mipmap-anydpi-v26\iconapp.xml</_ResizetizerAppIconPath>
-			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateAppIcon)\mipmap-hdpi\iconapp.png</_ResizetizerAppIconImagesPath>
+			<_ResizetizerSplashScreenDrawablePath>$(_UnoIntermediateSplashScreen)drawable\uno_splash_image.xml</_ResizetizerSplashScreenDrawablePath>
+			<_ResizetizerColorsPath>$(_UnoIntermediateSplashScreen)values\uno_colors.xml</_ResizetizerColorsPath>
+			<_ResizetizerSplashScreenPath>$(_UnoIntermediateImages)splash_screen.scale-150.png</_ResizetizerSplashScreenPath>
+			<_ResizetizerAppIconPath>$(_UnoIntermediateAppIcon)mipmap-anydpi-v26\iconapp.xml</_ResizetizerAppIconPath>
+			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateAppIcon)mipmap-hdpi\iconapp.png</_ResizetizerAppIconImagesPath>
 		</PropertyGroup>
 		<Message Text="Validating local assets at '$(_ResizetizerBasePath)'" Importance="high" />
 		<Error Condition="!Exists('$(_ResizetizerSplashScreenDrawablePath)')" Text="SplashScreen drawable file wasn't created." />
@@ -104,11 +104,11 @@
 	<!--iOS-->
 	<Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'=='net7.0-ios' or '$(TargetFramework)'=='net7.0-maccatalyst'">
 		<PropertyGroup>
-			<_ResizetizerUnoInfoPlistPath>$(_UnoIntermediateSplashScreen)\UnoInfo.plist</_ResizetizerUnoInfoPlistPath>
-			<_ResizetizerUnoStoryboardPath>$(_UnoIntermediateSplashScreen)\UnoSplash.storyboard</_ResizetizerUnoStoryboardPath>
-			<_ResizetizerSplashScreenPath>$(_UnoIntermediateImages)\splash_screen.scale-400.png</_ResizetizerSplashScreenPath>
-			<_ResizetizerAppIconContentsPath>$(_UnoIntermediateImages)\Assets.xcassets\iconapp.appiconset\Contents.json</_ResizetizerAppIconContentsPath>
-			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateImages)\Assets.xcassets\iconapp.appiconset\iconapp76x76@2x.png</_ResizetizerAppIconImagesPath>
+			<_ResizetizerUnoInfoPlistPath>$(_UnoIntermediateSplashScreen)UnoInfo.plist</_ResizetizerUnoInfoPlistPath>
+			<_ResizetizerUnoStoryboardPath>$(_UnoIntermediateSplashScreen)UnoSplash.storyboard</_ResizetizerUnoStoryboardPath>
+			<_ResizetizerSplashScreenPath>$(_UnoIntermediateImages)splash_screen.scale-400.png</_ResizetizerSplashScreenPath>
+			<_ResizetizerAppIconContentsPath>$(_UnoIntermediateImages)Assets.xcassets\iconapp.appiconset\Contents.json</_ResizetizerAppIconContentsPath>
+			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateImages)Assets.xcassets\iconapp.appiconset\iconapp76x76@2x.png</_ResizetizerAppIconImagesPath>
 		</PropertyGroup>
 		<Message Text="Validating local assets at '$(_ResizetizerBasePath)'" Importance="high" />
 		<Error Condition="!Exists('$(_ResizetizerUnoInfoPlistPath)')" Text="UnoInfo.plist file wasn't created." />
@@ -121,8 +121,8 @@
 	<!--maccatalyst-->
 	<Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'=='net7.0-maccatalyst'">
 		<PropertyGroup>
-			<_ResizetizerAppIconContentsPath>$(_UnoIntermediateImages)\Assets.xcassets\iconapp.appiconset\Contents.json</_ResizetizerAppIconContentsPath>
-			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateImages)\Assets.xcassets\iconapp.appiconset\iconapp76x76@2x.png</_ResizetizerAppIconImagesPath>
+			<_ResizetizerAppIconContentsPath>$(_UnoIntermediateImages)Assets.xcassets\iconapp.appiconset\Contents.json</_ResizetizerAppIconContentsPath>
+			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateImages)Assets.xcassets\iconapp.appiconset\iconapp76x76@2x.png</_ResizetizerAppIconImagesPath>
 		</PropertyGroup>
 		<Message Text="Validating local assets at '$(_ResizetizerBasePath)'" Importance="high" />
 		<Error Condition="!Exists('$(_ResizetizerAppIconContentsPath)')" Text="Contents.json file wasn't created." />

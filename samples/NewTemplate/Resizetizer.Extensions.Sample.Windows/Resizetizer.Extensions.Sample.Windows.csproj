@@ -45,8 +45,8 @@
 		<PropertyGroup>
 			<_ResizetizerManifestPath>$(_UnoIntermediateManifest)Package.appxmanifest</_ResizetizerManifestPath>
 			<_ResizetizerSplashScreenPath>$(_UnoIntermediateSplashScreen)\Splash\splash_screenSplashScreen.scale-150.png</_ResizetizerSplashScreenPath>
-			<_ResizetizerAppIconPath>$(_UnoIntermediateImages)\iconapp.ico</_ResizetizerAppIconPath>
-			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateImages)\Images\iconappLogo.scale-150.png</_ResizetizerAppIconImagesPath>
+			<_ResizetizerAppIconPath>$(_UnoIntermediateImages)iconapp.ico</_ResizetizerAppIconPath>
+			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateImages)Images\iconappLogo.scale-150.png</_ResizetizerAppIconImagesPath>
 		</PropertyGroup>
 		<Message Text="Validating local assets at '$(_ResizetizerBasePath)'" Importance="high" />
 		<Error Condition="!Exists('$(_ResizetizerManifestPath)')" Text="Manifest file wasn't created." />

@@ -66,12 +66,12 @@
 	<Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'!=''">
 		<PropertyGroup>
 			<_ResizetizerManifestPath>$(_UnoIntermediateAppManifestWasm)</_ResizetizerManifestPath>
-			<_ResizetizerSplashScreenPath>$(_UnoIntermediateImages)\splash_screen.scale-300.png</_ResizetizerSplashScreenPath>
-			<_ResizetizerAppIconPath>$(_UnoIntermediateAppIcon)\favicon.ico</_ResizetizerAppIconPath>
-			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateAppIcon)\iconapp-128.png</_ResizetizerAppIconImagesPath>
-			<_ResizetizerUnoManifestJson>$(_UnoIntermediateAppIcon)\Unomanifest.webmanifest</_ResizetizerUnoManifestJson>
-			<_ResizetizerImagesNestedPath>$(_UnoIntermediateImages)\MyAssets\Nested\dotnet_bot.scale-300.png</_ResizetizerImagesNestedPath>
-			<_ResizetizerImagesPath>$(_UnoIntermediateImages)\Assets\Images\dotnet_bot2.scale-300.png</_ResizetizerImagesPath>
+			<_ResizetizerSplashScreenPath>$(_UnoIntermediateImages)splash_screen.scale-300.png</_ResizetizerSplashScreenPath>
+			<_ResizetizerAppIconPath>$(_UnoIntermediateAppIcon)favicon.ico</_ResizetizerAppIconPath>
+			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateAppIcon)iconapp-128.png</_ResizetizerAppIconImagesPath>
+			<_ResizetizerUnoManifestJson>$(_UnoIntermediateAppIcon)Unomanifest.webmanifest</_ResizetizerUnoManifestJson>
+			<_ResizetizerImagesNestedPath>$(_UnoIntermediateImages)MyAssets\Nested\dotnet_bot.scale-300.png</_ResizetizerImagesNestedPath>
+			<_ResizetizerImagesPath>$(_UnoIntermediateImages)Assets\Images\dotnet_bot2.scale-300.png</_ResizetizerImagesPath>
 		</PropertyGroup>
 		<Message Text="Validating local assets at '$(_ResizetizerBasePath)'" Importance="high" />
 		<Error Condition="!Exists('$(_ResizetizerSplashScreenPath)')" Text="SplashScreen file wasn't created." />

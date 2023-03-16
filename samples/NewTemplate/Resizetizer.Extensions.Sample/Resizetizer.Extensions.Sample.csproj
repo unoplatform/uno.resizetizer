@@ -54,7 +54,7 @@
 
 	<Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'!=''">
 		<PropertyGroup>
-			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateImages)\Images\dotnet_bot.scale-200.png</_ResizetizerAppIconImagesPath>
+			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateImages)Images\dotnet_bot.scale-200.png</_ResizetizerAppIconImagesPath>
 		</PropertyGroup>
 		<Error Condition="!Exists('$(_ResizetizerAppIconImagesPath)')" Text="image file wasn't created." />
 	</Target>
