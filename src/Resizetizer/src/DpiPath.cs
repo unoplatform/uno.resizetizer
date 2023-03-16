@@ -115,12 +115,12 @@ namespace Uno.Resizetizer
 			public static DpiPath[] SplashScreen
 				=> new[]
 				{
-					new DpiPath(OutputPath, 1.00m, "SplashScreen", ".scale-100", new SKSize(620, 300)),
-					new DpiPath(OutputPath, 1.25m, "SplashScreen", ".scale-125", new SKSize(620, 300)),
-					new DpiPath(OutputPath, 1.50m, "SplashScreen", ".scale-150", new SKSize(620, 300)),
-					new DpiPath(OutputPath, 2.00m, "SplashScreen", ".scale-200", new SKSize(620, 300)),
-					new DpiPath(OutputPath, 3.00m, "SplashScreen", ".scale-300", new SKSize(620, 300)),
-					new DpiPath(OutputPath, 4.00m, "SplashScreen", ".scale-400", new SKSize(620, 300)),
+					new DpiPath(OutputPath, 1.00m, string.Empty, ".scale-100", new SKSize(620, 300)),
+					new DpiPath(OutputPath, 1.25m, string.Empty, ".scale-125", new SKSize(620, 300)),
+					new DpiPath(OutputPath, 1.50m, string.Empty, ".scale-150", new SKSize(620, 300)),
+					new DpiPath(OutputPath, 2.00m, string.Empty, ".scale-200", new SKSize(620, 300)),
+					new DpiPath(OutputPath, 3.00m, string.Empty, ".scale-300", new SKSize(620, 300)),
+					new DpiPath(OutputPath, 4.00m, string.Empty, ".scale-400", new SKSize(620, 300)),
 				};
 
 			// App Icon
