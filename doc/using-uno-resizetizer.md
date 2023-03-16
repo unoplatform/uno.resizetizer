@@ -71,8 +71,10 @@ Make sure that the build assets are configured to be `UnoImage`. In the `csproj`
 
 ### 4. Configuring the project to use generated app icon
 
+# [**Class Library Based Solution**](#tab/classlib)
+
 * Create a `Icon` folder inside the Base project, and add the files related to app icon there.
-* Now open the `base.props` file, inside the `MyApp.Base` folder project and add the following block
+* Now open the `base.props` file, inside the `MyApp.Base` folder project and add the following block:
 
 ```xml
 <ItemGroup>
@@ -80,7 +82,22 @@ Make sure that the build assets are configured to be `UnoImage`. In the `csproj`
              ForegroundFile="$(MSBuildThisFileDirectory)Icons\appconfig.svg"
              Color="#FF0000"/>
 </ItemGroup>
-```
+\```
+
+# [**Shared Project Based Solution**](#tab/sharedproject)
+
+* Create a `Icon` folder inside the Shared project, and add the files related to app icon there.
+* In each of your project heads (iOS, Android, WebAssembly, ...) add the following block:
+
+```xml
+<ItemGroup>
+    <UnoIcon Include="..\MyApp.Shared\Icons\iconapp.svg"
+             ForegroundFile="..\MyApp.Shared\Icons\appconfig.svg"
+             Color="#FF0000"/>
+</ItemGroup>
+\```
+
+***
 
 Next, some adjustments are needed on `Android`, `Windows`, `WebAssembly`, `mac-catalyst` and `iOS`. Let's start with `Android`.
 
@@ -153,6 +170,8 @@ Now let's jump to Apple platforms.
 
 ### 5. Configuring the project to use generated splash screen
 
+# [**Class Library Based Solution**](#tab/classlib)
+
 * Create a `SplashScreen` folder inside the Base project, and add the file related to splash screen there.
 * Now open the `base.props` file, inside the `MyApp.Base` folder project and add the following block
 
@@ -161,7 +180,19 @@ Now let's jump to Apple platforms.
          Include="$(MSBuildThisFileDirectory)Splash\splash_screen.svg"
          BaseSize="128,128"
          Color="#512BD4" />
-```
+\```
+
+# [**Shared Project Based Solution**](#tab/sharedproject)
+
+* Create a `SplashScreen` folder inside the Shared project, and add the file related to splash screen there.
+* In each of your project heads (iOS, Android, WebAssembly, ...) add the following block:
+```xml
+<UnoSplashScreen
+         Include="..\MyApp.Shared\Splash\splash_screen.svg"
+         BaseSize="128,128"
+         Color="#512BD4" />
+\```
+
 
 Next some adjustments are needed on `Android`, `Windows`, and `iOS`. Let's start with `Android`.
 
