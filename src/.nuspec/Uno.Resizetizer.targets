@@ -34,10 +34,6 @@
 
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-        TaskName="Uno.Resizetizer.TizenSplashUpdater_v0"  />
-
-	<UsingTask
-        AssemblyFile="$(_ResizetizerTaskAssemblyName)"
         TaskName="Uno.Resizetizer.GenerateSplashAssets_v0"  />
 
 	<UsingTask
@@ -48,9 +44,6 @@
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
         TaskName="Uno.Resizetizer.GeneratePackageAppxManifest_v0"  />
 
-	<UsingTask
-		  AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-		  TaskName="Uno.Resizetizer.GenerateTizenManifest_v0"  />
 	<UsingTask
         AssemblyFile="$(_ResizetizerTaskAssemblyName)"
         TaskName="Uno.Resizetizer.GenerateWasmSplashAssets_v0"  />
@@ -84,7 +77,6 @@
 		<_ResizetizerPlatformIsmacOS Condition="'$(_ResizetizerPlatformIdentifier)' == 'macos'">True</_ResizetizerPlatformIsmacOS>
 		<_ResizetizerPlatformIstvOS Condition="'$(_ResizetizerPlatformIdentifier)' == 'tvos'">True</_ResizetizerPlatformIstvOS>
 		<_ResizetizerPlatformIsWindows Condition="$(_ResizetizerPlatformIdentifier.Contains('windows')) == 'True'">True</_ResizetizerPlatformIsWindows>
-		<_ResizetizerPlatformIsTizen Condition="'$(_ResizetizerPlatformIdentifier)' == 'tizen'">True</_ResizetizerPlatformIsTizen>
 
 		<ResizetizerIncludeSelfProject Condition="'$(ResizetizerIncludeSelfProject)' == ''">False</ResizetizerIncludeSelfProject>
 
@@ -101,11 +93,10 @@
 		<_ResizetizerIsAndroidApp Condition=" '$(_ResizetizerPlatformIsAndroid)' == 'True' And '$(AndroidApplication)' == 'True'">True</_ResizetizerIsAndroidApp>
 		<_ResizetizerIsiOSApp Condition="( '$(_ResizetizerPlatformIsiOS)' == 'True' OR '$(_ResizetizerPlatformIsMacCatalyst)' == 'True' ) And ('$(OutputType)' == 'Exe' Or '$(IsAppExtension)' == 'True')">True</_ResizetizerIsiOSApp>
 		<_ResizetizerIsWindowsAppSdk Condition="('$(ProjectReunionWinUI)'=='True' Or '$(WindowsAppSDKWinUI)'=='True') And '$(_ResizetizerPlatformIsWindows)' == 'True' And ('$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe')">True</_ResizetizerIsWindowsAppSdk>
-		<_ResizetizerIsTizenApp Condition="'$(_ResizetizerPlatformIsTizen)' == 'True' And ( '$(OutputType)' == 'Exe' )">True</_ResizetizerIsTizenApp>
 		<_ResizetizerIsWasmApp Condition="'$(UnoRuntimeIdentifier)' == 'WebAssembly'">True</_ResizetizerIsWasmApp>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True' Or '$(_ResizetizerIsiOSApp)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsTizenApp)' == 'True' Or '$(_ResizetizerIsWasmApp)' == 'True'">
+	<PropertyGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True' Or '$(_ResizetizerIsiOSApp)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsWasmApp)' == 'True'">
 		<_ResizetizerIsCompatibleApp>True</_ResizetizerIsCompatibleApp>
 
 		<ResizetizeDependsOnTargets>
@@ -257,21 +248,6 @@
 		</ResizetizeBeforeTargets>
 	</PropertyGroup>
 
-	<!-- Tizen -->
-	<PropertyGroup Condition="'$(_ResizetizerIsTizenApp)' == 'True'">
-		<ResizetizerPlatformType>tizen</ResizetizerPlatformType>
-
-		<ResizetizeBeforeTargets>
-			$(ResizetizeBeforeTargets);
-			PrepareResources;
-		</ResizetizeBeforeTargets>
-
-		<ResizetizeAfterTargets>
-			$(ResizetizeAfterTargets);
-			ResizetizeCollectItems;
-		</ResizetizeAfterTargets>
-	</PropertyGroup>
-
 	<!-- Finds absolute paths to any UnoImage in this project -->
 	<!-- App head projects will invoke this target on their project references to collect images -->
 	<Target Name="GetUnoItems" Outputs="@(ExportedUnoItem)">
@@ -361,12 +337,7 @@
 			<!-- Windows does not recognize %(LogicalName), so we must copy it to %(Link) -->
 			<UnoAsset Update="@(UnoAsset)" Link="%(UnoAsset.LogicalName)" Condition="'%(UnoAsset.Link)' == '' And '%(UnoAsset.LogicalName)' != ''" />
 		</ItemGroup>
-		<PropertyGroup Condition="'$(_ResizetizerIsTizenApp)' == 'True'">
-			<_UnoAssetItemMetadata>TizenTpkFileName</_UnoAssetItemMetadata>
-		</PropertyGroup>
-		<ItemGroup Condition="'$(_ResizetizerIsTizenApp)' == 'True'">
-			<UnoAsset Update="@(UnoAsset)" Link="%(UnoAsset.LogicalName)" Condition="'%(UnoAsset.Link)' == '' And '%(UnoAsset.LogicalName)' != ''" />
-		</ItemGroup>
+
 		<GetUnoAssetPath_v0
             ProjectDirectory="$(MSBuildProjectDirectory)"
             ItemMetadata="$(_UnoAssetItemMetadata)"
@@ -374,7 +345,6 @@
 			<Output ItemName="AndroidAsset"          TaskParameter="Output" Condition="'$(_ResizetizerIsAndroidApp)' == 'True'" />
 			<Output ItemName="Content"               TaskParameter="Output" Condition="'$(_ResizetizerIsiOSApp)' == 'True'" />
 			<Output ItemName="ContentWithTargetPath" TaskParameter="Output" Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'" />
-			<Output ItemName="TizenResource" TaskParameter="Output" Condition="'$(_ResizetizerIsTizenApp)' == 'True'" />
 		</GetUnoAssetPath_v0>
 	</Target>
 
@@ -478,17 +448,6 @@
 			<FileWrites Include="@(_UnoSplashAssets)" />
 		</ItemGroup>
 		
-		<!-- Tizen -->
-		<TizenSplashUpdater_v0
-            Condition="'$(_ResizetizerIsTizenApp)' == 'True'"
-            IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
-            UnoSplashScreen="@(UnoSplashScreen)" />
-
-		<ItemGroup Condition="'$(_ResizetizerIsTizenApp)' == 'True'">
-			<UnoImage Include="@(UnoSplashScreen)" />
-			<_UnoSplashScreens Include="$(_UnoIntermediateSplashScreen)splash\*" />
-			<TizenTpkUserIncludeFiles Include="@(_UnoSplashScreens)" TizenTpkSubDir="shared\res\splash" />
-		</ItemGroup>
 		<MakeDir Directories="$(IntermediateOutputPath)"/>
 		<!-- Stamp file for Outputs -->
 		<Touch Files="$(_UnoSplashStampFile)" AlwaysCreate="True" />
@@ -619,20 +578,6 @@
 			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">$(AppIconPath)</ApplicationIcon>
 		</PropertyGroup>
 
-		<!-- Tizen -->
-		<PropertyGroup>
-			<ResizetizerIntermediateOutputAbsolutePath>$([System.IO.Path]::GetFullPath('$(_UnoIntermediateImages)'))</ResizetizerIntermediateOutputAbsolutePath>
-		</PropertyGroup>
-		<ItemGroup Condition="'$(_ResizetizerIsTizenApp)' == 'True' And '@(_ResizetizerCollectedImages)' != ''">
-			<TizenTpkUserIncludeFiles Include="$(ResizetizerIntermediateOutputAbsolutePath)res\res.xml" TizenTpkSubDir="res\" />
-			<FileWrites Include="$(ResizetizerIntermediateOutputAbsolutePath)res\res.xml)" />
-
-			<TizenTpkUserIncludeFiles Include="@(_ResizetizerCollectedImages)">
-				<TizenTpkSubDir>$([MSBuild]::MakeRelative($(ResizetizerIntermediateOutputAbsolutePath), $([System.IO.Path]::GetFullPath('%(_ResizetizerCollectedImages.RelativeDir)'))))</TizenTpkSubDir>
-			</TizenTpkUserIncludeFiles>
-			<FileWrites Include="@(_ResizetizerCollectedImages)" />
-		</ItemGroup>
-
 		<!-- Touch/create our stamp file for outputs -->
 		<Touch Files="$(_ResizetizerStampFile)" AlwaysCreate="True" />
 
@@ -697,94 +642,6 @@
 			<FileWrites Include="$(_UnoManifestStampFile)" />
 		</ItemGroup>
 
-	</Target>
-
-	<!-- This is required because the "GetAssemblyAttributes" target does not have an open DependsOnTargets. -->
-	<Target Name="_GetAssemblyAttributesBeforeTarget"
-            BeforeTargets="GetAssemblyAttributes"
-            DependsOnTargets="UnoGeneratePackageAppxManifest;_MauiGetAssemblyAttributesFromAppxManifest"
-            Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True'" />
-
-	<Target Name="_MauiGetAssemblyAttributesFromAppxManifest"
-            Condition="('@(AppxManifest)@(_UnoAppxManifest)' !='')">
-
-		<PropertyGroup>
-			<_MauiAppxManifestContents>$([System.IO.File]::ReadAllText('$(_UnoIntermediateManifest)Package.appxmanifest'))</_MauiAppxManifestContents>
-		</PropertyGroup>
-
-		<XmlPeek
-            Namespaces="&lt;Namespace Prefix='ns' Uri='http://schemas.microsoft.com/appx/manifest/foundation/windows10'/&gt;"
-            XmlContent="$(_MauiAppxManifestContents)"
-            Query="/ns:Package/ns:Identity/@Name">
-			<Output TaskParameter="Result" ItemName="_MauiAppxManifestIdentity" />
-		</XmlPeek>
-		<XmlPeek
-            Namespaces="&lt;Namespace Prefix='ns' Uri='http://schemas.microsoft.com/appx/manifest/foundation/windows10'/&gt;"
-            XmlContent="$(_MauiAppxManifestContents)"
-            Query="/ns:Package/ns:Identity/@Version">
-			<Output TaskParameter="Result" ItemName="_MauiAppxManifestVersion" />
-		</XmlPeek>
-		<XmlPeek
-            Namespaces="&lt;Namespace Prefix='ns' Uri='http://schemas.microsoft.com/appx/manifest/foundation/windows10'/&gt;"
-            XmlContent="$(_MauiAppxManifestContents)"
-            Query="/ns:Package/ns:Properties/ns:PublisherDisplayName/text()">
-			<Output TaskParameter="Result" ItemName="_MauiAppxManifestPublisher" />
-		</XmlPeek>
-		<XmlPeek
-            Namespaces="&lt;Namespace Prefix='ns' Uri='http://schemas.microsoft.com/appx/manifest/foundation/windows10'/&gt;"
-            XmlContent="$(_MauiAppxManifestContents)"
-            Query="/ns:Package/ns:Properties/ns:DisplayName/text()">
-			<Output TaskParameter="Result" ItemName="_MauiAppxManifestDisplayName" />
-		</XmlPeek>
-
-		<ItemGroup>
-			<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-				<_Parameter1>Microsoft.Maui.ApplicationModel.AppInfo.PackageName</_Parameter1>
-				<_Parameter2>@(_MauiAppxManifestIdentity)</_Parameter2>
-			</AssemblyAttribute>
-			<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-				<_Parameter1>Microsoft.Maui.ApplicationModel.AppInfo.PublisherName</_Parameter1>
-				<_Parameter2>@(_MauiAppxManifestPublisher)</_Parameter2>
-			</AssemblyAttribute>
-			<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-				<_Parameter1>Microsoft.Maui.ApplicationModel.AppInfo.Name</_Parameter1>
-				<_Parameter2>@(_MauiAppxManifestDisplayName)</_Parameter2>
-			</AssemblyAttribute>
-			<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-				<_Parameter1>Microsoft.Maui.ApplicationModel.AppInfo.Version</_Parameter1>
-				<_Parameter2>@(_MauiAppxManifestVersion)</_Parameter2>
-			</AssemblyAttribute>
-		</ItemGroup>
-	</Target>
-
-	<Target Name="MauiGenerateTizenManifest"
-            Condition="'$(_ResizetizerIsTizenApp)' == 'True'"
-            BeforeTargets="$(ResizetizeBeforeTargets)"
-            AfterTargets="$(ResizetizeImages_v0)"
-            Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);$(_UnoSplashInputsFile);$(TizenManifestFile)"
-            Outputs="$(_UnoManifestStampFile);$(_UnoIntermediateManifest)tizen-manifest.xml">
-
-		<GenerateTizenManifest_v0
-            IntermediateOutputPath="$(_UnoIntermediateManifest)"
-            TizenManifestFile="$(TizenManifestFile)"
-            GeneratedFilename="tizen-manifest.xml"
-            ApplicationId="$(ApplicationId)"
-            ApplicationDisplayVersion="$(ApplicationDisplayVersion)"
-            ApplicationVersion="$(ApplicationVersion)"
-            ApplicationTitle="$(ApplicationTitle)"
-            AppIcon="@(UnoImage->WithMetadataValue('IsAppIcon', 'true'))"
-            SplashScreen="@(UnoSplashScreen)" />
-
-		<!-- replace user manifest -->
-		<PropertyGroup>
-			<TizenManifestFile>$(_UnoIntermediateManifest)tizen-manifest.xml</TizenManifestFile>
-		</PropertyGroup>
-
-		<!-- Stamp file for Outputs -->
-		<Touch Files="$(_UnoManifestStampFile)" AlwaysCreate="True" />
-		<ItemGroup>
-			<FileWrites Include="$(_UnoManifestStampFile)" />
-		</ItemGroup>
 	</Target>
 
 	<Target Name="_CleanResizetizer">

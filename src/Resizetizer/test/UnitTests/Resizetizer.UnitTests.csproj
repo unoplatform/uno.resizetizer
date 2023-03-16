@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <AssemblyName>Microsoft.Maui.Resizetizer.UnitTests</AssemblyName>
+    <AssemblyName>Uno.Resizetizer.UnitTests</AssemblyName>
     <IsPackable>false</IsPackable>
     <DefineConstants Condition="'$(OS)' == 'Windows_NT'">$(DefineConstants);WINDOWS</DefineConstants>
     <Configurations>Debug;Release;DEBUG_RESIZETIZER</Configurations>

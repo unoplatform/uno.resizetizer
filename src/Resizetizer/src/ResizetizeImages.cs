@@ -102,12 +102,6 @@ namespace Uno.Resizetizer
 				}
 			});
 
-			if (PlatformType == "tizen")
-			{
-				var tizenResourceXmlGenerator = new TizenResourceXmlGenerator(IntermediateOutputPath, Logger);
-				tizenResourceXmlGenerator.Generate();
-			}
-
 			var copiedResources = new List<TaskItem>();
 
 			foreach (var img in resizedImages)
