@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using SkiaSharp;
 
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Microsoft.Maui.Resizetizer.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Uno.Resizetizer.Tests")]
 
 namespace Uno.Resizetizer
 {

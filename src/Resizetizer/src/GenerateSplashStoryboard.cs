@@ -7,7 +7,7 @@ using SkiaSharp;
 namespace Uno.Resizetizer
 {
 	/// <summary>
-	/// Generates the MauiSplash.storyboard file for iOS splash screens
+	/// Generates the UnoSplash.storyboard file for iOS splash screens
 	/// </summary>
 	public class GenerateSplashStoryboard_v0 : Task
 	{
