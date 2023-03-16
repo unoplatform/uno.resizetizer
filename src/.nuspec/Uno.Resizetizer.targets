@@ -644,64 +644,6 @@
 
 	</Target>
 
-	<!-- This is required because the "GetAssemblyAttributes" target does not have an open DependsOnTargets. -->
-	<Target Name="_GetAssemblyAttributesBeforeTarget"
-            BeforeTargets="GetAssemblyAttributes"
-            DependsOnTargets="UnoGeneratePackageAppxManifest;_MauiGetAssemblyAttributesFromAppxManifest"
-            Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True'" />
-
-	<Target Name="_MauiGetAssemblyAttributesFromAppxManifest"
-            Condition="('@(AppxManifest)@(_UnoAppxManifest)' !='')">
-
-		<PropertyGroup>
-			<_MauiAppxManifestContents>$([System.IO.File]::ReadAllText('$(_UnoIntermediateManifest)Package.appxmanifest'))</_MauiAppxManifestContents>
-		</PropertyGroup>
-
-		<XmlPeek
-            Namespaces="&lt;Namespace Prefix='ns' Uri='http://schemas.microsoft.com/appx/manifest/foundation/windows10'/&gt;"
-            XmlContent="$(_MauiAppxManifestContents)"
-            Query="/ns:Package/ns:Identity/@Name">
-			<Output TaskParameter="Result" ItemName="_MauiAppxManifestIdentity" />
-		</XmlPeek>
-		<XmlPeek
-            Namespaces="&lt;Namespace Prefix='ns' Uri='http://schemas.microsoft.com/appx/manifest/foundation/windows10'/&gt;"
-            XmlContent="$(_MauiAppxManifestContents)"
-            Query="/ns:Package/ns:Identity/@Version">
-			<Output TaskParameter="Result" ItemName="_MauiAppxManifestVersion" />
-		</XmlPeek>
-		<XmlPeek
-            Namespaces="&lt;Namespace Prefix='ns' Uri='http://schemas.microsoft.com/appx/manifest/foundation/windows10'/&gt;"
-            XmlContent="$(_MauiAppxManifestContents)"
-            Query="/ns:Package/ns:Properties/ns:PublisherDisplayName/text()">
-			<Output TaskParameter="Result" ItemName="_MauiAppxManifestPublisher" />
-		</XmlPeek>
-		<XmlPeek
-            Namespaces="&lt;Namespace Prefix='ns' Uri='http://schemas.microsoft.com/appx/manifest/foundation/windows10'/&gt;"
-            XmlContent="$(_MauiAppxManifestContents)"
-            Query="/ns:Package/ns:Properties/ns:DisplayName/text()">
-			<Output TaskParameter="Result" ItemName="_MauiAppxManifestDisplayName" />
-		</XmlPeek>
-
-		<ItemGroup>
-			<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-				<_Parameter1>Microsoft.Maui.ApplicationModel.AppInfo.PackageName</_Parameter1>
-				<_Parameter2>@(_MauiAppxManifestIdentity)</_Parameter2>
-			</AssemblyAttribute>
-			<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-				<_Parameter1>Microsoft.Maui.ApplicationModel.AppInfo.PublisherName</_Parameter1>
-				<_Parameter2>@(_MauiAppxManifestPublisher)</_Parameter2>
-			</AssemblyAttribute>
-			<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-				<_Parameter1>Microsoft.Maui.ApplicationModel.AppInfo.Name</_Parameter1>
-				<_Parameter2>@(_MauiAppxManifestDisplayName)</_Parameter2>
-			</AssemblyAttribute>
-			<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-				<_Parameter1>Microsoft.Maui.ApplicationModel.AppInfo.Version</_Parameter1>
-				<_Parameter2>@(_MauiAppxManifestVersion)</_Parameter2>
-			</AssemblyAttribute>
-		</ItemGroup>
-	</Target>
-
 	<Target Name="_CleanResizetizer">
 		<RemoveDir Directories="$(_ResizetizerIntermediateOutputRoot)" Condition="Exists ('$(_ResizetizerIntermediateOutputRoot)' )" />
 	</Target>
