@@ -86,7 +86,7 @@
 			<_ResizetizerImagesNestedPath>$(_UnoIntermediateImages)MyAssets\Nested\dotnet_bot.scale-300.png</_ResizetizerImagesNestedPath>
 			<_ResizetizerImagesPath>$(_UnoIntermediateImages)Assets\Images\dotnet_bot2.scale-300.png</_ResizetizerImagesPath>
 		</PropertyGroup>
-		<Message Text="Validating local assets at '$(_ResizetizerBasePath)'" Importance="high" />
+		<Message Text="Validating local assets at '$(_ResizetizerIntermediateOutputRoot)'" Importance="high" />
 		<Error Condition="!Exists('$(_ResizetizerImagesNestedPath)')" Text="images file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerImagesPath)')" Text="images file wasn't created." />
 	</Target>
@@ -100,7 +100,7 @@
 			<_ResizetizerAppIconPath>$(_UnoIntermediateAppIcon)mipmap-anydpi-v26\iconapp.xml</_ResizetizerAppIconPath>
 			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateAppIcon)mipmap-hdpi\iconapp.png</_ResizetizerAppIconImagesPath>
 		</PropertyGroup>
-		<Message Text="Validating local assets at '$(_ResizetizerBasePath)'" Importance="high" />
+		<Message Text="Validating local assets at '$(_ResizetizerIntermediateOutputRoot)'" Importance="high" />
 		<Error Condition="!Exists('$(_ResizetizerSplashScreenDrawablePath)')" Text="SplashScreen drawable file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerColorsPath)')" Text="Uno_Coloras.xml file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerSplashScreenPath)')" Text="SplashScreen image file wasn't created." />
@@ -117,7 +117,7 @@
 			<_ResizetizerAppIconContentsPath>$(_UnoIntermediateImages)Assets.xcassets\iconapp.appiconset\Contents.json</_ResizetizerAppIconContentsPath>
 			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateImages)Assets.xcassets\iconapp.appiconset\iconapp76x76@2x.png</_ResizetizerAppIconImagesPath>
 		</PropertyGroup>
-		<Message Text="Validating local assets at '$(_ResizetizerBasePath)'" Importance="high" />
+		<Message Text="Validating local assets at '$(_ResizetizerIntermediateOutputRoot)'" Importance="high" />
 		<Error Condition="!Exists('$(_ResizetizerUnoInfoPlistPath)')" Text="UnoInfo.plist file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerUnoStoryboardPath)')" Text="UnoSplash.storyboard file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerSplashScreenPath)')" Text="SplashScreen image file wasn't created." />
@@ -131,7 +131,7 @@
 			<_ResizetizerAppIconContentsPath>$(_UnoIntermediateImages)Assets.xcassets\iconapp.appiconset\Contents.json</_ResizetizerAppIconContentsPath>
 			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateImages)Assets.xcassets\iconapp.appiconset\iconapp76x76@2x.png</_ResizetizerAppIconImagesPath>
 		</PropertyGroup>
-		<Message Text="Validating local assets at '$(_ResizetizerBasePath)'" Importance="high" />
+		<Message Text="Validating local assets at '$(_ResizetizerIntermediateOutputRoot)'" Importance="high" />
 		<Error Condition="!Exists('$(_ResizetizerAppIconContentsPath)')" Text="Contents.json file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerAppIconImagesPath)')" Text="App icon image file wasn't created." />
 	</Target>

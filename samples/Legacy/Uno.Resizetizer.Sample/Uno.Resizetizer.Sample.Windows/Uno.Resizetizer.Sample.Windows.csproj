@@ -66,7 +66,7 @@
 			<_ResizetizerImagesPath>$(_UnoIntermediateImages)Assets\Images\dotnet_bot2.scale-300.png</_ResizetizerImagesPath>
 		</PropertyGroup>
 
-		<Message Text="Validating local assets at '$(_ResizetizerBasePath)'" Importance="high" />
+		<Message Text="Validating local assets at '$(_ResizetizerIntermediateOutputRoot)'" Importance="high" />
 		<Error Condition="!Exists('$(_ResizetizerManifestPath)')" Text="Manifest file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerSplashScreenPath)')" Text="SplashScreen file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerAppIconPath)')" Text=".ico file wasn't created." />

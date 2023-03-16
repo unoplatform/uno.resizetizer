@@ -48,7 +48,7 @@
 			<_ResizetizerAppIconPath>$(_UnoIntermediateImages)iconapp.ico</_ResizetizerAppIconPath>
 			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateImages)Images\iconappLogo.scale-150.png</_ResizetizerAppIconImagesPath>
 		</PropertyGroup>
-		<Message Text="Validating local assets at '$(_ResizetizerBasePath)'" Importance="high" />
+		<Message Text="Validating local assets at '$(_ResizetizerIntermediateOutputRoot)'" Importance="high" />
 		<Error Condition="!Exists('$(_ResizetizerManifestPath)')" Text="Manifest file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerSplashScreenPath)')" Text="SplashScreen file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerAppIconPath)')" Text=".ico file wasn't created." />
