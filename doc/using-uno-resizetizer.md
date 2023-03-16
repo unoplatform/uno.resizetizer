@@ -79,7 +79,7 @@ Make sure that the build assets are configured to be `UnoImage`. In the `csproj`
 </ItemGroup>
 ```
 
-Next, some adjustments are needed on `Android`, `Windows`, `wasm`, `mac-catalyst` and `iOS`. Let's start with `Android`.
+Next, some adjustments are needed on `Android`, `Windows`, `WebAssembly`, `mac-catalyst` and `iOS`. Let's start with `Android`.
 
 * Open the `Main.Android.cs` file (or the file that has the `Android.App.ApplicationAttribute`), and change the `Icon` property, in that attribute, to be the name of the file used in the `Include` property of `UnoIcon`, in our case will be:
 
@@ -114,12 +114,12 @@ Now let's jump to Windows platform.
  </Applications>
 ```
 
-Now let's jump to the wasm platform.
+Now let's jump to the WebAssembly platform.
 
 > [!NOTE]
-> You just need to configure it, if you want to ship it as PWA.
+> You will only need to configure this platform if you want to deploy it as a PWA.
 
-* Opens the `manifest.webmanifest` file and look for the `icons` tag, now remove all the values inside it. And leave an empty array like this:
+* Open the `manifest.webmanifest` file and look for the `icons` tag and remove all the values inside it. You should be seeing an empty array like this:
 
 ```json
 {
@@ -130,7 +130,7 @@ Now let's jump to the wasm platform.
 }
 ```
 
-Now let's jump to the Apple's platform.
+Now let's jump to Apple platforms.
 
 * For `mac-catalyst` and `iOS`, open the `info.plist` file and find for the `XSAppIconAsset` key, change its value to be `Assets.xcassets/iconapp.appiconset`.
 
@@ -142,11 +142,11 @@ Now let's jump to the Apple's platform.
 
 ## UnoSplashScreen
 
-`UnoSplashScreen` is the build action for the splash screen. There should only be one per application. The `UnoSplashScreen` has two more properties that you can use to adjust your asset, they are:
+`UnoSplashScreen` is the build action for the splash screen. There should only be one per application. The `UnoSplashScreen` has two more properties that you can use to adjust your asset, which are:
 
-* BaseSize: It's the size that will be used to perform the scaling of the image. The default value is the size of asset. So if you feel that your SplashScreen doesn't look right you can tweak this value.
+* `BaseSize`: It's the size that will be used to perform the scaling of the image. The default value is the size of asset. So if you feel that your SplashScreen doesn't look right you can tweak this value.
 
-* Color: It's the background color of that will be used to fill the empty space on the final SplashScreen asset. The default value is `#FFFFFF`(transparent).
+* `Color`: It's the background color of that will be used to fill the empty space on the final SplashScreen asset. The default value is `#FFFFFF`(transparent).
 
 ### 5. Configuring the project to use generated splash screen
 
@@ -162,7 +162,7 @@ Now let's jump to the Apple's platform.
 
 Next some adjustments are needed on `Android`, `Windows`, and `iOS`. Let's start with `Android`.
 
-* Opens the `Style.xml` file, look the `Theme` that is been used by the application and add the following line:
+* Open the `Style.xml` file, look for the `Theme` that is been used by the application and add the following line:
 
 ```xml
 <style name="AppTheme" parent="Theme.AppCompat.Light">
@@ -183,7 +183,7 @@ Next some adjustments are needed on `Android`, `Windows`, and `iOS`. Let's start
 
 Now let's jump to Windows platform.
 
-* Opens the `Package.appxmanifest` file and look for the `Application` tag, inside that look for the `uap:SplashScreen` tag. Delete the `Image` property and its value, the `Application` tag should like this:
+* Open the `Package.appxmanifest` file and look for the `Application` node, inside it look for the `uap:SplashScreen` node. Delete the `Image` property and its value, the `Application` tag should like this:
 
 ```xml
 <Applications>
@@ -202,7 +202,7 @@ Now let's jump to Windows platform.
 
 Now let's jump to iOS platform.
 
-* Opens the `info.plist` file and look for the `UILaunchStoryboardName` key, delete it and its value.
+* Open the `info.plist` file and look for the `UILaunchStoryboardName` key, delete it and its value.
 
 > [!TIP]
 > Feel free to delete the `LaunchScreen.storyboard` file.
