@@ -43,9 +43,9 @@ namespace Uno.Resizetizer.Tests
 			var success = task.Execute();
 			Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
 
-			AssertFile($"{image}SplashScreen.scale-100.png", 620, 300);
-			AssertFile($"{image}SplashScreen.scale-125.png", 775, 375);
-			AssertFile($"{image}SplashScreen.scale-200.png", 1240, 600);
+			AssertFile($"{image}.scale-100.png", 620, 300);
+			AssertFile($"{image}.scale-125.png", 775, 375);
+			AssertFile($"{image}.scale-200.png", 1240, 600);
 		}
 
 		[Theory(Skip = "We don't worked on SplashScreen")]
