@@ -82,7 +82,7 @@ Make sure that the build assets are configured to be `UnoImage`. In the `csproj`
              ForegroundFile="$(MSBuildThisFileDirectory)Icons\appconfig.svg"
              Color="#FF0000"/>
 </ItemGroup>
-\```
+```
 
 # [**Shared Project Based Solution**](#tab/sharedproject)
 
@@ -95,7 +95,7 @@ Make sure that the build assets are configured to be `UnoImage`. In the `csproj`
              ForegroundFile="..\MyApp.Shared\Icons\appconfig.svg"
              Color="#FF0000"/>
 </ItemGroup>
-\```
+```
 
 ***
 
@@ -180,7 +180,7 @@ Now let's jump to Apple platforms.
          Include="$(MSBuildThisFileDirectory)Splash\splash_screen.svg"
          BaseSize="128,128"
          Color="#512BD4" />
-\```
+```
 
 # [**Shared Project Based Solution**](#tab/sharedproject)
 
@@ -191,7 +191,7 @@ Now let's jump to Apple platforms.
          Include="..\MyApp.Shared\Splash\splash_screen.svg"
          BaseSize="128,128"
          Color="#512BD4" />
-\```
+```
 
 
 Next some adjustments are needed on `Android`, `Windows`, and `iOS`. Let's start with `Android`.
