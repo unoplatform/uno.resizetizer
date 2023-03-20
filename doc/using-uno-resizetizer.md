@@ -4,7 +4,7 @@ uid: Uno.Resizetizer.GettingStarted
 
 # How-To: Get Started with Uno.Resizetizer
 
-Uno.Resizetizer is a set of MSBuild tasks to manage the assets of an app. Using this package, it is not needed to care about generating and maintaining different image sizes/scaling and create a splash screen plumbing. It is only needed to provide an `svg` file and the tool will take care of the rest.
+Uno.Resizetizer is a set of MSBuild tasks to manage the assets of an app. Using this package, it is not needed to care about generating and maintaining different image sizes/scaling and creating a splash screen plumbing. It is only needed to provide an `svg` file and the tool will take care of the rest.
 
 Starting Uno Platform 4.8, the solution template includes Uno.Resizetizer by default. If you want to use it with an application created from an earlier version of Uno Platform, you can follow the steps below.
 
@@ -13,11 +13,11 @@ Starting Uno Platform 4.8, the solution template includes Uno.Resizetizer by def
 
 ## Manual Installation
 
-Uno.Resizeter is delivered [through NuGet](https://www.nuget.org/packages/Uno.Resizetizer). In order to install it you can either download it using your IDE (this will be showed in the next steps) or added directly on your `.csproj` as showed in the [NuGet page](https://www.nuget.org/packages/Uno.Resizetizer/).
+Uno.Resizeter is delivered [through NuGet](https://www.nuget.org/packages/Uno.Resizetizer). In order to install it you can either download it using your IDE (this will be shown in the next steps) or added directly on your `.csproj` as shown in the [NuGet page](https://www.nuget.org/packages/Uno.Resizetizer/).
 
 ### 1. Installing Uno.Resizetizer
 
-* Open your favorite IDE, in this case it will be Visual Studio, after that open the Manage NuGet packages window
+* Open your favorite IDE, in this case, it will be Visual Studio, after that open the Manage NuGet packages window
 * Search for `Uno.Resizetizer` and install it over your projects
 
 > [!NOTE]
@@ -42,7 +42,7 @@ The next sections will show how to use it for each use case.
 * In the App Class library, create a folder called `Assets` (if doesn't exist) and then create a folder called `Images`. We now need to add assets to this folder.
 
 > [!TIP]
-> Those folders names are examples. It is possible to create folders with any name and how many levels needed.
+> Those folder names are examples. It is possible to create folders with any name and how many levels are needed.
 
 Make sure that the build assets are configured to be `UnoImage`. In the `csproj`, to make all files inside the `Assets\Images` folder to be automatically configured to be `UnoImage`, add the following:
 
@@ -73,7 +73,7 @@ Make sure that the build assets are configured to be `UnoImage`. In the `csproj`
 
 # [**Class Library Based Solution**](#tab/classlib)
 
-* Create a `Icon` folder inside the Base project, and add the files related to app icon there.
+* Create an `Icons` folder inside the Base project, and add the files related to the app icon there.
 * Now open the `base.props` file, inside the `MyApp.Base` folder project and add the following block:
 
 ```xml
@@ -86,7 +86,7 @@ Make sure that the build assets are configured to be `UnoImage`. In the `csproj`
 
 # [**Shared Project Based Solution**](#tab/sharedproject)
 
-* Create a `Icon` folder inside the Shared project, and add the files related to app icon there.
+* Create an `Icons` folder inside the Shared project, and add the files related to the app icon there.
 * In each of your project heads (iOS, Android, WebAssembly, ...) add the following block:
 
 ```xml
@@ -99,7 +99,7 @@ Make sure that the build assets are configured to be `UnoImage`. In the `csproj`
 
 ***
 
-Next, some adjustments are needed on `Android`, `Windows`, `WebAssembly`, `mac-catalyst` and `iOS`. Let's start with `Android`.
+Next, some adjustments are needed on `Android`, `Windows`, `WebAssembly`, `mac-catalyst`, and `iOS`. Let's start with `Android`.
 
 * Open the `Main.Android.cs` file (or the file that has the `Android.App.ApplicationAttribute`), and change the `Icon` property, in that attribute, to be the name of the file used in the `Include` property of `UnoIcon`, in our case will be:
 
@@ -112,12 +112,12 @@ Icon = "@mipmap/iconapp",
 ```
 
 > [!TIP]
-> Feel free to remove the old assets related to app icon on `Android` project
+> Feel free to remove the old assets related to the app icon on the `Android` project
 
-Now let's jump to Windows platform.
+Now let's jump to the Windows platform.
 
 * Open the `Package.appxmanifest` file and look for the `Application` tag
-* And remove everything that's related to application icon. It should look like this:
+* And remove everything that's related to the application icon. It should look like this:
 
 ```xml
 <Applications>
@@ -152,49 +152,49 @@ Now let's jump to the WebAssembly platform.
 
 Now let's jump to Apple platforms.
 
-* For `mac-catalyst` and `iOS`, open the `info.plist` file and find for the `XSAppIconAsset` key, change its value to be `Assets.xcassets/iconapp.appiconset`.
+* For `mac-catalyst` and `iOS`, open the `info.plist` file, find the `XSAppIconAsset` key, and change its value to `Assets.xcassets/iconapp.appiconset`.
 
 > [!NOTE]
-> If your app icon has other name than `iconapp` use it instead.
+> If your app icon has another name than `iconapp` use it instead.
 
 > [!TIP]
-> Feel free to delete the old assets related to app icon in the project.
+> Feel free to delete the old assets related to the app icon in the project.
 
 ## UnoSplashScreen
 
 `UnoSplashScreen` is the build action for the splash screen. There should only be one per application. The `UnoSplashScreen` has two more properties that you can use to adjust your asset, which are:
 
-* `BaseSize`: It's the size that will be used to perform the scaling of the image. The default value is the size of asset. So if you feel that your SplashScreen doesn't look right you can tweak this value.
+* `BaseSize`: It's the size that will be used to perform the scaling of the image. The default value is the size of the asset. So if you feel that your SplashScreen doesn't look right you can tweak this value.
 
-* `Color`: It's the background color of that will be used to fill the empty space on the final SplashScreen asset. The default value is `#FFFFFF`(transparent).
+* `Color`: It's the background color that will be used to fill the empty space on the final SplashScreen asset. The default value is `#FFFFFF`(transparent).
 
 ### 5. Configuring the project to use generated splash screen
 
 # [**Class Library Based Solution**](#tab/classlib)
 
-* Create a `SplashScreen` folder inside the Base project, and add the file related to splash screen there.
+* Create a `SplashScreen` folder inside the Base project, and add the file related to the splash screen there.
 * Now open the `base.props` file, inside the `MyApp.Base` folder project and add the following block
 
 ```xml
 <UnoSplashScreen
-         Include="$(MSBuildThisFileDirectory)Splash\splash_screen.svg"
+         Include="$(MSBuildThisFileDirectory)SplashScreen\splash_screen.svg"
          BaseSize="128,128"
          Color="#512BD4" />
 ```
 
 # [**Shared Project Based Solution**](#tab/sharedproject)
 
-* Create a `SplashScreen` folder inside the Shared project, and add the file related to splash screen there.
+* Create a `SplashScreen` folder inside the Shared project, and add the file related to the splash screen there.
 * In each of your project heads (iOS, Android, WebAssembly, ...) add the following block:
 ```xml
 <UnoSplashScreen
-         Include="..\MyApp.Shared\Splash\splash_screen.svg"
+         Include="..\MyApp.Shared\SplashScreen\splash_screen.svg"
          BaseSize="128,128"
          Color="#512BD4" />
 ```
 
 
-Next some adjustments are needed on `Android`, `Windows`, and `iOS`. Let's start with `Android`.
+Next, some adjustments are needed on `Android`, `Windows`, and `iOS`. Let's start with `Android`.
 
 * Open the `Style.xml` file, look for the `Theme` that is been used by the application and add the following line:
 
@@ -217,7 +217,7 @@ Next some adjustments are needed on `Android`, `Windows`, and `iOS`. Let's start
 
 Now let's jump to Windows platform.
 
-* Open the `Package.appxmanifest` file and look for the `Application` node, inside it look for the `uap:SplashScreen` node. Delete the `Image` property and its value, the `Application` tag should like this:
+* Open the `Package.appxmanifest` file and look for the `Application` node, inside it, look for the `uap:SplashScreen` node. Delete the `Image` property and its value, the `Application` tag should be like this:
 
 ```xml
 <Applications>
@@ -242,4 +242,9 @@ Now let's jump to iOS platform.
 > Feel free to delete the `LaunchScreen.storyboard` file.
 
 > [!NOTE]
-> Feel free to delete old assets related to splash screen.
+> Feel free to delete old assets related to the splash screen.
+
+## Sample App Example
+
+A sample app is available [here](https://github.com/unoplatform/uno.resizetizer/tree/main/samples/NewTemplate) as an example for all the previous steps detailed above.
+
