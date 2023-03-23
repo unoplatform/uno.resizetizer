@@ -68,6 +68,24 @@ namespace Uno.Resizetizer.Tests
 			AssertImageFile("uno_splash_image_v31.xml", _drawable_v31, "@drawable/splash_image_drawable", width, height);
 		}
 
+		[Fact]
+		public void SplashWithoutColor()
+		{
+			var splash = new TaskItem("images/" + "tall_image.png", new Dictionary<string, string>
+			{
+				["Link"] = "splash_image_drawable",
+			});
+
+			var task = GetNewTask(splash);
+
+			var success = task.Execute();
+			Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
+
+			var hasTransparentColor = File.ReadAllLines(_colors).Any(x => x.Contains("#00000000"));
+
+			Assert.True(hasTransparentColor);
+		}
+
 		[Theory]
 		[InlineData(null, "appiconfg")]
 		[InlineData("images/CustomAlias.svg", "CustomAlias")]
