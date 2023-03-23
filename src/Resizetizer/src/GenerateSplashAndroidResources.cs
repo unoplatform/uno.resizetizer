@@ -1,9 +1,9 @@
-﻿using System.Globalization;
-using System.IO;
-using System.Xml;
-using Microsoft.Build.Framework;
+﻿using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using SkiaSharp;
+using System.Globalization;
+using System.IO;
+using System.Xml;
 
 namespace Uno.Resizetizer
 {
@@ -51,13 +51,10 @@ namespace Uno.Resizetizer
 			writer.WriteComment(Comment);
 			writer.WriteStartElement("resources");
 
-			if (splash.Color is not null)
-			{
-				writer.WriteStartElement("color");
-				writer.WriteAttributeString("name", "uno_splash_color");
-				writer.WriteString(splash.Color.ToString());
-				writer.WriteEndElement();
-			}
+			writer.WriteStartElement("color");
+			writer.WriteAttributeString("name", "uno_splash_color");
+			writer.WriteString(splash.Color?.ToString() ?? "#00000000");
+			writer.WriteEndElement();
 
 			writer.WriteEndDocument();
 		}
