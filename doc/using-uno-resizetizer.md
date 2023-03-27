@@ -186,6 +186,7 @@ Now let's jump to Apple platforms.
 
 * Create a `SplashScreen` folder inside the Shared project, and add the file related to the splash screen there.
 * In each of your project heads (iOS, Android, WebAssembly, ...) add the following block:
+
 ```xml
 <UnoSplashScreen
          Include="..\MyApp.Shared\SplashScreen\splash_screen.svg"
