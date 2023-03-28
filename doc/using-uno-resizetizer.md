@@ -65,7 +65,7 @@ Make sure that the build assets are configured to be `UnoImage`. In the `csproj`
 ```xml
 <Image Width="300"
        Height="300"
-       Source="Assets\Images\my_image.png" />
+       Source="Assets\\Images\\my_image.png" />
 ```
 
 > [!TIP]
