@@ -211,7 +211,10 @@ Next, some adjustments are needed on `Android`, `Windows`, and `iOS`. Let's star
     <item name="android:windowSplashScreenBackground">@color/uno_splash_color</item>
     <item name="android:windowBackground">@drawable/uno_splash_image</item>
     <item name="android:windowSplashScreenAnimatedIcon">@drawable/uno_splash_image</item>
+
     <!-- Image at the footer -->
+    <!-- This is not required in order to make the Splash screen work -->
+    <!-- For more info please see: https://developer.android.com/develop/ui/views/launch/splash-screen#set-theme -->
     <item name="android:windowSplashScreenBrandingImage">@drawable/uno_splash_image</item>
 </style>
 ```
