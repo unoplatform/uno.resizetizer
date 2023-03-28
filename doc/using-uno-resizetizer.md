@@ -58,6 +58,10 @@ Make sure that the build assets are configured to be `UnoImage`. In the `csproj`
 </ItemGroup>
 ```
 
+You can also make specific files to be `UnoImage` using VisualStudio, by right-clicking on the file and selecting `Properties` and then `Build Action` and selecting `UnoImage`. The image below shows how it looks like:
+
+![UnoImage Build Action](Assets/UnoImage_BuildAction.png)
+
 ### 3. Using the assets on the project
 
 * `UnoImage` assets can now be used just like any regular image. For example:
@@ -106,6 +110,10 @@ If you want, you can see our sample project [here](https://github.com/unoplatfor
              Color="#FF0000"/>
 </ItemGroup>
 ```
+
+You can also make specific files to be `UnoIcon` using VisualStudio, by right-clicking on the file and selecting `Properties` and then `Build Action` and selecting `UnoIcon`. The image below shows how it looks like:
+
+![UnoIcon Build Action](Assets/UnoIcon_BuildAction.png)
 
 ***
 
@@ -207,6 +215,11 @@ If you want, you can see our sample project [here](https://github.com/unoplatfor
          BaseSize="128,128"
          Color="#512BD4" />
 ```
+
+You can also make specific files to be `UnoSplashScreen` using VisualStudio, by right-clicking on the file and selecting `Properties` and then `Build Action` and selecting `UnoSplashScreen`. The image below shows how it looks like:
+
+![UnoSplashScreen Build Action](Assets/UnoSplashScreen_BuildAction.png)
+
 
 Next, some adjustments are needed on `Android`, `Windows`, and `iOS`. Let's start with `Android`.
 
