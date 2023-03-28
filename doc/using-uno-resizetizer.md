@@ -90,6 +90,10 @@ Make sure that the build assets are configured to be `UnoImage`. In the `csproj`
 </ItemGroup>
 ```
 
+We recommend to add the `UnoIcon` on `base.props` because this file is imported by all head projects, that way, you don't need to add the same configuration on each head project.
+
+If you want, you can see our sample project [here](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Base/base.props#L16-L18) where this step is configured.
+
 # [**Shared Project Based Solution**](#tab/sharedproject)
 
 * Create an `Icons` folder inside the Shared project, and add the files related to the app icon there.
@@ -179,7 +183,7 @@ Now let's jump to Apple platforms.
 # [**Class Library Based Solution**](#tab/classlib)
 
 * Create a `SplashScreen` folder inside the Base project, and add the file related to the splash screen there.
-* Now open the `base.props` file, inside the `MyApp.Base` folder project and add the following block
+* Now open the `base.props` file, inside the `MyApp.Base` folder project and add the following block:
 
 ```xml
 <UnoSplashScreen
@@ -187,6 +191,10 @@ Now let's jump to Apple platforms.
          BaseSize="128,128"
          Color="#512BD4" />
 ```
+
+We recommend to add the `UnoSplashScreen` on `base.props` because this file is imported by all head projects, that way, you don't need to add the same configuration on each head project.
+
+If you want, you can see our sample project [here](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Base/base.props#L19-L21).
 
 # [**Shared Project Based Solution**](#tab/sharedproject)
 
