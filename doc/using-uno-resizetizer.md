@@ -97,7 +97,7 @@ If you want, you can see our sample project [here](https://github.com/unoplatfor
 # [**Shared Project Based Solution**](#tab/sharedproject)
 
 * Create an `Icons` folder inside the Shared project, and add the files related to the app icon there.
-* In each of your project heads (iOS, Android, WebAssembly, ...) add the following block:
+* In each of your project heads (iOS, Android, WebAssembly, ...) add the following block on their `csproj`:
 
 ```xml
 <ItemGroup>
@@ -199,7 +199,7 @@ If you want, you can see our sample project [here](https://github.com/unoplatfor
 # [**Shared Project Based Solution**](#tab/sharedproject)
 
 * Create a `SplashScreen` folder inside the Shared project, and add the file related to the splash screen there.
-* In each of your project heads (iOS, Android, WebAssembly, ...) add the following block:
+* In each of your project heads (iOS, Android, WebAssembly, ...) add the following block on their `csproj`:
 
 ```xml
 <UnoSplashScreen
