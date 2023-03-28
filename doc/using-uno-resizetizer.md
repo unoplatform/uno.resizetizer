@@ -33,6 +33,9 @@ Uno.Resizetizer can handle:
 
 The next sections will show how to use it for each use case.
 
+> [!WARNING]
+> All the assets used by Uno.Resizetizer should be lower case and don't have special characters. You can use `_` to separate words.
+
 ### UnoImage
 
 `UnoImage` is the build action used for images that will be part of the app.
@@ -59,7 +62,7 @@ Make sure that the build assets are configured to be `UnoImage`. In the `csproj`
 ```xml
 <Image Width="300"
        Height="300"
-       Source="Assets\Images\myImage.png" />
+       Source="Assets\Images\my_image.png" />
 ```
 
 > [!TIP]
