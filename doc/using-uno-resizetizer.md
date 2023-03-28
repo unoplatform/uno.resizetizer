@@ -208,10 +208,9 @@ If you want, you can see our sample project [here](https://github.com/unoplatfor
          Color="#512BD4" />
 ```
 
-
 Next, some adjustments are needed on `Android`, `Windows`, and `iOS`. Let's start with `Android`.
 
-* Open the `Style.xml` file, look for the `Theme` that is been used by the application and add the following line:
+* Open the `style.xml` file, look for the `Theme` that is been used by the application and add the following line:
 
 ```xml
 <style name="AppTheme" parent="Theme.AppCompat.Light">
