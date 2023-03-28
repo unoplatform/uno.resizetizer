@@ -15,6 +15,9 @@ Starting Uno Platform 4.8, the solution template includes Uno.Resizetizer by def
 
 Uno.Resizeter is delivered [through NuGet](https://www.nuget.org/packages/Uno.Resizetizer). In order to install it you can either download it using your IDE (this will be shown in the next steps) or added directly on your `.csproj` as shown in the [NuGet page](https://www.nuget.org/packages/Uno.Resizetizer/).
 
+> [!NOTE]
+> If you're using the new template, you can skip this step because it is already included by default with Uno Platform 4.8 and later.
+  
 ### 1. Installing Uno.Resizetizer
 
 * Open your favorite IDE, in this case, it will be Visual Studio, after that open the Manage NuGet packages window
