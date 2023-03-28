@@ -38,6 +38,7 @@ The next sections will show how to use it for each use case.
 
 > [!WARNING]
 > All the assets used by Uno.Resizetizer should be lower case and don't have special characters. You can use `_` to separate words.
+> This is because the assets are used on different platforms and some of them have limitations on the characters that can be used.
 
 ### UnoImage
 
