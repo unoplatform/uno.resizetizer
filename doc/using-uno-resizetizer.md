@@ -80,6 +80,8 @@ You can also make specific files to be `UnoImage` using VisualStudio, by right-c
 
 `UnoIcon` is the build action for the app icon. There should only be one per application. The `UnoIcon` accepts two assets, one that represents the `Foreground` and another that represents the `Background`. During the generation phase, those files will be merged into one `.png` image.
 
+During the creation of your `svg` file, please remember to make the `ViewBox` bigger than the `Foreground` and `Background` images, not adding an extra space could make the app icon doesn't look good on some platforms. We recommend to add a 30% extra space on each side. This will be enough for Resizetizer to work with padding and margins.
+
 ### 4. Configuring the project to use generated app icon
 
 # [**Class Library Based Solution**](#tab/classlib)
