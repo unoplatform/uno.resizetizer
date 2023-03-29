@@ -120,7 +120,7 @@ You can also make specific files to be `UnoIcon` using VisualStudio, by right-cl
 
 Next, some adjustments are needed on `Android`, `Windows`, `WebAssembly`, `mac-catalyst`, and `iOS`. Let's start with `Android`.
 
-* Open the `Main.Android.cs` file (or the file that has the `Android.App.ApplicationAttribute`), and change the `Icon` property, in that attribute, to be the name of the file used in the `Include` property of `UnoIcon`, in our case will be:
+* Open the [`Main.Android.cs` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Mobile/Android/Main.Android.cs) (or the file that has the `Android.App.ApplicationAttribute`), and change the `Icon` property, in that attribute, to be the name of the file used in the `Include` property of `UnoIcon`, in our case will be:
 
 ```csharp
 [global::Android.App.ApplicationAttribute(
@@ -135,8 +135,8 @@ Icon = "@mipmap/iconapp",
 
 Now let's jump to the Windows platform.
 
-* Open the `Package.appxmanifest` file and look for the `Application` tag
-* And remove everything that's related to the application icon. It should look like this:
+* Open the [`Package.appxmanifest` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Windows/Package.appxmanifest) and look for the `Application` tag
+* And remove everything that's related to the application icon (BackgroundColor, Square and Wide property inside the `uap:DefaultTile` attribute). It should look like this:
 
 ```xml
 <Applications>
@@ -158,7 +158,7 @@ Now let's jump to the WebAssembly platform.
 > [!NOTE]
 > You will only need to configure this platform if you want to deploy it as a PWA.
 
-* Open the `manifest.webmanifest` file and look for the `icons` tag and remove all the values inside it. You should be seeing an empty array like this:
+* Open the [`manifest.webmanifest` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Wasm/manifest.json) and look for the `icons` tag and remove all the values inside it. You should be seeing an empty array like this:
 
 ```json
 {
@@ -169,9 +169,12 @@ Now let's jump to the WebAssembly platform.
 }
 ```
 
+> [!NOTE]
+> In some projects the `manifest.webmanifest` be `manifest.json`. If so, you can either adjust your project to use `manifest.webmanifest` or keep it as `manifest.json`.
+
 Now let's jump to Apple platforms.
 
-* For `mac-catalyst` and `iOS`, open the `info.plist` file, find the `XSAppIconAsset` key, and change its value to `Assets.xcassets/iconapp.appiconset`.
+* For `mac-catalyst` and `iOS`, open the [`info.plist` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Mobile/iOS/Info.plist), find the `XSAppIconAsset` key, and change its value to `Assets.xcassets/iconapp.appiconset`.
 
 > [!NOTE]
 > If your app icon has another name than `iconapp` use it instead.
@@ -221,10 +224,9 @@ You can also make specific files to be `UnoSplashScreen` using VisualStudio, by 
 
 ![UnoSplashScreen Build Action](Assets/UnoSplashScreen_BuildAction.png)
 
-
 Next, some adjustments are needed on `Android`, `Windows`, and `iOS`. Let's start with `Android`.
 
-* Open the `style.xml` file, look for the `Theme` that is been used by the application and add the following line:
+* Open the [`style.xml` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Mobile/Android/Resources/values/Styles.xml), look for the `Theme` that is been used by the application and add the following line:
 
 ```xml
 <style name="AppTheme" parent="Theme.AppCompat.Light">
@@ -248,7 +250,7 @@ Next, some adjustments are needed on `Android`, `Windows`, and `iOS`. Let's star
 
 Now let's jump to Windows platform.
 
-* Open the `Package.appxmanifest` file and look for the `Application` node, inside it, look for the `uap:SplashScreen` node. Delete the `Image` property and its value, the `Application` tag should be like this:
+* Open the [`Package.appxmanifest` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Windows/Package.appxmanifest) and look for the `Application` node, inside it, look for the `uap:SplashScreen` node. Delete the `Image` property and its value, the `Application` tag should be like this:
 
 ```xml
 <Applications>
@@ -267,7 +269,7 @@ Now let's jump to Windows platform.
 
 Now let's jump to iOS platform.
 
-* Open the `info.plist` file and look for the `UILaunchStoryboardName` key, delete it and its value.
+* Open the [`info.plist` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Mobile/iOS/Info.plist) and look for the `UILaunchStoryboardName` key, delete it and its value.
 
 > [!TIP]
 > Feel free to delete the `LaunchScreen.storyboard` file.
@@ -278,4 +280,3 @@ Now let's jump to iOS platform.
 ## Sample App Example
 
 A sample app is available [here](https://github.com/unoplatform/uno.resizetizer/tree/main/samples/NewTemplate) as an example for all the previous steps detailed above.
-
