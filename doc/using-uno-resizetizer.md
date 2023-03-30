@@ -59,7 +59,7 @@ Make sure that the build assets are configured to be `UnoImage`. In the `csproj`
 </ItemGroup>
 ```
 
-You can also make specific files to be `UnoImage` using VisualStudio, by right-clicking on the file and selecting `Properties` and then `Build Action` and selecting `UnoImage`. The image below shows how it looks like:
+You can also make specific files to be `UnoImage` using VisualStudio, by right-clicking on the file and selecting `Properties` and then `Build Action` and selecting `UnoImage`. The image below shows what it looks like:
 
 ![UnoImage Build Action](Assets/UnoImage_BuildAction.png)
 
@@ -97,7 +97,7 @@ During the creation of your `svg` file, please remember to make the `ViewBox` bi
 </ItemGroup>
 ```
 
-We recommend to add the `UnoIcon` on `base.props` because this file is imported by all head projects, that way, you don't need to add the same configuration on each head project.
+We recommend adding the `UnoIcon` on `base.props` because this file is imported by all head projects, that way, you don't need to add the same configuration on each head project.
 
 If you want, you can see our sample project [here](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Base/base.props#L16-L18) where this step is configured.
 
@@ -114,7 +114,7 @@ If you want, you can see our sample project [here](https://github.com/unoplatfor
 </ItemGroup>
 ```
 
-You can also make specific files to be `UnoIcon` using VisualStudio, by right-clicking on the file and selecting `Properties` and then `Build Action` and selecting `UnoIcon`. The image below shows how it looks like:
+You can also make specific files to be `UnoIcon` using VisualStudio, by right-clicking on the file and selecting `Properties` and then `Build Action` and selecting `UnoIcon`. The image below shows what it looks like:
 
 ![UnoIcon Build Action](Assets/UnoIcon_BuildAction.png)
 
@@ -206,7 +206,7 @@ Now let's jump to Apple platforms.
          Color="#512BD4" />
 ```
 
-We recommend to add the `UnoSplashScreen` on `base.props` because this file is imported by all head projects, that way, you don't need to add the same configuration on each head project.
+We recommend adding the `UnoSplashScreen` on `base.props` because this file is imported by all head projects, that way, you don't need to add the same configuration on each head project.
 
 If you want, you can see our sample project [here](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Base/base.props#L19-L21).
 
@@ -222,7 +222,7 @@ If you want, you can see our sample project [here](https://github.com/unoplatfor
          Color="#512BD4" />
 ```
 
-You can also make specific files to be `UnoSplashScreen` using VisualStudio, by right-clicking on the file and selecting `Properties` and then `Build Action` and selecting `UnoSplashScreen`. The image below shows how it looks like:
+You can also make specific files to be `UnoSplashScreen` using VisualStudio, by right-clicking on the file and selecting `Properties` and then `Build Action` and selecting `UnoSplashScreen`. The image below shows what it looks like:
 
 ![UnoSplashScreen Build Action](Assets/UnoSplashScreen_BuildAction.png)
 
