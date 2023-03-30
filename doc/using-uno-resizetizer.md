@@ -226,6 +226,8 @@ You can also make specific files to be `UnoSplashScreen` using VisualStudio, by 
 
 ![UnoSplashScreen Build Action](Assets/UnoSplashScreen_BuildAction.png)
 
+***
+
 Next, some adjustments are needed on `Android`, `Windows`, and `iOS`. Let's start with `Android`.
 
 * Open the [`style.xml` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Mobile/Android/Resources/values/Styles.xml), look for the `Theme` that is been used by the application and add the following line:
