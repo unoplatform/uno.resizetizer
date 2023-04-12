@@ -1,11 +1,11 @@
 ﻿#nullable enable
+using Microsoft.Build.Framework;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using Microsoft.Build.Framework;
-using SkiaSharp;
 
 namespace Uno.Resizetizer
 {
@@ -55,6 +55,8 @@ namespace Uno.Resizetizer
 		public bool ForegroundIsVector => IsVectorFilename(ForegroundFilename);
 
 		public double ForegroundScale { get; set; } = 1.0;
+
+		public uint AndroidInset { get; set; }
 
 		private static bool IsVectorFilename(string? filename)
 			=> Path.GetExtension(filename)?.Equals(".svg", StringComparison.OrdinalIgnoreCase) ?? false;
@@ -116,7 +118,7 @@ namespace Uno.Resizetizer
 				if (bool.TryParse(image.GetMetadata("IsAppIcon"), out var iai))
 					info.IsAppIcon = iai;
 
-				if (float.TryParse(image.GetMetadata("ForegroundScale"),NumberStyles.Number, CultureInfo.InvariantCulture, out var fsc))
+				if (float.TryParse(image.GetMetadata("ForegroundScale"), NumberStyles.Number, CultureInfo.InvariantCulture, out var fsc))
 					info.ForegroundScale = fsc;
 
 				var fgFile = image.GetMetadata("ForegroundFile");
@@ -130,10 +132,19 @@ namespace Uno.Resizetizer
 				}
 
 				// make sure the image is a foreground if this is an icon
-				if (info.IsAppIcon && string.IsNullOrEmpty(info.ForegroundFilename))
+				if (info.IsAppIcon)
 				{
-					info.ForegroundFilename = info.Filename;
-					info.Filename = null;
+					if (string.IsNullOrEmpty(info.ForegroundFilename))
+					{
+						info.ForegroundFilename = info.Filename;
+						info.Filename = null;
+					}
+
+					if (uint.TryParse(image.GetMetadata("AndroidInset"), NumberStyles.Number, CultureInfo.InvariantCulture,
+							out var androidInset))
+					{
+						info.AndroidInset = androidInset;
+					}
 				}
 
 				// TODO:

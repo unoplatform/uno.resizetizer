@@ -29,8 +29,22 @@ namespace Uno.Resizetizer
 	<foreground android:drawable=""@mipmap/{name}_foreground""/>
 </adaptive-icon>";
 
+		const string AdaptiveIconDrawableXmlWithInset =
+			@"<?xml version=""1.0"" encoding=""utf-8""?>
+<adaptive-icon xmlns:android=""http://schemas.android.com/apk/res/android"">
+	<background android:drawable=""@mipmap/{name}_background""/>
+	<foreground>
+		<inset
+			android:drawable=""@mipmap/{name}_foreground""
+			android:inset=""{inset_value}%"" />
+	</foreground>
+</adaptive-icon>";
+
 		public IEnumerable<ResizedImageInfo> Generate()
 		{
+#if DEBUG_RESIZETIZER
+			System.Diagnostics.Debugger.Launch();
+#endif
 			var sw = new Stopwatch();
 			sw.Start();
 
@@ -122,8 +136,19 @@ namespace Uno.Resizetizer
 
 		void ProcessAdaptiveIcon(List<ResizedImageInfo> results, DirectoryInfo fullIntermediateOutputPath)
 		{
-			var adaptiveIconXmlStr = AdaptiveIconDrawableXml
-				.Replace("{name}", AppIconName);
+			string adaptiveIconXmlStr;
+
+			if (Info.AndroidInset is 0)
+			{
+				adaptiveIconXmlStr = AdaptiveIconDrawableXml
+					.Replace("{name}", AppIconName);
+			}
+			else
+			{
+				adaptiveIconXmlStr = AdaptiveIconDrawableXmlWithInset
+					.Replace("{name}", AppIconName)
+					.Replace("{inset_value}", Info.AndroidInset.ToString());
+			}
 
 			var dir = Path.Combine(fullIntermediateOutputPath.FullName, "mipmap-anydpi-v26");
 			var adaptiveIconDestination = Path.Combine(dir, AppIconName + ".xml");
