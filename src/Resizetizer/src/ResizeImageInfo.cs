@@ -56,6 +56,14 @@ namespace Uno.Resizetizer
 
 		public double ForegroundScale { get; set; } = 1.0;
 
+		public double? AndroidForegroundScale { get; set; }
+
+		public double? WindowsForegroundScale { get; set; }
+
+		public double? WasmForegroundScale { get; set; }
+
+		public double? IOSForegroundScale { get; set; } 
+
 		private static bool IsVectorFilename(string? filename)
 			=> Path.GetExtension(filename)?.Equals(".svg", StringComparison.OrdinalIgnoreCase) ?? false;
 
@@ -129,11 +137,19 @@ namespace Uno.Resizetizer
 					info.ForegroundFilename = fgFileInfo.FullName;
 				}
 
-				// make sure the image is a foreground if this is an icon
-				if (info.IsAppIcon && string.IsNullOrEmpty(info.ForegroundFilename))
+				if (info.IsAppIcon)
 				{
-					info.ForegroundFilename = info.Filename;
-					info.Filename = null;
+					// make sure the image is a foreground if this is an icon
+					if (string.IsNullOrEmpty(info.ForegroundFilename))
+					{
+						info.ForegroundFilename = info.Filename;
+						info.Filename = null;
+					}
+
+					info.AndroidForegroundScale = GetPlatformForegroundScale(image, "AndroidForegroundScale");
+					info.WasmForegroundScale = GetPlatformForegroundScale(image, "WasmForegroundScale");
+					info.WindowsForegroundScale = GetPlatformForegroundScale(image, "WindowsForegroundScale");
+					info.IOSForegroundScale = GetPlatformForegroundScale(image, "IOSForegroundScale");
 				}
 
 				// TODO:
@@ -143,6 +159,17 @@ namespace Uno.Resizetizer
 			}
 
 			return r;
+		}
+
+		static double? GetPlatformForegroundScale(ITaskItem image, string property)
+		{
+			if (double.TryParse(image.GetMetadata(property), NumberStyles.Number,
+				    CultureInfo.InvariantCulture, out var result))
+			{
+				return result;
+			}
+
+			return null;
 		}
 	}
 }
