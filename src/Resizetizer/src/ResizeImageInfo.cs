@@ -1,11 +1,11 @@
 ﻿#nullable enable
+using Microsoft.Build.Framework;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using Microsoft.Build.Framework;
-using SkiaSharp;
 
 namespace Uno.Resizetizer
 {
@@ -62,7 +62,7 @@ namespace Uno.Resizetizer
 
 		public double? WasmForegroundScale { get; set; }
 
-		public double? IOSForegroundScale { get; set; } 
+		public double? IOSForegroundScale { get; set; }
 
 		private static bool IsVectorFilename(string? filename)
 			=> Path.GetExtension(filename)?.Equals(".svg", StringComparison.OrdinalIgnoreCase) ?? false;
@@ -124,7 +124,7 @@ namespace Uno.Resizetizer
 				if (bool.TryParse(image.GetMetadata("IsAppIcon"), out var iai))
 					info.IsAppIcon = iai;
 
-				if (float.TryParse(image.GetMetadata("ForegroundScale"),NumberStyles.Number, CultureInfo.InvariantCulture, out var fsc))
+				if (float.TryParse(image.GetMetadata("ForegroundScale"), NumberStyles.Number, CultureInfo.InvariantCulture, out var fsc))
 					info.ForegroundScale = fsc;
 
 				var fgFile = image.GetMetadata("ForegroundFile");
@@ -146,10 +146,7 @@ namespace Uno.Resizetizer
 						info.Filename = null;
 					}
 
-					info.AndroidForegroundScale = GetPlatformForegroundScale(image, "AndroidForegroundScale");
-					info.WasmForegroundScale = GetPlatformForegroundScale(image, "WasmForegroundScale");
-					info.WindowsForegroundScale = GetPlatformForegroundScale(image, "WindowsForegroundScale");
-					info.IOSForegroundScale = GetPlatformForegroundScale(image, "IOSForegroundScale");
+					ApplyPlatformForegroundScale(image, info);
 				}
 
 				// TODO:
@@ -161,15 +158,33 @@ namespace Uno.Resizetizer
 			return r;
 		}
 
-		static double? GetPlatformForegroundScale(ITaskItem image, string property)
+		static void SetPlatformForegroundScale(ITaskItem image, string property, ResizeImageInfo info)
 		{
 			if (double.TryParse(image.GetMetadata(property), NumberStyles.Number,
-				    CultureInfo.InvariantCulture, out var result))
+					CultureInfo.InvariantCulture, out var result))
 			{
-				return result;
+				info.ForegroundScale = result;
 			}
+		}
 
-			return null;
+
+		static void ApplyPlatformForegroundScale(ITaskItem image, ResizeImageInfo info)
+		{
+			switch (ResizetizeImages_v0.TargetPlatform)
+			{
+				case "android":
+					SetPlatformForegroundScale(image, "AndroidForegroundScale", info);
+					break;
+				case "ios" :
+					SetPlatformForegroundScale(image, "IOSForegroundScale", info);
+					break;
+				case "uwp" or "wpf":
+					SetPlatformForegroundScale(image, "WindowsForegroundScale", info);
+					break;
+				case "wasm" :
+					SetPlatformForegroundScale(image, "IOSForegroundScale", info);
+					break;
+			}
 		}
 	}
 }
