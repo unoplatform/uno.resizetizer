@@ -174,7 +174,7 @@ namespace Uno.Resizetizer
 					SetPlatformForegroundScale(image, "WindowsForegroundScale", info);
 					break;
 				case "wasm" :
-					SetPlatformForegroundScale(image, "IOSForegroundScale", info);
+					SetPlatformForegroundScale(image, "WasmForegroundScale", info);
 					break;
 			}
 		}
