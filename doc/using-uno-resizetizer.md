@@ -193,6 +193,7 @@ Now let's jump to Apple platforms.
          Color="#512BD4" />
 ```
 
+***
 
 Next, some adjustments are needed on `Android`, `Windows`, and `iOS`. Let's start with `Android`.
 
