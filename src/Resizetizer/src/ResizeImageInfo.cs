@@ -56,14 +56,6 @@ namespace Uno.Resizetizer
 
 		public double ForegroundScale { get; set; } = 1.0;
 
-		public double? AndroidForegroundScale { get; set; }
-
-		public double? WindowsForegroundScale { get; set; }
-
-		public double? WasmForegroundScale { get; set; }
-
-		public double? IOSForegroundScale { get; set; }
-
 		private static bool IsVectorFilename(string? filename)
 			=> Path.GetExtension(filename)?.Equals(".svg", StringComparison.OrdinalIgnoreCase) ?? false;
 
