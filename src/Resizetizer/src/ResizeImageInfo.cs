@@ -170,14 +170,14 @@ namespace Uno.Resizetizer
 				case "ios" :
 					SetPlatformForegroundScale(image, "IOSForegroundScale", info);
 					break;
-				case "uwp" or "wpf":
+				case "uwp":
 					SetPlatformForegroundScale(image, "WindowsForegroundScale", info);
 					break;
 				case "wasm":
 					SetPlatformForegroundScale(image, "WasmForegroundScale", info);
 					break;
 				//skia
-				case "netstandard":
+				case "netstandard" or "wpf":
 					SetPlatformForegroundScale(image, "SkiaForegroundScale", info);
 					break;
 			}
