@@ -91,9 +91,9 @@ namespace Uno.Resizetizer
 					}
 				}
 
-				info.BaseSize = Utils.ParseSizeString(image.GetMetadata("BaseSize"));
+				info.BaseSize = Utils.ParseSizeString(image.GetMetadata(nameof(BaseSize)));
 
-				if (bool.TryParse(image.GetMetadata("Resize"), out var rz))
+				if (bool.TryParse(image.GetMetadata(nameof(Resize)), out var rz))
 				{
 					info.Resize = rz;
 				}
@@ -103,20 +103,20 @@ namespace Uno.Resizetizer
 					info.Resize = false;
 				}
 
-				var tintColor = image.GetMetadata("TintColor");
+				var tintColor = image.GetMetadata(nameof(TintColor));
 				info.TintColor = Utils.ParseColorString(tintColor);
 				if (info.TintColor is null && !string.IsNullOrEmpty(tintColor))
 					throw new InvalidDataException($"Unable to parse color value '{tintColor}' for '{info.Filename}'.");
 
-				var color = image.GetMetadata("Color");
+				var color = image.GetMetadata(nameof(Color));
 				info.Color = Utils.ParseColorString(color);
 				if (info.Color is null && !string.IsNullOrEmpty(color))
 					throw new InvalidDataException($"Unable to parse color value '{color}' for '{info.Filename}'.");
 
-				if (bool.TryParse(image.GetMetadata("IsAppIcon"), out var iai))
+				if (bool.TryParse(image.GetMetadata(nameof(IsAppIcon)), out var iai))
 					info.IsAppIcon = iai;
 
-				if (float.TryParse(image.GetMetadata("ForegroundScale"), NumberStyles.Number, CultureInfo.InvariantCulture, out var fsc))
+				if (float.TryParse(image.GetMetadata(nameof(ForegroundScale)), NumberStyles.Number, CultureInfo.InvariantCulture, out var fsc))
 					info.ForegroundScale = fsc;
 
 				var fgFile = image.GetMetadata("ForegroundFile");
