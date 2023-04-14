@@ -1,3 +1,5 @@
 items:
 - name: Using Uno Resizetizer
   href: using-uno-resizetizer.md
+- name: Properties avaliable on Uno Resizetizer
+  href: uno-resizetizer-properties.md
