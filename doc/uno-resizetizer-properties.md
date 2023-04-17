@@ -37,6 +37,9 @@ Properties that can be used across all items
 | IOSForegroundScale     | The same as ForegroundScale, but the value will be applied just for iOS                                                               |
 | SkiaForegroundScale    | The same as ForegroundScale, but the value will be applied just for Skia targets                                                               |
 
+> [!NOTE]
+> The PlatformsForegroundScale (AndroidForegroundScale, WasmForegroundScale, etc) will override the global ForegroundScale value.
+
 ## UnoImage
 
 | Property Name | Description |
