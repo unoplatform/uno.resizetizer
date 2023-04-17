@@ -358,6 +358,14 @@
             Text="More than one 'UnoSplashScreen' is defined; only the first will be used."
         />
 
+		<Error 
+			Condition="'@(UnoSplashScreen)' == '@(UnoIcon)'"
+			Text= "The value of UnoSplashScreen and UnoIcon cannot be the same." />
+			
+		<Error 
+			Condition="'@(UnoSplashScreen)' == '%(UnoIcon.ForegroundFile)'"
+			Text= "The value of UnoSplashScreen and UnoIcon cannot be the same." />
+
 		 <!--Wasm--> 
 
 		 <ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True' Or $(_ResizetizerIsSkiaApp) == 'True' ">
