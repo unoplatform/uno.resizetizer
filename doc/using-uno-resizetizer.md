@@ -222,6 +222,7 @@ If you want, you can see our sample project [here](https://github.com/unoplatfor
          Color="#512BD4" />
 ```
 
+
 You can also make specific files to be `UnoSplashScreen` using VisualStudio, by right-clicking on the file and selecting `Properties` and then `Build Action` and selecting `UnoSplashScreen`. The image below shows what it looks like:
 
 ![UnoSplashScreen Build Action](Assets/UnoSplashScreen_BuildAction.png)

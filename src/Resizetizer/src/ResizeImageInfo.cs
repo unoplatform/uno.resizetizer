@@ -1,11 +1,11 @@
 ﻿#nullable enable
+using Microsoft.Build.Framework;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using Microsoft.Build.Framework;
-using SkiaSharp;
 
 namespace Uno.Resizetizer
 {
@@ -91,9 +91,9 @@ namespace Uno.Resizetizer
 					}
 				}
 
-				info.BaseSize = Utils.ParseSizeString(image.GetMetadata("BaseSize"));
+				info.BaseSize = Utils.ParseSizeString(image.GetMetadata(nameof(BaseSize)));
 
-				if (bool.TryParse(image.GetMetadata("Resize"), out var rz))
+				if (bool.TryParse(image.GetMetadata(nameof(Resize)), out var rz))
 				{
 					info.Resize = rz;
 				}
@@ -103,20 +103,20 @@ namespace Uno.Resizetizer
 					info.Resize = false;
 				}
 
-				var tintColor = image.GetMetadata("TintColor");
+				var tintColor = image.GetMetadata(nameof(TintColor));
 				info.TintColor = Utils.ParseColorString(tintColor);
 				if (info.TintColor is null && !string.IsNullOrEmpty(tintColor))
 					throw new InvalidDataException($"Unable to parse color value '{tintColor}' for '{info.Filename}'.");
 
-				var color = image.GetMetadata("Color");
+				var color = image.GetMetadata(nameof(Color));
 				info.Color = Utils.ParseColorString(color);
 				if (info.Color is null && !string.IsNullOrEmpty(color))
 					throw new InvalidDataException($"Unable to parse color value '{color}' for '{info.Filename}'.");
 
-				if (bool.TryParse(image.GetMetadata("IsAppIcon"), out var iai))
+				if (bool.TryParse(image.GetMetadata(nameof(IsAppIcon)), out var iai))
 					info.IsAppIcon = iai;
 
-				if (float.TryParse(image.GetMetadata("ForegroundScale"),NumberStyles.Number, CultureInfo.InvariantCulture, out var fsc))
+				if (float.TryParse(image.GetMetadata(nameof(ForegroundScale)), NumberStyles.Number, CultureInfo.InvariantCulture, out var fsc))
 					info.ForegroundScale = fsc;
 
 				var fgFile = image.GetMetadata("ForegroundFile");
@@ -129,11 +129,16 @@ namespace Uno.Resizetizer
 					info.ForegroundFilename = fgFileInfo.FullName;
 				}
 
-				// make sure the image is a foreground if this is an icon
-				if (info.IsAppIcon && string.IsNullOrEmpty(info.ForegroundFilename))
+				if (info.IsAppIcon)
 				{
-					info.ForegroundFilename = info.Filename;
-					info.Filename = null;
+					// make sure the image is a foreground if this is an icon
+					if (string.IsNullOrEmpty(info.ForegroundFilename))
+					{
+						info.ForegroundFilename = info.Filename;
+						info.Filename = null;
+					}
+
+					ApplyPlatformForegroundScale(image, info);
 				}
 
 				// TODO:
@@ -143,6 +148,39 @@ namespace Uno.Resizetizer
 			}
 
 			return r;
+		}
+
+		static void SetPlatformForegroundScale(ITaskItem image, string property, ResizeImageInfo info)
+		{
+			if (double.TryParse(image.GetMetadata(property), NumberStyles.Number,
+					CultureInfo.InvariantCulture, out var result))
+			{
+				info.ForegroundScale = result;
+			}
+		}
+
+
+		static void ApplyPlatformForegroundScale(ITaskItem image, ResizeImageInfo info)
+		{
+			switch (ResizetizeImages_v0.TargetPlatform)
+			{
+				case "android":
+					SetPlatformForegroundScale(image, "AndroidForegroundScale", info);
+					break;
+				case "ios" :
+					SetPlatformForegroundScale(image, "IOSForegroundScale", info);
+					break;
+				case "uwp":
+					SetPlatformForegroundScale(image, "WindowsForegroundScale", info);
+					break;
+				case "wasm":
+					SetPlatformForegroundScale(image, "WasmForegroundScale", info);
+					break;
+				//skia
+				case "netstandard" or "wpf":
+					SetPlatformForegroundScale(image, "SkiaForegroundScale", info);
+					break;
+			}
 		}
 	}
 }

@@ -25,6 +25,8 @@ namespace Uno.Resizetizer
 
 		public string InputsFile { get; set; }
 
+		internal static string TargetPlatform { get; private set; }
+
 		public ITaskItem[] Images { get; set; }
 
 		[Output]
@@ -45,6 +47,7 @@ namespace Uno.Resizetizer
 
 		public override System.Threading.Tasks.Task ExecuteAsync()
 		{
+			TargetPlatform = PlatformType;
 			var images = ResizeImageInfo.Parse(Images);
 
 			var dpis = DpiPath.GetDpis();
