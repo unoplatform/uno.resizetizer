@@ -11,6 +11,17 @@ Starting Uno Platform 4.8, the solution template includes Uno.Resizetizer by def
 > [!TIP]
 > To create an app, make sure to visit [our getting started tutorials](xref:Uno.GetStarted).
 
+## How it works
+
+Resizeter uses a `svg` or `png` file as input. If a `svg` file is used, it will be re-scaled for different resolutions. The UnoImage, on iOS for example, will use the x2 and x3 corresponded sizes and add them on your project for you. If a `png` file is used, it will not be resized, but it will be added to your project and used as one size image. If you want to know all the scales that are used, you can check this [table](https://platform.uno/docs/articles/features/working-with-assets.html#scale).
+
+For `UnoIcon` and `UnoSplashScreen` the generated sizes will be the same as the ones used by the platform.
+
+With that we strongly encourage the usage of `svg` files, to take most of the benefits of the tool. And the rest of the docs you can assume that we are using `svg` files.
+
+> [!TIP]
+> You can use the `Resize` property on UnoImage to force the resize of a `png` file. But be aware that the quality can be affected.
+
 ## Manual Installation
 
 Uno.Resizeter is delivered [through NuGet](https://www.nuget.org/packages/Uno.Resizetizer). In order to install it you can either download it using your IDE (this will be shown in the next steps) or added directly on your `.csproj` as shown in the [NuGet page](https://www.nuget.org/packages/Uno.Resizetizer/).
