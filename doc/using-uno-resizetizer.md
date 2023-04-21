@@ -81,7 +81,7 @@ You can also make specific files to be `UnoImage` using VisualStudio, by right-c
 ```xml
 <Image Width="300"
        Height="300"
-       Source="Assets\\Images\\my_image.png" />
+       Source="Assets/Images/my_image.png" />
 ```
 
 > [!TIP]
