@@ -201,7 +201,7 @@ Now let's jump to Apple platforms.
 
 * `BaseSize`: It's the size that will be used to perform the scaling of the image. The default value is the size of the asset. So if you feel that your SplashScreen doesn't look right you can tweak this value.
 
-* `Color`: It's the background color that will be used to fill the empty space on the final SplashScreen asset. The default value is `#FFFFFF`(white).
+* `Color`: It's the background color that will be used to fill the empty space on the final SplashScreen asset. The default value is `#FFFFFF` (white).
 
 ### 5. Configuring the project to use generated splash screen
 
