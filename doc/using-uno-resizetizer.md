@@ -13,9 +13,9 @@ Starting Uno Platform 4.8, the solution template includes Uno.Resizetizer by def
 
 ## How it works
 
-Resizeter uses a `svg` or `png` file as input. If a `svg` file is used, it will be re-scaled for different resolutions. The UnoImage, on iOS for example, will use the x2 and x3 corresponded sizes and add them on your project for you. If a `png` file is used, it will not be resized, but it will be added to your project and used as one size image. If you want to know all the scales that are used, you can check this [table](https://platform.uno/docs/articles/features/working-with-assets.html#scale).
+Resizetizer uses an `svg` or `png` file as input. If an `svg` file is used, it will be re-scaled for different resolutions. The `UnoImage`, on iOS for example, will use the x2 and x3 corresponded sizes and add them on your project for you. If a `png` file is used, it will not be resized, but it will be added to your project and used as one size image. If you want to know all the scales that are used, you can check this [table](https://platform.uno/docs/articles/features/working-with-assets.html#scale).
 
-For `UnoIcon` and `UnoSplashScreen` the generated sizes will be the same as the ones used by the platform.
+For `UnoIcon` and `UnoSplashScreen`, the generated sizes will be the same as the ones used by the platform.
 
 With that we strongly encourage the usage of `svg` files, to take most of the benefits of the tool. And the rest of the docs you can assume that we are using `svg` files.
 
