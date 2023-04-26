@@ -9,43 +9,43 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-		<_ResizetizerTaskAssemblyName>$(MSBuildThisFileDirectory)Uno.Resizetizer_v0.dll</_ResizetizerTaskAssemblyName>
+		<_UnoResizetizerTaskAssemblyName>$(MSBuildThisFileDirectory)Uno.Resizetizer_v0.dll</_UnoResizetizerTaskAssemblyName>
 	</PropertyGroup>
 
 	<UsingTask
-        AssemblyFile="$(_ResizetizerTaskAssemblyName)"
+        AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
         TaskName="Uno.Resizetizer.ResizetizeImages_v0" />
 
 	<UsingTask
-        AssemblyFile="$(_ResizetizerTaskAssemblyName)"
+        AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
         TaskName="Uno.Resizetizer.DetectInvalidResourceOutputFilenamesTask_v0"  />
 
 	<UsingTask
-        AssemblyFile="$(_ResizetizerTaskAssemblyName)"
+        AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
         TaskName="Uno.Resizetizer.CreatePartialInfoPlistTask_v0"  />
 
 	<UsingTask
-        AssemblyFile="$(_ResizetizerTaskAssemblyName)"
+        AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
         TaskName="Uno.Resizetizer.GenerateSplashAndroidResources_v0"  />
 
 	<UsingTask
-        AssemblyFile="$(_ResizetizerTaskAssemblyName)"
+        AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
         TaskName="Uno.Resizetizer.GenerateSplashStoryboard_v0"  />
 
 	<UsingTask
-        AssemblyFile="$(_ResizetizerTaskAssemblyName)"
+        AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
         TaskName="Uno.Resizetizer.GenerateSplashAssets_v0"  />
 
 	<UsingTask
-        AssemblyFile="$(_ResizetizerTaskAssemblyName)"
+        AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
         TaskName="Uno.Resizetizer.GetUnoAssetPath_v0"  />
 
 	<UsingTask
-        AssemblyFile="$(_ResizetizerTaskAssemblyName)"
+        AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
         TaskName="Uno.Resizetizer.GeneratePackageAppxManifest_v0"  />
 
 	<UsingTask
-        AssemblyFile="$(_ResizetizerTaskAssemblyName)"
+        AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
         TaskName="Uno.Resizetizer.GenerateWasmSplashAssets_v0"  />
 
 	<PropertyGroup>
@@ -350,7 +350,7 @@
 
 	<Target Name="ProcessUnoSplashScreens"
         Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'"
-        Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_UnoSplashInputsFile);@(UnoSplashScreen)"
+        Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoSplashInputsFile);@(UnoSplashScreen)"
         Outputs="$(_UnoSplashStampFile)">
 
 		<Warning
@@ -465,7 +465,7 @@
 	</Target>
 
 	<Target Name="ResizetizeImages_v0"
-        Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);@(UnoImage)"
+        Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);@(UnoImage)"
         Outputs="$(_ResizetizerStampFile)"
         AfterTargets="$(ResizetizeAfterTargets)"
 		Condition="'$(DesignTimeBuild)' != 'true'"
@@ -606,7 +606,7 @@
             Condition="('$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_UnoAppxManifest)' !='' Or @(_SkiaManifest) != '')"
             DependsOnTargets="$(UnoGeneratePackageAppxManifestDependsOnTargets)"
 			BeforeTargets="$(UnoGeneratePackageAppxManifestBeforeTargets)"
-            Inputs="$(MSBuildThisFileFullPath);$(_ResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);$(_UnoSplashInputsFile);@(AppxManifest);@(_UnoAppxManifest)"
+            Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);$(_UnoSplashInputsFile);@(AppxManifest);@(_UnoAppxManifest)"
             Outputs="$(_UnoManifestStampFile);$(_UnoIntermediateManifest)Package.appxmanifest">
 
 
