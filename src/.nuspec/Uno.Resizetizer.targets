@@ -297,9 +297,12 @@
 			<UnoImage Update="@(UnoImage)" Resize="False" Condition="'%(UnoImage.Extension)' == '.gif' and '%(UnoImage.Resize)' == ''" />
 		</ItemGroup>
 
+		<Warning Condition="'%(UnoIcon.Link)' != ''"
+		         Text ="The UnoIcon.Link property will be ignored." />
+
 		<!-- Map @(UnoIcon) to @(UnoImage IsAppIcon=true) -->
 		<ItemGroup>
-			<UnoImage Include="@(UnoIcon)" IsAppIcon="True" />
+			<UnoImage Include="@(UnoIcon)" IsAppIcon="True" Link="" />
 		</ItemGroup>
 
 		<!-- Write out item spec and metadata to a file we can use as an inputs for the resize target -->
@@ -323,7 +326,7 @@
 		<ItemGroup>
 			<_SkiaManifest Include="@(EmbeddedResource)"
 						   Condition="%(Extension) == '.appxmanifest'"/>
-			
+
 			<EmbeddedResource Remove="@(EmbeddedResource)"
 			                  Condition="%(Extension) == '.appxmanifest'"/>
 		</ItemGroup>
@@ -358,19 +361,23 @@
             Text="More than one 'UnoSplashScreen' is defined; only the first will be used."
         />
 
-		<Error 
+		<Error
 			Condition="'@(UnoSplashScreen)' == '@(UnoIcon)'"
 			Text= "The value of UnoSplashScreen and UnoIcon cannot be the same." />
-			
-		<Error 
+
+		<Error
 			Condition="'@(UnoSplashScreen)' == '%(UnoIcon.ForegroundFile)'"
 			Text= "The value of UnoSplashScreen and UnoIcon cannot be the same." />
 
-		 <!--Wasm--> 
+		<Warning Condition="'%(UnoSplashScreen.Link)' != ''"
+				 Text ="The UnoSplashScreen.Link property will be ignored." />
 
-		 <ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True' Or $(_ResizetizerIsSkiaApp) == 'True' ">
-			<UnoImage Include="@(UnoSplashScreen)" />
+		<!--If not Windows-->
+		<ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True' Or $(_ResizetizerIsSkiaApp) == 'True' or '$(_ResizetizerIsAndroidApp)' == 'True' or ('$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst')">
+			<UnoImage Include="@(UnoSplashScreen)" IsSplashScreen="True" Link=""/>
 		</ItemGroup>
+
+		<!--Wasm-->
 
 		<GenerateWasmSplashAssets_v0
 			Condition="$(_ResizetizerIsWasmApp) == 'True'"
@@ -378,12 +385,12 @@
 			EmbeddedResources="@(EmbeddedResource)"
 			UnoSplashScreen="@(UnoSplashScreen)"
 			OutputFile="$(_UnoIntermediateAppManifestWasm)">
-			
+
 			<Output PropertyName="UserAppManifest"
 					TaskParameter="UserAppManifest" />
-			
+
 		</GenerateWasmSplashAssets_v0>
-		
+
 		<ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True' And $(UserAppManifest) != ''">
 			<EmbeddedResource Remove="$(UserAppManifest)" />
 			<EmbeddedResource Include="$(_UnoIntermediateAppManifestWasm)"
@@ -397,7 +404,6 @@
             UnoSplashScreen="@(UnoSplashScreen)"
         />
 		<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
-			<UnoImage Include="@(UnoSplashScreen)" />
 			<LibraryResourceDirectories Condition="Exists('$(_UnoIntermediateSplashScreen)')" Include="$(_UnoIntermediateSplashScreen)">
 				<StampFile>$(_ResizetizerStampFile)</StampFile>
 			</LibraryResourceDirectories>
@@ -414,7 +420,6 @@
 			<_UnoIntermediateSplashScreenFile>$(_UnoIntermediateStoryboard)</_UnoIntermediateSplashScreenFile>
 		</PropertyGroup>
 		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'">
-			<UnoImage Include="@(UnoSplashScreen)" />
 			<InterfaceDefinition Include="$(_UnoIntermediateStoryboard)" Link="$([System.IO.Path]::GetFileName($(_UnoIntermediateStoryboard)))" />
 			<FileWrites Include="$(_UnoIntermediateStoryboard)" />
 		</ItemGroup>
@@ -443,10 +448,13 @@
             Files="@(_UnoAssetsToCopyToBuildServer)" />
 
 		<!-- UWP / WinUI -->
+		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
+			<UnoWindowsSplash Include="@(UnoSplashScreen)" Link=""/>
+		</ItemGroup>
 		<GenerateSplashAssets_v0
             Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'"
             IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
-            UnoSplashScreen="@(UnoSplashScreen)"
+            UnoSplashScreen="@(UnoWindowsSplash)"
         />
 		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True'">
 			<_UnoSplashAssets Include="$(_UnoIntermediateSplashScreen)**\*" />
@@ -455,7 +463,7 @@
 			</ContentWithTargetPath>
 			<FileWrites Include="@(_UnoSplashAssets)" />
 		</ItemGroup>
-		
+
 		<MakeDir Directories="$(IntermediateOutputPath)"/>
 		<!-- Stamp file for Outputs -->
 		<Touch Files="$(_UnoSplashStampFile)" AlwaysCreate="True" />
