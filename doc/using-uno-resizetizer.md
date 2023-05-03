@@ -112,6 +112,9 @@ We recommend adding the `UnoIcon` on `base.props` because this file is imported 
 
 If you want, you can see our sample project [here](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Base/base.props#L16-L18) where this step is configured.
 
+> [!TIP]
+> If the icon doesn't look good you can use the `ForegroundScale` property, it will re-scale the `Foreground` image for all platforms. If you want to re-scale for a specific platform you can use the specific property for that platform, you can see those [here](xref:Overview.Uno.Resizetizer.Properties).
+
 # [**Shared Project Based Solution**](#tab/sharedproject)
 
 * Create an `Icons` folder inside the Shared project, and add the files related to the app icon there.
