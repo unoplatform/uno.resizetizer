@@ -79,7 +79,7 @@ public class GenerateWasmSplashAssets_v0 : Task
 
 		var dic = FindWhatINeed(fileToProcess);
 
-		dic["splashScreenImage"] = $"\"{info.OutputName}.scale-400.png\"";
+		dic["splashScreenImage"] = $"\"{info.OutputName}.scale-200.png\"";
 		dic["splashScreenColor"] = ProcessSplashScreenColor(info);
 
 		WriteToFile(dic, writer);
