@@ -18,18 +18,12 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<Authors>Uno Platform</Authors>
 		<AssemblyName>Uno.Resizetizer_v0</AssemblyName>		
 		<PackageProjectUrl>https://github.com/unoplatform/uno.resizetizer</PackageProjectUrl>
-		<RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
-		<Product>$(AssemblyName) ($(TargetFramework))</Product>
 		<RepositoryCommit>$(GITVERSION_SHA)</RepositoryCommit>
 		<PackageId>Uno.Resizetizer</PackageId>
 		<Description>Uno Platform package support for images.</Description>
-		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform - all rights reserved</Copyright>
-		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageIcon>logo.png</PackageIcon>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -66,5 +60,7 @@
 		</ItemGroup>
 		<Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(UnoNuSpecDirectory)%(RecursiveDir)" ContinueOnError="true" Retries="0" />
 	</Target>
+
+	<Import Project="../Directory.UnoMetadata.targets" />
 
 </Project>
