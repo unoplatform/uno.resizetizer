@@ -2,14 +2,10 @@
   "solution": {
     "path": "Resizetizer.Extensions.Sample.sln",
     "projects": [
-		"Resizetizer.Extensions.Sample\\Resizetizer.Extensions.Sample.csproj",
-
-		"Resizetizer.Extensions.Sample.Mobile\\Resizetizer.Extensions.Sample.Mobile.csproj",
-
-		"Resizetizer.Extensions.Sample.Wasm\\Resizetizer.Extensions.Sample.Wasm.csproj",
-
-		"Resizetizer.Extensions.Sample.Skia.Gtk\\Resizetizer.Extensions.Sample.Skia.Gtk.csproj",
-
+      "Resizetizer.Extensions.Sample.Mobile\\Resizetizer.Extensions.Sample.Mobile.csproj",
+      "Resizetizer.Extensions.Sample.Skia.Gtk\\Resizetizer.Extensions.Sample.Skia.Gtk.csproj",
+      "Resizetizer.Extensions.Sample.Wasm\\Resizetizer.Extensions.Sample.Wasm.csproj",
+      "Resizetizer.Extensions.Sample\\Resizetizer.Extensions.Sample.csproj"
     ]
   }
 }

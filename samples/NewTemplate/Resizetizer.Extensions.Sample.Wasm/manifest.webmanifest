@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "Resizetizer.Extensions.Sample",
+  "display": "standalone",
+  "name": "Resizetizer.Extensions.Sample",
+  "short_name": "Resizetizer.Extensions.Sample",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}

@@ -3,19 +3,21 @@
 		<OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
 		<OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
 		<TargetFramework>net7.0</TargetFramework>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
-	<ItemGroup Condition="exists('..\Resizetizer.Extensions.Sample.Windows')">
-		<EmbeddedResource Include="..\Resizetizer.Extensions.Sample.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
+	<ItemGroup>
+		<EmbeddedResource Include="Package.appxmanifest" />
+		<Manifest Include="$(ApplicationManifest)" />
 		<Content Include="..\Resizetizer.Extensions.Sample.Windows\Images\StoreLogo.png" />
 	</ItemGroup>
+
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-		<PackageReference Include="Uno.WinUI.Skia.Gtk" Version="4.7.37" />
-		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.7.37" Condition="'$(Configuration)'=='Debug'" />
-		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.7.37" />
-		<PackageReference Include="Uno.WinUI.Lottie" Version="4.7.37" />
-		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" />
-		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
+		<PackageReference Include="Uno.WinUI.Skia.Gtk" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
+		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" />
+		<PackageReference Include="SkiaSharp.Skottie" />
+		<PackageReference Include="Uno.WinUI.RemoteControl" Condition="'$(Configuration)'=='Debug'" />
+		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Resizetizer.Extensions.Sample\Resizetizer.Extensions.Sample.csproj" />
@@ -36,5 +38,4 @@
 		<Error Condition="!Exists('$(_ResizetizerAppIconPath)')" Text=".ico file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerAppIconImagesPath)')" Text="App icon image file wasn't created." />
 	</Target>
-
 </Project>
