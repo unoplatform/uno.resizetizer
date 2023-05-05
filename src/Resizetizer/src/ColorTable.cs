@@ -36,7 +36,9 @@ namespace Uno.Resizetizer
 			foreach (FieldInfo field in typeWithColors.GetFields(BindingFlags.Public | BindingFlags.Static))
 			{
 				if (field.FieldType == typeof(SKColor))
+				{
 					dictionary[field.Name] = (SKColor)field.GetValue(null)!;
+				}
 			}
 		}
 

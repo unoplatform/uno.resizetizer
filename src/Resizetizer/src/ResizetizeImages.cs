@@ -53,7 +53,9 @@ namespace Uno.Resizetizer
 			var dpis = DpiPath.GetDpis();
 
 			if (dpis == null || dpis.Length <= 0)
+			{
 				return System.Threading.Tasks.Task.CompletedTask;
+			}
 
 			var originalScaleDpi = DpiPath.GetOriginal();
 
@@ -114,7 +116,9 @@ namespace Uno.Resizetizer
 
 				// Fix the item spec to be relative for mac
 				if (bool.TryParse(IsMacEnabled, out bool isMac) && isMac)
+				{
 					itemSpec = img.Filename;
+				}
 
 				// Add DPI info to the itemspec so we can use it in the targets
 				attr.Add("_ResizetizerDpiPath", img.Dpi.Path);
@@ -152,7 +156,9 @@ namespace Uno.Resizetizer
 				// We don't need to add the icons to the ResizedImages, they're just for images (Content)
 				var androidAppIcons = new List<TaskItem>();
 				foreach (var iconGenerated in iconsGenerated)
+				{
 					androidAppIcons.Add(new TaskItem(iconGenerated.Filename));
+				}
 
 				AndroidAppIcons = androidAppIcons.ToArray();
 			}
@@ -165,7 +171,9 @@ namespace Uno.Resizetizer
 				var assetsGenerated = appleAssetGen.Generate();
 
 				foreach (var assetGenerated in assetsGenerated)
+				{
 					resizedImages.Add(assetGenerated);
+				}
 			}
 			else if (PlatformType == "uwp" || PlatformType == "wpf")
 			{

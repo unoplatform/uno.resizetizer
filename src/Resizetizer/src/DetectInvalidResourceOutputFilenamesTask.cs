@@ -29,7 +29,9 @@ namespace Uno.Resizetizer
 					foreach (var item in Items)
 					{
 						if (!Utils.IsValidResourceFilename(item.ItemSpec))
+						{
 							invalidFilenames.Add(item.ItemSpec);
+						}
 					}
 				}
 			}
@@ -51,7 +53,10 @@ namespace Uno.Resizetizer
 						for (var i = 0; i < invalidFilenames.Count; i++)
 						{
 							if (i > 0)
+							{
 								builder.Append(", ");
+							}
+
 							var file = invalidFilenames[i];
 							builder.Append(Path.GetFileNameWithoutExtension(file));
 						}

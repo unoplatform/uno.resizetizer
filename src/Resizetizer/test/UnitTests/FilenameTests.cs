@@ -9,7 +9,9 @@ namespace Uno.Resizetizer.Tests
 			: base()
 		{
 			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
 				Skip = $"Ignored unless on Windows";
+			}
 		}
 	}
 
@@ -19,7 +21,9 @@ namespace Uno.Resizetizer.Tests
 			: base()
 		{
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
 				Skip = $"Ignored on Windows";
+			}
 		}
 	}
 

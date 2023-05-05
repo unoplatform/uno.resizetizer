@@ -18,12 +18,19 @@ namespace Uno.Resizetizer
 			var hasBackground = !string.IsNullOrWhiteSpace(info.Filename) && File.Exists(info.Filename);
 			var hasForeground = !string.IsNullOrWhiteSpace(info.ForegroundFilename) && File.Exists(info.ForegroundFilename);
 			if (!hasBackground && !hasForeground)
+			{
 				throw new InvalidOperationException("An app icon needs at least one image.");
+			}
 
 			if (hasBackground)
+			{
 				backgroundTools = SkiaSharpTools.Create(info.IsVector, info.Filename, null, null, null, logger);
+			}
+
 			if (hasForeground)
+			{
 				foregroundTools = SkiaSharpTools.Create(info.ForegroundIsVector, info.ForegroundFilename, null, null, info.TintColor, logger);
+			}
 		}
 
 		SkiaSharpTools? backgroundTools;

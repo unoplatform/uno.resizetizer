@@ -16,10 +16,14 @@ public static class JsonHelper
 			JsonElement root2 = jDoc2.RootElement;
 
 			if (root1.ValueKind != JsonValueKind.Array && root1.ValueKind != JsonValueKind.Object)
+			{
 				throw new InvalidOperationException($"The original JSON document to merge new content into must be a container type. Instead it is {root1.ValueKind}.");
+			}
 
 			if (root1.ValueKind != root2.ValueKind)
+			{
 				return;
+			}
 
 			if (root1.ValueKind == JsonValueKind.Array)
 			{
