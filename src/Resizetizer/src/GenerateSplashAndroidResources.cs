@@ -131,9 +131,13 @@ namespace Uno.Resizetizer
 			var height = PreferredImageSize;
 
 			if (size.Width > size.Height)
+			{
 				height = size.Height / size.Width * width;
+			}
 			else
+			{
 				width = size.Width / size.Height * height;
+			}
 
 			return new SKSize(width, height);
 		}

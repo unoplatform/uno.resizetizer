@@ -76,7 +76,9 @@ namespace Uno.Resizetizer
 		static bool MakeRelative(string projectDirectory, ref string path)
 		{
 			if (string.IsNullOrEmpty(projectDirectory))
+			{
 				return false;
+			}
 
 			projectDirectory = Path.GetFullPath(projectDirectory);
 			if (!projectDirectory.EndsWith(Path.DirectorySeparatorChar.ToString()))

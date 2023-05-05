@@ -75,7 +75,9 @@ namespace Uno.Resizetizer.Tests
 			var expectedDoc = XDocument.Load(expectedFilename);
 
 			if (!XNode.DeepEquals(outputDoc, expectedDoc))
+			{
 				Assert.Equal(expectedDoc.ToString(), outputDoc.ToString());
+			}
 		}
 
 		[Fact]
@@ -109,7 +111,9 @@ namespace Uno.Resizetizer.Tests
 			var expectedDoc = XDocument.Load(expectedFilename);
 
 			if (!XNode.DeepEquals(outputDoc, expectedDoc))
+			{
 				Assert.Equal(expectedDoc.ToString(), outputDoc.ToString());
+			}
 		}
 
 		[Fact]
@@ -143,7 +147,9 @@ namespace Uno.Resizetizer.Tests
 			var expectedDoc = XDocument.Load(expectedFilename);
 
 			if (!XNode.DeepEquals(outputDoc, expectedDoc))
+			{
 				Assert.Equal(expectedDoc.ToString(), outputDoc.ToString());
+			}
 		}
 
 		[Theory]

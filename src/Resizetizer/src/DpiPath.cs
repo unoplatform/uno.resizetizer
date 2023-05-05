@@ -289,7 +289,9 @@ namespace Uno.Resizetizer
 			foreach (var r in result)
 			{
 				if (!string.IsNullOrEmpty(r.Path))
+				{
 					r.Path = r.Path.Replace("{name}", appIconName);
+				}
 			}
 
 			return result;

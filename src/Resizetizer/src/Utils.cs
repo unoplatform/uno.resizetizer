@@ -17,7 +17,9 @@ namespace Uno.Resizetizer
 		public static SKColor? ParseColorString(string tint)
 		{
 			if (string.IsNullOrEmpty(tint))
+			{
 				return null;
+			}
 
 			if (SKColor.TryParse(tint, out var color))
 			{
@@ -35,16 +37,22 @@ namespace Uno.Resizetizer
 		public static SKSize? ParseSizeString(string size)
 		{
 			if (string.IsNullOrEmpty(size))
+			{
 				return null;
+			}
 
 			var parts = size.Split(new char[] { ',', ';' }, 2);
 
 			if (parts.Length > 0 && int.TryParse(parts[0], out var width))
 			{
 				if (parts.Length > 1 && int.TryParse(parts[1], out var height))
+				{
 					return new SKSize(width, height);
+				}
 				else
+				{
 					return new SKSize(width, width);
+				}
 			}
 
 			return null;
@@ -95,7 +103,9 @@ namespace Uno.Resizetizer
 		{
 			var result = skColor?.ToString() ?? "transparent";
 			if (!result.StartsWith("#"))
+			{
 				return result;
+			}
 
 			// Getting everything after '#ff'
 			result = result.Substring(3);

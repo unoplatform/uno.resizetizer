@@ -390,15 +390,21 @@ namespace Uno.Resizetizer
 			// either a 4 part display version and no version or a 3 part display and an int version
 			var parts = displayVersion?.Split('.') ?? Array.Empty<string>();
 			if (parts.Length > 3 && !string.IsNullOrEmpty(version))
+			{
 				return false;
+			}
 			else if (parts.Length > 4)
+			{
 				return false;
+			}
 
 			var v = new int[4];
 			for (var i = 0; i < 4 && i < parts.Length; i++)
 			{
 				if (!int.TryParse(parts[i], out var parsed))
+				{
 					return false;
+				}
 
 				v[i] = parsed;
 			}
@@ -406,7 +412,9 @@ namespace Uno.Resizetizer
 			if (!string.IsNullOrEmpty(version))
 			{
 				if (!int.TryParse(version, out var parsed))
+				{
 					return false;
+				}
 
 				v[3] = parsed;
 			}

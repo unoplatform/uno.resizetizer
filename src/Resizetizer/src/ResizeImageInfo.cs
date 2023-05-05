@@ -67,7 +67,9 @@ namespace Uno.Resizetizer
 			var r = new List<ResizeImageInfo>();
 
 			if (images is null)
+			{
 				return r;
+			}
 
 			foreach (var image in images)
 			{
@@ -75,7 +77,9 @@ namespace Uno.Resizetizer
 
 				var fileInfo = new FileInfo(image.GetMetadata("FullPath"));
 				if (!fileInfo.Exists)
+				{
 					throw new FileNotFoundException("Unable to find background file: " + fileInfo.FullName, fileInfo.FullName);
+				}
 
 				info.Filename = fileInfo.FullName;
 
@@ -106,25 +110,35 @@ namespace Uno.Resizetizer
 				var tintColor = image.GetMetadata(nameof(TintColor));
 				info.TintColor = Utils.ParseColorString(tintColor);
 				if (info.TintColor is null && !string.IsNullOrEmpty(tintColor))
+				{
 					throw new InvalidDataException($"Unable to parse color value '{tintColor}' for '{info.Filename}'.");
+				}
 
 				var color = image.GetMetadata(nameof(Color));
 				info.Color = Utils.ParseColorString(color);
 				if (info.Color is null && !string.IsNullOrEmpty(color))
+				{
 					throw new InvalidDataException($"Unable to parse color value '{color}' for '{info.Filename}'.");
+				}
 
 				if (bool.TryParse(image.GetMetadata(nameof(IsAppIcon)), out var iai))
+				{
 					info.IsAppIcon = iai;
+				}
 
 				if (float.TryParse(image.GetMetadata(nameof(ForegroundScale)), NumberStyles.Number, CultureInfo.InvariantCulture, out var fsc))
+				{
 					info.ForegroundScale = fsc;
+				}
 
 				var fgFile = image.GetMetadata("ForegroundFile");
 				if (!string.IsNullOrEmpty(fgFile))
 				{
 					var fgFileInfo = new FileInfo(fgFile);
 					if (!fgFileInfo.Exists)
+					{
 						throw new FileNotFoundException("Unable to find foreground file: " + fgFileInfo.FullName, fgFileInfo.FullName);
+					}
 
 					info.ForegroundFilename = fgFileInfo.FullName;
 				}

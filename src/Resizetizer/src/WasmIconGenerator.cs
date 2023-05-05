@@ -102,7 +102,9 @@ internal sealed class WasmIconGenerator
 			var value = node["icons"];
 
 			if (value is null)
+			{
 				return true;
+			}
 
 			return !(value.AsArray().Count > 0);
 		}

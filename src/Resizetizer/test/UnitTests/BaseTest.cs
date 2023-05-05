@@ -29,7 +29,9 @@ namespace Uno.Resizetizer.Tests
 			{
 				var name = GetType().FullName;
 				if (name.StartsWith(TestFolderName + ".", StringComparison.OrdinalIgnoreCase))
+				{
 					name = name.Substring(TestFolderName.Length + 1);
+				}
 
 				var dir = Path.Combine(Path.GetTempPath(), TestFolderName, name, Path.GetRandomFileName());
 
@@ -41,7 +43,9 @@ namespace Uno.Resizetizer.Tests
 		public virtual void Dispose()
 		{
 			if (Directory.Exists(DeleteDirectory))
+			{
 				Directory.Delete(DeleteDirectory, true);
+			}
 		}
 
 		protected void AssertFileSize(string file, int width, int height)
@@ -75,7 +79,9 @@ namespace Uno.Resizetizer.Tests
 			var content = File.ReadAllText(file);
 
 			foreach (var snip in snippet)
+			{
 				Assert.Contains(snip, content, StringComparison.Ordinal);
+			}
 		}
 
 		protected void AssertFileContains(string file, SKColor color, int x, int y)
@@ -101,7 +107,9 @@ namespace Uno.Resizetizer.Tests
 			using var resultImage = SKBitmap.Decode(file);
 			var pixels = resultImage.Pixels;
 			foreach (var color in colors)
+			{
 				Assert.Contains(color, pixels);
+			}
 		}
 
 		protected void AssertFileDoesNotContain(string file, params SKColor[] colors)
@@ -111,7 +119,9 @@ namespace Uno.Resizetizer.Tests
 			using var resultImage = SKBitmap.Decode(file);
 			var pixels = resultImage.Pixels;
 			foreach (var color in colors)
+			{
 				Assert.DoesNotContain(color, pixels);
+			}
 		}
 
 		protected void AssertFileMatches(string actualFilename, object[] args = null, [CallerMemberName] string methodName = null) =>
@@ -177,7 +187,9 @@ namespace Uno.Resizetizer.Tests
 
 			var name = GetType().FullName;
 			if (name.StartsWith(TestFolderName + ".", StringComparison.OrdinalIgnoreCase))
+			{
 				name = name.Substring(TestFolderName.Length + 1);
+			}
 
 			var path = Path.Combine(TestImagesFolderName, name, methodName, filename);
 			return path;

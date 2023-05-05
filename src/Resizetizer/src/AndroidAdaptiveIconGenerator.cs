@@ -55,9 +55,13 @@ namespace Uno.Resizetizer
 			var backgroundDestFilename = AppIconName + "_background.png";
 
 			if (backgroundExists)
+			{
 				Logger.Log("Converting Background SVG to PNG: " + backgroundFile);
+			}
 			else
+			{
 				Logger.Log("Background was not found (will manufacture): " + backgroundFile);
+			}
 
 			foreach (var dpi in DpiPath.Android.AppIconParts)
 			{
@@ -91,9 +95,13 @@ namespace Uno.Resizetizer
 			var foregroundDestFilename = AppIconName + "_foreground.png";
 
 			if (foregroundExists)
+			{
 				Logger.Log("Converting Foreground SVG to PNG: " + foregroundFile);
+			}
 			else
+			{
 				Logger.Log("Foreground was not found (will manufacture): " + foregroundFile);
+			}
 
 			foreach (var dpi in DpiPath.Android.AppIconParts)
 			{

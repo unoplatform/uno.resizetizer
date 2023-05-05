@@ -44,7 +44,9 @@ namespace Uno.Resizetizer
 
 			var fileInfo = new FileInfo(destination);
 			if (!fileInfo.Directory.Exists)
+			{
 				fileInfo.Directory.Create();
+			}
 
 			return destination;
 		}
@@ -54,15 +56,23 @@ namespace Uno.Resizetizer
 			var destination = GetFileDestination(dpi);
 
 			if (Info.IsVector)
+			{
 				destination = Path.ChangeExtension(destination, ".png");
+			}
 
 			if (IsUpToDate(Info.Filename, destination, inputsFile, Logger))
+			{
 				return new ResizedImageInfo { Filename = destination, Dpi = dpi };
+			}
 
 			if (Info.IsVector)
+			{
 				Rasterize(dpi, destination);
+			}
 			else
+			{
 				File.Copy(Info.Filename, destination, true);
+			}
 
 			return new ResizedImageInfo { Filename = destination, Dpi = dpi };
 		}
@@ -89,10 +99,14 @@ namespace Uno.Resizetizer
 			var destination = GetFileDestination(dpi);
 
 			if (Info.IsVector)
+			{
 				destination = Path.ChangeExtension(destination, ".png");
+			}
 
 			if (IsUpToDate(Info.Filename, destination, inputsFile, Logger))
+			{
 				return new ResizedImageInfo { Filename = destination, Dpi = dpi };
+			}
 
 			Rasterize(dpi, destination);
 

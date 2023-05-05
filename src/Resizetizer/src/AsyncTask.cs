@@ -78,10 +78,14 @@ namespace Uno.Resizetizer
 			LogDebugMessage(message);
 
 			if (items == null)
+			{
 				return;
+			}
 
 			foreach (var item in items)
+			{
 				LogDebugMessage("	{0}", item);
+			}
 		}
 
 		public void LogDebugTaskItems(string message, ITaskItem[] items)
@@ -89,10 +93,14 @@ namespace Uno.Resizetizer
 			LogDebugMessage(message);
 
 			if (items == null)
+			{
 				return;
+			}
 
 			foreach (var item in items)
+			{
 				LogDebugMessage("	{0}", item.ItemSpec);
+			}
 		}
 
 		public void LogMessage(string message) => LogMessage(message, importance: MessageImportance.Normal);
@@ -239,7 +247,9 @@ namespace Uno.Resizetizer
 				lock (eventlock)
 				{
 					if (isRunning)
+					{
 						resetEvent.Set();
+					}
 				}
 			}
 		}
@@ -260,13 +270,17 @@ namespace Uno.Resizetizer
 		protected void Yield()
 		{
 			if (YieldDuringToolExecution && BuildEngine is IBuildEngine3)
+			{
 				((IBuildEngine3)BuildEngine).Yield();
+			}
 		}
 
 		protected void Reacquire()
 		{
 			if (YieldDuringToolExecution && BuildEngine is IBuildEngine3)
+			{
 				((IBuildEngine3)BuildEngine).Reacquire();
+			}
 		}
 
 		protected void WaitForCompletion()
