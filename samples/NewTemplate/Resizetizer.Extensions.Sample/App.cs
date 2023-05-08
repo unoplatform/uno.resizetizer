@@ -33,8 +33,24 @@ public class App : Application
 			rootFrame.Navigate(typeof(MainPage), args.Arguments);
 		}
 
-		// Ensure the current window is active
-		_window.Activate();
+#if WINDOWS
+        // Retrieve the window handle (HWND) of the current (XAML) WinUI 3 window.
+        var hWnd =
+            WinRT.Interop.WindowNative.GetWindowHandle(_window);
+
+		// Retrieve the WindowId that corresponds to hWnd.
+		Microsoft.UI.WindowId windowId =
+            Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);
+
+        // Lastly, retrieve the AppWindow for the current (XAML) WinUI 3 window.
+        Microsoft.UI.Windowing.AppWindow appWindow =
+            Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
+		appWindow.SetIcon("iconapp.ico");
+#endif
+
+
+        // Ensure the current window is active
+        _window.Activate();
 	}
 
 	/// <summary>
