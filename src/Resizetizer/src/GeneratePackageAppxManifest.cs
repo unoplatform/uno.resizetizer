@@ -1,10 +1,10 @@
 ﻿#nullable enable
+using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
 using System;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
 
 namespace Uno.Resizetizer
 {
@@ -243,7 +243,7 @@ namespace Uno.Resizetizer
 						else
 						{
 							visual.SetAttributeValue(xname, "transparent");
-						} 
+						}
 					}
 				}
 
@@ -375,6 +375,20 @@ namespace Uno.Resizetizer
 							var dpi = DpiPath.Windows.SplashScreen[0];
 							var path = Path.Combine(dpi.Path, splashInfo.OutputName + dpi.NameSuffix + imageExtension);
 							splash.SetAttributeValue(xname, path);
+						}
+					}
+
+					// BackgroundColor=""
+					{
+						var xname = "BackgroundColor";
+						var attr = visual.Element(xsplash);
+
+						if (attr is null || string.IsNullOrEmpty(attr.Value))
+						{
+							if (splashInfo?.Color is not null)
+							{
+								splash.SetAttributeValue(xname, Utils.SkiaColorWithoutAlpha(splashInfo.Color));
+							}
 						}
 					}
 				}
