@@ -642,9 +642,17 @@
 		<ItemGroup Condition="'@(_SkiaManifest)' != '' ">
 			<AppxManifest Remove="@(AppxManifest)" />
 			<AppxManifest Include="$(_UnoIntermediateManifest)Package.appxmanifest" />
+			
+			<!--If there's no LogicalName, we use the default name-->
 			<EmbeddedResource Include="$(_UnoIntermediateManifest)Package.appxmanifest"
 			                  Link="%(_SkiaManifest.Link)"
-			                  LogicalName="$(AssemblyName).Package.appxmanifest"/>
+			                  LogicalName="Package.appxmanifest"
+							  Condition="%(_SkiaManifest.LogicalName) == '' "/>
+
+			<EmbeddedResource Include="$(_UnoIntermediateManifest)Package.appxmanifest"
+			                  Link="%(_SkiaManifest.Link)"
+			                  LogicalName="%(_SkiaManifest.LogicalName)"
+							  Condition="%(_SkiaManifest.LogicalName) != '' "/>
 
 		</ItemGroup>
 		<ItemGroup Condition="'@(_UnoAppxManifest)' != ''">
