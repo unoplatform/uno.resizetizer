@@ -644,7 +644,7 @@
 			<AppxManifest Include="$(_UnoIntermediateManifest)Package.appxmanifest" />
 			<EmbeddedResource Include="$(_UnoIntermediateManifest)Package.appxmanifest"
 			                  Link="%(_SkiaManifest.Link)"
-			                  LogicalName="%(_SkiaManifest.LogicalName)"/>
+			                  LogicalName="$(AssemblyName).Package.appxmanifest"/>
 
 		</ItemGroup>
 		<ItemGroup Condition="'@(_UnoAppxManifest)' != ''">
