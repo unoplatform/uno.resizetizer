@@ -236,13 +236,9 @@ namespace Uno.Resizetizer
 
 					if (attr is null || string.IsNullOrEmpty(attr.Value))
 					{
-						if (splashInfo?.Color is not null)
+						if (appIconInfo?.Color is not null)
 						{
-							visual.SetAttributeValue(xname, Utils.SkiaColorWithoutAlpha(splashInfo.Color));
-						}
-						else
-						{
-							visual.SetAttributeValue(xname, "transparent");
+							visual.SetAttributeValue(xname, Utils.SkiaColorWithoutAlpha(appIconInfo.Color));
 						}
 					}
 				}
