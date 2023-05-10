@@ -17,7 +17,7 @@ Resizetizer uses an `svg` or `png` file as input. If an `svg` file is used, it w
 
 For `UnoIcon` and `UnoSplashScreen`, the generated sizes will be the same as the ones used by the platform.
 
-With that we strongly encourage the usage of `svg` files, to take most of the benefits of the tool. And the rest of the docs you can assume that we are using `svg` files.
+As `svg` has the ability to scale without losing quality, we strongly encourage the usage of `svg` files, to take most of the benefits of the tool. And the rest of the docs you can assume that we are using `svg` files.
 
 > [!TIP]
 > You can use the `Resize` property on UnoImage to force the resize of a `png` file. But be aware that the quality can be affected.
