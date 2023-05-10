@@ -91,6 +91,7 @@ namespace Uno.Resizetizer.Tests
 
 			var splashScreen = new TaskItem("images/dotnet_bot.svg");
 			splashScreen.SetMetadata("Color", "#FFFFFF");
+			appIcon.SetMetadata("Color", "#FFFFFF");
 
 			var inputFilename = $"testdata/appxmanifest/{input}.appxmanifest";
 			var task = GetNewTask(inputFilename,
