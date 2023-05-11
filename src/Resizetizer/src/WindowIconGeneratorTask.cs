@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -9,19 +10,20 @@ public class WindowIconGeneratorTask_V0 : Task
 {
 	private const string FileName = "Uno.Resizetizer.WindowIconExtensions.g.cs";
 
-    public ITaskItem[] UnoIcons { get; set; }
+	public ITaskItem[] UnoIcons { get; set; }
 
 	[Required]
 	public string IntermediateOutputDirectory { get; set; }
 
-	private List<ITaskItem> _generatedClass = new List<ITaskItem>();
 	[Output]
-	public ITaskItem[] GeneratedClass => _generatedClass.ToArray();
+	public ITaskItem[] GeneratedClass { get; private set; } = Array.Empty<ITaskItem>();
 
 	public override bool Execute()
 	{
 		if (UnoIcons is null || UnoIcons.Length == 0)
+		{
 			return true;
+		}
 
 		if(string.IsNullOrEmpty(IntermediateOutputDirectory))
 		{
@@ -75,7 +77,7 @@ namespace Uno.Resizetizer
 
 		var item = new TaskItem(Path.Combine(IntermediateOutputDirectory, FileName));
 		File.WriteAllText(item.ItemSpec, code);
-		_generatedClass.Add(item);
+		GeneratedClass = new [] { item };
 		return true;
 	}
 }
