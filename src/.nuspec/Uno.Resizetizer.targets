@@ -352,9 +352,9 @@
 	</Target>
 
 	<Target Name="ProcessUnoSplashScreens"
-        Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'"
-        Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoSplashInputsFile);@(UnoSplashScreen)"
-        Outputs="$(_UnoSplashStampFile)">
+        Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
+		<!--Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoSplashInputsFile);@(UnoSplashScreen)"
+		Outputs="$(_UnoSplashStampFile)">-->
 
 		<Warning
             Condition="'@(UnoSplashScreen->Count())' &gt; '1'"

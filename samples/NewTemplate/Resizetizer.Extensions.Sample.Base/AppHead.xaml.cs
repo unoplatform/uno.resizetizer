@@ -1,34 +1,27 @@
 using System;
 using Microsoft.Extensions.Logging;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
 
 namespace Resizetizer.Extensions.Sample;
 
-/// <summary>
-/// Provides application-specific behavior to supplement the default Application class.
-///
-/// Your own code may be placed in the Resizetizer.Extensions.Sample/AppBase.cs class.
-/// </summary>
 public sealed partial class AppHead : App
 {
-    static AppHead()
-		=> InitializeLogging();
+	static AppHead() =>
+		InitializeLogging();
 
-    /// <summary>
-    /// Initializes the singleton application object. This is the first line of authored code
-    /// executed, and as such is the logical equivalent of main() or WinMain().
-    /// </summary>
-    public AppHead()
-		=> this.InitializeComponent();
+	/// <summary>
+	/// Initializes the singleton application object. This is the first line of authored code
+	/// executed, and as such is the logical equivalent of main() or WinMain().
+	/// </summary>
+	public AppHead()
+	{
+		this.InitializeComponent();
+	}
 
-    /// <summary>
-    /// Configures global Uno Platform logging
-    /// </summary>
-    private static void InitializeLogging()
+	/// <summary>
+	/// Configures global Uno Platform logging
+	/// </summary>
+	private static void InitializeLogging()
 	{
 #if DEBUG
 		// Logging is disabled by default for release builds, as it incurs a significant
@@ -42,7 +35,7 @@ public sealed partial class AppHead : App
 		{
 #if __WASM__
 			builder.AddProvider(new global::Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
-#elif __IOS__ && !__MACCATALYST__
+#elif __IOS__ || __MACCATALYST__
 			builder.AddProvider(new global::Uno.Extensions.Logging.OSLogLoggerProvider());
 #elif NETFX_CORE
 			builder.AddDebug();
@@ -94,4 +87,3 @@ public sealed partial class AppHead : App
 #endif
 	}
 }
-

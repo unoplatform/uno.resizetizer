@@ -33,7 +33,6 @@
 				DisplayName="Resizetizer.Extensions.Sample"
 				Description="Resizetizer.Extensions.Sample">
 				<uap:SplashScreen />
-        <uap:DefaultTile />
 			</uap:VisualElements>
 		</Application>
 	</Applications>
