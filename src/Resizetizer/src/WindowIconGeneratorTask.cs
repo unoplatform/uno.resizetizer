@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
 namespace Uno.Resizetizer;
 
-public class WindowIconGeneratorTask : Task
+public class WindowIconGeneratorTask_V0 : Task
 {
-	public ITaskItem[] UnoIcons { get; set; }
+	private const string FileName = "Uno.Resizetizer.WindowIconExtensions.g.cs";
+
+    public ITaskItem[] UnoIcons { get; set; }
 
 	[Required]
 	public string IntermediateOutputDirectory { get; set; }
@@ -43,7 +43,7 @@ public class WindowIconGeneratorTask : Task
 
 namespace Uno.Resizetizer
 {{
-	public static class WindowIconExtensions
+	public static class WindowExtensions
 	{{
 		/// <summary>
 		/// This will set the Window Icon for the given <see cref=""global::Microsoft.UI.Xaml.Window"" /> using
@@ -68,12 +68,12 @@ namespace Uno.Resizetizer
 	}}
 }}";
 
-\		if(!Directory.Exists(IntermediateOutputDirectory))
+		if(!Directory.Exists(IntermediateOutputDirectory))
 		{
 			Directory.CreateDirectory(IntermediateOutputDirectory);
 		}
 
-		var item = new TaskItem(Path.Combine(IntermediateOutputDirectory, "Uno.Resizetizer.WindowIconExtensions.g.cs"));
+		var item = new TaskItem(Path.Combine(IntermediateOutputDirectory, FileName));
 		File.WriteAllText(item.ItemSpec, code);
 		_generatedClass.Add(item);
 		return true;

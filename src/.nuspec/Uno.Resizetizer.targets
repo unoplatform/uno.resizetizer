@@ -50,7 +50,7 @@
 
 	<UsingTask
 		AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-		TaskName="Uno.Resizetizer.WindowIconGeneratorTask" />
+		TaskName="Uno.Resizetizer.WindowIconGeneratorTask_V0" />
 
 	<PropertyGroup>
 		<CleanDependsOn>
