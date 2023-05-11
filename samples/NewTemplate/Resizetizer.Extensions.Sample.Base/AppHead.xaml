@@ -1,21 +1,17 @@
-<local:App
-	x:Class="Resizetizer.Extensions.Sample.AppHead"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Resizetizer.Extensions.Sample">
-	
-    <Application.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+<local:App x:Class="Resizetizer.Extensions.Sample.AppHead"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:wasm="http://platform.uno/wasm"
+			 xmlns:local="using:Resizetizer.Extensions.Sample"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="wasm">
 
+	<local:App.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="ms-appx:///Resizetizer.Extensions.Sample/AppResources.xaml" />
-				
-                <!-- Include additional resource dictionaries here, or in Resizetizer.Extensions.Sample/AppResources.xaml -->				
 			</ResourceDictionary.MergedDictionaries>
-			
-			<!-- Include additional resources here, or in Resizetizer.Extensions.Sample/AppResources.xaml -->
-        </ResourceDictionary>
-    </Application.Resources>
+		</ResourceDictionary>
+	</local:App.Resources>
 
 </local:App>
