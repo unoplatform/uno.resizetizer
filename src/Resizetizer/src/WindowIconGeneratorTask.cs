@@ -53,7 +53,7 @@ namespace Uno.Resizetizer
 		/// </summary>
 		public static void SetWindowIcon(this global::Microsoft.UI.Xaml.Window window)
 		{{
-#if WINDOWS
+#if WINDOWS && !HAS_UNO
 			var hWnd =
 			global::WinRT.Interop.WindowNative.GetWindowHandle(window);
 
