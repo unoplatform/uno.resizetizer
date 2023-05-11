@@ -683,7 +683,7 @@
 			BeforeTargets="Build;CoreCompile"
 			Inputs="@(UnoIcon)"
 			Outputs="@(_WindowIconExtension)">
-		<WindowIconGeneratorTask
+		<WindowIconGeneratorTask_v0
 			IntermediateOutputDirectory="$(_ResizetizerIntermediateOutputRoot)"
 			UnoIcons="@(UnoIcon)">
 			<Output ItemName="GeneratedFile"
@@ -692,7 +692,7 @@
 				TaskParameter="GeneratedClass"/>
 			<Output ItemName="Compile"
 				TaskParameter="GeneratedClass"/>
-		</WindowIconGeneratorTask>
+		</WindowIconGeneratorTask_v0>
 	</Target>
 
 </Project>
