@@ -601,6 +601,7 @@
 			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">$(AppIconPath)</ApplicationIcon>
 		</PropertyGroup>
 
+		<MakeDir Directories="$(IntermediateOutputPath)"/>
 		<!-- Touch/create our stamp file for outputs -->
 		<Touch Files="$(_ResizetizerStampFile)" AlwaysCreate="True" />
 
@@ -667,6 +668,7 @@
 			<_UnoAppxManifest Include="$(_UnoIntermediateManifest)Package.appxmanifest" />
 		</ItemGroup>
 
+		<MakeDir Directories="$(IntermediateOutputPath)"/>
 		<!-- Stamp file for Outputs -->
 		<Touch Files="$(_UnoManifestStampFile)" AlwaysCreate="True" />
 		<ItemGroup>
