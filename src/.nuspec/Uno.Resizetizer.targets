@@ -314,24 +314,6 @@
 			<UnoImage Include="@(UnoIcon)" IsAppIcon="True" Link="" />
 		</ItemGroup>
 
-		<!-- Write out item spec and metadata to a file we can use as an inputs for the resize target -->
-		<!-- This allows us to invalidate the build based on not just input image files changing but project item metadata as well -->
-		<WriteLinesToFile
-			File="$(_ResizetizerInputsFile)"
-			Lines="@(UnoImage->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);IsAppIcon=%(IsAppIcon);ForegroundScale=%(ForegroundScale);ForegroundFile=%(ForegroundFile)')"
-			Overwrite="true"
-			WriteOnlyWhenDifferent="true" />
-
-		<WriteLinesToFile
-			File="$(_UnoSplashInputsFile)"
-			Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);ForegroundScale=%(ForegroundScale)')"
-			Overwrite="true"
-			WriteOnlyWhenDifferent="true" />
-
-		<ItemGroup>
-			<FileWrites Include="$(_ResizetizerInputsFile)" />
-			<FileWrites Include="$(_UnoSplashInputsFile)" />
-		</ItemGroup>
 		<ItemGroup>
 			<_SkiaManifest Include="@(EmbeddedResource)"
 							 Condition="%(Extension) == '.appxmanifest'"/>
@@ -339,6 +321,30 @@
 			<EmbeddedResource Remove="@(EmbeddedResource)"
 								Condition="%(Extension) == '.appxmanifest'"/>
 		</ItemGroup>
+	</Target>
+
+	<Target Name="GenerateInfoAboutAssets"
+			AfterTargets="ResizetizeCollectItems"
+			BeforeTargets="ResizetizeImages_v0;ProcessUnoSplashScreens;ProcessUnoAssets">
+			
+			<!-- Write out item spec and metadata to a file we can use as an inputs for the resize target -->
+			<!-- This allows us to invalidate the build based on not just input image files changing but project item metadata as well -->
+			<WriteLinesToFile
+				File="$(_ResizetizerInputsFile)"
+				Lines="@(UnoImage->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);IsAppIcon=%(IsAppIcon);ForegroundScale=%(ForegroundScale);ForegroundFile=%(ForegroundFile)')"
+				Overwrite="true"
+				WriteOnlyWhenDifferent="true" />
+
+			<WriteLinesToFile
+				File="$(_UnoSplashInputsFile)"
+				Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);ForegroundScale=%(ForegroundScale)')"
+				Overwrite="true"
+				WriteOnlyWhenDifferent="true" />
+
+			<ItemGroup>
+				<FileWrites Include="$(_ResizetizerInputsFile)" />
+				<FileWrites Include="$(_UnoSplashInputsFile)" />
+			</ItemGroup>
 	</Target>
 
 	<Target Name="ProcessUnoAssets">
