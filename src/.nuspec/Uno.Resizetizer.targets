@@ -125,6 +125,16 @@
 			UnoAssetsGeneration;
 			BuildDist;
 		</ResizetizeAfterTargets>
+		
+		<ResizetizeDependsOnTargets>
+			$(ResizetizeDependsOnTargets);
+			ResizetizeCollectItems;
+			ProcessUnoSplashScreens;
+		</ResizetizeDependsOnTargets>
+		
+		<ResizetizeCollectItemsBeforeTargets>
+			UnoAssetsGeneration;
+		</ResizetizeCollectItemsBeforeTargets>
 	</PropertyGroup>
 
 	<!-- Skia -->
@@ -276,7 +286,7 @@
 
 	<!-- Collect images from referenced projects -->
 	<Target Name="ResizetizeCollectItems"
-		Condition="'$(_ResizetizerIsCompatibleApp)' == 'True' And '$(DisableResizetizer)' != 'true'"
+		Condition="'$(DisableResizetizer)' != 'True'"
 		BeforeTargets="$(ResizetizeCollectItemsBeforeTargets)"
 		AfterTargets="$(ResizetizeCollectItemsAfterTargets)">
 
