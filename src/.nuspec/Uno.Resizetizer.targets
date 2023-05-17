@@ -682,6 +682,8 @@
 	</Target>
 
 	<Target Name="_GenerateWindowUnoIconExtension"
+			Condition="'$(_ResizetizerIsCompatibleApp)' == 'True'"
+			BeforeTargets="Build;CoreCompile;XamlPreCompile"
 			Inputs="@(UnoIcon)"
 			Outputs="@(_WindowIconExtension)">
 		<WindowIconGeneratorTask_v0
@@ -695,10 +697,11 @@
 	</Target>
 
 	<Target Name="_AddResizetizerWindowIconExtensions"
+			Condition="'$(_ResizetizerIsCompatibleApp)' == 'True'"
 			AfterTargets="_GenerateWindowUnoIconExtension"
 			BeforeTargets="Build;CoreCompile;XamlPreCompile">
-		<ItemGroup Condition="Exists('$(_ResizetizerIntermediateOutputRoot)Uno.Resizetizer.WindowIconExtensions.g.cs')">
-			<Compile Include="$(_ResizetizerIntermediateOutputRoot)Uno.Resizetizer.WindowIconExtensions.g.cs" />
+		<ItemGroup Condition="Exists('@(_WindowIconExtension->FullPath())')">
+			<Compile Include="@(_WindowIconExtension)" />
 		</ItemGroup>
 	</Target>
 
