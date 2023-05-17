@@ -363,7 +363,7 @@
 	<Target Name="GenerateUnoSplashScreens"
 			BeforeTargets="ProcessUnoSplashScreens"
 			Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'"
-			Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoSplashInputsFile);@(UnoSplashScreen)"
+			Inputs="$(_UnoSplashInputsFile);@(UnoSplashScreen)"
 			Outputs="$(_UnoSplashStampFile)">
 
 		<Warning
