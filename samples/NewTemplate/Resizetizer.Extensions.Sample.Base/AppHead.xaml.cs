@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
+using Uno.Resizetizer;
 
 namespace Resizetizer.Extensions.Sample;
 
@@ -16,6 +17,12 @@ public sealed partial class AppHead : App
 	public AppHead()
 	{
 		this.InitializeComponent();
+	}
+
+	protected override void OnLaunched(LaunchActivatedEventArgs args)
+	{
+		base.OnLaunched(args);
+		_window?.SetWindowIcon();
 	}
 
 	/// <summary>

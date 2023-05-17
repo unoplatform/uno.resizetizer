@@ -682,7 +682,6 @@
 	</Target>
 
 	<Target Name="_GenerateWindowUnoIconExtension"
-			BeforeTargets="Build;CoreCompile"
 			Inputs="@(UnoIcon)"
 			Outputs="@(_WindowIconExtension)">
 		<WindowIconGeneratorTask_v0
@@ -692,9 +691,15 @@
 				TaskParameter="GeneratedClass"/>
 			<Output ItemName="FilesWrite"
 				TaskParameter="GeneratedClass"/>
-			<Output ItemName="Compile"
-				TaskParameter="GeneratedClass"/>
 		</WindowIconGeneratorTask_v0>
+	</Target>
+
+	<Target Name="_AddResizetizerWindowIconExtensions"
+			AfterTargets="_GenerateWindowUnoIconExtension"
+			BeforeTargets="Build;CoreCompile;XamlPreCompile">
+		<ItemGroup Condition="Exists('$(_ResizetizerIntermediateOutputRoot)Uno.Resizetizer.WindowIconExtensions.g.cs')">
+			<Compile Include="$(_ResizetizerIntermediateOutputRoot)Uno.Resizetizer.WindowIconExtensions.g.cs" />
+		</ItemGroup>
 	</Target>
 
 </Project>
