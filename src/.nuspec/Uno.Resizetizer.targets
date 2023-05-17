@@ -334,10 +334,10 @@
 		</ItemGroup>
 		<ItemGroup>
 			<_SkiaManifest Include="@(EmbeddedResource)"
-						   Condition="%(Extension) == '.appxmanifest'"/>
+							 Condition="%(Extension) == '.appxmanifest'"/>
 
 			<EmbeddedResource Remove="@(EmbeddedResource)"
-							  Condition="%(Extension) == '.appxmanifest'"/>
+								Condition="%(Extension) == '.appxmanifest'"/>
 		</ItemGroup>
 	</Target>
 
@@ -401,7 +401,7 @@
 		<ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True' And $(UserAppManifest) != ''">
 			<EmbeddedResource Remove="$(UserAppManifest)" />
 			<EmbeddedResource Include="$(_UnoIntermediateAppManifestWasm)"
-							  Link="$(UserAppManifest)"/>
+								Link="$(UserAppManifest)"/>
 		</ItemGroup>
 
 		<!-- Android -->
@@ -653,14 +653,14 @@
 			
 			<!--If there's no LogicalName, we use the default name-->
 			<EmbeddedResource Include="$(_UnoIntermediateManifest)Package.appxmanifest"
-							  Link="%(_SkiaManifest.Link)"
-							  LogicalName="Package.appxmanifest"
-							  Condition="%(_SkiaManifest.LogicalName) == '' "/>
+								Link="%(_SkiaManifest.Link)"
+								LogicalName="Package.appxmanifest"
+								Condition="%(_SkiaManifest.LogicalName) == '' "/>
 
 			<EmbeddedResource Include="$(_UnoIntermediateManifest)Package.appxmanifest"
-							  Link="%(_SkiaManifest.Link)"
-							  LogicalName="%(_SkiaManifest.LogicalName)"
-							  Condition="%(_SkiaManifest.LogicalName) != '' "/>
+								Link="%(_SkiaManifest.Link)"
+								LogicalName="%(_SkiaManifest.LogicalName)"
+								Condition="%(_SkiaManifest.LogicalName) != '' "/>
 
 		</ItemGroup>
 		<ItemGroup Condition="'@(_UnoAppxManifest)' != ''">
@@ -682,7 +682,8 @@
 	</Target>
 
 	<Target Name="_GenerateWindowUnoIconExtension"
-			BeforeTargets="Build;CoreCompile"
+			Condition="'$(_ResizetizerIsCompatibleApp)' == 'True'"
+			BeforeTargets="Build;CoreCompile;XamlPreCompile"
 			Inputs="@(UnoIcon)"
 			Outputs="@(_WindowIconExtension)">
 		<WindowIconGeneratorTask_v0
@@ -692,9 +693,16 @@
 				TaskParameter="GeneratedClass"/>
 			<Output ItemName="FilesWrite"
 				TaskParameter="GeneratedClass"/>
-			<Output ItemName="Compile"
-				TaskParameter="GeneratedClass"/>
 		</WindowIconGeneratorTask_v0>
+	</Target>
+
+	<Target Name="_AddResizetizerWindowIconExtensions"
+			Condition="'$(_ResizetizerIsCompatibleApp)' == 'True'"
+			AfterTargets="_GenerateWindowUnoIconExtension"
+			BeforeTargets="Build;CoreCompile;XamlPreCompile">
+		<ItemGroup Condition="Exists('@(_WindowIconExtension->FullPath())')">
+			<Compile Include="@(_WindowIconExtension)" />
+		</ItemGroup>
 	</Target>
 
 </Project>
