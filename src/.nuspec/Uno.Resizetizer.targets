@@ -360,8 +360,11 @@
 		</GetUnoAssetPath_v0>
 	</Target>
 
-	<Target Name="ProcessUnoSplashScreens"
-				Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
+	<Target Name="GenerateUnoSplashScreens"
+			BeforeTargets="ProcessUnoSplashScreens"
+			Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'"
+			Inputs="$(_UnoSplashInputsFile);@(UnoSplashScreen)"
+			Outputs="$(_UnoSplashStampFile)">
 
 		<Warning
 			Condition="'@(UnoSplashScreen->Count())' &gt; '1'"
@@ -385,7 +388,6 @@
 		</ItemGroup>
 
 		<!--Wasm-->
-
 		<GenerateWasmSplashAssets_v0
 			Condition="$(_ResizetizerIsWasmApp) == 'True'"
 			IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
@@ -398,11 +400,13 @@
 
 		</GenerateWasmSplashAssets_v0>
 
-		<ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True' And $(UserAppManifest) != ''">
-			<EmbeddedResource Remove="$(UserAppManifest)" />
-			<EmbeddedResource Include="$(_UnoIntermediateAppManifestWasm)"
-								Link="$(UserAppManifest)"/>
-		</ItemGroup>
+		<!-- Cache the $(UserAppManifest) value to be used on incremental builds-->
+		<WriteLinesToFile
+			Condition="$(_ResizetizerIsWasmApp) == 'True'"
+			File="$(_UnoManifestStampFile)"
+			Lines="$(UserAppManifest)"
+			Overwrite="true"
+			WriteOnlyWhenDifferent="true" />
 
 		<!-- Android -->
 		<GenerateSplashAndroidResources_v0
@@ -410,12 +414,6 @@
 			IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
 			UnoSplashScreen="@(UnoSplashScreen)"
 		/>
-		<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
-			<LibraryResourceDirectories Condition="Exists('$(_UnoIntermediateSplashScreen)')" Include="$(_UnoIntermediateSplashScreen)">
-				<StampFile>$(_ResizetizerStampFile)</StampFile>
-			</LibraryResourceDirectories>
-			<FileWrites Include="$(_UnoIntermediateSplashScreen)**\*" />
-		</ItemGroup>
 
 		<!-- iOS, but not Catalyst -->
 		<GenerateSplashStoryboard_v0
@@ -423,9 +421,11 @@
 			OutputFile="$(_UnoIntermediateStoryboard)"
 			UnoSplashScreen="@(UnoSplashScreen)"
 		/>
+
 		<PropertyGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'">
 			<_UnoIntermediateSplashScreenFile>$(_UnoIntermediateStoryboard)</_UnoIntermediateSplashScreenFile>
 		</PropertyGroup>
+
 		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'">
 			<InterfaceDefinition Include="$(_UnoIntermediateStoryboard)" Link="$([System.IO.Path]::GetFileName($(_UnoIntermediateStoryboard)))" />
 			<FileWrites Include="$(_UnoIntermediateStoryboard)" />
@@ -438,6 +438,51 @@
 			PlistName="UnoInfo.plist"
 			Storyboard="$(_UnoIntermediateSplashScreenFile)" />
 
+			
+		<!-- UWP / WinUI -->
+		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
+			<UnoWindowsSplash Include="@(UnoSplashScreen)" Link=""/>
+		</ItemGroup>
+		<GenerateSplashAssets_v0
+			Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'"
+			IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
+			UnoSplashScreen="@(UnoWindowsSplash)"
+		/>
+
+		<MakeDir Directories="$(IntermediateOutputPath)"/>
+		<!-- Stamp file for Outputs -->
+		<Touch Files="$(_UnoSplashStampFile)" AlwaysCreate="True" />
+		<ItemGroup>
+			<FileWrites Include="$(_UnoSplashStampFile)" />
+		</ItemGroup>
+	</Target>
+	
+	<Target Name="ProcessUnoSplashScreens"
+			Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
+
+		<!-- Wasm -->
+		<ReadLinesFromFile 
+			File="$(_UnoManifestStampFile)"
+			Condition="$(_ResizetizerIsWasmApp) == 'True' And '$(UserAppManifest)' == ''">
+			<Output TaskParameter="Lines" PropertyName="UserAppManifest" />
+		</ReadLinesFromFile>
+
+		<ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True' And $(UserAppManifest) != ''">
+			<EmbeddedResource Remove="$(UserAppManifest)" />
+			<EmbeddedResource Include="$(_UnoIntermediateAppManifestWasm)"
+							  Link="$(UserAppManifest)"/>
+		</ItemGroup>
+
+		<!-- Android -->
+		<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
+			<LibraryResourceDirectories Condition="Exists('$(_UnoIntermediateSplashScreen)')" Include="$(_UnoIntermediateSplashScreen)">
+				<StampFile>$(_ResizetizerStampFile)</StampFile>
+			</LibraryResourceDirectories>
+			<FileWrites Include="$(_UnoIntermediateSplashScreen)**\*" />
+		</ItemGroup>
+
+
+		<!-- iOS, but not Catalyst -->
 		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' ">
 			<_UnoSplashPListFiles Include="$(_UnoIntermediateSplashScreen)UnoInfo.plist" Condition="Exists('$(_UnoIntermediateSplashScreen)UnoInfo.plist')" />
 			<PartialAppManifest Include="@(_UnoSplashPListFiles)" Condition="'@(_UnoSplashPListFiles)' != ''" />
@@ -455,27 +500,12 @@
 			Files="@(_UnoAssetsToCopyToBuildServer)" />
 
 		<!-- UWP / WinUI -->
-		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
-			<UnoWindowsSplash Include="@(UnoSplashScreen)" Link=""/>
-		</ItemGroup>
-		<GenerateSplashAssets_v0
-			Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'"
-			IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
-			UnoSplashScreen="@(UnoWindowsSplash)"
-		/>
 		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True'">
 			<_UnoSplashAssets Include="$(_UnoIntermediateSplashScreen)**\*" />
 			<ContentWithTargetPath Include="@(_UnoSplashAssets)">
 				<TargetPath>%(_UnoSplashAssets.Filename)%(_UnoSplashAssets.Extension)</TargetPath>
 			</ContentWithTargetPath>
 			<FileWrites Include="@(_UnoSplashAssets)" />
-		</ItemGroup>
-
-		<MakeDir Directories="$(IntermediateOutputPath)"/>
-		<!-- Stamp file for Outputs -->
-		<Touch Files="$(_UnoSplashStampFile)" AlwaysCreate="True" />
-		<ItemGroup>
-			<FileWrites Include="$(_UnoSplashStampFile)" />
 		</ItemGroup>
 	</Target>
 
