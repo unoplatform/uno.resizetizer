@@ -511,7 +511,7 @@
 
 	<Target Name="ResizetizeImages_v0"
 		Inputs="$(_ResizetizerInputsFile);@(UnoImage)"
-		Outputs="$(_ResizetizerStampFile)"
+		Outputs="$(_ResizetizerStampFile);@(_ResizetizerCollectedImages);@(_ResizetizerCollectedAppIcons)"
 		AfterTargets="$(ResizetizeAfterTargets)"
 		Condition="'$(DesignTimeBuild)' != 'true'"
 		BeforeTargets="$(ResizetizeBeforeTargets)"
@@ -539,6 +539,18 @@
 					TaskParameter="PwaGeneratedManifestPath"/>
 		</ResizetizeImages_v0>
 
+		<PropertyGroup>
+			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">$(AppIconPath)</ApplicationIcon>
+		</PropertyGroup>
+		
+		<ItemGroup>
+				<!-- Get Images that were generated -->
+				<!-- Either from the task, or if the task was skipped (up to date), use the wildcard lookup -->
+				<_ResizetizerCollectedImages Condition="'@(CopiedResources)' != ''" Include="@(CopiedResources)" />
+				<_ResizetizerCollectedImages Condition="'@(CopiedResources)' == ''" Include="$(_UnoIntermediateImages)**\*"/>
+				<_ResizetizerCollectedAppIcons Include="$(_UnoIntermediateAppIcon)**\*"/>
+		</ItemGroup>
+
 		<MakeDir Directories="$(IntermediateOutputPath)"/>
 		<!-- Touch/create our stamp file for outputs -->
 		<Touch Files="$(_ResizetizerStampFile)" AlwaysCreate="True" />
@@ -554,19 +566,6 @@
 		AfterTargets="ResizetizeImages_v0"
 		DependsOnTargets="ResizetizeImages_v0"
 		Condition="'$(DesignTimeBuild)' != 'true'">
-
-		<PropertyGroup>
-			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">$(AppIconPath)</ApplicationIcon>
-		</PropertyGroup>
-		
-		<ItemGroup>
-				<!-- Get Images that were generated -->
-				<!-- Either from the task, or if the task was skipped (up to date), use the wildcard lookup -->
-				<_ResizetizerCollectedImages Condition="'@(CopiedResources)' != ''" Include="@(CopiedResources)" />
-				<_ResizetizerCollectedImages Condition="'@(CopiedResources)' == ''" Include="$(_UnoIntermediateImages)**\*"/>
-				<_ResizetizerCollectedAppIcons Include="$(_UnoIntermediateAppIcon)**\*"/>
-			</ItemGroup>
-
 
 			<ItemGroup Condition="'$(_ResizetizerIsWasmApp)' != 'True'">
 				<Content Include="@(_ResizetizerCollectedImages)"
