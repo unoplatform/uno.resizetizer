@@ -510,7 +510,7 @@
 	</Target>
 
 	<Target Name="ResizetizeImages_v0"
-		Inputs="$(_ResizetizerInputsFile);@(UnoImage)"
+		Inputs="$(_ResizetizerInputsFile);@(UnoImage);$(_WasmPwaManifestPath)"
 		Outputs="$(_ResizetizerStampFile);@(_ResizetizerCollectedImages);@(_ResizetizerCollectedAppIcons)"
 		AfterTargets="$(ResizetizeAfterTargets)"
 		Condition="'$(DesignTimeBuild)' != 'true'"
@@ -538,18 +538,21 @@
 			<Output PropertyName="ResizetizerPwaManifest"
 					TaskParameter="PwaGeneratedManifestPath"/>
 		</ResizetizeImages_v0>
-
-		<PropertyGroup>
-			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">$(AppIconPath)</ApplicationIcon>
-		</PropertyGroup>
 		
 		<ItemGroup>
-				<!-- Get Images that were generated -->
-				<!-- Either from the task, or if the task was skipped (up to date), use the wildcard lookup -->
-				<_ResizetizerCollectedImages Condition="'@(CopiedResources)' != ''" Include="@(CopiedResources)" />
-				<_ResizetizerCollectedImages Condition="'@(CopiedResources)' == ''" Include="$(_UnoIntermediateImages)**\*"/>
-				<_ResizetizerCollectedAppIcons Include="$(_UnoIntermediateAppIcon)**\*"/>
+			<!-- Get Images that were generated -->
+			<!-- Either from the task, or if the task was skipped (up to date), use the wildcard lookup -->
+			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' != ''" Include="@(CopiedResources)" />
+			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' == ''" Include="$(_UnoIntermediateImages)**\*"/>
+			<_ResizetizerCollectedAppIcons Include="$(_UnoIntermediateAppIcon)**\*"/>
+			<!-- If the PWA manifest is empty we can try to find it on the disk -->
+			<_ResizetizerPwaManifestItemGroup Condition="'$(ResizetizerPwaManifest)' ==''" Include="$(_UnoIntermediateAppIcon)**\*.json"/>
 		</ItemGroup>
+		
+		<PropertyGroup>
+			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">$(AppIconPath)</ApplicationIcon>
+			<ResizetizerPwaManifest Condition="'$(ResizetizerPwaManifest)' ==''">%(_ResizetizerPwaManifestItemGroup.FullPath)</ResizetizerPwaManifest>
+		</PropertyGroup>
 
 		<MakeDir Directories="$(IntermediateOutputPath)"/>
 		<!-- Touch/create our stamp file for outputs -->
