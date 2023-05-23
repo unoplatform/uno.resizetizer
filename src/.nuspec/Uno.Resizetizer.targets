@@ -334,7 +334,7 @@
 		</ItemGroup>
 		<ItemGroup>
 			<_SkiaManifest Include="@(EmbeddedResource)"
-							 Condition="%(Extension) == '.appxmanifest'"/>
+						   Condition="%(Extension) == '.appxmanifest'"/>
 
 			<EmbeddedResource Remove="@(EmbeddedResource)"
 								Condition="%(Extension) == '.appxmanifest'"/>
@@ -545,12 +545,17 @@
 			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' != ''" Include="@(CopiedResources)" />
 			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' == ''" Include="$(_UnoIntermediateImages)**\*"/>
 			<_ResizetizerCollectedAppIcons Include="$(_UnoIntermediateAppIcon)**\*"/>
+			
 			<!-- If the PWA manifest is empty we can try to find it on the disk -->
 			<_ResizetizerPwaManifestItemGroup Condition="'$(ResizetizerPwaManifest)' ==''" Include="$(_UnoIntermediateAppIcon)**\*.json"/>
+			<!-- If the AppIcon property is empty we can try to find it on the disk -->
+			<_AppIconItemGroup Condition="'$(AppIconPath)' == ''" Include="$(_ResizetizerIntermediateOutputRoot)**\*.ico"/>
 		</ItemGroup>
 		
 		<PropertyGroup>
+			<AppIconPath Condition="'$(AppIconPath)' == ''">%(_AppIconItemGroup.FullPath)</AppIconPath>
 			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">$(AppIconPath)</ApplicationIcon>
+
 			<ResizetizerPwaManifest Condition="'$(ResizetizerPwaManifest)' ==''">%(_ResizetizerPwaManifestItemGroup.FullPath)</ResizetizerPwaManifest>
 		</PropertyGroup>
 
@@ -569,7 +574,7 @@
 		AfterTargets="ResizetizeImages_v0"
 		DependsOnTargets="ResizetizeImages_v0"
 		Condition="'$(DesignTimeBuild)' != 'true'">
-
+		
 			<ItemGroup Condition="'$(_ResizetizerIsWasmApp)' != 'True'">
 				<Content Include="@(_ResizetizerCollectedImages)"
 						Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)"
