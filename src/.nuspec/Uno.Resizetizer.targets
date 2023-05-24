@@ -88,7 +88,7 @@
 
 		<_WasmHasPWAManifest>False</_WasmHasPWAManifest>
 		<_WasmHasPWAManifest Condition="'$(WasmPWAManifestFile)' != ''">True</_WasmHasPWAManifest>
-		<_WasmPwaManifestPath Condition="'$(_WasmHasPWAManifest)' == 'True'">$(MSBuildProjectDirectory)\$(WasmPWAManifestFile)</_WasmPwaManifestPath>
+		<_WasmPwaManifestPath Condition="'$(_WasmHasPWAManifest)' == 'True'">$([System.IO.Path]::Combine($(MSBuildProjectDirectory),$(WasmPWAManifestFile)))</_WasmPwaManifestPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
