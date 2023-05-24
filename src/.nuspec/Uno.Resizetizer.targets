@@ -509,8 +509,21 @@
 		</ItemGroup>
 	</Target>
 
+	<Target Name="CollectResizeImageAssets"
+        BeforeTargets="ResizetizeImages_v0">
+	<ItemGroup>
+			<_ResizetizeImageInput Include="$(ResizetizerInputsFile)" />
+			<_ResizetizeImageInput Include="@(UnoImage)" />
+			<!-- TODO: Add a condition to see if the file exists-->
+			<_ResizetizeImageInput Condition="'$(_ResizetizerIsWasmApp)' == 'True' And '$(_WasmHasPWAManifest)' == 'True'" Include="$(_WasmPwaManifestPath)" />
+			<_ResizetizeImageOutput Include="$(_ResizetizerStampFile)" />
+			<_ResizetizeImageOutput Include="@(_ResizetizerCollectedImages)" />
+			<_ResizetizeImageOutput Include="@(_ResizetizerCollectedAppIcons)" />
+	</ItemGroup>
+</Target>
+
 	<Target Name="ResizetizeImages_v0"
-		Inputs="$(_ResizetizerInputsFile);@(UnoImage);$(_WasmPwaManifestPath)"
+		Inputs="@(_ResizetizeImageInput)"
 		Outputs="$(_ResizetizerStampFile);@(_ResizetizerCollectedImages);@(_ResizetizerCollectedAppIcons)"
 		AfterTargets="$(ResizetizeAfterTargets)"
 		Condition="'$(DesignTimeBuild)' != 'true'"
