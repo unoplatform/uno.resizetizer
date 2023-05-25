@@ -101,6 +101,7 @@
 	</PropertyGroup>
 
 	<Import Project="Uno.Resizetizer.wasm.targets" Condition="'$(_ResizetizerIsWasmApp)' == 'True'" />
+	<Import Project="Uno.Resizetizer.android.targets" Condition="'$(_ResizetizerIsAndroidApp)' == 'True'" />
 
 	<PropertyGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True' Or '$(_ResizetizerIsiOSApp)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsWasmApp)' == 'True'">
 		<_ResizetizerIsCompatibleApp>True</_ResizetizerIsCompatibleApp>
@@ -389,13 +390,6 @@
 			<UnoImage Include="@(UnoSplashScreen)" IsSplashScreen="True" Link=""/>
 		</ItemGroup>
 
-		<!-- Android -->
-		<GenerateSplashAndroidResources_v0
-			Condition="'$(_ResizetizerIsAndroidApp)' == 'True'"
-			IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
-			UnoSplashScreen="@(UnoSplashScreen)"
-		/>
-
 		<!-- iOS, but not Catalyst -->
 		<GenerateSplashStoryboard_v0
 			Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'"
@@ -440,15 +434,6 @@
 	
 	<Target Name="ProcessUnoSplashScreens"
 			Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
-
-		<!-- Android -->
-		<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
-			<LibraryResourceDirectories Condition="Exists('$(_UnoIntermediateSplashScreen)')" Include="$(_UnoIntermediateSplashScreen)">
-				<StampFile>$(_ResizetizerStampFile)</StampFile>
-			</LibraryResourceDirectories>
-			<FileWrites Include="$(_UnoIntermediateSplashScreen)**\*" />
-		</ItemGroup>
-
 
 		<!-- iOS, but not Catalyst -->
 		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' ">
@@ -565,19 +550,12 @@
 				<FileWrites Include="@(_ResizetizerCollectedImages)" />
 			</ItemGroup>
 
-			<!--
+			 <!--
 			Disables "XA0101 build action is not supported" as Uno handles Content items explicitly
 			https://github.com/xamarin/xamarin-android/blob/311b41e864a0162895d079477cb9398fbec5ca6e/src/Xamarin.Android.Build.Tasks/Xamarin.Android.Common.targets#L833
 			-->
 			<ItemGroup Condition="'$(MonoAndroidAssetsPrefix)'!=''">
 				<Content Update="@(_ResizetizerCollectedImages)" ExcludeFromContentCheck="true" />
-			</ItemGroup>
-
-			<!-- Android -->
-			<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
-				<AndroidResource Include="@(_ResizetizerCollectedAppIcons)"
-						Link="%(_ResizetizerCollectedAppIcons.RecursiveDir)%(_ResizetizerCollectedAppIcons.Filename)%(_ResizetizerCollectedAppIcons.Extension)" >
-				</AndroidResource>
 			</ItemGroup>
 
 			<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True'">
