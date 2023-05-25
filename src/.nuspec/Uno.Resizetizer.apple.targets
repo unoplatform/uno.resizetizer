@@ -28,7 +28,7 @@
 			Storyboard="$(_UnoIntermediateSplashScreenFile)" />
     </Target>
 
-    <Target Name="ProcessUnoSplashScreensApple_v0"
+    <Target Name="ProcessUnoSplashScreens"
             AfterTargets="GenerateUnoSplashApple"
             DependsOnTargets="GenerateUnoSplashApple"
 			Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
