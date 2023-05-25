@@ -1,0 +1,87 @@
+<Project>
+    <Target
+        Name="GenerateUnoSplashApple"
+		AfterTargets="GenerateUnoSplashScreens"
+		DependsOnTargets="GenerateUnoSplashScreens"
+		Condition="'$(DesignTimeBuild)' != 'True'">
+        <!-- iOS, but not Catalyst -->
+		<GenerateSplashStoryboard_v0
+			Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'"
+			OutputFile="$(_UnoIntermediateStoryboard)"
+			UnoSplashScreen="@(UnoSplashScreen)"
+		/>
+
+		<PropertyGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'">
+			<_UnoIntermediateSplashScreenFile>$(_UnoIntermediateStoryboard)</_UnoIntermediateSplashScreenFile>
+		</PropertyGroup>
+
+		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'">
+			<InterfaceDefinition Include="$(_UnoIntermediateStoryboard)" Link="$([System.IO.Path]::GetFileName($(_UnoIntermediateStoryboard)))" />
+			<FileWrites Include="$(_UnoIntermediateStoryboard)" />
+		</ItemGroup>
+
+		<!-- Create a partial info.plist for iOS -->
+		<CreatePartialInfoPlistTask_v0
+			Condition="'$(_ResizetizerIsiOSApp)' == 'True' And '$(_UnoIntermediateSplashScreenFile)' != ''"
+			IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
+			PlistName="UnoInfo.plist"
+			Storyboard="$(_UnoIntermediateSplashScreenFile)" />
+    </Target>
+
+    <Target Name="ProcessUnoSplashScreensApple_v0"
+            AfterTargets="GenerateUnoSplashApple"
+            DependsOnTargets="GenerateUnoSplashApple"
+			Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
+        
+        <!-- iOS, but not Catalyst -->
+		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' ">
+			<_UnoSplashPListFiles Include="$(_UnoIntermediateSplashScreen)UnoInfo.plist" Condition="Exists('$(_UnoIntermediateSplashScreen)UnoInfo.plist')" />
+			<PartialAppManifest Include="@(_UnoSplashPListFiles)" Condition="'@(_UnoSplashPListFiles)' != ''" />
+			<FileWrites Include="@(_UnoSplashPListFiles)" Condition="'@(_UnoSplashPListFiles)' != ''" />
+		</ItemGroup>
+
+		<ItemGroup Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'">
+			<_UnoAssetsToCopyToBuildServer Include="@(_UnoSplashPListFiles)">
+				<TargetPath>%(Identity)</TargetPath>
+			</_UnoAssetsToCopyToBuildServer>
+		</ItemGroup>
+		<CopyFilesToBuildServer
+			Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'"
+			SessionId="$(BuildSessionId)"
+			Files="@(_UnoAssetsToCopyToBuildServer)" />
+    </Target>
+
+    <Target
+		Name="ProcessResizedImagesApple_v0"
+		AfterTargets="ProcessResizedImages_v0"
+		DependsOnTargets="ProcessResizedImages_v0"
+		Condition="'$(DesignTimeBuild)' != 'true'">
+           
+            <ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True'">
+				<_ResizetizerCollectedBundleResourceImages Include="@(_ResizetizerCollectedImages->'%(FullPath)')">
+					<LogicalName>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</LogicalName>
+					<TargetPath>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</TargetPath>
+				</_ResizetizerCollectedBundleResourceImages>
+
+				<ImageAsset
+					Include="@(_ResizetizerCollectedBundleResourceImages)"
+					Condition="'@(_ResizetizerCollectedBundleResourceImages->Contains('Assets.xcassets'))' == 'True' and '%(_ResizetizerCollectedBundleResourceImages.Identity)' != ''">
+					<LogicalName>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_ResizetizerCollectedBundleResourceImages.Identity)))))\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</LogicalName>
+					<TargetPath>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_ResizetizerCollectedBundleResourceImages.Identity)))))\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</TargetPath>
+					<Link>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_ResizetizerCollectedBundleResourceImages.Identity)))))\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</Link>
+				</ImageAsset>
+			</ItemGroup>
+
+			<!-- iOS Only -->
+			<!-- If on Windows, using build host, copy the files over to build server host too -->
+			<ItemGroup Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'">
+				<_UnoImagesToCopyToBuildServer Include="@(_ResizetizerCollectedBundleResourceImages)">
+					<TargetPath>%(Identity)</TargetPath>
+				</_UnoImagesToCopyToBuildServer>
+			</ItemGroup>
+			<CopyFilesToBuildServer
+				Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'"
+				SessionId="$(BuildSessionId)"
+				Files="@(_UnoImagesToCopyToBuildServer)" />
+    </Target>
+</Project>
