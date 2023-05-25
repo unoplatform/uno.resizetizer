@@ -100,6 +100,8 @@
 		<_ResizetizerIsWasmApp Condition="'$(UnoRuntimeIdentifier)' == 'WebAssembly'">True</_ResizetizerIsWasmApp>
 	</PropertyGroup>
 
+	<Import Project="Uno.Resizetizer.wasm.targets" Condition="'$(_ResizetizerIsWasmApp)' == 'True'" />
+
 	<PropertyGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True' Or '$(_ResizetizerIsiOSApp)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsWasmApp)' == 'True'">
 		<_ResizetizerIsCompatibleApp>True</_ResizetizerIsCompatibleApp>
 
@@ -387,27 +389,6 @@
 			<UnoImage Include="@(UnoSplashScreen)" IsSplashScreen="True" Link=""/>
 		</ItemGroup>
 
-		<!--Wasm-->
-		<GenerateWasmSplashAssets_v0
-			Condition="$(_ResizetizerIsWasmApp) == 'True'"
-			IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
-			EmbeddedResources="@(EmbeddedResource)"
-			UnoSplashScreen="@(UnoSplashScreen)"
-			OutputFile="$(_UnoIntermediateAppManifestWasm)">
-
-			<Output PropertyName="UserAppManifest"
-					TaskParameter="UserAppManifest" />
-
-		</GenerateWasmSplashAssets_v0>
-
-		<!-- Cache the $(UserAppManifest) value to be used on incremental builds-->
-		<WriteLinesToFile
-			Condition="$(_ResizetizerIsWasmApp) == 'True'"
-			File="$(_UnoManifestStampFile)"
-			Lines="$(UserAppManifest)"
-			Overwrite="true"
-			WriteOnlyWhenDifferent="true" />
-
 		<!-- Android -->
 		<GenerateSplashAndroidResources_v0
 			Condition="'$(_ResizetizerIsAndroidApp)' == 'True'"
@@ -460,19 +441,6 @@
 	<Target Name="ProcessUnoSplashScreens"
 			Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
 
-		<!-- Wasm -->
-		<ReadLinesFromFile 
-			File="$(_UnoManifestStampFile)"
-			Condition="$(_ResizetizerIsWasmApp) == 'True' And '$(UserAppManifest)' == ''">
-			<Output TaskParameter="Lines" PropertyName="UserAppManifest" />
-		</ReadLinesFromFile>
-
-		<ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True' And $(UserAppManifest) != ''">
-			<EmbeddedResource Remove="$(UserAppManifest)" />
-			<EmbeddedResource Include="$(_UnoIntermediateAppManifestWasm)"
-							  Link="$(UserAppManifest)"/>
-		</ItemGroup>
-
 		<!-- Android -->
 		<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
 			<LibraryResourceDirectories Condition="Exists('$(_UnoIntermediateSplashScreen)')" Include="$(_UnoIntermediateSplashScreen)">
@@ -515,7 +483,6 @@
 	<ItemGroup>
 			<_ResizetizeImageInput Include="$(ResizetizerInputsFile)" />
 			<_ResizetizeImageInput Include="@(UnoImage)" />
-			<!-- <_ResizetizeImageInput Include="$(_GeneratedPwaManifestPath)" /> -->
 			<_ResizetizeImageInput Condition="'$(_ResizetizerIsWasmApp)' == 'True' And '$(_WasmHasPWAManifest)' == 'True'" Include="$(_WasmPwaManifestPath)" />
 			<_ResizetizeImageOutput Include="$(_ResizetizerStampFile)" />
 			<_ResizetizeImageOutput Include="@(_ResizetizerCollectedImages)" />
@@ -606,40 +573,12 @@
 				<Content Update="@(_ResizetizerCollectedImages)" ExcludeFromContentCheck="true" />
 			</ItemGroup>
 
-			<!-- Wasm -->
-			<ItemGroup Condition="'$(_ResizetizerIsWasmApp)' == 'True'">
-				<Content Include="@(_ResizetizerCollectedImages->FullPath())"
-						Link="%(_ResizetizerCollectedImages.RecursiveDir)%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)" >
-				</Content>
-
-				<Content Include="@(_ResizetizerCollectedAppIcons->FullPath())"
-						Condition="'%(Extension)' != '.ico'"
-						Link="%(_ResizetizerCollectedAppIcons.RecursiveDir)%(_ResizetizerCollectedAppIcons.Filename)%(_ResizetizerCollectedAppIcons.Extension)"/>
-
-				<Content Include="@(_ResizetizerCollectedAppIcons->FullPath())"
-						Condition="'%(Extension)' == '.ico'"
-						UnoDeploy="Root"
-						Link="%(_ResizetizerCollectedAppIcons.RecursiveDir)%(_ResizetizerCollectedAppIcons.Filename)%(_ResizetizerCollectedAppIcons.Extension)"/>
-
-				<FileWrites Include="@(_ResizetizerCollectedImages)" />
-			</ItemGroup>
-
-			<ItemGroup Condition="'$(_ResizetizerIsWasmApp)' == 'True' And '$(ResizetizerPwaManifest)' != ''">
-				<Content Remove="$(WasmPWAManifestFile)" />
-				<Content Include="$(ResizetizerPwaManifest)"
-						CopyToOutputDirectory="PreserveNewest"
-						ExcludeFromSingleFile ="True"
-						CopyToPublishDirectory ="PreserveNewest"
-						Link="$(WasmPWAManifestFile)" />
-			</ItemGroup>
-
 			<!-- Android -->
 			<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
 				<AndroidResource Include="@(_ResizetizerCollectedAppIcons)"
 						Link="%(_ResizetizerCollectedAppIcons.RecursiveDir)%(_ResizetizerCollectedAppIcons.Filename)%(_ResizetizerCollectedAppIcons.Extension)" >
 				</AndroidResource>
 			</ItemGroup>
-
 
 			<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True'">
 				<_ResizetizerCollectedBundleResourceImages Include="@(_ResizetizerCollectedImages->'%(FullPath)')">
