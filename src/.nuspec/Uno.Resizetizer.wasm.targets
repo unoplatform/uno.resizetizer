@@ -40,6 +40,8 @@
 		</ItemGroup>
     </Target>
 
+	<Target Name="ProcessUnoSplashScreens" />
+
 	<Target
 		Name="ProcessResizedImagesWasm_v0"
 		AfterTargets="ProcessResizedImages_v0"
