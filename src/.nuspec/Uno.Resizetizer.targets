@@ -102,6 +102,8 @@
 
 	<Import Project="Uno.Resizetizer.wasm.targets" Condition="'$(_ResizetizerIsWasmApp)' == 'True'" />
 	<Import Project="Uno.Resizetizer.android.targets" Condition="'$(_ResizetizerIsAndroidApp)' == 'True'" />
+	<Import Project="Uno.Resizetizer.apple.targets" Condition="'$(_ResizetizerPlatformIsiOS)' == 'True' Or '$(_ResizetizerPlatformIsMacCatalyst)' == 'True'" />
+	<Import Project="Uno.Resizetizer.windows.skia.targets" Condition="'$(_ResizetizerIsSkiaApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' " />
 
 	<PropertyGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True' Or '$(_ResizetizerIsiOSApp)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsWasmApp)' == 'True'">
 		<_ResizetizerIsCompatibleApp>True</_ResizetizerIsCompatibleApp>
@@ -160,7 +162,6 @@
 		<ResizetizeBeforeTargets>
 			$(ResizetizeBeforeTargets);
 			AssignTargetPaths;
-
 		</ResizetizeBeforeTargets>
 
 		<ResizetizeAfterTargets>
@@ -385,45 +386,11 @@
 		<Warning Condition="'%(UnoSplashScreen.Link)' != ''"
 				 Text ="The UnoSplashScreen.Link property will be ignored." />
 
-		<!--If not Windows-->
+		<!-- If not Windows and not macCatalyst -->
 		<ItemGroup Condition="$(_ResizetizerIsWasmApp) == 'True' Or $(_ResizetizerIsSkiaApp) == 'True' or '$(_ResizetizerIsAndroidApp)' == 'True' or ('$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst')">
 			<UnoImage Include="@(UnoSplashScreen)" IsSplashScreen="True" Link=""/>
 		</ItemGroup>
-
-		<!-- iOS, but not Catalyst -->
-		<GenerateSplashStoryboard_v0
-			Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'"
-			OutputFile="$(_UnoIntermediateStoryboard)"
-			UnoSplashScreen="@(UnoSplashScreen)"
-		/>
-
-		<PropertyGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'">
-			<_UnoIntermediateSplashScreenFile>$(_UnoIntermediateStoryboard)</_UnoIntermediateSplashScreenFile>
-		</PropertyGroup>
-
-		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'">
-			<InterfaceDefinition Include="$(_UnoIntermediateStoryboard)" Link="$([System.IO.Path]::GetFileName($(_UnoIntermediateStoryboard)))" />
-			<FileWrites Include="$(_UnoIntermediateStoryboard)" />
-		</ItemGroup>
-
-		<!-- Create a partial info.plist for iOS -->
-		<CreatePartialInfoPlistTask_v0
-			Condition="'$(_ResizetizerIsiOSApp)' == 'True' And '$(_UnoIntermediateSplashScreenFile)' != ''"
-			IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
-			PlistName="UnoInfo.plist"
-			Storyboard="$(_UnoIntermediateSplashScreenFile)" />
-
-			
-		<!-- UWP / WinUI -->
-		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
-			<UnoWindowsSplash Include="@(UnoSplashScreen)" Link=""/>
-		</ItemGroup>
-		<GenerateSplashAssets_v0
-			Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'"
-			IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
-			UnoSplashScreen="@(UnoWindowsSplash)"
-		/>
-
+	
 		<MakeDir Directories="$(IntermediateOutputPath)"/>
 		<!-- Stamp file for Outputs -->
 		<Touch Files="$(_UnoSplashStampFile)" AlwaysCreate="True" />
@@ -432,48 +399,18 @@
 		</ItemGroup>
 	</Target>
 	
-	<Target Name="ProcessUnoSplashScreens"
-			Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
-
-		<!-- iOS, but not Catalyst -->
-		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' ">
-			<_UnoSplashPListFiles Include="$(_UnoIntermediateSplashScreen)UnoInfo.plist" Condition="Exists('$(_UnoIntermediateSplashScreen)UnoInfo.plist')" />
-			<PartialAppManifest Include="@(_UnoSplashPListFiles)" Condition="'@(_UnoSplashPListFiles)' != ''" />
-			<FileWrites Include="@(_UnoSplashPListFiles)" Condition="'@(_UnoSplashPListFiles)' != ''" />
-		</ItemGroup>
-
-		<ItemGroup Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'">
-			<_UnoAssetsToCopyToBuildServer Include="@(_UnoSplashPListFiles)">
-				<TargetPath>%(Identity)</TargetPath>
-			</_UnoAssetsToCopyToBuildServer>
-		</ItemGroup>
-		<CopyFilesToBuildServer
-			Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'"
-			SessionId="$(BuildSessionId)"
-			Files="@(_UnoAssetsToCopyToBuildServer)" />
-
-		<!-- UWP / WinUI -->
-		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True'">
-			<_UnoSplashAssets Include="$(_UnoIntermediateSplashScreen)**\*" />
-			<ContentWithTargetPath Include="@(_UnoSplashAssets)">
-				<TargetPath>%(_UnoSplashAssets.Filename)%(_UnoSplashAssets.Extension)</TargetPath>
-			</ContentWithTargetPath>
-			<FileWrites Include="@(_UnoSplashAssets)" />
-		</ItemGroup>
-	</Target>
-
 	<Target Name="CollectResizeImageAssets"
         BeforeTargets="ResizetizeImages_v0"
 		Condition="'$(DesignTimeBuild)' != 'true'">
-	<ItemGroup>
-			<_ResizetizeImageInput Include="$(ResizetizerInputsFile)" />
-			<_ResizetizeImageInput Include="@(UnoImage)" />
-			<_ResizetizeImageInput Condition="'$(_ResizetizerIsWasmApp)' == 'True' And '$(_WasmHasPWAManifest)' == 'True'" Include="$(_WasmPwaManifestPath)" />
-			<_ResizetizeImageOutput Include="$(_ResizetizerStampFile)" />
-			<_ResizetizeImageOutput Include="@(_ResizetizerCollectedImages)" />
-			<_ResizetizeImageOutput Include="@(_ResizetizerCollectedAppIcons)" />
-	</ItemGroup>
-</Target>
+		<ItemGroup>
+				<_ResizetizeImageInput Include="$(ResizetizerInputsFile)" />
+				<_ResizetizeImageInput Include="@(UnoImage)" />
+				<_ResizetizeImageInput Condition="'$(_ResizetizerIsWasmApp)' == 'True' And '$(_WasmHasPWAManifest)' == 'True'" Include="$(_WasmPwaManifestPath)" />
+				<_ResizetizeImageOutput Include="$(_ResizetizerStampFile)" />
+				<_ResizetizeImageOutput Include="@(_ResizetizerCollectedImages)" />
+				<_ResizetizeImageOutput Include="@(_ResizetizerCollectedAppIcons)" />
+		</ItemGroup>
+	</Target>
 
 	<Target Name="ResizetizeImages_v0"
 		Inputs="@(_ResizetizeImageInput)"
@@ -557,100 +494,6 @@
 			<ItemGroup Condition="'$(MonoAndroidAssetsPrefix)'!=''">
 				<Content Update="@(_ResizetizerCollectedImages)" ExcludeFromContentCheck="true" />
 			</ItemGroup>
-
-			<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True'">
-				<_ResizetizerCollectedBundleResourceImages Include="@(_ResizetizerCollectedImages->'%(FullPath)')">
-					<LogicalName>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</LogicalName>
-					<TargetPath>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</TargetPath>
-				</_ResizetizerCollectedBundleResourceImages>
-
-				<ImageAsset
-					Include="@(_ResizetizerCollectedBundleResourceImages)"
-					Condition="'@(_ResizetizerCollectedBundleResourceImages->Contains('Assets.xcassets'))' == 'True' and '%(_ResizetizerCollectedBundleResourceImages.Identity)' != ''">
-					<LogicalName>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_ResizetizerCollectedBundleResourceImages.Identity)))))\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</LogicalName>
-					<TargetPath>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_ResizetizerCollectedBundleResourceImages.Identity)))))\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</TargetPath>
-					<Link>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_ResizetizerCollectedBundleResourceImages.Identity)))))\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</Link>
-				</ImageAsset>
-			</ItemGroup>
-
-			<!-- iOS Only -->
-			<!-- If on Windows, using build host, copy the files over to build server host too -->
-			<ItemGroup Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'">
-				<_UnoImagesToCopyToBuildServer Include="@(_ResizetizerCollectedBundleResourceImages)">
-					<TargetPath>%(Identity)</TargetPath>
-				</_UnoImagesToCopyToBuildServer>
-			</ItemGroup>
-			<CopyFilesToBuildServer
-				Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'"
-				SessionId="$(BuildSessionId)"
-				Files="@(_UnoImagesToCopyToBuildServer)" />
-
-	</Target>
-
-	<!-- This is required because the "CalculateAppxGenerateProjectPriEnabled" target explicitly depends
-		 on "_ValidatePresenceOfAppxManifestItems" and we need to get in before then. -->
-	<Target Name="_ValidatePresenceOfAppxManifestItemsBeforeTarget"
-			BeforeTargets="_ValidatePresenceOfAppxManifestItems"
-			DependsOnTargets="UnoGeneratePackageAppxManifest"
-			Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True'" />
-
-	<Target Name="UnoGeneratePackageAppxManifest"
-			Condition="('$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_UnoAppxManifest)' !='' Or @(_SkiaManifest) != '')"
-			DependsOnTargets="$(UnoGeneratePackageAppxManifestDependsOnTargets)"
-			BeforeTargets="$(UnoGeneratePackageAppxManifestBeforeTargets)"
-			Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);$(_UnoSplashInputsFile);@(AppxManifest);@(_UnoAppxManifest)"
-			Outputs="$(_UnoManifestStampFile);$(_UnoIntermediateManifest)Package.appxmanifest">
-
-
-		<PropertyGroup>
-			<_MauiWindowsApplicationId Condition="'$(_MauiWindowsApplicationId)' == '' and '$(ApplicationIdGuid)' != ''">$(ApplicationIdGuid)</_MauiWindowsApplicationId>
-			<_MauiWindowsApplicationId Condition="'$(_MauiWindowsApplicationId)' == '' and '$(ApplicationId)' != ''">$(ApplicationId)</_MauiWindowsApplicationId>
-		</PropertyGroup>
-
-		<GeneratePackageAppxManifest_v0
-			IntermediateOutputPath="$(_UnoIntermediateManifest)"
-			AppxManifest="@(AppxManifest);@(_UnoAppxManifest);@(_SkiaManifest)"
-			GeneratedFilename="Package.appxmanifest"
-			ApplicationId="$(_MauiWindowsApplicationId)"
-			ApplicationDisplayVersion="$(ApplicationDisplayVersion)"
-			ApplicationVersion="$(ApplicationVersion)"
-			ApplicationTitle="$(ApplicationTitle)"
-			AppIcon="@(UnoImage->WithMetadataValue('IsAppIcon', 'true'))"
-			SplashScreen="@(UnoSplashScreen)" />
-
-		<!-- replace user manifest -->
-		<ItemGroup Condition="'@(AppxManifest)' != ''">
-			<AppxManifest Remove="@(AppxManifest)" />
-			<AppxManifest Include="$(_UnoIntermediateManifest)Package.appxmanifest" />
-		</ItemGroup>
-		<ItemGroup Condition="'@(_SkiaManifest)' != '' ">
-			<AppxManifest Remove="@(AppxManifest)" />
-			<AppxManifest Include="$(_UnoIntermediateManifest)Package.appxmanifest" />
-			
-			<!--If there's no LogicalName, we use the default name-->
-			<EmbeddedResource Include="$(_UnoIntermediateManifest)Package.appxmanifest"
-								Link="%(_SkiaManifest.Link)"
-								LogicalName="Package.appxmanifest"
-								Condition="%(_SkiaManifest.LogicalName) == '' "/>
-
-			<EmbeddedResource Include="$(_UnoIntermediateManifest)Package.appxmanifest"
-								Link="%(_SkiaManifest.Link)"
-								LogicalName="%(_SkiaManifest.LogicalName)"
-								Condition="%(_SkiaManifest.LogicalName) != '' "/>
-
-		</ItemGroup>
-		<ItemGroup Condition="'@(_UnoAppxManifest)' != ''">
-			<_UnoAppxManifest Remove="@(_UnoAppxManifest)" />
-			<_UnoAppxManifest Include="$(_UnoIntermediateManifest)Package.appxmanifest" />
-		</ItemGroup>
-
-		<MakeDir Directories="$(IntermediateOutputPath)"/>
-		<!-- Stamp file for Outputs -->
-		<Touch Files="$(_UnoManifestStampFile)" AlwaysCreate="True" />
-		<ItemGroup>
-			<FileWrites Include="$(_UnoManifestStampFile)" />
-		</ItemGroup>
-
 	</Target>
 
 	<Target Name="_CleanResizetizer">
