@@ -515,7 +515,19 @@
 			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' != ''" Include="@(CopiedResources)" />
 			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' == ''" Include="$(_UnoIntermediateImages)**\*"/>
 			<_ResizetizerCollectedAppIcons Include="$(_UnoIntermediateAppIcon)**\*"/>
+			
+			<!-- If the PWA manifest is empty we can try to find it on the disk -->
+			<_ResizetizerPwaManifestItemGroup Condition="'$(ResizetizerPwaManifest)' ==''" Include="$(_UnoIntermediateAppIcon)**\*.json"/>
+			<!-- If the AppIcon property is empty we can try to find it on the disk -->
+			<_AppIconItemGroup Condition="'$(AppIconPath)' == ''" Include="$(_ResizetizerIntermediateOutputRoot)**\*.ico"/>
 		</ItemGroup>
+
+		<PropertyGroup>
+			<!-- If the PWA manifest is empty we can try to find it on the disk -->
+			<ResizetizerPwaManifest Condition="'$(ResizetizerPwaManifest)' ==''">%(_ResizetizerPwaManifestItemGroup.FullPath)</ResizetizerPwaManifest>
+			<!-- If the AppIcon property is empty we can try to find it on the disk -->
+			<AppIconPath Condition="'$(AppIconPath)' == ''">%(_AppIconItemGroup.Identity)</AppIconPath>
+		</PropertyGroup>
 
 
 		<ItemGroup Condition="'$(_ResizetizerIsWasmApp)' != 'True'">
