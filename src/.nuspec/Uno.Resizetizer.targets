@@ -55,7 +55,7 @@
 	<PropertyGroup>
 		<CleanDependsOn>
 			$(CleanDependsOn);
-			_CleanResizetizer;
+			_CleanUnoResizetizer_v0;
 		</CleanDependsOn>
 
 		<_UnoResizetizerInputsFile>$(IntermediateOutputPath)UnoImage.inputs</_UnoResizetizerInputsFile>
@@ -105,8 +105,8 @@
 
 		<UnoResizetizeDependsOnTargets>
 			$(UnoResizetizeDependsOnTargets);
-			ResizetizeCollectItems;
-			ProcessUnoSplashScreens;
+			UnoResizetizeCollectItems_v0;
+			ProcessUnoSplashScreens_v0;
 		</UnoResizetizeDependsOnTargets>
 	</PropertyGroup>
 
@@ -120,7 +120,7 @@
 		</UnoResizetizeBeforeTargets>
 
 		<UnoResizetizeAfterTargets>
-			ResizetizeCollectItems;
+			UnoResizetizeCollectItems_v0;
 			$(UnoResizetizeAfterTargets);
 			UnoAssetsGeneration;
 			BuildDist;
@@ -139,7 +139,7 @@
 
 		<UnoGeneratePackageAppxManifestDependsOnTargets>
 			$(UnoGeneratePackageAppxManifestDependsOnTargets);
-			ResizetizeCollectItems;
+			UnoResizetizeCollectItems_v0;
 		</UnoGeneratePackageAppxManifestDependsOnTargets>
 
 		<UnoGeneratePackageAppxManifestBeforeTargets>
@@ -161,7 +161,7 @@
 		</UnoResizetizeBeforeTargets>
 
 		<UnoResizetizeAfterTargets>
-			ResizetizeCollectItems;
+			UnoResizetizeCollectItems_v0;
 			$(UnoResizetizeAfterTargets);
 			UnoAssetsGeneration;
 			BuildDist;
@@ -183,21 +183,21 @@
 
 		<CollectBundleResourcesDependsOn>
 			$(CollectBundleResourcesDependsOn);
-			ResizetizeCollectItems;
+			UnoResizetizeCollectItems_v0;
 		</CollectBundleResourcesDependsOn>
 
 		<CompileImageAssetsDependsOn>
 			$(CompileImageAssetsDependsOn);
-			ResizetizeCollectItems;
+			UnoResizetizeCollectItems_v0;
 		</CompileImageAssetsDependsOn>
 
 		<UnoResizetizeAfterTargets>
 			$(UnoResizetizeAfterTargets);
-			ResizetizeCollectItems;
+			UnoResizetizeCollectItems_v0;
 		</UnoResizetizeAfterTargets>
 
 		<CollectAppManifestsDependsOn>
-			ProcessUnoSplashScreens;
+			ProcessUnoSplashScreens_v0;
 			$(CollectAppManifestsDependsOn)
 		</CollectAppManifestsDependsOn>
 	</PropertyGroup>
@@ -215,12 +215,12 @@
 
 		<UnoResizetizeCollectItemsBeforeTargets>
 			_ComputeAndroidResourcePaths;
-			$(ResizetizeCollectItemsAfterTargets);
+			$(UnoResizetizeCollectItemsAfterTargets);
 			UnoAssetsGeneration;
 		</UnoResizetizeCollectItemsBeforeTargets>
 
 		<UnoResizetizeAfterTargets>
-			ResizetizeCollectItems;
+			UnoResizetizeCollectItems_v0;
 			$(UnoResizetizeAfterTargets);
 			UnoAssetsGeneration;
 		</UnoResizetizeAfterTargets>
@@ -238,7 +238,7 @@
 
 		<UnoGeneratePackageAppxManifestDependsOnTargets>
 			$(UnoGeneratePackageAppxManifestDependsOnTargets);
-			ResizetizeCollectItems;
+			UnoResizetizeCollectItems_v0;
 		</UnoGeneratePackageAppxManifestDependsOnTargets>
 	</PropertyGroup>
 
@@ -259,7 +259,7 @@
 
 	<!-- Finds absolute paths to any UnoImage in this project -->
 	<!-- App head projects will invoke this target on their project references to collect images -->
-	<Target Name="GetUnoItems" Outputs="@(ExportedUnoItem)">
+	<Target Name="GetUnoItems_v0" Outputs="@(ExportedUnoItem)">
 		<ItemGroup>
 			<UnoItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' == ''" />
 			<UnoItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoImage.ForegroundFile)'))" ProjectDirectory="$(MSBuildProjectDirectory)" />
@@ -275,10 +275,10 @@
 
 
 	<!-- Collect images from referenced projects -->
-	<Target Name="ResizetizeCollectItems"
+	<Target Name="UnoResizetizeCollectItems_v0"
 		Condition="'$(_UnoResizetizerIsCompatibleApp)' == 'True' And '$(DisableUnoResizetizer)' != 'true'"
 		BeforeTargets="$(UnoResizetizeCollectItemsBeforeTargets)"
-		AfterTargets="$(ResizetizeCollectItemsAfterTargets)">
+		AfterTargets="$(UnoResizetizeCollectItemsAfterTargets)">
 
 		<CallTarget Targets="GetUnoItems" Condition="'$(UnoResizetizerIncludeSelfProject)' == 'True'">
 			<Output
@@ -341,7 +341,7 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="ProcessUnoAssets">
+	<Target Name="ProcessUnoAssets_v0">
 		<PropertyGroup Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
 			<_UnoAssetItemMetadata>TargetPath</_UnoAssetItemMetadata>
 		</PropertyGroup>
@@ -360,7 +360,7 @@
 		</GetUnoAssetPath_v0>
 	</Target>
 
-	<Target Name="ProcessUnoSplashScreens"
+	<Target Name="ProcessUnoSplashScreens_v0"
 				Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
 
 		<Warning
@@ -479,7 +479,7 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="ResizetizeImages_v0"
+	<Target Name="UnoResizetizeImages_v0"
 		Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoResizetizerInputsFile);@(UnoImage)"
 		Outputs="$(_UnoResizetizerStampFile)"
 		AfterTargets="$(UnoResizetizeAfterTargets)"
@@ -625,12 +625,12 @@
 
 	<!-- This is required because the "CalculateAppxGenerateProjectPriEnabled" target explicitly depends
 		 on "_ValidatePresenceOfAppxManifestItems" and we need to get in before then. -->
-	<Target Name="_ValidatePresenceOfAppxManifestItemsBeforeTarget"
+	<Target Name="_ValidatePresenceOfAppxManifestItemsBeforeTarget_v0"
 			BeforeTargets="_ValidatePresenceOfAppxManifestItems"
-			DependsOnTargets="UnoGeneratePackageAppxManifest"
+			DependsOnTargets="UnoGeneratePackageAppxManifest_v0"
 			Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True'" />
 
-	<Target Name="UnoGeneratePackageAppxManifest"
+	<Target Name="UnoGeneratePackageAppxManifest_v0"
 			Condition="('$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_UnoAppxManifest)' !='' Or @(_SkiaManifest) != '')"
 			DependsOnTargets="$(UnoGeneratePackageAppxManifestDependsOnTargets)"
 			BeforeTargets="$(UnoGeneratePackageAppxManifestBeforeTargets)"
@@ -689,7 +689,7 @@
 
 	</Target>
 
-	<Target Name="_CleanResizetizer">
+	<Target Name="_CleanUnoResizetizer_v0">
 		<RemoveDir Directories="$(_UnoResizetizerIntermediateOutputRoot)" Condition="Exists ('$(_UnoResizetizerIntermediateOutputRoot)' )" />
 	</Target>
 
