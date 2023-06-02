@@ -55,7 +55,7 @@
 	<PropertyGroup>
 		<CleanDependsOn>
 			$(CleanDependsOn);
-			_CleanResizetizer;
+			_CleanUnoResizetizer_v0;
 		</CleanDependsOn>
 
 		<_ResizetizerInputsFile>$(IntermediateOutputPath)UnoImage.inputs</_ResizetizerInputsFile>
@@ -103,11 +103,19 @@
 	<PropertyGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True' Or '$(_ResizetizerIsiOSApp)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsWasmApp)' == 'True'">
 		<_ResizetizerIsCompatibleApp>True</_ResizetizerIsCompatibleApp>
 
+<<<<<<< HEAD
 		<ResizetizeDependsOnTargets>
 			$(ResizetizeDependsOnTargets);
 			ResizetizeCollectItems;
 			ProcessUnoSplashScreens;
 		</ResizetizeDependsOnTargets>
+=======
+		<UnoResizetizeDependsOnTargets>
+			$(UnoResizetizeDependsOnTargets);
+			UnoResizetizeCollectItems_v0;
+			ProcessUnoSplashScreens_v0;
+		</UnoResizetizeDependsOnTargets>
+>>>>>>> 47b9035 (fix: normalize with Uno prefix and _v0 on task names)
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(_ResizetizerNoTargetPlatform) == 'True' Or '$(_ResizetizerIsCompatibleApp)' != 'True'">
@@ -119,9 +127,15 @@
 			AssignTargetPaths;
 		</ResizetizeBeforeTargets>
 
+<<<<<<< HEAD
 		<ResizetizeAfterTargets>
 			ResizetizeCollectItems;
 			$(ResizetizeAfterTargets);
+=======
+		<UnoResizetizeAfterTargets>
+			UnoResizetizeCollectItems_v0;
+			$(UnoResizetizeAfterTargets);
+>>>>>>> 47b9035 (fix: normalize with Uno prefix and _v0 on task names)
 			UnoAssetsGeneration;
 			BuildDist;
 		</ResizetizeAfterTargets>
@@ -139,7 +153,7 @@
 
 		<UnoGeneratePackageAppxManifestDependsOnTargets>
 			$(UnoGeneratePackageAppxManifestDependsOnTargets);
-			ResizetizeCollectItems;
+			UnoResizetizeCollectItems_v0;
 		</UnoGeneratePackageAppxManifestDependsOnTargets>
 
 		<UnoGeneratePackageAppxManifestBeforeTargets>
@@ -160,9 +174,15 @@
 
 		</ResizetizeBeforeTargets>
 
+<<<<<<< HEAD
 		<ResizetizeAfterTargets>
 			ResizetizeCollectItems;
 			$(ResizetizeAfterTargets);
+=======
+		<UnoResizetizeAfterTargets>
+			UnoResizetizeCollectItems_v0;
+			$(UnoResizetizeAfterTargets);
+>>>>>>> 47b9035 (fix: normalize with Uno prefix and _v0 on task names)
 			UnoAssetsGeneration;
 			BuildDist;
 		</ResizetizeAfterTargets>
@@ -183,21 +203,28 @@
 
 		<CollectBundleResourcesDependsOn>
 			$(CollectBundleResourcesDependsOn);
-			ResizetizeCollectItems;
+			UnoResizetizeCollectItems_v0;
 		</CollectBundleResourcesDependsOn>
 
 		<CompileImageAssetsDependsOn>
 			$(CompileImageAssetsDependsOn);
-			ResizetizeCollectItems;
+			UnoResizetizeCollectItems_v0;
 		</CompileImageAssetsDependsOn>
 
+<<<<<<< HEAD
 		<ResizetizeAfterTargets>
 			$(ResizetizeAfterTargets);
 			ResizetizeCollectItems;
 		</ResizetizeAfterTargets>
+=======
+		<UnoResizetizeAfterTargets>
+			$(UnoResizetizeAfterTargets);
+			UnoResizetizeCollectItems_v0;
+		</UnoResizetizeAfterTargets>
+>>>>>>> 47b9035 (fix: normalize with Uno prefix and _v0 on task names)
 
 		<CollectAppManifestsDependsOn>
-			ProcessUnoSplashScreens;
+			ProcessUnoSplashScreens_v0;
 			$(CollectAppManifestsDependsOn)
 		</CollectAppManifestsDependsOn>
 	</PropertyGroup>
@@ -215,13 +242,19 @@
 
 		<ResizetizeCollectItemsBeforeTargets>
 			_ComputeAndroidResourcePaths;
-			$(ResizetizeCollectItemsAfterTargets);
+			$(UnoResizetizeCollectItemsAfterTargets);
 			UnoAssetsGeneration;
 		</ResizetizeCollectItemsBeforeTargets>
 
+<<<<<<< HEAD
 		<ResizetizeAfterTargets>
 			ResizetizeCollectItems;
 			$(ResizetizeAfterTargets);
+=======
+		<UnoResizetizeAfterTargets>
+			UnoResizetizeCollectItems_v0;
+			$(UnoResizetizeAfterTargets);
+>>>>>>> 47b9035 (fix: normalize with Uno prefix and _v0 on task names)
 			UnoAssetsGeneration;
 		</ResizetizeAfterTargets>
 	</PropertyGroup>
@@ -238,7 +271,7 @@
 
 		<UnoGeneratePackageAppxManifestDependsOnTargets>
 			$(UnoGeneratePackageAppxManifestDependsOnTargets);
-			ResizetizeCollectItems;
+			UnoResizetizeCollectItems_v0;
 		</UnoGeneratePackageAppxManifestDependsOnTargets>
 	</PropertyGroup>
 
@@ -259,7 +292,7 @@
 
 	<!-- Finds absolute paths to any UnoImage in this project -->
 	<!-- App head projects will invoke this target on their project references to collect images -->
-	<Target Name="GetUnoItems" Outputs="@(ExportedUnoItem)">
+	<Target Name="GetUnoItems_v0" Outputs="@(ExportedUnoItem)">
 		<ItemGroup>
 			<UnoItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' == ''" />
 			<UnoItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoImage.ForegroundFile)'))" ProjectDirectory="$(MSBuildProjectDirectory)" />
@@ -275,10 +308,17 @@
 
 
 	<!-- Collect images from referenced projects -->
+<<<<<<< HEAD
 	<Target Name="ResizetizeCollectItems"
 		Condition="'$(_ResizetizerIsCompatibleApp)' == 'True' And '$(DisableResizetizer)' != 'true'"
 		BeforeTargets="$(ResizetizeCollectItemsBeforeTargets)"
 		AfterTargets="$(ResizetizeCollectItemsAfterTargets)">
+=======
+	<Target Name="UnoResizetizeCollectItems_v0"
+		Condition="'$(_UnoResizetizerIsCompatibleApp)' == 'True' And '$(DisableUnoResizetizer)' != 'true'"
+		BeforeTargets="$(UnoResizetizeCollectItemsBeforeTargets)"
+		AfterTargets="$(UnoResizetizeCollectItemsAfterTargets)">
+>>>>>>> 47b9035 (fix: normalize with Uno prefix and _v0 on task names)
 
 		<CallTarget Targets="GetUnoItems" Condition="'$(ResizetizerIncludeSelfProject)' == 'True'">
 			<Output
@@ -341,8 +381,13 @@
 		</ItemGroup>
 	</Target>
 
+<<<<<<< HEAD
 	<Target Name="ProcessUnoAssets">
 		<PropertyGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
+=======
+	<Target Name="ProcessUnoAssets_v0">
+		<PropertyGroup Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
+>>>>>>> 47b9035 (fix: normalize with Uno prefix and _v0 on task names)
 			<_UnoAssetItemMetadata>TargetPath</_UnoAssetItemMetadata>
 		</PropertyGroup>
 		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True'">
@@ -360,7 +405,7 @@
 		</GetUnoAssetPath_v0>
 	</Target>
 
-	<Target Name="ProcessUnoSplashScreens"
+	<Target Name="ProcessUnoSplashScreens_v0"
 				Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
 
 		<Warning
@@ -479,10 +524,17 @@
 		</ItemGroup>
 	</Target>
 
+<<<<<<< HEAD
 	<Target Name="ResizetizeImages_v0"
 		Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);@(UnoImage)"
 		Outputs="$(_ResizetizerStampFile)"
 		AfterTargets="$(ResizetizeAfterTargets)"
+=======
+	<Target Name="UnoResizetizeImages_v0"
+		Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoResizetizerInputsFile);@(UnoImage)"
+		Outputs="$(_UnoResizetizerStampFile)"
+		AfterTargets="$(UnoResizetizeAfterTargets)"
+>>>>>>> 47b9035 (fix: normalize with Uno prefix and _v0 on task names)
 		Condition="'$(DesignTimeBuild)' != 'true'"
 		BeforeTargets="$(ResizetizeBeforeTargets)"
 		DependsOnTargets="$(ResizetizeDependsOnTargets)">
@@ -625,13 +677,21 @@
 
 	<!-- This is required because the "CalculateAppxGenerateProjectPriEnabled" target explicitly depends
 		 on "_ValidatePresenceOfAppxManifestItems" and we need to get in before then. -->
-	<Target Name="_ValidatePresenceOfAppxManifestItemsBeforeTarget"
+	<Target Name="_ValidatePresenceOfAppxManifestItemsBeforeTarget_v0"
 			BeforeTargets="_ValidatePresenceOfAppxManifestItems"
+<<<<<<< HEAD
 			DependsOnTargets="UnoGeneratePackageAppxManifest"
 			Condition="'$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True'" />
 
 	<Target Name="UnoGeneratePackageAppxManifest"
 			Condition="('$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWindowsAppSdk)' == 'True' Or '$(_ResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_UnoAppxManifest)' !='' Or @(_SkiaManifest) != '')"
+=======
+			DependsOnTargets="UnoGeneratePackageAppxManifest_v0"
+			Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True'" />
+
+	<Target Name="UnoGeneratePackageAppxManifest_v0"
+			Condition="('$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_UnoAppxManifest)' !='' Or @(_SkiaManifest) != '')"
+>>>>>>> 47b9035 (fix: normalize with Uno prefix and _v0 on task names)
 			DependsOnTargets="$(UnoGeneratePackageAppxManifestDependsOnTargets)"
 			BeforeTargets="$(UnoGeneratePackageAppxManifestBeforeTargets)"
 			Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_ResizetizerInputsFile);$(_UnoSplashInputsFile);@(AppxManifest);@(_UnoAppxManifest)"
@@ -689,8 +749,13 @@
 
 	</Target>
 
+<<<<<<< HEAD
 	<Target Name="_CleanResizetizer">
 		<RemoveDir Directories="$(_ResizetizerIntermediateOutputRoot)" Condition="Exists ('$(_ResizetizerIntermediateOutputRoot)' )" />
+=======
+	<Target Name="_CleanUnoResizetizer_v0">
+		<RemoveDir Directories="$(_UnoResizetizerIntermediateOutputRoot)" Condition="Exists ('$(_UnoResizetizerIntermediateOutputRoot)' )" />
+>>>>>>> 47b9035 (fix: normalize with Uno prefix and _v0 on task names)
 	</Target>
 
 	<Target Name="_GenerateWindowUnoIconExtension"
