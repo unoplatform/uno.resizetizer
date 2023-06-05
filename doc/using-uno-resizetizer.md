@@ -132,7 +132,7 @@ You can also make specific files to be `UnoIcon` using VisualStudio, by right-cl
 
 ![UnoIcon Build Action](Assets/UnoIcon_BuildAction.png)
 
-***
+-----
 
 Next, some adjustments are needed on `Android`, `Windows`, `WebAssembly`, `mac-catalyst`, and `iOS`. Let's start with `Android`.
 
@@ -200,7 +200,7 @@ Icon = "@mipmap/iconapp",
 > [!TIP]
 > Feel free to delete the old assets related to the app icon in the project.
 
-***
+-----
 
 ## UnoSplashScreen
 
@@ -301,7 +301,7 @@ Next, some adjustments are needed on `Android`, `Windows`, and `iOS`. Let's star
 > [!NOTE]
 > Feel free to delete old assets related to the splash screen.
 
-***
+-----
 
 ## Sample App Example
 
