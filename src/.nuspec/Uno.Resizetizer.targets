@@ -65,11 +65,19 @@
 		<_UnoManifestStampFile>$(IntermediateOutputPath)Unomanifest.stamp</_UnoManifestStampFile>
 
 
+<<<<<<< HEAD
 		<_ResizetizerIntermediateOutputRoot>$(IntermediateOutputPath)resizetizer\</_ResizetizerIntermediateOutputRoot>
 		<_UnoIntermediateImages>$(_ResizetizerIntermediateOutputRoot)r\</_UnoIntermediateImages>
 		<_UnoIntermediateAppIcon>$(_ResizetizerIntermediateOutputRoot)AppIcons\</_UnoIntermediateAppIcon>
 		<_UnoIntermediateSplashScreen>$(_ResizetizerIntermediateOutputRoot)sp\</_UnoIntermediateSplashScreen>
 		<_UnoIntermediateManifest>$(_ResizetizerIntermediateOutputRoot)m\</_UnoIntermediateManifest>
+=======
+		<_UnoResizetizerIntermediateOutputRoot>$(IntermediateOutputPath)resizetizer\</_UnoResizetizerIntermediateOutputRoot>
+		<_UnoIntermediateImages>$(_UnoResizetizerIntermediateOutputRoot)re\</_UnoIntermediateImages>
+		<_UnoIntermediateAppIcon>$(_UnoResizetizerIntermediateOutputRoot)AppIcons\</_UnoIntermediateAppIcon>
+		<_UnoIntermediateSplashScreen>$(_UnoResizetizerIntermediateOutputRoot)sp\</_UnoIntermediateSplashScreen>
+		<_UnoIntermediateManifest>$(_UnoResizetizerIntermediateOutputRoot)m\</_UnoIntermediateManifest>
+>>>>>>> 4769e6f (chore: changed the uno resizetizer path)
 		<_UnoIntermediateStoryboard>$(_UnoIntermediateSplashScreen)UnoSplash.storyboard</_UnoIntermediateStoryboard>
 		<_UnoIntermediateAppManifestWasm>$(_UnoIntermediateSplashScreen)UnoAppManifest.js</_UnoIntermediateAppManifestWasm>
 
