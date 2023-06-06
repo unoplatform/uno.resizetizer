@@ -66,7 +66,7 @@
 
 
 		<_UnoResizetizerIntermediateOutputRoot>$(IntermediateOutputPath)resizetizer\</_UnoResizetizerIntermediateOutputRoot>
-		<_UnoIntermediateImages>$(_UnoResizetizerIntermediateOutputRoot)r\</_UnoIntermediateImages>
+		<_UnoIntermediateImages>$(_UnoResizetizerIntermediateOutputRoot)re\</_UnoIntermediateImages>
 		<_UnoIntermediateAppIcon>$(_UnoResizetizerIntermediateOutputRoot)AppIcons\</_UnoIntermediateAppIcon>
 		<_UnoIntermediateSplashScreen>$(_UnoResizetizerIntermediateOutputRoot)sp\</_UnoIntermediateSplashScreen>
 		<_UnoIntermediateManifest>$(_UnoResizetizerIntermediateOutputRoot)m\</_UnoIntermediateManifest>
