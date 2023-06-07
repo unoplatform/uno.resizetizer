@@ -66,6 +66,7 @@
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		<_ResizetizerIntermediateOutputRoot>$(IntermediateOutputPath)resizetizer\</_ResizetizerIntermediateOutputRoot>
 		<_UnoIntermediateImages>$(_ResizetizerIntermediateOutputRoot)r\</_UnoIntermediateImages>
 		<_UnoIntermediateAppIcon>$(_ResizetizerIntermediateOutputRoot)AppIcons\</_UnoIntermediateAppIcon>
@@ -74,6 +75,10 @@
 =======
 		<_UnoResizetizerIntermediateOutputRoot>$(IntermediateOutputPath)resizetizer\</_UnoResizetizerIntermediateOutputRoot>
 		<_UnoIntermediateImages>$(_UnoResizetizerIntermediateOutputRoot)re\</_UnoIntermediateImages>
+=======
+		<_UnoResizetizerIntermediateOutputRoot>$(IntermediateOutputPath)unoresizetizer\</_UnoResizetizerIntermediateOutputRoot>
+		<_UnoIntermediateImages>$(_UnoResizetizerIntermediateOutputRoot)r\</_UnoIntermediateImages>
+>>>>>>> 989822f (fix: changed the root generated path)
 		<_UnoIntermediateAppIcon>$(_UnoResizetizerIntermediateOutputRoot)AppIcons\</_UnoIntermediateAppIcon>
 		<_UnoIntermediateSplashScreen>$(_UnoResizetizerIntermediateOutputRoot)sp\</_UnoIntermediateSplashScreen>
 		<_UnoIntermediateManifest>$(_UnoResizetizerIntermediateOutputRoot)m\</_UnoIntermediateManifest>
