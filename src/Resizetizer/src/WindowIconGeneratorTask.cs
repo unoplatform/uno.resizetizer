@@ -45,6 +45,9 @@ public class WindowIconGeneratorTask_V0 : Task
 
 namespace Uno.Resizetizer
 {{
+	/// <summary>
+	/// Extension methods for the <see cref=""global::Microsoft.UI.Xaml.Window"" /> class.
+	/// </summary>
 	public static class WindowExtensions
 	{{
 		/// <summary>
