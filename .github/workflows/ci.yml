@@ -5,12 +5,14 @@ on:
     branches:
       - main
       - release/**
+      - legacy/**
 
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
       - main
       - release/**
+      - legacy/**
 
 env:
   UnoCheck_Version: '1.11.0-dev.2'
