@@ -1,0 +1,102 @@
+<Project>
+
+    <Target
+        Name="GenerateUnoSplasWindowsSkia"
+        AfterTargets="GenerateUnoSplashScreens"
+        DependsOnTargets="GenerateUnoSplashScreens"
+        Condition="'$(DesignTimeBuild)' != 'True'">
+        <!-- UWP / WinUI -->
+		<ItemGroup
+            Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
+                <UnoWindowsSplash Include="@(UnoSplashScreen)" Link="" />
+        </ItemGroup>
+        <GenerateSplashAssets_v0
+            Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True'"
+            IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
+            UnoSplashScreen="@(UnoWindowsSplash)"
+        />
+    </Target>
+
+    <Target Name="ProcessUnoSplashScreens"
+            AfterTargets="GenerateUnoSplasWindowsSkia"
+            DependsOnTargets="GenerateUnoSplasWindowsSkia"
+			Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
+
+        <ItemGroup Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True'">
+			<_UnoSplashAssets Include="$(_UnoIntermediateSplashScreen)**\*" />
+			<ContentWithTargetPath Include="@(_UnoSplashAssets)">
+				<TargetPath>%(_UnoSplashAssets.Filename)%(_UnoSplashAssets.Extension)</TargetPath>
+			</ContentWithTargetPath>
+			<FileWrites Include="@(_UnoSplashAssets)" />
+		</ItemGroup>
+    </Target>
+
+    <!-- This is required because the "CalculateAppxGenerateProjectPriEnabled" target explicitly
+	depends on "_ValidatePresenceOfAppxManifestItems" and we need to get in before then. -->
+	<Target Name="_UnoValidatePresenceOfAppxManifestItemsBeforeTarget"
+            BeforeTargets="_ValidatePresenceOfAppxManifestItems"
+            DependsOnTargets="UnoGeneratePackageAppxManifest"
+            Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True'" />
+            <Target Name="UnoGeneratePackageAppxManifest"
+            Condition="('$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_UnoAppxManifest)' !='' Or @(_SkiaManifest) != '')"
+            DependsOnTargets="$(UnoGeneratePackageAppxManifestDependsOnTargets)"
+            BeforeTargets="$(UnoGeneratePackageAppxManifestBeforeTargets)"
+            Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoResizetizerInputsFile);$(_UnoSplashInputsFile);@(AppxManifest);@(_UnoAppxManifest)"
+            Outputs="$(_UnoManifestStampFile);$(_UnoIntermediateManifest)Package.appxmanifest">
+    
+    
+            <PropertyGroup>
+                <_UnoWindowsApplicationId
+                    Condition="'$(_UnoWindowsApplicationId)' == '' and '$(ApplicationIdGuid)' != ''">
+                    $(ApplicationIdGuid)</_UnoWindowsApplicationId>
+                <_UnoWindowsApplicationId
+                    Condition="'$(_UnoWindowsApplicationId)' == '' and '$(ApplicationId)' != ''">
+                    $(ApplicationId)</_UnoWindowsApplicationId>
+            </PropertyGroup>
+    
+            <GeneratePackageAppxManifest_v0
+                IntermediateOutputPath="$(_UnoIntermediateManifest)"
+                AppxManifest="@(AppxManifest);@(_UnoAppxManifest);@(_SkiaManifest)"
+                GeneratedFilename="Package.appxmanifest"
+                ApplicationId="$(_UnoWindowsApplicationId)"
+                ApplicationDisplayVersion="$(ApplicationDisplayVersion)"
+                ApplicationVersion="$(ApplicationVersion)"
+                ApplicationTitle="$(ApplicationTitle)"
+                AppIcon="@(UnoImage->WithMetadataValue('IsAppIcon', 'true'))"
+                SplashScreen="@(UnoSplashScreen)" />
+    
+            <!-- replace user manifest -->
+            <ItemGroup Condition="'@(AppxManifest)' != ''">
+                <AppxManifest Remove="@(AppxManifest)" />
+                <AppxManifest Include="$(_UnoIntermediateManifest)Package.appxmanifest" />
+            </ItemGroup>
+            <ItemGroup Condition="'@(_SkiaManifest)' != '' ">
+                <AppxManifest Remove="@(AppxManifest)" />
+                <AppxManifest Include="$(_UnoIntermediateManifest)Package.appxmanifest" />
+    
+                <!--If
+                there's no LogicalName, we use the default name-->
+                <EmbeddedResource Include="$(_UnoIntermediateManifest)Package.appxmanifest"
+                    Link="%(_SkiaManifest.Link)"
+                    LogicalName="Package.appxmanifest"
+                    Condition="%(_SkiaManifest.LogicalName) == '' " />
+    
+                <EmbeddedResource Include="$(_UnoIntermediateManifest)Package.appxmanifest"
+                    Link="%(_SkiaManifest.Link)"
+                    LogicalName="%(_SkiaManifest.LogicalName)"
+                    Condition="%(_SkiaManifest.LogicalName) != '' " />
+    
+            </ItemGroup>
+            <ItemGroup Condition="'@(_UnoAppxManifest)' != ''">
+                <_UnoAppxManifest Remove="@(_UnoAppxManifest)" />
+                <_UnoAppxManifest Include="$(_UnoIntermediateManifest)Package.appxmanifest" />
+            </ItemGroup>
+    
+            <MakeDir Directories="$(IntermediateOutputPath)" />
+            <!-- Stamp file for Outputs -->
+            <Touch Files="$(_UnoManifestStampFile)" AlwaysCreate="True" />
+            <ItemGroup>
+                <FileWrites Include="$(_UnoManifestStampFile)" />
+            </ItemGroup>
+        </Target>
+</Project>
