@@ -1,0 +1,41 @@
+<Project>
+    <Target
+        Name="GenerateUnoSplashAndroid"
+        AfterTargets="GenerateUnoSplashScreens"
+        DependsOnTargets="GenerateUnoSplashScreens"
+        Condition="'$(DesignTimeBuild)' != 'True'">
+    <!-- Android -->
+        <GenerateSplashAndroidResources_v0
+            IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
+            UnoSplashScreen="@(UnoSplashScreen)"
+        />
+    </Target>
+
+    <Target Name="ProcessUnoSplashScreens"
+        AfterTargets="GenerateUnoSplashAndroid"
+        DependsOnTargets="GenerateUnoSplashAndroid"
+        Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
+        
+        <!-- Android -->
+        <ItemGroup>
+			<LibraryResourceDirectories Condition="Exists('$(_UnoIntermediateSplashScreen)')" Include="$(_UnoIntermediateSplashScreen)">
+				<StampFile>$(_UnoResizetizerStampFile)</StampFile>
+			</LibraryResourceDirectories>
+			<FileWrites Include="$(_UnoIntermediateSplashScreen)**\*" />
+		</ItemGroup>
+    </Target>
+
+    <Target
+        Name="ProcessResizedImagesAndroid_v0"
+        AfterTargets="ProcessResizedImages_v0"
+        DependsOnTargets="ProcessResizedImages_v0"
+        Condition="'$(DesignTimeBuild)' != 'true'">
+        
+        <!-- Android -->
+        <ItemGroup>
+			<AndroidResource Include="@(_UnoResizetizerCollectedAppIcons)"
+					 Link="%(_UnoResizetizerCollectedAppIcons.RecursiveDir)%(_UnoResizetizerCollectedAppIcons.Filename)%(_UnoResizetizerCollectedAppIcons.Extension)" >
+			</AndroidResource>
+		</ItemGroup>
+    </Target>
+</Project>
