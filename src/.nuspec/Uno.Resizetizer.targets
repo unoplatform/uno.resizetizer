@@ -101,7 +101,9 @@
 	</PropertyGroup>
 
 	<Import Project="Uno.Resizetizer.android.targets" Condition="'$(_UnoResizetizerIsAndroidApp)' == 'True'" />
+	<Import Project="Uno.Resizetizer.wasm.targets" Condition="'$(_UnoResizetizerIsWasmApp)' == 'True'" />
 	<Import Project="Uno.Resizetizer.apple.targets" Condition="'$(_UnoResizetizerIsiOSApp)' == 'True' Or '$(_UnoResizetizerPlatformIsMacCatalyst)' == 'True'" />
+	
 
 	<PropertyGroup Condition="'$(_UnoResizetizerIsAndroidApp)' == 'True' Or '$(_UnoResizetizerIsiOSApp)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsWasmApp)' == 'True'">
 		<_UnoResizetizerIsCompatibleApp>True</_UnoResizetizerIsCompatibleApp>
@@ -400,46 +402,6 @@
 
 	</Target>
 
-	<Target Name="ProcessUnoSplashScreens"
-				Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
-
-		<!--Wasm-->
-		<GenerateWasmSplashAssets_v0
-			Condition="$(_UnoResizetizerIsWasmApp) == 'True'"
-			IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
-			EmbeddedResources="@(EmbeddedResource)"
-			UnoSplashScreen="@(UnoSplashScreen)"
-			OutputFile="$(_UnoIntermediateAppManifestWasm)">
-
-			<Output PropertyName="UserAppManifest"
-					TaskParameter="UserAppManifest" />
-
-		</GenerateWasmSplashAssets_v0>
-
-		<ItemGroup Condition="$(_UnoResizetizerIsWasmApp) == 'True' And $(UserAppManifest) != ''">
-			<EmbeddedResource Remove="$(UserAppManifest)" />
-			<EmbeddedResource Include="$(_UnoIntermediateAppManifestWasm)"
-								Link="$(UserAppManifest)"/>
-		</ItemGroup>
-
-		<!-- UWP / WinUI -->
-		<ItemGroup Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
-			<UnoWindowsSplash Include="@(UnoSplashScreen)" Link=""/>
-		</ItemGroup>
-		<GenerateSplashAssets_v0
-			Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True'"
-			IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
-			UnoSplashScreen="@(UnoWindowsSplash)"
-		/>
-		<ItemGroup Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True'">
-			<_UnoSplashAssets Include="$(_UnoIntermediateSplashScreen)**\*" />
-			<ContentWithTargetPath Include="@(_UnoSplashAssets)">
-				<TargetPath>%(_UnoSplashAssets.Filename)%(_UnoSplashAssets.Extension)</TargetPath>
-			</ContentWithTargetPath>
-			<FileWrites Include="@(_UnoSplashAssets)" />
-		</ItemGroup>
-	</Target>
-
 	<Target Name="UnoResizetizeImages"
 		Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoResizetizerInputsFile);@(UnoImage)"
 		Outputs="$(_UnoResizetizerStampFile)"
@@ -489,33 +451,6 @@
 			<!-- If the AppIcon property is empty we can try to find it on the disk -->
 			<AppIconPath Condition="'$(AppIconPath)' == ''">%(_AppIconItemGroup.Identity)</AppIconPath>
 		</PropertyGroup>
-
-		<!-- Wasm -->
-		<ItemGroup Condition="'$(_UnoResizetizerIsWasmApp)' == 'True'">
-			<Content Include="@(_UnoResizetizerCollectedImages->FullPath())"
-					 Link="%(_UnoResizetizerCollectedImages.RecursiveDir)%(_UnoResizetizerCollectedImages.Filename)%(_UnoResizetizerCollectedImages.Extension)" >
-			</Content>
-
-			<Content Include="@(_UnoResizetizerCollectedAppIcons->FullPath())"
-					 Condition="'%(Extension)' != '.ico'"
-					 Link="%(_UnoResizetizerCollectedAppIcons.RecursiveDir)%(_UnoResizetizerCollectedAppIcons.Filename)%(_UnoResizetizerCollectedAppIcons.Extension)"/>
-
-			<Content Include="@(_UnoResizetizerCollectedAppIcons->FullPath())"
-					 Condition="'%(Extension)' == '.ico'"
-					 UnoDeploy="Root"
-					 Link="%(_UnoResizetizerCollectedAppIcons.RecursiveDir)%(_UnoResizetizerCollectedAppIcons.Filename)%(_UnoResizetizerCollectedAppIcons.Extension)"/>
-
-			<FileWrites Include="@(_UnoResizetizerCollectedImages)" />
-		</ItemGroup>
-
-		<ItemGroup Condition="'$(_UnoResizetizerIsWasmApp)' == 'True' And '$(UnoResizetizerPwaManifest)' != ''">
-			<Content Remove="$(WasmPWAManifestFile)" />
-			<Content Include="$(UnoResizetizerPwaManifest)"
-					 CopyToOutputDirectory="PreserveNewest"
-					 ExcludeFromSingleFile ="True"
-					 CopyToPublishDirectory ="PreserveNewest"
-					 Link="$(WasmPWAManifestFile)" />
-		</ItemGroup>
 
 		<PropertyGroup>
 			<ApplicationIcon Condition="'$(ApplicationIcon)' == ''">$(AppIconPath)</ApplicationIcon>
