@@ -7,11 +7,11 @@
         Condition="'$(DesignTimeBuild)' != 'True'">
         <!-- UWP / WinUI -->
 		<ItemGroup
-            Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
+            Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
                 <UnoWindowsSplash Include="@(UnoSplashScreen)" Link="" />
         </ItemGroup>
         <GenerateSplashAssets_v0
-            Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True'"
+            Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'"
             IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
             UnoSplashScreen="@(UnoWindowsSplash)"
         />
@@ -22,7 +22,7 @@
             DependsOnTargets="GenerateUnoSplashWindowsSkia"
 			Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
 
-        <ItemGroup Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True'">
+        <ItemGroup Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True'">
 			<_UnoSplashAssets Include="$(_UnoIntermediateSplashScreen)**\*" />
 			<ContentWithTargetPath Include="@(_UnoSplashAssets)">
 				<TargetPath>%(_UnoSplashAssets.Filename)%(_UnoSplashAssets.Extension)</TargetPath>
@@ -36,9 +36,9 @@
 	<Target Name="_UnoValidatePresenceOfAppxManifestItemsBeforeTarget"
             BeforeTargets="_ValidatePresenceOfAppxManifestItems"
             DependsOnTargets="UnoGeneratePackageAppxManifest"
-            Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True'" />
+            Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True'" />
             <Target Name="UnoGeneratePackageAppxManifest"
-            Condition="('$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_UnoAppxManifest)' !='' Or @(_SkiaManifest) != '')"
+            Condition="('$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_UnoAppxManifest)' !='' Or @(_SkiaManifest) != '')"
             DependsOnTargets="$(UnoGeneratePackageAppxManifestDependsOnTargets)"
             BeforeTargets="$(UnoGeneratePackageAppxManifestBeforeTargets)"
             Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoResizetizerInputsFile);$(_UnoSplashInputsFile);@(AppxManifest);@(_UnoAppxManifest)"

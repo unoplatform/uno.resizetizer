@@ -233,7 +233,7 @@
 	</PropertyGroup>
 
 	<!-- UWP / WinUI -->
-	<PropertyGroup Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
+	<PropertyGroup Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
 		<UnoResizetizerPlatformType>uwp</UnoResizetizerPlatformType>
 
 		<UnoResizetizeBeforeTargets>
@@ -348,10 +348,10 @@
 	</Target>
 
 	<Target Name="ProcessUnoAssets">
-		<PropertyGroup Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
+		<PropertyGroup Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
 			<_UnoAssetItemMetadata>TargetPath</_UnoAssetItemMetadata>
 		</PropertyGroup>
-		<ItemGroup Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
+		<ItemGroup Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
 			<!-- Windows does not recognize %(LogicalName), so we must copy it to %(Link) -->
 			<UnoAsset Update="@(UnoAsset)" Link="%(UnoAsset.LogicalName)" Condition="'%(UnoAsset.Link)' == '' And '%(UnoAsset.LogicalName)' != ''" />
 		</ItemGroup>
@@ -362,7 +362,7 @@
 			Input="@(UnoAsset)">
 			<Output ItemName="AndroidAsset"          TaskParameter="Output" Condition="'$(_UnoResizetizerIsAndroidApp)' == 'True'" />
 			<Output ItemName="Content"               TaskParameter="Output" Condition="'$(_UnoResizetizerIsiOSApp)' == 'True'" />
-			<Output ItemName="ContentWithTargetPath" TaskParameter="Output" Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True'" />
+			<Output ItemName="ContentWithTargetPath" TaskParameter="Output" Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'" />
 		</GetUnoAssetPath_v0>
 	</Target>
 
