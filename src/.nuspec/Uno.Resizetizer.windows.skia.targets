@@ -1,7 +1,7 @@
 <Project>
 
     <Target
-        Name="GenerateUnoSplasWindowsSkia"
+        Name="GenerateUnoSplashWindowsSkia"
         AfterTargets="GenerateUnoSplashScreens"
         DependsOnTargets="GenerateUnoSplashScreens"
         Condition="'$(DesignTimeBuild)' != 'True'">
@@ -18,8 +18,8 @@
     </Target>
 
     <Target Name="ProcessUnoSplashScreens"
-            AfterTargets="GenerateUnoSplasWindowsSkia"
-            DependsOnTargets="GenerateUnoSplasWindowsSkia"
+            AfterTargets="GenerateUnoSplashWindowsSkia"
+            DependsOnTargets="GenerateUnoSplashWindowsSkia"
 			Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
 
         <ItemGroup Condition="'$(_UnoResizetizerIsUWPApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True'">
