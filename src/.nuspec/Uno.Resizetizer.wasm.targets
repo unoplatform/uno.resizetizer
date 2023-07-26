@@ -7,7 +7,6 @@
 
         <!--Wasm-->
 		<GenerateWasmSplashAssets_v0
-            Condition="$(_UnoResizetizerIsWasmApp) == 'True'"
             IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
             EmbeddedResources="@(EmbeddedResource)"
             UnoSplashScreen="@(UnoSplashScreen)"
@@ -19,7 +18,6 @@
 
         <!-- Cache the $(UserAppManifest) value to be used on incremental builds-->
 		<WriteLinesToFile
-            Condition="$(_UnoResizetizerIsWasmApp) == 'True'"
             File="$(_UnoManifestStampFile)"
             Lines="$(UserAppManifest)"
             Overwrite="true"
@@ -48,7 +46,7 @@
 		Condition="'$(DesignTimeBuild)' != 'true'">
 
         <!-- Wasm -->
-		<ItemGroup Condition="'$(_UnoResizetizerIsWasmApp)' == 'True'">
+		<ItemGroup>
 			<Content Include="@(_UnoResizetizerCollectedImages->FullPath())"
 					 Link="%(_UnoResizetizerCollectedImages.RecursiveDir)%(_UnoResizetizerCollectedImages.Filename)%(_UnoResizetizerCollectedImages.Extension)" >
 			</Content>
@@ -65,7 +63,7 @@
 			<FileWrites Include="@(_UnoResizetizerCollectedImages)" />
 		</ItemGroup>
 
-		<ItemGroup Condition="'$(_UnoResizetizerIsWasmApp)' == 'True' And '$(UnoResizetizerPwaManifest)' != ''">
+		<ItemGroup Condition="'$(UnoResizetizerPwaManifest)' != ''">
 			<Content Remove="$(WasmPWAManifestFile)" />
 			<Content Include="$(UnoResizetizerPwaManifest)"
 					 CopyToOutputDirectory="PreserveNewest"
