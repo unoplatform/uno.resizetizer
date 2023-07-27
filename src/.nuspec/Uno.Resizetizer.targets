@@ -2,10 +2,10 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<ItemGroup>
-		<AvailableItemName Include="UnoAsset" />
-		<AvailableItemName Include="UnoImage" />
-		<AvailableItemName Include="UnoIcon" />
-		<AvailableItemName Include="UnoSplashScreen" />
+		<AvailableItemName Include="UnoAsset"/>
+		<AvailableItemName Include="UnoImage"/>
+		<AvailableItemName Include="UnoIcon"/>
+		<AvailableItemName Include="UnoSplashScreen"/>
 	</ItemGroup>
 
 	<PropertyGroup>
@@ -13,44 +13,44 @@
 	</PropertyGroup>
 
 	<UsingTask
-		AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-		TaskName="Uno.Resizetizer.ResizetizeImages_v0" />
+			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
+			TaskName="Uno.Resizetizer.ResizetizeImages_v0"/>
 
 	<UsingTask
-		AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-		TaskName="Uno.Resizetizer.DetectInvalidResourceOutputFilenamesTask_v0"  />
+			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
+			TaskName="Uno.Resizetizer.DetectInvalidResourceOutputFilenamesTask_v0"/>
 
 	<UsingTask
-		AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-		TaskName="Uno.Resizetizer.CreatePartialInfoPlistTask_v0"  />
+			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
+			TaskName="Uno.Resizetizer.CreatePartialInfoPlistTask_v0"/>
 
 	<UsingTask
-		AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-		TaskName="Uno.Resizetizer.GenerateSplashAndroidResources_v0"  />
+			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
+			TaskName="Uno.Resizetizer.GenerateSplashAndroidResources_v0"/>
 
 	<UsingTask
-		AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-		TaskName="Uno.Resizetizer.GenerateSplashStoryboard_v0"  />
+			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
+			TaskName="Uno.Resizetizer.GenerateSplashStoryboard_v0"/>
 
 	<UsingTask
-		AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-		TaskName="Uno.Resizetizer.GenerateSplashAssets_v0"  />
+			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
+			TaskName="Uno.Resizetizer.GenerateSplashAssets_v0"/>
 
 	<UsingTask
-		AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-		TaskName="Uno.Resizetizer.GetUnoAssetPath_v0"  />
+			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
+			TaskName="Uno.Resizetizer.GetUnoAssetPath_v0"/>
 
 	<UsingTask
-		AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-		TaskName="Uno.Resizetizer.GeneratePackageAppxManifest_v0"  />
+			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
+			TaskName="Uno.Resizetizer.GeneratePackageAppxManifest_v0"/>
 
 	<UsingTask
-		AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-		TaskName="Uno.Resizetizer.GenerateWasmSplashAssets_v0"  />
+			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
+			TaskName="Uno.Resizetizer.GenerateWasmSplashAssets_v0"/>
 
 	<UsingTask
-		AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-		TaskName="Uno.Resizetizer.WindowIconGeneratorTask_V0" />
+			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
+			TaskName="Uno.Resizetizer.WindowIconGeneratorTask_V0"/>
 
 	<PropertyGroup>
 		<CleanDependsOn>
@@ -84,7 +84,7 @@
 
 		<UnoResizetizerIncludeSelfProject Condition="'$(UnoResizetizerIncludeSelfProject)' == ''">False</UnoResizetizerIncludeSelfProject>
 
-		<_UnoResizetizerDefaultInvalidFilenamesErrorMessage>One or more invalid file names were detected.  File names must be lowercase, start and end with a letter character, and contain only alphanumeric characters or underscores: </_UnoResizetizerDefaultInvalidFilenamesErrorMessage>
+		<_UnoResizetizerDefaultInvalidFilenamesErrorMessage>One or more invalid file names were detected. File names must be lowercase, start and end with a letter character, and contain only alphanumeric characters or underscores:</_UnoResizetizerDefaultInvalidFilenamesErrorMessage>
 
 		<_WasmHasPWAManifest>False</_WasmHasPWAManifest>
 		<_WasmHasPWAManifest Condition="'$(WasmPWAManifestFile)' != ''">True</_WasmHasPWAManifest>
@@ -100,11 +100,11 @@
 		<_UnoResizetizerIsWasmApp Condition="'$(UnoRuntimeIdentifier)' == 'WebAssembly'">True</_UnoResizetizerIsWasmApp>
 	</PropertyGroup>
 
-	<Import Project="Uno.Resizetizer.android.targets" Condition="'$(_UnoResizetizerIsAndroidApp)' == 'True'" />
-	<Import Project="Uno.Resizetizer.wasm.targets" Condition="'$(_UnoResizetizerIsWasmApp)' == 'True'" />
-	<Import Project="Uno.Resizetizer.apple.targets" Condition="'$(_UnoResizetizerIsiOSApp)' == 'True' Or '$(_UnoResizetizerPlatformIsMacCatalyst)' == 'True'" />
-	<Import Project="Uno.Resizetizer.windows.skia.targets" Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True'" />
-	
+	<Import Project="Uno.Resizetizer.android.targets" Condition="'$(_UnoResizetizerIsAndroidApp)' == 'True'"/>
+	<Import Project="Uno.Resizetizer.wasm.targets" Condition="'$(_UnoResizetizerIsWasmApp)' == 'True'"/>
+	<Import Project="Uno.Resizetizer.apple.targets" Condition="'$(_UnoResizetizerIsiOSApp)' == 'True' Or '$(_UnoResizetizerPlatformIsMacCatalyst)' == 'True'"/>
+	<Import Project="Uno.Resizetizer.windows.skia.targets" Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True'"/>
+
 
 	<PropertyGroup Condition="'$(_UnoResizetizerIsAndroidApp)' == 'True' Or '$(_UnoResizetizerIsiOSApp)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsWasmApp)' == 'True'">
 		<_UnoResizetizerIsCompatibleApp>True</_UnoResizetizerIsCompatibleApp>
@@ -260,90 +260,90 @@
 
 	<!-- Uno Icon -->
 	<ItemGroup>
-		<_WindowIconExtension Include="$(_UnoResizetizerIntermediateOutputRoot)Uno.Resizetizer.WindowIconExtensions.g.cs" />
+		<_WindowIconExtension Include="$(_UnoResizetizerIntermediateOutputRoot)Uno.Resizetizer.WindowIconExtensions.g.cs"/>
 	</ItemGroup>
 
 	<!-- Finds absolute paths to any UnoImage in this project -->
 	<!-- App head projects will invoke this target on their project references to collect images -->
 	<Target Name="GetUnoItems" Outputs="@(ExportedUnoItem)">
 		<ItemGroup>
-			<UnoItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' == ''" />
-			<UnoItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoImage.ForegroundFile)'))" ProjectDirectory="$(MSBuildProjectDirectory)" />
-			<UnoItem Include="@(UnoIcon)" ItemGroupName="UnoIcon" Condition="'%(UnoIcon.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoIcon.ForegroundFile)'))" />
-			<UnoItem Include="@(UnoAsset)" ItemGroupName="UnoAsset" ProjectDirectory="$(MSBuildProjectDirectory)" />
-			<UnoItem Include="@(UnoSplashScreen)" ItemGroupName="UnoSplashScreen" />
+			<UnoItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' == ''"/>
+			<UnoItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoImage.ForegroundFile)'))" ProjectDirectory="$(MSBuildProjectDirectory)"/>
+			<UnoItem Include="@(UnoIcon)" ItemGroupName="UnoIcon" Condition="'%(UnoIcon.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoIcon.ForegroundFile)'))"/>
+			<UnoItem Include="@(UnoAsset)" ItemGroupName="UnoAsset" ProjectDirectory="$(MSBuildProjectDirectory)"/>
+			<UnoItem Include="@(UnoSplashScreen)" ItemGroupName="UnoSplashScreen"/>
 		</ItemGroup>
 
 		<ConvertToAbsolutePath Paths="@(UnoItem)">
-			<Output TaskParameter="AbsolutePaths" ItemName="ExportedUnoItem" />
+			<Output TaskParameter="AbsolutePaths" ItemName="ExportedUnoItem"/>
 		</ConvertToAbsolutePath>
 	</Target>
 
 
 	<!-- Collect images from referenced projects -->
 	<Target Name="UnoResizetizeCollectItems"
-		Condition="'$(_UnoResizetizerIsCompatibleApp)' == 'True' And '$(DisableUnoResizetizer)' != 'true'"
-		BeforeTargets="$(UnoResizetizeCollectItemsBeforeTargets)"
-		AfterTargets="$(UnoResizetizeCollectItemsAfterTargets)">
+			Condition="'$(_UnoResizetizerIsCompatibleApp)' == 'True' And '$(DisableUnoResizetizer)' != 'true'"
+			BeforeTargets="$(UnoResizetizeCollectItemsBeforeTargets)"
+			AfterTargets="$(UnoResizetizeCollectItemsAfterTargets)">
 
 		<CallTarget Targets="GetUnoItems" Condition="'$(UnoResizetizerIncludeSelfProject)' == 'True'">
 			<Output
-				TaskParameter="TargetOutputs"
-				ItemName="ImportedUnoItem" />
+					TaskParameter="TargetOutputs"
+					ItemName="ImportedUnoItem"/>
 		</CallTarget>
 
 		<ItemGroup>
 			<UnoImage
-				Include="@(ImportedUnoItem)"
-				Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoImage'"/>
+					Include="@(ImportedUnoItem)"
+					Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoImage'"/>
 			<UnoIcon
-				Include="@(ImportedUnoItem)"
-				Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoIcon'" />
+					Include="@(ImportedUnoItem)"
+					Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoIcon'"/>
 			<UnoAsset
-				Include="@(ImportedUnoItem)"
-				Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoAsset'" />
+					Include="@(ImportedUnoItem)"
+					Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoAsset'"/>
 			<UnoSplashScreen
-				Include="@(ImportedUnoItem)"
-				Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoSplashScreen'" />
+					Include="@(ImportedUnoItem)"
+					Condition="'%(ImportedUnoItem.ItemGroupName)' == 'UnoSplashScreen'"/>
 		</ItemGroup>
 
 		<!-- Make sure animated gifs are not resized by default -->
 		<ItemGroup>
-			<UnoImage Update="@(UnoImage)" Resize="False" Condition="'%(UnoImage.Extension)' == '.gif' and '%(UnoImage.Resize)' == ''" />
+			<UnoImage Update="@(UnoImage)" Resize="False" Condition="'%(UnoImage.Extension)' == '.gif' and '%(UnoImage.Resize)' == ''"/>
 		</ItemGroup>
 
 		<Warning Condition="'%(UnoIcon.Link)' != ''"
-				 Text ="The UnoIcon.Link property will be ignored." />
+				 Text="The UnoIcon.Link property will be ignored."/>
 
 		<!-- Map @(UnoIcon) to @(UnoImage IsAppIcon=true) -->
 		<ItemGroup>
-			<UnoImage Include="@(UnoIcon)" IsAppIcon="True" Link="" />
+			<UnoImage Include="@(UnoIcon)" IsAppIcon="True" Link=""/>
 		</ItemGroup>
 
 		<!-- Write out item spec and metadata to a file we can use as an inputs for the resize target -->
 		<!-- This allows us to invalidate the build based on not just input image files changing but project item metadata as well -->
 		<WriteLinesToFile
-			File="$(_UnoResizetizerInputsFile)"
-			Lines="@(UnoImage->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);IsAppIcon=%(IsAppIcon);ForegroundScale=%(ForegroundScale);ForegroundFile=%(ForegroundFile)')"
-			Overwrite="true"
-			WriteOnlyWhenDifferent="true" />
+				File="$(_UnoResizetizerInputsFile)"
+				Lines="@(UnoImage->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);IsAppIcon=%(IsAppIcon);ForegroundScale=%(ForegroundScale);ForegroundFile=%(ForegroundFile)')"
+				Overwrite="true"
+				WriteOnlyWhenDifferent="true"/>
 
 		<WriteLinesToFile
-			File="$(_UnoSplashInputsFile)"
-			Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);ForegroundScale=%(ForegroundScale)')"
-			Overwrite="true"
-			WriteOnlyWhenDifferent="true" />
+				File="$(_UnoSplashInputsFile)"
+				Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);ForegroundScale=%(ForegroundScale)')"
+				Overwrite="true"
+				WriteOnlyWhenDifferent="true"/>
 
 		<ItemGroup>
-			<FileWrites Include="$(_UnoResizetizerInputsFile)" />
-			<FileWrites Include="$(_UnoSplashInputsFile)" />
+			<FileWrites Include="$(_UnoResizetizerInputsFile)"/>
+			<FileWrites Include="$(_UnoSplashInputsFile)"/>
 		</ItemGroup>
 		<ItemGroup>
 			<_SkiaManifest Include="@(EmbeddedResource)"
-							 Condition="%(Extension) == '.appxmanifest'"/>
+						   Condition="%(Extension) == '.appxmanifest'"/>
 
 			<EmbeddedResource Remove="@(EmbeddedResource)"
-								Condition="%(Extension) == '.appxmanifest'"/>
+							  Condition="%(Extension) == '.appxmanifest'"/>
 		</ItemGroup>
 	</Target>
 
@@ -353,16 +353,16 @@
 		</PropertyGroup>
 		<ItemGroup Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
 			<!-- Windows does not recognize %(LogicalName), so we must copy it to %(Link) -->
-			<UnoAsset Update="@(UnoAsset)" Link="%(UnoAsset.LogicalName)" Condition="'%(UnoAsset.Link)' == '' And '%(UnoAsset.LogicalName)' != ''" />
+			<UnoAsset Update="@(UnoAsset)" Link="%(UnoAsset.LogicalName)" Condition="'%(UnoAsset.Link)' == '' And '%(UnoAsset.LogicalName)' != ''"/>
 		</ItemGroup>
 
 		<GetUnoAssetPath_v0
-			ProjectDirectory="$(MSBuildProjectDirectory)"
-			ItemMetadata="$(_UnoAssetItemMetadata)"
-			Input="@(UnoAsset)">
-			<Output ItemName="AndroidAsset"          TaskParameter="Output" Condition="'$(_UnoResizetizerIsAndroidApp)' == 'True'" />
-			<Output ItemName="Content"               TaskParameter="Output" Condition="'$(_UnoResizetizerIsiOSApp)' == 'True'" />
-			<Output ItemName="ContentWithTargetPath" TaskParameter="Output" Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'" />
+				ProjectDirectory="$(MSBuildProjectDirectory)"
+				ItemMetadata="$(_UnoAssetItemMetadata)"
+				Input="@(UnoAsset)">
+			<Output ItemName="AndroidAsset" TaskParameter="Output" Condition="'$(_UnoResizetizerIsAndroidApp)' == 'True'"/>
+			<Output ItemName="Content" TaskParameter="Output" Condition="'$(_UnoResizetizerIsiOSApp)' == 'True'"/>
+			<Output ItemName="ContentWithTargetPath" TaskParameter="Output" Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'"/>
 		</GetUnoAssetPath_v0>
 	</Target>
 
@@ -372,23 +372,23 @@
 			Inputs="$(_UnoSplashInputsFile);@(UnoSplashScreen)"
 			Outputs="$(_UnoSplashStampFile)">
 
-			<Warning
-			Condition="'@(UnoSplashScreen->Count())' &gt; '1'"
-			Text="More than one 'UnoSplashScreen' is defined; only the first will be used."
+		<Warning
+				Condition="'@(UnoSplashScreen->Count())' &gt; '1'"
+				Text="More than one 'UnoSplashScreen' is defined; only the first will be used."
 		/>
 
 		<Error
-			Condition="'@(UnoSplashScreen)' == '@(UnoIcon)'"
-			Text= "The value of UnoSplashScreen and UnoIcon cannot be the same." />
+				Condition="'@(UnoSplashScreen)' == '@(UnoIcon)'"
+				Text="The value of UnoSplashScreen and UnoIcon cannot be the same."/>
 
 		<Error
-			Condition="'@(UnoSplashScreen)' == '%(UnoIcon.ForegroundFile)'"
-			Text= "The value of UnoSplashScreen and UnoIcon cannot be the same." />
+				Condition="'@(UnoSplashScreen)' == '%(UnoIcon.ForegroundFile)'"
+				Text="The value of UnoSplashScreen and UnoIcon cannot be the same."/>
 
 		<Warning Condition="'%(UnoSplashScreen.Link)' != ''"
-				 Text ="The UnoSplashScreen.Link property will be ignored." />
+				 Text="The UnoSplashScreen.Link property will be ignored."/>
 
-				 
+
 		<!--If not Windows-->
 		<ItemGroup Condition="$(_UnoResizetizerIsWasmApp) == 'True' Or $(_UnoResizetizerIsSkiaApp) == 'True' or '$(_UnoResizetizerIsAndroidApp)' == 'True' or ('$(_UnoResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst')">
 			<UnoImage Include="@(UnoSplashScreen)" IsSplashScreen="True" Link=""/>
@@ -396,37 +396,37 @@
 
 		<MakeDir Directories="$(IntermediateOutputPath)"/>
 		<!-- Stamp file for Outputs -->
-		<Touch Files="$(_UnoSplashStampFile)" AlwaysCreate="True" />
+		<Touch Files="$(_UnoSplashStampFile)" AlwaysCreate="True"/>
 		<ItemGroup>
-			<FileWrites Include="$(_UnoSplashStampFile)" />
+			<FileWrites Include="$(_UnoSplashStampFile)"/>
 		</ItemGroup>
 
 	</Target>
 
 	<Target Name="UnoResizetizeImages"
-		Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoResizetizerInputsFile);@(UnoImage)"
-		Outputs="$(_UnoResizetizerStampFile)"
-		AfterTargets="$(UnoResizetizeAfterTargets)"
-		Condition="'$(DesignTimeBuild)' != 'true'"
-		BeforeTargets="$(UnoResizetizeBeforeTargets)"
-		DependsOnTargets="$(UnoResizetizeDependsOnTargets)">
+			Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoResizetizerInputsFile);@(UnoImage)"
+			Outputs="$(_UnoResizetizerStampFile)"
+			AfterTargets="$(UnoResizetizeAfterTargets)"
+			Condition="'$(DesignTimeBuild)' != 'true'"
+			BeforeTargets="$(UnoResizetizeBeforeTargets)"
+			DependsOnTargets="$(UnoResizetizeDependsOnTargets)">
 
 		<DetectInvalidResourceOutputFilenamesTask_v0
-			Items="@(UnoImage->Distinct())"
-			ErrorMessage="$(_UnoResizetizerDefaultInvalidFilenamesErrorMessage)">
+				Items="@(UnoImage->Distinct())"
+				ErrorMessage="$(_UnoResizetizerDefaultInvalidFilenamesErrorMessage)">
 		</DetectInvalidResourceOutputFilenamesTask_v0>
 
 		<!-- Resize the images -->
 		<ResizetizeImages_v0
-			PlatformType="$(UnoResizetizerPlatformType)"
-			IntermediateOutputPath="$(_UnoIntermediateImages)"
-			IntermediateOutputIconPath="$(_UnoIntermediateAppIcon)"
-			PWAManifestPath="$(_WasmPwaManifestPath)"
-			InputsFile="$(_UnoResizetizerInputsFile)"
-			Images="@(UnoImage->Distinct())">
+				PlatformType="$(UnoResizetizerPlatformType)"
+				IntermediateOutputPath="$(_UnoIntermediateImages)"
+				IntermediateOutputIconPath="$(_UnoIntermediateAppIcon)"
+				PWAManifestPath="$(_WasmPwaManifestPath)"
+				InputsFile="$(_UnoResizetizerInputsFile)"
+				Images="@(UnoImage->Distinct())">
 
 			<Output PropertyName="AppIconPath"
-					TaskParameter="GeneratedIconPath" />
+					TaskParameter="GeneratedIconPath"/>
 			<Output PropertyName="AndroidIcons"
 					TaskParameter="AndroidAppIcons"/>
 			<Output PropertyName="UnoResizetizerPwaManifest"
@@ -436,10 +436,10 @@
 		<ItemGroup>
 			<!-- Get Images that were generated -->
 			<!-- Either from the task, or if the task was skipped (up to date), use the wildcard lookup -->
-			<_UnoResizetizerCollectedImages Condition="'@(CopiedResources)' != ''" Include="@(CopiedResources)" />
+			<_UnoResizetizerCollectedImages Condition="'@(CopiedResources)' != ''" Include="@(CopiedResources)"/>
 			<_UnoResizetizerCollectedImages Condition="'@(CopiedResources)' == ''" Include="$(_UnoIntermediateImages)**\*"/>
 			<_UnoResizetizerCollectedAppIcons Include="$(_UnoIntermediateAppIcon)**\*"/>
-			
+
 			<!-- If the PWA manifest is empty we can try to find it on the disk -->
 			<_UnoUnoResizetizerPwaManifestItemGroup Condition="'$(UnoResizetizerPwaManifest)' ==''" Include="$(_UnoIntermediateAppIcon)**\*.json"/>
 			<!-- If the AppIcon property is empty we can try to find it on the disk -->
@@ -459,11 +459,11 @@
 
 		<MakeDir Directories="$(IntermediateOutputPath)"/>
 		<!-- Touch/create our stamp file for outputs -->
-		<Touch Files="$(_UnoResizetizerStampFile)" AlwaysCreate="True" />
+		<Touch Files="$(_UnoResizetizerStampFile)" AlwaysCreate="True"/>
 
 		<!-- Include our images and stamp file as filewrites so they don't get rm'd -->
 		<ItemGroup>
-			<FileWrites Include="$(_UnoResizetizerStampFile)" />
+			<FileWrites Include="$(_UnoResizetizerStampFile)"/>
 		</ItemGroup>
 	</Target>
 
@@ -471,14 +471,14 @@
 			AfterTargets="UnoResizetizeImages"
 			DependsOnTargets="UnoResizetizeImages"
 			Condition="'$(DesignTimeBuild)' != 'true'">
-		
+
 		<ItemGroup Condition="'$(_UnoResizetizerIsWasmApp)' != 'True'">
 			<Content Include="@(_UnoResizetizerCollectedImages)"
 					 Link="%(_UnoResizetizerCollectedImages.RecursiveDir)%(_UnoResizetizerCollectedImages.Filename)%(_UnoResizetizerCollectedImages.Extension)"
 					 TargetPath="%(_UnoResizetizerCollectedImages.RecursiveDir)%(_UnoResizetizerCollectedImages.Filename)%(_UnoResizetizerCollectedImages.Extension)">
 			</Content>
 
-			<FileWrites Include="@(_UnoResizetizerCollectedImages)" />
+			<FileWrites Include="@(_UnoResizetizerCollectedImages)"/>
 		</ItemGroup>
 
 		<!--
@@ -486,12 +486,12 @@
 		https://github.com/xamarin/xamarin-android/blob/311b41e864a0162895d079477cb9398fbec5ca6e/src/Xamarin.Android.Build.Tasks/Xamarin.Android.Common.targets#L833
 		-->
 		<ItemGroup Condition="'$(MonoAndroidAssetsPrefix)'!=''">
-			<Content Update="@(_UnoResizetizerCollectedImages)" ExcludeFromContentCheck="true" />
+			<Content Update="@(_UnoResizetizerCollectedImages)" ExcludeFromContentCheck="true"/>
 		</ItemGroup>
 	</Target>
 
 	<Target Name="_CleanUnoResizetizer">
-		<RemoveDir Directories="$(_UnoResizetizerIntermediateOutputRoot)" Condition="Exists ('$(_UnoResizetizerIntermediateOutputRoot)' )" />
+		<RemoveDir Directories="$(_UnoResizetizerIntermediateOutputRoot)" Condition="Exists ('$(_UnoResizetizerIntermediateOutputRoot)' )"/>
 	</Target>
 
 	<Target Name="_GenerateWindowUnoIconExtension"
@@ -500,12 +500,12 @@
 			Inputs="@(UnoIcon)"
 			Outputs="@(_WindowIconExtension)">
 		<WindowIconGeneratorTask_v0
-			IntermediateOutputDirectory="$(_UnoResizetizerIntermediateOutputRoot)"
-			UnoIcons="@(UnoIcon)">
+				IntermediateOutputDirectory="$(_UnoResizetizerIntermediateOutputRoot)"
+				UnoIcons="@(UnoIcon)">
 			<Output ItemName="GeneratedFile"
-				TaskParameter="GeneratedClass"/>
+					TaskParameter="GeneratedClass"/>
 			<Output ItemName="FilesWrite"
-				TaskParameter="GeneratedClass"/>
+					TaskParameter="GeneratedClass"/>
 		</WindowIconGeneratorTask_v0>
 	</Target>
 
@@ -514,7 +514,7 @@
 			AfterTargets="_GenerateWindowUnoIconExtension"
 			BeforeTargets="Build;CoreCompile;XamlPreCompile">
 		<ItemGroup Condition="Exists('@(_WindowIconExtension->FullPath())')">
-			<Compile Include="@(_WindowIconExtension)" />
+			<Compile Include="@(_WindowIconExtension)"/>
 		</ItemGroup>
 	</Target>
 

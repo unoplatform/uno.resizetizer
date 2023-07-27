@@ -1,54 +1,54 @@
 <Project>
-    <Target
-        Name="GenerateUnoSplashWasm"
-		AfterTargets="GenerateUnoSplashScreens"
-		DependsOnTargets="GenerateUnoSplashScreens"
-		Condition="'$(DesignTimeBuild)' != 'true'">
+	<Target
+			Name="GenerateUnoSplashWasm"
+			AfterTargets="GenerateUnoSplashScreens"
+			DependsOnTargets="GenerateUnoSplashScreens"
+			Condition="'$(DesignTimeBuild)' != 'true'">
 
-        <!--Wasm-->
+		<!--Wasm-->
 		<GenerateWasmSplashAssets_v0
-            IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
-            EmbeddedResources="@(EmbeddedResource)"
-            UnoSplashScreen="@(UnoSplashScreen)"
-            OutputFile="$(_UnoIntermediateAppManifestWasm)">
+				IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
+				EmbeddedResources="@(EmbeddedResource)"
+				UnoSplashScreen="@(UnoSplashScreen)"
+				OutputFile="$(_UnoIntermediateAppManifestWasm)">
 
-            <Output PropertyName="UserAppManifest"
-                    TaskParameter="UserAppManifest" />
-        </GenerateWasmSplashAssets_v0>
+			<Output PropertyName="UserAppManifest"
+					TaskParameter="UserAppManifest"/>
+		</GenerateWasmSplashAssets_v0>
 
-        <!-- Cache the $(UserAppManifest) value to be used on incremental builds-->
+		<!-- Cache the $(UserAppManifest) value to be used on incremental builds-->
 		<WriteLinesToFile
-            File="$(_UnoManifestStampFile)"
-            Lines="$(UserAppManifest)"
-            Overwrite="true"
-            WriteOnlyWhenDifferent="true" />
+				File="$(_UnoManifestStampFile)"
+				Lines="$(UserAppManifest)"
+				Overwrite="true"
+				WriteOnlyWhenDifferent="true"/>
 
-        <!-- Wasm -->
-		<ReadLinesFromFile 
-            File="$(_UnoManifestStampFile)"
-            Condition="$(_UnoResizetizerIsWasmApp) == 'True' And '$(UserAppManifest)' == ''">
-                <Output TaskParameter="Lines" PropertyName="UserAppManifest" />
-        </ReadLinesFromFile>
+		<!-- Wasm -->
+		<ReadLinesFromFile
+				File="$(_UnoManifestStampFile)"
+				Condition="$(_UnoResizetizerIsWasmApp) == 'True' And '$(UserAppManifest)' == ''">
+			<Output TaskParameter="Lines" PropertyName="UserAppManifest"/>
+		</ReadLinesFromFile>
 
-        <ItemGroup Condition="$(_UnoResizetizerIsWasmApp) == 'True' And $(UserAppManifest) != ''">
-            <EmbeddedResource Remove="$(UserAppManifest)" />
-            <EmbeddedResource Include="$(_UnoIntermediateAppManifestWasm)"
-                            Link="$(UserAppManifest)"/>
-        </ItemGroup>
-    </Target>
-    
-    <Target Name="ProcessUnoSplashScreens" />
+		<ItemGroup Condition="$(_UnoResizetizerIsWasmApp) == 'True' And $(UserAppManifest) != ''">
+			<EmbeddedResource Remove="$(UserAppManifest)"/>
+			<EmbeddedResource Include="$(_UnoIntermediateAppManifestWasm)"
+							  Link="$(UserAppManifest)"/>
+		</ItemGroup>
+	</Target>
+
+	<Target Name="ProcessUnoSplashScreens"/>
 
 	<Target
-		Name="ProcessResizedImagesWasm_v0"
-		AfterTargets="ProcessResizedImages_v0"
-		DependsOnTargets="ProcessResizedImages_v0"
-		Condition="'$(DesignTimeBuild)' != 'true'">
+			Name="ProcessResizedImagesWasm_v0"
+			AfterTargets="ProcessResizedImages_v0"
+			DependsOnTargets="ProcessResizedImages_v0"
+			Condition="'$(DesignTimeBuild)' != 'true'">
 
-        <!-- Wasm -->
+		<!-- Wasm -->
 		<ItemGroup>
 			<Content Include="@(_UnoResizetizerCollectedImages->FullPath())"
-					 Link="%(_UnoResizetizerCollectedImages.RecursiveDir)%(_UnoResizetizerCollectedImages.Filename)%(_UnoResizetizerCollectedImages.Extension)" >
+					 Link="%(_UnoResizetizerCollectedImages.RecursiveDir)%(_UnoResizetizerCollectedImages.Filename)%(_UnoResizetizerCollectedImages.Extension)">
 			</Content>
 
 			<Content Include="@(_UnoResizetizerCollectedAppIcons->FullPath())"
@@ -60,16 +60,16 @@
 					 UnoDeploy="Root"
 					 Link="%(_UnoResizetizerCollectedAppIcons.RecursiveDir)%(_UnoResizetizerCollectedAppIcons.Filename)%(_UnoResizetizerCollectedAppIcons.Extension)"/>
 
-			<FileWrites Include="@(_UnoResizetizerCollectedImages)" />
+			<FileWrites Include="@(_UnoResizetizerCollectedImages)"/>
 		</ItemGroup>
 
 		<ItemGroup Condition="'$(UnoResizetizerPwaManifest)' != ''">
-			<Content Remove="$(WasmPWAManifestFile)" />
+			<Content Remove="$(WasmPWAManifestFile)"/>
 			<Content Include="$(UnoResizetizerPwaManifest)"
 					 CopyToOutputDirectory="PreserveNewest"
-					 ExcludeFromSingleFile ="True"
-					 CopyToPublishDirectory ="PreserveNewest"
-					 Link="$(WasmPWAManifestFile)" />
+					 ExcludeFromSingleFile="True"
+					 CopyToPublishDirectory="PreserveNewest"
+					 Link="$(WasmPWAManifestFile)"/>
 		</ItemGroup>
-    </Target>
+	</Target>
 </Project>
