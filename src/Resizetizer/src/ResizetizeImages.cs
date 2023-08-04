@@ -23,7 +23,7 @@ namespace Uno.Resizetizer
 
 		public string PWAManifestPath { get; set; } = string.Empty;
 
-		public string InputsFile { get; set; }
+		public string[] InputsFile { get; set; }
 
 		internal static string TargetPlatform { get; private set; }
 
@@ -47,6 +47,15 @@ namespace Uno.Resizetizer
 
 		public override System.Threading.Tasks.Task ExecuteAsync()
 		{
+#if DEBUG_RESIZETIZER
+
+		if (System.Diagnostics.Debugger.IsAttached)
+		{
+			System.Diagnostics.Debugger.Break();
+		}
+		System.Diagnostics.Debugger.Launch();
+
+#endif
 			TargetPlatform = PlatformType;
 			var images = ResizeImageInfo.Parse(Images);
 
@@ -233,7 +242,7 @@ namespace Uno.Resizetizer
 			{
 				LogDebugMessage($"Resizing {img.Filename}");
 
-				var r = resizer.Resize(dpi, InputsFile);
+				var r = resizer.Resize(dpi, GetInputFile(img.IsSplashScreen));
 				resizedImages.Add(r);
 
 				LogDebugMessage($"Resized {img.Filename}");
@@ -246,7 +255,7 @@ namespace Uno.Resizetizer
 
 			LogDebugMessage($"Copying {img.Filename}");
 
-			var r = resizer.CopyFile(originalScaleDpi, InputsFile);
+			var r = resizer.CopyFile(originalScaleDpi, GetInputFile(img.IsSplashScreen));
 			resizedImages.Add(r);
 
 			LogDebugMessage($"Copied {img.Filename}");
@@ -256,5 +265,11 @@ namespace Uno.Resizetizer
 		{
 			Log?.LogMessage(message);
 		}
+
+		string GetInputFile(bool isSplashScreen) => isSplashScreen switch
+		{
+			true => InputsFile[1],
+			_ => InputsFile[0]
+		};
 	}
 }
