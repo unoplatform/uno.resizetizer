@@ -50,6 +50,8 @@ namespace Uno.Resizetizer
 
 		public bool IsAppIcon { get; set; }
 
+		public bool IsSplashScreen { get; set; }
+
 		public string? ForegroundFilename { get; set; }
 
 		public bool ForegroundIsVector => IsVectorFilename(ForegroundFilename);
@@ -126,6 +128,11 @@ namespace Uno.Resizetizer
 					info.IsAppIcon = iai;
 				}
 
+				if (bool.TryParse(image.GetMetadata(nameof(IsSplashScreen)), out var isc))
+				{
+					info.IsSplashScreen = isc;
+				}
+
 				if (float.TryParse(image.GetMetadata(nameof(ForegroundScale)), NumberStyles.Number, CultureInfo.InvariantCulture, out var fsc))
 				{
 					info.ForegroundScale = fsc;
@@ -181,7 +188,7 @@ namespace Uno.Resizetizer
 				case "android":
 					SetPlatformForegroundScale(image, "AndroidForegroundScale", info);
 					break;
-				case "ios" :
+				case "ios":
 					SetPlatformForegroundScale(image, "IOSForegroundScale", info);
 					break;
 				case "uwp":
