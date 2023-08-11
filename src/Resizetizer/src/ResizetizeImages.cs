@@ -23,6 +23,10 @@ namespace Uno.Resizetizer
 
 		public string[] InputsFile { get; set; }
 
+		public string TargetFramework { get; set; }
+
+		internal static string _TargetFramework { get; private set; }
+
 		internal static string TargetPlatform { get; private set; }
 
 		public ITaskItem[] Images { get; set; }
@@ -55,6 +59,7 @@ namespace Uno.Resizetizer
 
 #endif
 			TargetPlatform = PlatformType;
+			_TargetFramework = TargetFramework;
 			var images = ResizeImageInfo.Parse(Images);
 
 			var dpis = DpiPath.GetDpis();

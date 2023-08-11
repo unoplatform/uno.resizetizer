@@ -317,7 +317,7 @@
 
 		<!-- Map @(UnoIcon) to @(UnoImage IsAppIcon=true) -->
 		<ItemGroup>
-			<UnoImage Include="@(UnoIcon)" IsAppIcon="True" Link=""/>
+			<UnoImage Include="@(UnoIcon)" IsAppIcon="True" Link="" ProjectDirectory="$(ProjectDir)"/>
 		</ItemGroup>
 
 		<!-- Write out item spec and metadata to a file we can use as an inputs for the resize target -->
@@ -423,6 +423,7 @@
 				IntermediateOutputIconPath="$(_UnoIntermediateAppIcon)"
 				PWAManifestPath="$(_WasmPwaManifestPath)"
 				InputsFile="$(_UnoResizetizerInputsFile);$(_UnoSplashInputsFile)"
+				TargetFramework="$(_UnoResizetizerPlatformIdentifier)"
 				Images="@(UnoImage->Distinct())">
 
 			<Output PropertyName="AppIconPath"
