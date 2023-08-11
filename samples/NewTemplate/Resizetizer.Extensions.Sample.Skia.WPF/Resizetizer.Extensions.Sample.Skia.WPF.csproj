@@ -43,7 +43,7 @@
 		<PropertyGroup>
 			<_ResizetizerSplashScreenPath>$(_UnoIntermediateImages)splash_screen.scale-125.png</_ResizetizerSplashScreenPath>
 			<_ResizetizerAppIconPath>$(_UnoIntermediateImages)iconapp.ico</_ResizetizerAppIconPath>
-			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateImages)iconapp.png</_ResizetizerAppIconImagesPath>
+			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateImages)\Icons\iconapp.png</_ResizetizerAppIconImagesPath>
 		</PropertyGroup>
 		<Message Text="Validating local assets at '$(_ResizetizerIntermediateOutputRoot)'" Importance="high" />
 		<Error Condition="!Exists('$(_ResizetizerSplashScreenPath)')" Text="SplashScreen file wasn't created." />

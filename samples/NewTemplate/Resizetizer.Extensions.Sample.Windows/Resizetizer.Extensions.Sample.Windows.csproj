@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net7.0-windows10.0.19041.0</TargetFramework>
@@ -77,7 +77,7 @@
 			<_ResizetizerManifestPath>$(_UnoIntermediateManifest)Package.appxmanifest</_ResizetizerManifestPath>
 			<_ResizetizerSplashScreenPath>$(_UnoIntermediateSplashScreen)splash_screen.scale-150.png</_ResizetizerSplashScreenPath>
 			<_ResizetizerAppIconPath>$(_UnoIntermediateImages)iconapp.ico</_ResizetizerAppIconPath>
-			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateImages)Images\iconappLogo.scale-150.png</_ResizetizerAppIconImagesPath>
+			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateImages)Icons\iconappLogo.scale-150.png</_ResizetizerAppIconImagesPath>
 		</PropertyGroup>
 		<Message Text="Validating local assets at '$(_ResizetizerIntermediateOutputRoot)'" Importance="high" />
 		<Error Condition="!Exists('$(_ResizetizerManifestPath)')" Text="Manifest file wasn't created." />
