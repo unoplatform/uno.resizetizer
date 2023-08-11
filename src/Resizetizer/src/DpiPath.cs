@@ -95,7 +95,7 @@ namespace Uno.Resizetizer
 		public static class Windows
 		{
 			public const string OutputPath = "";
-			public const string IconOutputPath = "Images/";
+			public const string IconOutputPath = ""; //"Images/";
 
 			public static DpiPath Original =>
 				new DpiPath(OutputPath, 1.0m, null, ".scale-100");
