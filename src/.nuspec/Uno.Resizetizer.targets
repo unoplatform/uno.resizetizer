@@ -317,7 +317,7 @@
 
 		<!-- Map @(UnoIcon) to @(UnoImage IsAppIcon=true) -->
 		<ItemGroup>
-			<UnoImage Include="@(UnoIcon)" IsAppIcon="True" Link="" ProjectDirectory="$(ProjectDir)"/>
+			<UnoImage Include="@(UnoIcon)" IsAppIcon="True" Link="" ProjectDirectory="%(UnoIcon.ProjectDirectory)"/>
 		</ItemGroup>
 
 		<!-- Write out item spec and metadata to a file we can use as an inputs for the resize target -->

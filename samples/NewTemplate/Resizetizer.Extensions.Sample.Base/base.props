@@ -13,7 +13,8 @@
 		<UnoIcon Include="$(MSBuildThisFileDirectory)Icons\iconapp.svg"
 				ForegroundFile="$(MSBuildThisFileDirectory)Icons\appconfig.svg"
 				ForegroundScale="0.65"
-				Color="#00000000" />
+				Color="#00000000" 
+				ProjectDirectory="$(MSBuildThisFileDirectory)"/>
 		<UnoSplashScreen
 			Include="$(MSBuildThisFileDirectory)Splash\splash_screen.svg"
 			BaseSize="128,128"
