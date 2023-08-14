@@ -22,7 +22,7 @@ namespace Uno.Resizetizer.Tests
 					PlatformType = type,
 					IntermediateOutputPath = DestinationDirectory,
 					IntermediateOutputIconPath = DestinationDirectory,
-					InputsFile = "mauiimage.inputs",
+					InputsFile = new string[] {"unoimage.inputs" },
 					Images = items,
 					BuildEngine = this,
 				};
