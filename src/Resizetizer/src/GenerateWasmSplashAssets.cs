@@ -1,6 +1,5 @@
 ﻿using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,10 +36,10 @@ public class GenerateWasmSplashAssets_v0 : Task
 		System.Diagnostics.Debugger.Launch();
 
 #endif
-		if (UnoSplashScreen is null)
+		if (UnoSplashScreen is { Length: 0 })
 		{
 			Log.LogWarning("Didn't find UnoSplashScreen.");
-			return false;
+			return true;
 		}
 
 		var splash = UnoSplashScreen[0];
