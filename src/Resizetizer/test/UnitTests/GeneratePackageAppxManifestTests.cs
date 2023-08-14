@@ -18,8 +18,14 @@ namespace Uno.Resizetizer.Tests
 			string? version = null,
 			string? displayName = null,
 			ITaskItem? appIcon = null,
-			ITaskItem? splashScreen = null) =>
-			new()
+			ITaskItem? splashScreen = null)
+		{
+			new ResizetizeImages_v0()
+			{
+				TargetFramework = "windows"
+			};
+
+			return new()
 			{
 				IntermediateOutputPath = DestinationDirectory,
 				BuildEngine = this,
@@ -32,6 +38,7 @@ namespace Uno.Resizetizer.Tests
 				AppIcon = appIcon == null ? null : new[] { appIcon },
 				SplashScreen = splashScreen == null ? null : new[] { splashScreen },
 			};
+		}
 
 		[Theory]
 		[InlineData(null, "Package.appxmanifest")]
@@ -80,13 +87,20 @@ namespace Uno.Resizetizer.Tests
 			}
 		}
 
+		static void SetTargetFrameworkToWindows()
+		{
+			var property = typeof(ResizetizeImages_v0).GetProperty("_TargetFramework", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!;
+			property.SetValue(null, "windows");
+		}
+
 		[Fact]
 		public void CorrectGenerationWhenUserSpecifyBackgroundColor()
 		{
 			var input = "empty";
 			var expected = "typicalWithNoBackground";
-			var appIcon = new TaskItem("images/appicon.svg");
-			appIcon.SetMetadata("ForegroundFile", "images/appiconfg.svg");
+			var appIcon = new TaskItem("C:\\Git\\uno.resizetizer\\src\\Resizetizer\\test\\UnitTests\\images\\appicon.svg");
+			appIcon.SetMetadata("ForegroundFile", "C:\\Git\\uno.resizetizer\\src\\Resizetizer\\test\\UnitTests\\images\\appiconfg.svg");
+			appIcon.SetMetadata("ProjectDirectory", "C:\\Git\\uno.resizetizer\\src\\Resizetizer\\test\\UnitTests\\");
 			appIcon.SetMetadata("IsAppIcon", "true");
 
 			var splashScreen = new TaskItem("images/dotnet_bot.svg");
@@ -101,6 +115,8 @@ namespace Uno.Resizetizer.Tests
 				displayName: "Sample App",
 				appIcon: appIcon,
 				splashScreen: splashScreen);
+
+			SetTargetFrameworkToWindows();
 
 			var success = task.Execute();
 			Assert.True(success, $"{task.GetType()}.Execute() failed: " + LogErrorEvents.FirstOrDefault()?.Message);
