@@ -1,9 +1,9 @@
 ﻿#nullable enable
+using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
 using Xunit;
 
 namespace Uno.Resizetizer.Tests
@@ -20,11 +20,6 @@ namespace Uno.Resizetizer.Tests
 			ITaskItem? appIcon = null,
 			ITaskItem? splashScreen = null)
 		{
-			new ResizetizeImages_v0()
-			{
-				TargetFramework = "windows"
-			};
-
 			return new()
 			{
 				IntermediateOutputPath = DestinationDirectory,
@@ -37,6 +32,7 @@ namespace Uno.Resizetizer.Tests
 				ApplicationTitle = displayName,
 				AppIcon = appIcon == null ? null : new[] { appIcon },
 				SplashScreen = splashScreen == null ? null : new[] { splashScreen },
+				TargetFramework = "windows"
 			};
 		}
 
@@ -87,12 +83,6 @@ namespace Uno.Resizetizer.Tests
 			}
 		}
 
-		static void SetTargetFrameworkToWindows()
-		{
-			var property = typeof(ResizetizeImages_v0).GetProperty("_TargetFramework", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!;
-			property.SetValue(null, "windows");
-		}
-
 		[Fact]
 		public void CorrectGenerationWhenUserSpecifyBackgroundColor()
 		{
@@ -115,8 +105,6 @@ namespace Uno.Resizetizer.Tests
 				displayName: "Sample App",
 				appIcon: appIcon,
 				splashScreen: splashScreen);
-
-			SetTargetFrameworkToWindows();
 
 			var success = task.Execute();
 			Assert.True(success, $"{task.GetType()}.Execute() failed: " + LogErrorEvents.FirstOrDefault()?.Message);
