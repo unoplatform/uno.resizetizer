@@ -26,6 +26,8 @@ namespace Uno.Resizetizer
 		[Required]
 		public ITaskItem AppxManifest { get; set; } = null!;
 
+		public string? TargetFramework { get; set; }
+
 		public string? GeneratedFilename { get; set; }
 
 		public string? ApplicationId { get; set; }
@@ -50,6 +52,7 @@ namespace Uno.Resizetizer
 #endif
 			try
 			{
+				ResizetizeImages_v0._TargetFramework = TargetFramework;
 				Directory.CreateDirectory(IntermediateOutputPath);
 
 				var filename = Path.Combine(IntermediateOutputPath, GeneratedFilename ?? "Package.appxmanifest");

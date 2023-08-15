@@ -25,7 +25,7 @@ namespace Uno.Resizetizer
 
 		public string TargetFramework { get; set; }
 
-		internal static string _TargetFramework { get; private set; }
+		internal static string _TargetFramework { get; set; }
 
 		internal static string TargetPlatform { get; private set; }
 

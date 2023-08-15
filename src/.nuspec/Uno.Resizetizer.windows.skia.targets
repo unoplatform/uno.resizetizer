@@ -65,6 +65,7 @@
 				ApplicationVersion="$(ApplicationVersion)"
 				ApplicationTitle="$(ApplicationTitle)"
 				AppIcon="@(UnoImage->WithMetadataValue('IsAppIcon', 'true'))"
+				TargetFramework="$(_UnoResizetizerPlatformIdentifier)"
 				SplashScreen="@(UnoSplashScreen)"/>
 
 		<!-- replace user manifest -->
