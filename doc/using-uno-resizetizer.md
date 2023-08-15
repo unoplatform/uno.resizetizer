@@ -104,7 +104,8 @@ During the creation of your `svg` file, please remember to make the `ViewBox` bi
 <ItemGroup>
     <UnoIcon Include="$(MSBuildThisFileDirectory)Icons\iconapp.svg"
              ForegroundFile="$(MSBuildThisFileDirectory)Icons\appconfig.svg"
-             Color="#FF0000"/>
+             Color="#FF0000"
+				     ProjectDirectory="$(MSBuildThisFileDirectory)"/>
 </ItemGroup>
 ```
 
