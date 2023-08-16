@@ -66,7 +66,8 @@ namespace Uno.Resizetizer
 
 			if (InputsFile is null || InputsFile.Length <= 0)
 			{
-				throw new InvalidOperationException("No input files detected, try to rebuild your project to fix it.");
+				LogWarning("No input files detected, try to rebuild your project to fix it.");
+				return System.Threading.Tasks.Task.CompletedTask;
 			}
 
 			var originalScaleDpi = DpiPath.GetOriginal();
