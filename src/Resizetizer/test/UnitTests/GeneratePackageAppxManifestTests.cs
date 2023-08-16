@@ -88,9 +88,9 @@ namespace Uno.Resizetizer.Tests
 		{
 			var input = "empty";
 			var expected = "typicalWithNoBackground";
-			var appIcon = new TaskItem("C:\\Git\\uno.resizetizer\\src\\Resizetizer\\test\\UnitTests\\images\\appicon.svg");
-			appIcon.SetMetadata("ForegroundFile", "C:\\Git\\uno.resizetizer\\src\\Resizetizer\\test\\UnitTests\\images\\appiconfg.svg");
-			appIcon.SetMetadata("ProjectDirectory", "C:\\Git\\uno.resizetizer\\src\\Resizetizer\\test\\UnitTests\\");
+			var appIcon = new TaskItem("images\\appicon.svg");
+			appIcon.SetMetadata("ForegroundFile", "images\\appiconfg.svg");
+			appIcon.SetMetadata("ProjectDirectory", Directory.GetCurrentDirectory() + "\\");
 			appIcon.SetMetadata("IsAppIcon", "true");
 
 			var splashScreen = new TaskItem("images/dotnet_bot.svg");
