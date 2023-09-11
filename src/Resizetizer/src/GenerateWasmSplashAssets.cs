@@ -36,7 +36,7 @@ public class GenerateWasmSplashAssets_v0 : Task
 		System.Diagnostics.Debugger.Launch();
 
 #endif
-		if (UnoSplashScreen is { Length: 0 })
+		if (UnoSplashScreen is null || UnoSplashScreen.Length is 0 )
 		{
 			Log.LogWarning("Didn't find UnoSplashScreen.");
 			return true;
