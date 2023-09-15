@@ -1,4 +1,4 @@
-GitHub Issue (If applicable): #
+Fixes: #
 
 <!-- Link to relevant GitHub issue if applicable. All PRs should be associated with an issue (GitHub issue or internal) -->
 
