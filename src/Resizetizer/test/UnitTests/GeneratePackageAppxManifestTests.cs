@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -90,7 +91,7 @@ namespace Uno.Resizetizer.Tests
 			var expected = "typicalWithNoBackground";
 			var appIcon = new TaskItem("images\\appicon.svg");
 			appIcon.SetMetadata("ForegroundFile", "images\\appiconfg.svg");
-			appIcon.SetMetadata("ProjectDirectory", Directory.GetCurrentDirectory() + "\\");
+			appIcon.SetMetadata("Link", "images\\appicon.svg");
 			appIcon.SetMetadata("IsAppIcon", "true");
 
 			var splashScreen = new TaskItem("images/dotnet_bot.svg");
@@ -105,6 +106,8 @@ namespace Uno.Resizetizer.Tests
 				displayName: "Sample App",
 				appIcon: appIcon,
 				splashScreen: splashScreen);
+
+
 
 			var success = task.Execute();
 			Assert.True(success, $"{task.GetType()}.Execute() failed: " + LogErrorEvents.FirstOrDefault()?.Message);
