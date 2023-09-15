@@ -83,40 +83,17 @@ namespace Uno.Resizetizer
 					throw new FileNotFoundException("Unable to find background file: " + fileInfo.FullName, fileInfo.FullName);
 				}
 
-				if (bool.TryParse(image.GetMetadata(nameof(IsAppIcon)), out var iai))
-				{
-					info.IsAppIcon = iai;
-				}
-
 				info.Filename = fileInfo.FullName;
 
 				info.Alias = image.GetMetadata("Link");
 
 				if (string.IsNullOrWhiteSpace(info.Alias))
 				{
-					var windowsAndAppIcon = ResizetizeImages_v0._TargetFramework == "windows" && info.IsAppIcon;
+					var projDirectory = image.GetMetadata("DefiningProjectDirectory");
 
-					if (!windowsAndAppIcon)
+					if (!string.IsNullOrWhiteSpace(projDirectory))
 					{
-						var projDirectory = image.GetMetadata("DefiningProjectDirectory");
-
-						if (!string.IsNullOrWhiteSpace(projDirectory))
-						{
-							info.Alias = fileInfo.FullName.Replace(projDirectory, string.Empty);
-						} 
-					}
-					else
-					{
-				
-#if DEBUG_RESIZETIZER
-			System.Diagnostics.Debugger.Launch();
-#endif
-						var projDirectory = image.GetMetadata("ProjectDirectory");
-
-						if (!string.IsNullOrWhiteSpace(projDirectory))
-						{
-							info.Alias = fileInfo.FullName.Replace(projDirectory, string.Empty);
-						} 
+						info.Alias = fileInfo.FullName.Replace(projDirectory, string.Empty);
 					}
 				}
 
