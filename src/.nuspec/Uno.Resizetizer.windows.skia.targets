@@ -1,5 +1,20 @@
 <Project>
 
+	<Target 
+		Name="UpdatePathOfUnoIcon"
+		BeforeTargets="UnoResizetizeCollectItems"
+		Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
+		
+		<AssignLinkMetadata Items="@(UnoIcon)">
+			<Output TaskParameter="OutputItems" ItemName="_UnoIconLinked"/>
+		</AssignLinkMetadata>
+
+		<ItemGroup>
+			<UnoIcon Remove="@(UnoIcon)"/>
+			<UnoIcon Include="@(_UnoIconLinked)"/>
+		</ItemGroup>
+	</Target>
+
 	<Target
 			Name="GenerateUnoSplashWindowsSkia"
 			AfterTargets="GenerateUnoSplashScreens"

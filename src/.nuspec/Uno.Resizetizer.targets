@@ -262,7 +262,7 @@
 	<ItemGroup>
 		<_WindowIconExtension Include="$(_UnoResizetizerIntermediateOutputRoot)Uno.Resizetizer.WindowIconExtensions.g.cs"/>
 	</ItemGroup>
-
+		
 	<!-- Finds absolute paths to any UnoImage in this project -->
 	<!-- App head projects will invoke this target on their project references to collect images -->
 	<Target Name="GetUnoItems" Outputs="@(ExportedUnoItem)">
@@ -317,7 +317,7 @@
 
 		<!-- Map @(UnoIcon) to @(UnoImage IsAppIcon=true) -->
 		<ItemGroup>
-			<UnoImage Include="@(UnoIcon)" IsAppIcon="True" Link="" ProjectDirectory="%(UnoIcon.ProjectDirectory)"/>
+			<UnoImage Include="@(UnoIcon)" IsAppIcon="True" Link="%(UnoIcon.Link)" />
 		</ItemGroup>
 
 		<!-- Write out item spec and metadata to a file we can use as an inputs for the resize target -->
