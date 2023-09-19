@@ -510,7 +510,7 @@
 	</Target>
 
 	<Target Name="_AddResizetizerWindowIconExtensions"
-			Condition="'$(_UnoResizetizerIsCompatibleApp)' == 'True' and '$(UnoResizetizerDisableWindowIconExtensions)'==''"
+			Condition="'$(_UnoResizetizerIsCompatibleApp)' == 'True' and '$(UnoResizetizerDisableWindowIconExtensions)'!='true'"
 			AfterTargets="_GenerateWindowUnoIconExtension"
 			BeforeTargets="Build;CoreCompile;XamlPreCompile">
 		<ItemGroup Condition="Exists('@(_WindowIconExtension->FullPath())')">
