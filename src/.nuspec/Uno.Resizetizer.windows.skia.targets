@@ -3,6 +3,7 @@
 	<Target 
 		Name="UpdatePathOfUnoIcon"
 		BeforeTargets="UnoResizetizeCollectItems"
+		DependsOnTargets="ValidateAvailableItems"
 		Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
 		
 		<AssignLinkMetadata Items="@(UnoIcon)">

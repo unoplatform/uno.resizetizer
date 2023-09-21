@@ -262,7 +262,32 @@
 	<ItemGroup>
 		<_WindowIconExtension Include="$(_UnoResizetizerIntermediateOutputRoot)Uno.Resizetizer.WindowIconExtensions.g.cs"/>
 	</ItemGroup>
-		
+
+
+	<Target Name="ValidateAvailableItems"
+			BeforeTargets="UnoResizetizeCollectItems">
+
+		<Warning Condition="'%(UnoIcon.Link)' != ''"
+				 Text="The UnoIcon.Link property will be ignored."/>
+
+		<Warning
+		Condition="'@(UnoSplashScreen->Count())' &gt; '1'"
+		Text="More than one 'UnoSplashScreen' is defined; only the first will be used."
+		/>
+
+		<Error
+				Condition="'@(UnoSplashScreen)' == '@(UnoIcon)'"
+				Text="The value of UnoSplashScreen and UnoIcon cannot be the same."/>
+
+		<Error
+				Condition="'@(UnoSplashScreen)' == '%(UnoIcon.ForegroundFile)'"
+				Text="The value of UnoSplashScreen and UnoIcon cannot be the same."/>
+
+		<Warning Condition="'%(UnoSplashScreen.Link)' != ''"
+				 Text="The UnoSplashScreen.Link property will be ignored."/>
+
+	</Target>
+
 	<!-- Finds absolute paths to any UnoImage in this project -->
 	<!-- App head projects will invoke this target on their project references to collect images -->
 	<Target Name="GetUnoItems" Outputs="@(ExportedUnoItem)">
@@ -312,8 +337,6 @@
 			<UnoImage Update="@(UnoImage)" Resize="False" Condition="'%(UnoImage.Extension)' == '.gif' and '%(UnoImage.Resize)' == ''"/>
 		</ItemGroup>
 
-		<Warning Condition="'%(UnoIcon.Link)' != ''"
-				 Text="The UnoIcon.Link property will be ignored."/>
 
 		<!-- Map @(UnoIcon) to @(UnoImage IsAppIcon=true) -->
 		<ItemGroup>
@@ -371,23 +394,6 @@
 			Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'"
 			Inputs="$(_UnoSplashInputsFile);@(UnoSplashScreen)"
 			Outputs="$(_UnoSplashStampFile)">
-
-		<Warning
-				Condition="'@(UnoSplashScreen->Count())' &gt; '1'"
-				Text="More than one 'UnoSplashScreen' is defined; only the first will be used."
-		/>
-
-		<Error
-				Condition="'@(UnoSplashScreen)' == '@(UnoIcon)'"
-				Text="The value of UnoSplashScreen and UnoIcon cannot be the same."/>
-
-		<Error
-				Condition="'@(UnoSplashScreen)' == '%(UnoIcon.ForegroundFile)'"
-				Text="The value of UnoSplashScreen and UnoIcon cannot be the same."/>
-
-		<Warning Condition="'%(UnoSplashScreen.Link)' != ''"
-				 Text="The UnoSplashScreen.Link property will be ignored."/>
-
 
 		<!--If not Windows-->
 		<ItemGroup Condition="$(_UnoResizetizerIsWasmApp) == 'True' Or $(_UnoResizetizerIsSkiaApp) == 'True' or '$(_UnoResizetizerIsAndroidApp)' == 'True' or ('$(_UnoResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst')">
