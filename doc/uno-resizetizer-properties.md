@@ -36,7 +36,6 @@ Properties that can be used across all items
 | WindowsForegroundScale | The same as ForegroundScale, but the value will be applied just for Windows                                                           |
 | IOSForegroundScale     | The same as ForegroundScale, but the value will be applied just for iOS                                                               |
 | SkiaForegroundScale    | The same as ForegroundScale, but the value will be applied just for Skia targets                                                               |
-| ProjectDirectory       | Used to specify the path of the file where UnoIcon is defined, it helps Resizetizer to find the full path of the app icon asset                        |
 
 > [!NOTE]
 > The PlatformsForegroundScale (AndroidForegroundScale, WasmForegroundScale, etc) will override the global ForegroundScale value.
