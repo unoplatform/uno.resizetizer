@@ -404,7 +404,7 @@
 	</Target>
 
 	<Target Name="UnoResizetizeImages"
-			Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoResizetizerInputsFile);@(UnoImage)"
+			Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoResizetizerInputsFile);@(UnoImage);$(_UnoSplashInputsFile)"
 			Outputs="$(_UnoResizetizerStampFile)"
 			AfterTargets="$(UnoResizetizeAfterTargets)"
 			Condition="'$(DesignTimeBuild)' != 'true'"
@@ -422,7 +422,7 @@
 				IntermediateOutputPath="$(_UnoIntermediateImages)"
 				IntermediateOutputIconPath="$(_UnoIntermediateAppIcon)"
 				PWAManifestPath="$(_WasmPwaManifestPath)"
-				InputsFile="$(_UnoResizetizerInputsFile)"
+				InputsFile="$(_UnoResizetizerInputsFile);$(_UnoSplashInputsFile)"
 				Images="@(UnoImage->Distinct())">
 
 			<Output PropertyName="AppIconPath"

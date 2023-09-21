@@ -1,13 +1,11 @@
-﻿using System;
+﻿using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
 
 namespace Uno.Resizetizer
 {
@@ -23,7 +21,7 @@ namespace Uno.Resizetizer
 
 		public string PWAManifestPath { get; set; } = string.Empty;
 
-		public string InputsFile { get; set; }
+		public string[] InputsFile { get; set; }
 
 		internal static string TargetPlatform { get; private set; }
 
@@ -47,6 +45,15 @@ namespace Uno.Resizetizer
 
 		public override System.Threading.Tasks.Task ExecuteAsync()
 		{
+#if DEBUG_RESIZETIZER
+
+		if (System.Diagnostics.Debugger.IsAttached)
+		{
+			System.Diagnostics.Debugger.Break();
+		}
+		System.Diagnostics.Debugger.Launch();
+
+#endif
 			TargetPlatform = PlatformType;
 			var images = ResizeImageInfo.Parse(Images);
 
@@ -54,6 +61,12 @@ namespace Uno.Resizetizer
 
 			if (dpis == null || dpis.Length <= 0)
 			{
+				return System.Threading.Tasks.Task.CompletedTask;
+			}
+
+			if (InputsFile is null || InputsFile.Length <= 0)
+			{
+				LogWarning("No input files detected, try to rebuild your project to fix it.");
 				return System.Threading.Tasks.Task.CompletedTask;
 			}
 
@@ -233,7 +246,7 @@ namespace Uno.Resizetizer
 			{
 				LogDebugMessage($"Resizing {img.Filename}");
 
-				var r = resizer.Resize(dpi, InputsFile);
+				var r = resizer.Resize(dpi, GetInputFile(img.IsSplashScreen));
 				resizedImages.Add(r);
 
 				LogDebugMessage($"Resized {img.Filename}");
@@ -246,7 +259,7 @@ namespace Uno.Resizetizer
 
 			LogDebugMessage($"Copying {img.Filename}");
 
-			var r = resizer.CopyFile(originalScaleDpi, InputsFile);
+			var r = resizer.CopyFile(originalScaleDpi, GetInputFile(img.IsSplashScreen));
 			resizedImages.Add(r);
 
 			LogDebugMessage($"Copied {img.Filename}");
@@ -256,5 +269,11 @@ namespace Uno.Resizetizer
 		{
 			Log?.LogMessage(message);
 		}
+
+		string GetInputFile(bool isSplashScreen) => isSplashScreen switch
+		{
+			true => InputsFile[1],
+			_ => InputsFile[0]
+		};
 	}
 }
