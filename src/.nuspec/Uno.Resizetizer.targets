@@ -267,25 +267,29 @@
 	<Target Name="ValidateAvailableItems"
 			BeforeTargets="UnoResizetizeCollectItems">
 
-		<Warning Condition="'%(UnoIcon.Link)' != ''"
-				 Text="The UnoIcon.Link property will be ignored."/>
+		<Warning 
+				Condition="'%(UnoIcon.Link)' != ''"
+				Text="The UnoIcon.Link property will be ignored."/>
 
 		<Warning
-		Condition="'@(UnoSplashScreen->Count())' &gt; '1'"
-		Text="More than one 'UnoSplashScreen' is defined; only the first will be used."
-		/>
+				Condition="'@(UnoIcon->Count())' &gt; '1'"
+				Text="More than one 'UnoIcon' is defined; only the first will be used." />
 
+		<Warning 
+				Condition="'@(UnoSplashScreen->Count())' &gt; '1'"
+				Text="More than one 'UnoSplashScreen' is defined; only the first will be used." />
+
+		<Warning
+				Condition="'%(UnoSplashScreen.Link)' != ''"
+				Text="The UnoSplashScreen.Link property will be ignored."/>
+		
 		<Error
 				Condition="'@(UnoSplashScreen)' == '@(UnoIcon)'"
 				Text="The value of UnoSplashScreen and UnoIcon cannot be the same."/>
 
 		<Error
 				Condition="'@(UnoSplashScreen)' == '%(UnoIcon.ForegroundFile)'"
-				Text="The value of UnoSplashScreen and UnoIcon cannot be the same."/>
-
-		<Warning Condition="'%(UnoSplashScreen.Link)' != ''"
-				 Text="The UnoSplashScreen.Link property will be ignored."/>
-
+				Text="The value of UnoSplashScreen and UnoIcon.ForegroundFile cannot be the same."/>
 	</Target>
 
 	<!-- Finds absolute paths to any UnoImage in this project -->
