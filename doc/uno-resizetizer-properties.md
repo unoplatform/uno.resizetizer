@@ -22,7 +22,7 @@ Properties that can be used across all items
 | Link          | Used to specify a custom path for your image, this path should be used inside your application when you want to reference the image |
 | Resize        | Boolean value to say if the asset should Resized or not. By default just vectors asset are resized by default                       |
 | TintColor     | Color that will be used to tint the image during the resize phase. You can use a Hex value or a named value like `Fuchsia`           |
-| Color         | Color that will be used as a background color                                                                                                                                    |
+| Color         | Color that will be used as a background color                                                                                         |
 
 ## UnoIcon
 

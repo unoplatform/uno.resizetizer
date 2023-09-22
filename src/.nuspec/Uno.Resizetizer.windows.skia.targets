@@ -1,5 +1,21 @@
 <Project>
 
+	<Target 
+		Name="UpdatePathOfUnoIcon"
+		BeforeTargets="UnoResizetizeCollectItems"
+		DependsOnTargets="ValidateAvailableItems"
+		Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
+		
+		<AssignLinkMetadata Items="@(UnoIcon)">
+			<Output TaskParameter="OutputItems" ItemName="_UnoIconLinked"/>
+		</AssignLinkMetadata>
+
+		<ItemGroup>
+			<UnoIcon Remove="@(UnoIcon)"/>
+			<UnoIcon Include="@(_UnoIconLinked)"/>
+		</ItemGroup>
+	</Target>
+
 	<Target
 			Name="GenerateUnoSplashWindowsSkia"
 			AfterTargets="GenerateUnoSplashScreens"
@@ -65,6 +81,7 @@
 				ApplicationVersion="$(ApplicationVersion)"
 				ApplicationTitle="$(ApplicationTitle)"
 				AppIcon="@(UnoImage->WithMetadataValue('IsAppIcon', 'true'))"
+				TargetFramework="$(_UnoResizetizerPlatformIdentifier)"
 				SplashScreen="@(UnoSplashScreen)"/>
 
 		<!-- replace user manifest -->

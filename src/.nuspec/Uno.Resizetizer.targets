@@ -263,6 +263,35 @@
 		<_WindowIconExtension Include="$(_UnoResizetizerIntermediateOutputRoot)Uno.Resizetizer.WindowIconExtensions.g.cs"/>
 	</ItemGroup>
 
+
+	<Target Name="ValidateAvailableItems"
+			BeforeTargets="UnoResizetizeCollectItems">
+
+		<Warning 
+				Condition="'%(UnoIcon.Link)' != ''"
+				Text="The UnoIcon.Link property will be ignored."/>
+
+		<Warning
+				Condition="'@(UnoIcon->Count())' &gt; '1'"
+				Text="More than one 'UnoIcon' is defined; only the first will be used." />
+
+		<Warning 
+				Condition="'@(UnoSplashScreen->Count())' &gt; '1'"
+				Text="More than one 'UnoSplashScreen' is defined; only the first will be used." />
+
+		<Warning
+				Condition="'%(UnoSplashScreen.Link)' != ''"
+				Text="The UnoSplashScreen.Link property will be ignored."/>
+		
+		<Error
+				Condition="'@(UnoSplashScreen)' == '@(UnoIcon)'"
+				Text="The value of UnoSplashScreen and UnoIcon cannot be the same."/>
+
+		<Error
+				Condition="'@(UnoSplashScreen)' == '%(UnoIcon.ForegroundFile)'"
+				Text="The value of UnoSplashScreen and UnoIcon.ForegroundFile cannot be the same."/>
+	</Target>
+
 	<!-- Finds absolute paths to any UnoImage in this project -->
 	<!-- App head projects will invoke this target on their project references to collect images -->
 	<Target Name="GetUnoItems" Outputs="@(ExportedUnoItem)">
@@ -312,12 +341,10 @@
 			<UnoImage Update="@(UnoImage)" Resize="False" Condition="'%(UnoImage.Extension)' == '.gif' and '%(UnoImage.Resize)' == ''"/>
 		</ItemGroup>
 
-		<Warning Condition="'%(UnoIcon.Link)' != ''"
-				 Text="The UnoIcon.Link property will be ignored."/>
 
 		<!-- Map @(UnoIcon) to @(UnoImage IsAppIcon=true) -->
 		<ItemGroup>
-			<UnoImage Include="@(UnoIcon)" IsAppIcon="True" Link=""/>
+			<UnoImage Include="@(UnoIcon)" IsAppIcon="True" Link="%(UnoIcon.Link)" />
 		</ItemGroup>
 
 		<!-- Write out item spec and metadata to a file we can use as an inputs for the resize target -->
@@ -372,23 +399,6 @@
 			Inputs="$(_UnoSplashInputsFile);@(UnoSplashScreen)"
 			Outputs="$(_UnoSplashStampFile)">
 
-		<Warning
-				Condition="'@(UnoSplashScreen->Count())' &gt; '1'"
-				Text="More than one 'UnoSplashScreen' is defined; only the first will be used."
-		/>
-
-		<Error
-				Condition="'@(UnoSplashScreen)' == '@(UnoIcon)'"
-				Text="The value of UnoSplashScreen and UnoIcon cannot be the same."/>
-
-		<Error
-				Condition="'@(UnoSplashScreen)' == '%(UnoIcon.ForegroundFile)'"
-				Text="The value of UnoSplashScreen and UnoIcon cannot be the same."/>
-
-		<Warning Condition="'%(UnoSplashScreen.Link)' != ''"
-				 Text="The UnoSplashScreen.Link property will be ignored."/>
-
-
 		<!--If not Windows-->
 		<ItemGroup Condition="$(_UnoResizetizerIsWasmApp) == 'True' Or $(_UnoResizetizerIsSkiaApp) == 'True' or '$(_UnoResizetizerIsAndroidApp)' == 'True' or ('$(_UnoResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst')">
 			<UnoImage Include="@(UnoSplashScreen)" IsSplashScreen="True" Link=""/>
@@ -423,6 +433,7 @@
 				IntermediateOutputIconPath="$(_UnoIntermediateAppIcon)"
 				PWAManifestPath="$(_WasmPwaManifestPath)"
 				InputsFile="$(_UnoResizetizerInputsFile);$(_UnoSplashInputsFile)"
+				TargetFramework="$(_UnoResizetizerPlatformIdentifier)"
 				Images="@(UnoImage->Distinct())">
 
 			<Output PropertyName="AppIconPath"

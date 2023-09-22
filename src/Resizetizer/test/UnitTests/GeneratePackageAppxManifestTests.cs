@@ -1,9 +1,10 @@
 ﻿#nullable enable
+using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
 using Xunit;
 
 namespace Uno.Resizetizer.Tests
@@ -18,8 +19,9 @@ namespace Uno.Resizetizer.Tests
 			string? version = null,
 			string? displayName = null,
 			ITaskItem? appIcon = null,
-			ITaskItem? splashScreen = null) =>
-			new()
+			ITaskItem? splashScreen = null)
+		{
+			return new()
 			{
 				IntermediateOutputPath = DestinationDirectory,
 				BuildEngine = this,
@@ -31,7 +33,9 @@ namespace Uno.Resizetizer.Tests
 				ApplicationTitle = displayName,
 				AppIcon = appIcon == null ? null : new[] { appIcon },
 				SplashScreen = splashScreen == null ? null : new[] { splashScreen },
+				TargetFramework = "windows"
 			};
+		}
 
 		[Theory]
 		[InlineData(null, "Package.appxmanifest")]
@@ -85,8 +89,9 @@ namespace Uno.Resizetizer.Tests
 		{
 			var input = "empty";
 			var expected = "typicalWithNoBackground";
-			var appIcon = new TaskItem("images/appicon.svg");
-			appIcon.SetMetadata("ForegroundFile", "images/appiconfg.svg");
+			var appIcon = new TaskItem("images\\appicon.svg");
+			appIcon.SetMetadata("ForegroundFile", "images\\appiconfg.svg");
+			appIcon.SetMetadata("Link", "images\\appicon.svg");
 			appIcon.SetMetadata("IsAppIcon", "true");
 
 			var splashScreen = new TaskItem("images/dotnet_bot.svg");
@@ -101,6 +106,8 @@ namespace Uno.Resizetizer.Tests
 				displayName: "Sample App",
 				appIcon: appIcon,
 				splashScreen: splashScreen);
+
+
 
 			var success = task.Execute();
 			Assert.True(success, $"{task.GetType()}.Execute() failed: " + LogErrorEvents.FirstOrDefault()?.Message);

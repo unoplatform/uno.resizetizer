@@ -26,6 +26,8 @@ namespace Uno.Resizetizer
 		[Required]
 		public ITaskItem AppxManifest { get; set; } = null!;
 
+		public string? TargetFramework { get; set; }
+
 		public string? GeneratedFilename { get; set; }
 
 		public string? ApplicationId { get; set; }
@@ -50,6 +52,7 @@ namespace Uno.Resizetizer
 #endif
 			try
 			{
+				ResizetizeImages_v0._TargetFramework = TargetFramework;
 				Directory.CreateDirectory(IntermediateOutputPath);
 
 				var filename = Path.Combine(IntermediateOutputPath, GeneratedFilename ?? "Package.appxmanifest");
@@ -159,7 +162,7 @@ namespace Uno.Resizetizer
 					if (xelem == null || string.IsNullOrEmpty(xelem.Value) || xelem.Value == PngPlaceholder)
 					{
 						var dpi = DpiPath.Windows.StoreLogo[0];
-						var path = Path.Combine(dpi.Path, appIconInfo.OutputName + dpi.NameSuffix + imageExtension);
+						var path = Path.Combine(dpi.Path + appIconInfo.OutputPath, appIconInfo.OutputName + dpi.NameSuffix + imageExtension);
 						properties.SetElementValue(xname, path);
 					}
 				}
@@ -252,7 +255,7 @@ namespace Uno.Resizetizer
 						if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PngPlaceholder)
 						{
 							var dpi = DpiPath.Windows.MediumTile[0];
-							var path = Path.Combine(dpi.Path, appIconInfo.OutputName + dpi.NameSuffix + imageExtension);
+							var path = Path.Combine(dpi.Path + appIconInfo.OutputPath, appIconInfo.OutputName + dpi.NameSuffix + imageExtension);
 							visual.SetAttributeValue(xname, path);
 						}
 					}
@@ -264,7 +267,7 @@ namespace Uno.Resizetizer
 						if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PngPlaceholder)
 						{
 							var dpi = DpiPath.Windows.Logo[0];
-							var path = Path.Combine(dpi.Path, appIconInfo.OutputName + dpi.NameSuffix + imageExtension);
+							var path = Path.Combine(dpi.Path + appIconInfo.OutputPath, appIconInfo.OutputName + dpi.NameSuffix + imageExtension);
 							visual.SetAttributeValue(xname, path);
 						}
 					}
@@ -288,7 +291,7 @@ namespace Uno.Resizetizer
 						if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PngPlaceholder)
 						{
 							var dpi = DpiPath.Windows.WideTile[0];
-							var path = Path.Combine(dpi.Path, appIconInfo.OutputName + dpi.NameSuffix + imageExtension);
+							var path = Path.Combine(dpi.Path + appIconInfo.OutputPath, appIconInfo.OutputName + dpi.NameSuffix + imageExtension);
 							tile.SetAttributeValue(xname, path);
 						}
 					}
@@ -300,7 +303,7 @@ namespace Uno.Resizetizer
 						if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PngPlaceholder)
 						{
 							var dpi = DpiPath.Windows.SmallTile[0];
-							var path = Path.Combine(dpi.Path, appIconInfo.OutputName + dpi.NameSuffix + imageExtension);
+							var path = Path.Combine(dpi.Path + appIconInfo.OutputPath, appIconInfo.OutputName + dpi.NameSuffix + imageExtension);
 							tile.SetAttributeValue(xname, path);
 						}
 					}
@@ -312,7 +315,7 @@ namespace Uno.Resizetizer
 						if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PngPlaceholder)
 						{
 							var dpi = DpiPath.Windows.LargeTile[0];
-							var path = Path.Combine(dpi.Path, appIconInfo.OutputName + dpi.NameSuffix + imageExtension);
+							var path = Path.Combine(dpi.Path + appIconInfo.OutputPath, appIconInfo.OutputName + dpi.NameSuffix + imageExtension);
 							tile.SetAttributeValue(xname, path);
 						}
 					}
