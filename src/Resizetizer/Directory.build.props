@@ -6,18 +6,10 @@
        - Feed URI in the nuget.config
        - Native assets build and sha
     -->
-<<<<<<< HEAD
-		<_SkiaSharpVersion>2.88.2</_SkiaSharpVersion>
-		<_HarfBuzzSharpVersion>2.8.2.2</_HarfBuzzSharpVersion>
-		<_SkiaSharpNativeAssetsVersion>0.0.0-commit.193b587552cb0ed39372a049d7e6c692db98c267.483</_SkiaSharpNativeAssetsVersion>
-		<SvgSkiaPackageVersion>0.5.13</SvgSkiaPackageVersion>
-		<FizzlerPackageVersion>1.2.0</FizzlerPackageVersion>
-=======
 		<_SkiaSharpVersion>2.88.5</_SkiaSharpVersion>
 		<_HarfBuzzSharpVersion>2.8.2.5</_HarfBuzzSharpVersion>
 		<!-- <_SkiaSharpNativeAssetsVersion>0.0.0-commit.193b587552cb0ed39372a049d7e6c692db98c267.483</_SkiaSharpNativeAssetsVersion> -->
 		<SvgSkiaPackageVersion>1.0.0.2</SvgSkiaPackageVersion>
 		<FizzlerPackageVersion>1.3.0</FizzlerPackageVersion>
->>>>>>> d7a39a7 (feat: bump packages versions)
 	</PropertyGroup>
 </Project>
