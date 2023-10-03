@@ -82,7 +82,7 @@ jobs:
 
     - name: Validate sample app (mobile) - dotnet
       run: |
-        dotnet /bl:.\logs\samples-dotnet.binlog samples\NewTemplate\Resizetizer.Extensions.Sample.Mobile\Resizetizer.Extensions.Sample.Mobile.csproj /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
+        dotnet build samples\NewTemplate\Resizetizer.Extensions.Sample.Mobile\Resizetizer.Extensions.Sample.Mobile.csproj --no-incremental -bl:.\logs\samples-dotnet.binlog -p:AotAssemblies=false
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
