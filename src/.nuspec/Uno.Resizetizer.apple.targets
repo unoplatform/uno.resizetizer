@@ -3,7 +3,7 @@
 			Name="GenerateUnoSplashApple"
 			AfterTargets="GenerateUnoSplashScreens"
 			DependsOnTargets="GenerateUnoSplashScreens"
-			Condition="'$(DesignTimeBuild)' != 'True'">
+			Condition="'$(DesignTimeBuild)' != 'True' And '@(UnoSplashScreen)' != ''">
 		<!-- iOS, but not Catalyst -->
 		<GenerateSplashStoryboard_v0
 				Condition="'$(TargetPlatformIdentifier)' != 'maccatalyst'"

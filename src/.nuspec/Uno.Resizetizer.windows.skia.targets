@@ -20,7 +20,7 @@
 			Name="GenerateUnoSplashWindowsSkia"
 			AfterTargets="GenerateUnoSplashScreens"
 			DependsOnTargets="GenerateUnoSplashScreens"
-			Condition="'$(DesignTimeBuild)' != 'True'">
+			Condition="'$(DesignTimeBuild)' != 'True' And '@(UnoSplashScreen)' != ''">
 		<!-- UWP / WinUI -->
 		<ItemGroup
 				Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
