@@ -14,27 +14,33 @@
 
 	<UsingTask
 			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-			TaskName="Uno.Resizetizer.ResizetizeImages_v0"/>
+			TaskName="Uno.Resizetizer.ResizetizeImages_v0"
+			TaskFactory="TaskHostFactory" />
 
 	<UsingTask
 			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-			TaskName="Uno.Resizetizer.DetectInvalidResourceOutputFilenamesTask_v0"/>
+			TaskName="Uno.Resizetizer.DetectInvalidResourceOutputFilenamesTask_v0"
+			TaskFactory="TaskHostFactory" />
 
 	<UsingTask
 			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-			TaskName="Uno.Resizetizer.CreatePartialInfoPlistTask_v0"/>
+			TaskName="Uno.Resizetizer.CreatePartialInfoPlistTask_v0"
+			TaskFactory="TaskHostFactory" />
 
 	<UsingTask
 			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-			TaskName="Uno.Resizetizer.GenerateSplashAndroidResources_v0"/>
+			TaskName="Uno.Resizetizer.GenerateSplashAndroidResources_v0"
+			TaskFactory="TaskHostFactory" />
 
 	<UsingTask
 			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-			TaskName="Uno.Resizetizer.GenerateSplashStoryboard_v0"/>
+			TaskName="Uno.Resizetizer.GenerateSplashStoryboard_v0"
+			TaskFactory="TaskHostFactory" />
 
 	<UsingTask
 			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-			TaskName="Uno.Resizetizer.GenerateSplashAssets_v0"/>
+			TaskName="Uno.Resizetizer.GenerateSplashAssets_v0"
+			TaskFactory="TaskHostFactory" />
 
 	<UsingTask
 			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
@@ -42,15 +48,18 @@
 
 	<UsingTask
 			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-			TaskName="Uno.Resizetizer.GeneratePackageAppxManifest_v0"/>
+			TaskName="Uno.Resizetizer.GeneratePackageAppxManifest_v0"
+			TaskFactory="TaskHostFactory" />
 
 	<UsingTask
 			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-			TaskName="Uno.Resizetizer.GenerateWasmSplashAssets_v0"/>
+			TaskName="Uno.Resizetizer.GenerateWasmSplashAssets_v0"
+			TaskFactory="TaskHostFactory" />
 
 	<UsingTask
 			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-			TaskName="Uno.Resizetizer.WindowIconGeneratorTask_V0"/>
+			TaskName="Uno.Resizetizer.WindowIconGeneratorTask_V0"
+			TaskFactory="TaskHostFactory" />
 
 	<PropertyGroup>
 		<CleanDependsOn>
