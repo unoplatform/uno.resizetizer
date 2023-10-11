@@ -3,7 +3,7 @@
 			Name="GenerateUnoSplashAndroid"
 			AfterTargets="GenerateUnoSplashScreens"
 			DependsOnTargets="GenerateUnoSplashScreens"
-			Condition="'$(DesignTimeBuild)' != 'True'">
+			Condition="'$(DesignTimeBuild)' != 'True' And '@(UnoSplashScreen)' != ''">
 		<!-- Android -->
 		<GenerateSplashAndroidResources_v0
 				IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
