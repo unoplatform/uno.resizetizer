@@ -53,7 +53,7 @@ jobs:
     - name: Adjust msbuild task name
       run: |
         cd src
-        gci -r -File -Include *.cs,*.targets,*.props,*.csproj | foreach-object { $a = $_.fullname; ( get-content $a ) | foreach-object { $_ -replace "v0","${{ steps.gitversion.outputs.VersionSha }}" }  | set-content $a }
+        gci -r -File -Include *.cs,*.targets,*.props,*.csproj | foreach-object { $a = $_.fullname; ( get-content $a ) | foreach-object { $_ -replace "v0","${{steps.gitversion.outputs.sha}}" }  | set-content $a }
 
     - run: |
           & dotnet tool update --global uno.check --version ${{ env.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
