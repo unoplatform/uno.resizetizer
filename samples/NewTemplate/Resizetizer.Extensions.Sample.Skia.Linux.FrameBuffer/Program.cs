@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using System;
 using Uno.UI.Runtime.Skia;
+using Uno.UI.Runtime.Skia.Linux.FrameBuffer;
 using Windows.UI.Core;
 
 namespace Resizetizer.Extensions.Sample.Skia.Framebuffer;
