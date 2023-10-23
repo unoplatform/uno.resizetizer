@@ -14,7 +14,7 @@ public class Program
 			expArgs.ExitApplication = true;
 		};
 
-		var host = new GtkHost(() => new AppHead());
+		var host = new Uno.UI.Runtime.Skia.Gtk.GtkHost(() => new AppHead());
 
 		host.Run();
 	}
