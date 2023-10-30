@@ -138,6 +138,12 @@ namespace Uno.Resizetizer
 					info.ForegroundScale = fsc;
 				}
 
+				if (info.IsSplashScreen)
+				{
+					SetPlatformForegroundScale(image, "Scale", info);
+					ApplyPlatformScale(image, info);
+				}
+
 				var fgFile = image.GetMetadata("ForegroundFile");
 				if (!string.IsNullOrEmpty(fgFile))
 				{
@@ -162,6 +168,7 @@ namespace Uno.Resizetizer
 					ApplyPlatformForegroundScale(image, info);
 				}
 
+
 				// TODO:
 				// - Parse out custom DPI's
 
@@ -179,7 +186,6 @@ namespace Uno.Resizetizer
 				info.ForegroundScale = result;
 			}
 		}
-
 
 		static void ApplyPlatformForegroundScale(ITaskItem image, ResizeImageInfo info)
 		{
@@ -200,6 +206,30 @@ namespace Uno.Resizetizer
 				//skia
 				case "netstandard" or "wpf":
 					SetPlatformForegroundScale(image, "SkiaForegroundScale", info);
+					break;
+			}
+		}
+
+
+		static void ApplyPlatformScale(ITaskItem image, ResizeImageInfo info)
+		{
+			switch (ResizetizeImages_v0.TargetPlatform)
+			{
+				case "android":
+					SetPlatformForegroundScale(image, "AndroidScale", info);
+					break;
+				case "ios":
+					SetPlatformForegroundScale(image, "IOSScale", info);
+					break;
+				case "uwp":
+					SetPlatformForegroundScale(image, "WindowsScale", info);
+					break;
+				case "wasm":
+					SetPlatformForegroundScale(image, "WasmScale", info);
+					break;
+				//skia
+				case "netstandard" or "wpf":
+					SetPlatformForegroundScale(image, "SkiaScale", info);
 					break;
 			}
 		}

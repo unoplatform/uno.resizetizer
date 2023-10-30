@@ -116,7 +116,7 @@ namespace Uno.Resizetizer
 		void Rasterize(DpiPath dpi, string destination)
 		{
 			tools ??= SkiaSharpTools.Create(Info.IsVector, Info.Filename, Info.BaseSize, Info.Color, Info.TintColor, Logger);
-			tools.Resize(dpi, destination);
+			tools.Resize(dpi, destination, Info.ForegroundScale);
 		}
 	}
 }
