@@ -24,5 +24,6 @@
     <PackageVersion Include="Uno.WinUI.Skia.Wpf" Version="5.1.0-dev.54" />
     <PackageVersion Include="Uno.WinUI.WebAssembly" Version="5.1.0-dev.54" />
     <PackageVersion Include="Xamarin.Google.Android.Material" Version="1.8.0" />
+    <PackageVersion Include="Uno.WinUI.DevServer" Version="5.1.0-dev.111" />
   </ItemGroup>
 </Project>
