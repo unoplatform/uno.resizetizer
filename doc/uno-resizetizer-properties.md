@@ -44,10 +44,16 @@ Properties that can be used across all items
 
 | Property Name | Description |
 | ------------- | ----------- |
-| Include       | Used to insert the path of the image asset, could be a `png` or `svg`             |
+| Include       | Used to insert the path of the image asset, could be a `png` or `svg`.             |
 
 ## UnoSplashScreen
 
 | Property Name | Description |
 | ------------- | ----------- |
-| Include       | Used to insert the path of the image asset, could be a `png` or `svg`             |
+| Include       | Used to insert the path of the image asset, could be a `png` or `svg`.             |
+| Scale       | Used to scale the image that will be used as SplashScreen. This property will be override by any platform specific scale.            |
+| AndroidScale       | Used to scale the image that will be used as SplashScreen on Android platform.            |
+| IOSScale       | Used to scale the image that will be used as SplashScreen on iOS platform.            |
+| WindowsScale       | Used to scale the image that will be used as SplashScreen on Windows platform.            |
+| WasmScale       | Used to scale the image that will be used as SplashScreen on Wasm.            |
+| SkiaScale       | Used to scale the image that will be used as SplashScreen on Skia targets (GTK and WPF).            |
