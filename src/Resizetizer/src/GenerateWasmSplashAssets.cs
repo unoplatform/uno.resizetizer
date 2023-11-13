@@ -29,11 +29,11 @@ public class GenerateWasmSplashAssets_v0 : Task
 	{
 #if DEBUG_RESIZETIZER
 
-		if (System.Diagnostics.Debugger.IsAttached)
-		{
-			System.Diagnostics.Debugger.Break();
-		}
-		System.Diagnostics.Debugger.Launch();
+		//if (System.Diagnostics.Debugger.IsAttached)
+		//{
+		//	System.Diagnostics.Debugger.Break();
+		//}
+		//System.Diagnostics.Debugger.Launch();
 
 #endif
 		if (UnoSplashScreen is null || UnoSplashScreen.Length is 0 )

@@ -33,6 +33,15 @@ internal sealed class WasmIconGenerator
 
 	public string ProcessThePwaManifest()
 	{
+#if DEBUG_RESIZETIZER
+
+		if (System.Diagnostics.Debugger.IsAttached)
+		{
+			System.Diagnostics.Debugger.Break();
+		}
+		System.Diagnostics.Debugger.Launch();
+
+#endif
 		if (string.IsNullOrWhiteSpace(pwaManifestPath))
 		{
 			Logger.Log("There's no PWA Manifest file.");
