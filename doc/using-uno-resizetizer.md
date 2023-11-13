@@ -190,6 +190,9 @@ Icon = "@mipmap/iconapp",
 > [!NOTE]
 > In some projects the `manifest.webmanifest` be `manifest.json`. If so, you can either adjust your project to use `manifest.webmanifest` or keep it as `manifest.json`.
 
+> [!INFO]
+> Uno.Resizetizer will support comments on your json file, but they will ignored on the final generated file.
+
 # [**Apple**](#tab/Apple)
 
 * For `mac-catalyst` and `iOS`, open the [`info.plist` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Mobile/iOS/Info.plist), find the `XSAppIconAsset` key, and change its value to `Assets.xcassets/iconapp.appiconset`.
