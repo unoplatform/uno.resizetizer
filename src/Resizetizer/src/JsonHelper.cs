@@ -7,9 +7,13 @@ namespace Uno.Resizetizer;
 // From https://github.com/dotnet/runtime/issues/31433#issuecomment-570475853
 public static class JsonHelper
 {
+	internal static JsonDocumentOptions jsonDocumentOptions = new()
+	{
+		CommentHandling = JsonCommentHandling.Skip
+	};
 	public static void Merge(string originalJson, string newContent, Utf8JsonWriter jsonWriter)
 	{
-		using (JsonDocument jDoc1 = JsonDocument.Parse(originalJson))
+		using (JsonDocument jDoc1 = JsonDocument.Parse(originalJson, jsonDocumentOptions))
 		using (JsonDocument jDoc2 = JsonDocument.Parse(newContent))
 		{
 			JsonElement root1 = jDoc1.RootElement;
