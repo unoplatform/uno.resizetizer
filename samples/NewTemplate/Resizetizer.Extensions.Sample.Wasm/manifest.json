@@ -1,8 +1,9 @@
 {
+  // comment test
   "background_color": "#ffffff",
   "description": "Resizetizer.Extensions.Sample",
   "display": "standalone",
-  "icons": [ ],
+  "icons": [],
   "name": "Resizetizer.Extensions.Sample",
   "short_name": "Resizetizer.Extensions.Sample",
   "start_url": "/index.html",
