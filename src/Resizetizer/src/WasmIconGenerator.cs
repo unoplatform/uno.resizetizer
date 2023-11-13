@@ -1,14 +1,8 @@
-﻿using SkiaSharp;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics.Contracts;
-using System.Globalization;
+﻿using System.Globalization;
 using System.IO;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
 
 namespace Uno.Resizetizer;
 internal sealed class WasmIconGenerator
@@ -42,6 +36,7 @@ internal sealed class WasmIconGenerator
 		System.Diagnostics.Debugger.Launch();
 
 #endif
+
 		if (string.IsNullOrWhiteSpace(pwaManifestPath))
 		{
 			Logger.Log("There's no PWA Manifest file.");
@@ -50,7 +45,7 @@ internal sealed class WasmIconGenerator
 
 		var json = File.ReadAllText(pwaManifestPath);
 
-		var jsonNodeManifest = JsonNode.Parse(json);
+		var jsonNodeManifest = JsonNode.Parse(json, documentOptions: JsonHelper.jsonDocumentOptions);
 
 		if (!IconPropertyIsEmpty(jsonNodeManifest))
 		{
@@ -60,7 +55,7 @@ internal sealed class WasmIconGenerator
 
 		var appIconImagesJson = new JsonArray();
 		Logger.Log("Creating the icons property for the PWA manifest.");
-		
+
 		foreach (var dpi in dpiPaths)
 		{
 			var w = dpi.Size.Value.Width.ToString("0.#", CultureInfo.InvariantCulture);
@@ -95,7 +90,7 @@ internal sealed class WasmIconGenerator
 		using var writer = new Utf8JsonWriter(fs, writeOptions);
 
 		Logger.Log("Merging the original PWA manifest with the icons property.");
-		
+
 		JsonHelper.Merge(json, jsonIconsObject.ToJsonString(), writer);
 
 		writer.Flush();
