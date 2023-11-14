@@ -284,11 +284,11 @@
 				Text="The UnoSplashScreen.Link property will be ignored."/>
 		
 		<Error
-				Condition="'@(UnoSplashScreen)' == '@(UnoIcon)'"
+				Condition="'@(UnoSplashScreen)' != '' And '@(UnoSplashScreen)' == '@(UnoIcon)'"
 				Text="The value of UnoSplashScreen and UnoIcon cannot be the same."/>
 
 		<Error
-				Condition="'@(UnoSplashScreen)' == '%(UnoIcon.ForegroundFile)'"
+				Condition="'@(UnoSplashScreen)' != '' And '@(UnoSplashScreen)' == '%(UnoIcon.ForegroundFile)'"
 				Text="The value of UnoSplashScreen and UnoIcon.ForegroundFile cannot be the same."/>
 	</Target>
 
