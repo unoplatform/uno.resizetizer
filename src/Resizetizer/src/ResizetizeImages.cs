@@ -51,11 +51,11 @@ namespace Uno.Resizetizer
 		{
 #if DEBUG_RESIZETIZER
 
-		if (System.Diagnostics.Debugger.IsAttached)
-		{
-			System.Diagnostics.Debugger.Break();
-		}
-		System.Diagnostics.Debugger.Launch();
+		//if (System.Diagnostics.Debugger.IsAttached)
+		//{
+		//	System.Diagnostics.Debugger.Break();
+		//}
+		//System.Diagnostics.Debugger.Launch();
 
 #endif
 			TargetPlatform = PlatformType;
