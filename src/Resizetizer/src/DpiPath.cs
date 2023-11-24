@@ -230,16 +230,6 @@ namespace Uno.Resizetizer
 				LargeTile).ToArray();
 		}
 
-		public static class Wpf
-		{
-			public static DpiPath[] AppIcon
-				=> new[]
-				{
-					new DpiPath("", 4.0m),
-				};
-		}
-
-
 		public static class Wasm
 		{
 			public static DpiPath[] AppIcon => new[]
@@ -276,10 +266,8 @@ namespace Uno.Resizetizer
 					break;
 				case "uwp":
 				case "windows":
-					result = DpiPath.Windows.AppIcon;
-					break;
 				case "wpf":
-					result = DpiPath.Wpf.AppIcon;
+					result = DpiPath.Windows.AppIcon;
 					break;
 				case "wasm":
 					result = DpiPath.Wasm.AppIcon;
