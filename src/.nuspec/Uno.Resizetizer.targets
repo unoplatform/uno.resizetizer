@@ -267,7 +267,7 @@
 	<Target Name="ValidateAvailableItems"
 			BeforeTargets="UnoResizetizeCollectItems">
 
-		<Warning 
+		<Warning
 				Condition="'%(UnoIcon.Link)' != ''"
 				Text="The UnoIcon.Link property will be ignored."/>
 
@@ -275,14 +275,14 @@
 				Condition="'@(UnoIcon->Count())' &gt; '1'"
 				Text="More than one 'UnoIcon' is defined; only the first will be used." />
 
-		<Warning 
+		<Warning
 				Condition="'@(UnoSplashScreen->Count())' &gt; '1'"
 				Text="More than one 'UnoSplashScreen' is defined; only the first will be used." />
 
 		<Warning
 				Condition="'%(UnoSplashScreen.Link)' != ''"
 				Text="The UnoSplashScreen.Link property will be ignored."/>
-		
+
 		<Error
 				Condition="'@(UnoSplashScreen)' != '' And '@(UnoSplashScreen)' == '@(UnoIcon)'"
 				Text="The value of UnoSplashScreen and UnoIcon cannot be the same."/>
@@ -486,8 +486,9 @@
 		<ItemGroup Condition="'$(_UnoResizetizerIsWasmApp)' != 'True'">
 			<Content Include="@(_UnoResizetizerCollectedImages)"
 					 Link="%(_UnoResizetizerCollectedImages.RecursiveDir)%(_UnoResizetizerCollectedImages.Filename)%(_UnoResizetizerCollectedImages.Extension)"
-					 TargetPath="%(_UnoResizetizerCollectedImages.RecursiveDir)%(_UnoResizetizerCollectedImages.Filename)%(_UnoResizetizerCollectedImages.Extension)">
-			</Content>
+					 TargetPath="%(_UnoResizetizerCollectedImages.RecursiveDir)%(_UnoResizetizerCollectedImages.Filename)%(_UnoResizetizerCollectedImages.Extension)"/>
+
+			<Content Include="@(Content)" Condition="'%(Content.Extension)' == '.ico'" CopyToOutputDirectory="PreserveNewest"/>
 
 			<FileWrites Include="@(_UnoResizetizerCollectedImages)"/>
 		</ItemGroup>
