@@ -488,7 +488,7 @@
 					 Link="%(_UnoResizetizerCollectedImages.RecursiveDir)%(_UnoResizetizerCollectedImages.Filename)%(_UnoResizetizerCollectedImages.Extension)"
 					 TargetPath="%(_UnoResizetizerCollectedImages.RecursiveDir)%(_UnoResizetizerCollectedImages.Filename)%(_UnoResizetizerCollectedImages.Extension)"/>
 
-			<Content Include="@(Content)" Condition="'%(Content.Extension)' == '.ico'" CopyToOutputDirectory="PreserveNewest"/>
+			<Content Include="@(Content)" Condition="'%(Content.Extension)' == '.ico' And '$(_UnoResizetizerIsWindowsAppSdk)' == 'True'" CopyToOutputDirectory="PreserveNewest"/>
 
 			<FileWrites Include="@(_UnoResizetizerCollectedImages)"/>
 		</ItemGroup>
