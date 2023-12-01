@@ -8,7 +8,6 @@
 	<ItemGroup>
 		<EmbeddedResource Include="Package.appxmanifest" />
 		<Manifest Include="$(ApplicationManifest)" />
-		<Content Include="..\Resizetizer.Extensions.Sample.Windows\Images\StoreLogo.png" />
 	</ItemGroup>
 
 	<ItemGroup>
