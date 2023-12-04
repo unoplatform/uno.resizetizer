@@ -28,4 +28,18 @@
 			Text="OverrideTargetFramework set to '$(OverrideTargetFramework)' is invalid. Set OverrideTargetFramework to $([MSBuild]::Escape('$'))(DotNetVersion) or skip building this project (eg unload the project in Visual Studio)"
 			Condition="'$(OverrideTargetFramework)'!='$(DotNetVersion)'" />
 	</Target>
+
+	<Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'!=''">
+		<PropertyGroup>
+			<_ResizetizerManifestPath>$(_UnoIntermediateManifest)Package.appxmanifest</_ResizetizerManifestPath>
+			<_ResizetizerSplashScreenPath>$(_UnoIntermediateImages)splash_screen.scale-125.png</_ResizetizerSplashScreenPath>
+			<_ResizetizerAppIconPath>$(_UnoIntermediateImages)iconapp.ico</_ResizetizerAppIconPath>
+			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateImages)Icons\iconappLogo.scale-100.png</_ResizetizerAppIconImagesPath>
+		</PropertyGroup>
+		<Message Text="Validating local assets at '$(_ResizetizerIntermediateOutputRoot)'" Importance="high" />
+		<Error Condition="!Exists('$(_ResizetizerManifestPath)')" Text="Manifest file wasn't created." />
+		<Error Condition="!Exists('$(_ResizetizerSplashScreenPath)')" Text="SplashScreen file wasn't created." />
+		<Error Condition="!Exists('$(_ResizetizerAppIconPath)')" Text=".ico file wasn't created." />
+		<Error Condition="!Exists('$(_ResizetizerAppIconImagesPath)')" Text="App icon image file wasn't created." />
+	</Target>
 </Project>
