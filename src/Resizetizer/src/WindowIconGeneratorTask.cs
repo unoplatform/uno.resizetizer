@@ -68,6 +68,8 @@ namespace Uno.Resizetizer
 			global::Microsoft.UI.Windowing.AppWindow appWindow =
 				global::Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
 			appWindow.SetIcon(""{iconName}.ico"");
+
+			appWindow.Title = window.Title;
 #endif
 		}}
 	}}
