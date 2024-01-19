@@ -67,9 +67,12 @@ namespace Uno.Resizetizer
 			// Lastly, retrieve the AppWindow for the current (XAML) WinUI 3 window.
 			global::Microsoft.UI.Windowing.AppWindow appWindow =
 				global::Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
-			appWindow.SetIcon(""{iconName}.ico"");
 
-			appWindow.Title = window.Title;
+			if (appWindow != null)
+			{{
+				appWindow.SetIcon(""{iconName}.ico"");
+				appWindow.Title = AppInfo.Current.DisplayInfo.DisplayName;
+			}}
 #endif
 		}}
 	}}
