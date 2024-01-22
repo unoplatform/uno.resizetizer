@@ -300,7 +300,7 @@ Next, some adjustments are needed on `Android`, `Windows`, and `iOS`.
 
 # [**iOS**](#tab/iOS)
 
-Open the [`info.plist` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Mobile/iOS/Info.plist) and look for the `UILaunchStoryboardName` key, delete it and its value.
+* Open the [`info.plist` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Mobile/iOS/Info.plist) and look for the `UILaunchStoryboardName` key, delete it and its value.
 
 > [!TIP]
 > Feel free to delete the `LaunchScreen.storyboard` file.
