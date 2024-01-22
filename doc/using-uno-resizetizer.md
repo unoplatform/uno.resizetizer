@@ -140,13 +140,13 @@ Next, some adjustments are needed on `Android`, `Windows`, `WebAssembly`, `mac-c
 
 * Open the [`Main.Android.cs` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Mobile/Android/Main.Android.cs) (or the file that has the `Android.App.ApplicationAttribute`), and change the `Icon` property, in that attribute, to be the name of the file used in the `Include` property of `UnoIcon`, in our case will be:
 
-```csharp
-[global::Android.App.ApplicationAttribute(
-    Label = "@string/ApplicationName",
-    Icon = "@mipmap/iconapp",
-    //...
-)]
-```
+  ```csharp
+  [global::Android.App.ApplicationAttribute(
+      Label = "@string/ApplicationName",
+      Icon = "@mipmap/iconapp",
+      //...
+  )]
+  ```
 
 > [!TIP]
 > You can remove the old assets related to the app icon from the `Android` project.
@@ -176,24 +176,24 @@ Next, some adjustments are needed on `Android`, `Windows`, `WebAssembly`, `mac-c
 > [!NOTE]
 > You will only need to configure this platform if you want to deploy it as a PWA.
 
-Open the [`manifest.webmanifest` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Wasm/manifest.json) and look for the `icons` tag and remove all the values inside it. You should be seeing an empty array like this:
+* Open the [`manifest.webmanifest` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Wasm/manifest.json) and look for the `icons` tag and remove all the values inside it. You should be seeing an empty array like this:
 
-```json
-{
-  "background_color": "#ffffff",
-  "description": "UnoResApp1",
-  "display": "standalone",
-  "icons": [ ],
-}
-```
+    ```json
+    {
+      "background_color": "#ffffff",
+      "description": "UnoResApp1",
+      "display": "standalone",
+      "icons": [ ],
+    }
+    ```
 
 > [!NOTE]
 > In some projects, the file is named `manifest.json` instead of `manifest.webmanifest`. If so, you can either adjust your project to use `manifest.webmanifest` or keep it as `manifest.json`.
 >
 > [!NOTE]
-> Uno.Resizetizer will support comments on your json file, but they will ignored on the final generated file.
+> Uno.Resizetizer will support comments on your json file, but they will be ignored on the final generated file.
 
-# [**Apple**](#tab/Apple)
+# [**iOS**](#tab/iOS)
 
 * For `mac-catalyst` and `iOS`, open the [`info.plist` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Mobile/iOS/Info.plist), find the `XSAppIconAsset` key, and change its value to `Assets.xcassets/iconapp.appiconset`.
 
@@ -293,6 +293,10 @@ Open the [`Package.appxmanifest` file](https://github.com/unoplatform/uno.resize
    </Application>
  </Applications>
 ```
+
+# [**Web Assembly (Wasm)**](#tab/Wasm)
+
+No additional adjustments are needed on Wasm.
 
 # [**iOS**](#tab/iOS)
 
