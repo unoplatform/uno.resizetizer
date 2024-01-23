@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Xml.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -30,6 +30,17 @@ public class WindowIconGeneratorTask_V0 : Task
 			Log.LogError("The IntermediateOutputDirectory (typically the obj directory) is a required parameter but was null or empty.");
 			return false;
 		}
+
+		var windowTitle = string.Empty;
+
+        if (Directory.Exists(IntermediateOutputDirectory))
+		{
+			windowTitle = GetDisplayName();
+        }
+		else
+		{
+            Directory.CreateDirectory(IntermediateOutputDirectory);
+        }
 
 		var iconPath = UnoIcons[0].ItemSpec;
 		var iconName = Path.GetFileNameWithoutExtension(iconPath);
@@ -68,19 +79,41 @@ namespace Uno.Resizetizer
 			global::Microsoft.UI.Windowing.AppWindow appWindow =
 				global::Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
 			appWindow.SetIcon(""{iconName}.ico"");
+			appWindow.Title = ""{windowTitle}"";
 #endif
 		}}
 	}}
 }}";
-
-		if(!Directory.Exists(IntermediateOutputDirectory))
-		{
-			Directory.CreateDirectory(IntermediateOutputDirectory);
-		}
 
 		var item = new TaskItem(Path.Combine(IntermediateOutputDirectory, FileName));
 		File.WriteAllText(item.ItemSpec, code);
 		GeneratedClass = new [] { item };
 		return true;
 	}
+
+	string GetDisplayName()
+	{
+		string manifestOutputPath = Path.Combine(IntermediateOutputDirectory, "m", "Package.appxmanifest");
+
+        if (File.Exists(manifestOutputPath))
+		{
+			var appx = XDocument.Load(manifestOutputPath);
+            var xmlns = appx.Root!.GetDefaultNamespace();
+
+			var properties = appx.Root.Element(xmlns + "Properties");
+				
+			if (properties != null)
+			{
+                var xname = xmlns + "DisplayName";
+                var xelem = properties.Element(xname);
+
+                if (xelem != null)
+                {
+					return xelem.Value ?? string.Empty;
+                }
+            }
+        }
+
+		return string.Empty;
+    }
 }
