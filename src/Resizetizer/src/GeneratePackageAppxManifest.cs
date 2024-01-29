@@ -158,7 +158,7 @@ namespace Uno.Resizetizer
                     }
                 }
 
-				DisplayName = xDisplayNameElem.Value;
+				DisplayName = properties.Element(xDisplayName).Value;
 
                 // <Logo>
                 if (appIconInfo != null)
