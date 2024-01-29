@@ -51,7 +51,7 @@ namespace Uno.Resizetizer
 		public override bool Execute()
 		{
 #if DEBUG_RESIZETIZER
-	//		System.Diagnostics.Debugger.Launch();
+			System.Diagnostics.Debugger.Launch();
 #endif
 			try
 			{
@@ -146,22 +146,22 @@ namespace Uno.Resizetizer
 					appx.Root.Add(properties);
 				}
 
-                // <DisplayName>
-                var xDisplayName = xmlns + "DisplayName";
-                var xDisplayNameElem = properties.Element(xDisplayName);
+				// <DisplayName>
+				var xDisplayName = xmlns + "DisplayName";
+				var xDisplayNameElem = properties.Element(xDisplayName);
 
-                if (!string.IsNullOrEmpty(ApplicationTitle))
+				if (!string.IsNullOrEmpty(ApplicationTitle))
 				{
 					if (xDisplayNameElem == null || string.IsNullOrEmpty(xDisplayNameElem.Value) || xDisplayNameElem.Value == DefaultPlaceholder)
 					{
 						properties.SetElementValue(xDisplayName, ApplicationTitle);
-                    }
-                }
+					}
+				}
 
 				DisplayName = properties.Element(xDisplayName).Value;
 
-                // <Logo>
-                if (appIconInfo != null)
+				// <Logo>
+				if (appIconInfo != null)
 				{
 					var xname = xmlns + "Logo";
 					var xelem = properties.Element(xname);

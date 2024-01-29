@@ -1,10 +1,10 @@
 <Project>
 
-	<Target 
+	<Target
 		Name="UpdatePathOfUnoIcon"
 		BeforeTargets="UnoResizetizeCollectItems"
 		DependsOnTargets="ValidateAvailableItems">
-		
+
 		<AssignLinkMetadata Items="@(UnoIcon)">
 			<Output TaskParameter="OutputItems" ItemName="_UnoIconLinked"/>
 		</AssignLinkMetadata>
@@ -71,7 +71,7 @@
 			</_UnoWindowsApplicationId>
 		</PropertyGroup>
 
-        <GeneratePackageAppxManifest_v0
+		<GeneratePackageAppxManifest_v0
 				IntermediateOutputPath="$(_UnoIntermediateManifest)"
 				AppxManifest="@(AppxManifest);@(_UnoAppxManifest);@(_SkiaManifest)"
 				GeneratedFilename="Package.appxmanifest"
@@ -82,9 +82,9 @@
 				AppIcon="@(UnoImage->WithMetadataValue('IsAppIcon', 'true'))"
 				TargetFramework="$(_UnoResizetizerPlatformIdentifier)"
 				SplashScreen="@(UnoSplashScreen)">
-            <Output PropertyName="WindowTitle"
+			<Output PropertyName="WindowTitle"
 					TaskParameter="DisplayName"/>
-        </GeneratePackageAppxManifest_v0>
+		</GeneratePackageAppxManifest_v0>
 
 		<!-- replace user manifest -->
 		<ItemGroup Condition="'@(AppxManifest)' != ''">
