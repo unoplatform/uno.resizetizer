@@ -147,18 +147,17 @@ namespace Uno.Resizetizer
 				}
 
 				// <DisplayName>
-				var xDisplayName = xmlns + "DisplayName";
-				var xDisplayNameElem = properties.Element(xDisplayName);
-
+				var xdisplayname = xmlns + "DisplayName";
 				if (!string.IsNullOrEmpty(ApplicationTitle))
 				{
-					if (xDisplayNameElem == null || string.IsNullOrEmpty(xDisplayNameElem.Value) || xDisplayNameElem.Value == DefaultPlaceholder)
+					var xelem = properties.Element(xdisplayname);
+					if (xelem == null || string.IsNullOrEmpty(xelem.Value) || xelem.Value == DefaultPlaceholder)
 					{
-						properties.SetElementValue(xDisplayName, ApplicationTitle);
+						properties.SetElementValue(xdisplayname, ApplicationTitle);
 					}
 				}
 
-				DisplayName = properties.Element(xDisplayName).Value;
+				DisplayName = properties.Element(xdisplayname).Value;
 
 				// <Logo>
 				if (appIconInfo != null)
