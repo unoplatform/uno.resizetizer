@@ -45,6 +45,9 @@ namespace Uno.Resizetizer
 		[Output]
 		public ITaskItem GeneratedAppxManifest { get; set; } = null!;
 
+		[Output]
+		public string DisplayName { get; private set; } = null!;
+
 		public override bool Execute()
 		{
 #if DEBUG_RESIZETIZER
@@ -143,19 +146,22 @@ namespace Uno.Resizetizer
 					appx.Root.Add(properties);
 				}
 
-				// <DisplayName>
-				if (!string.IsNullOrEmpty(ApplicationTitle))
-				{
-					var xname = xmlns + "DisplayName";
-					var xelem = properties.Element(xname);
-					if (xelem == null || string.IsNullOrEmpty(xelem.Value) || xelem.Value == DefaultPlaceholder)
-					{
-						properties.SetElementValue(xname, ApplicationTitle);
-					}
-				}
+                // <DisplayName>
+                var xDisplayName = xmlns + "DisplayName";
+                var xDisplayNameElem = properties.Element(xDisplayName);
 
-				// <Logo>
-				if (appIconInfo != null)
+                if (!string.IsNullOrEmpty(ApplicationTitle))
+				{
+					if (xDisplayNameElem == null || string.IsNullOrEmpty(xDisplayNameElem.Value) || xDisplayNameElem.Value == DefaultPlaceholder)
+					{
+						properties.SetElementValue(xDisplayName, ApplicationTitle);
+                    }
+                }
+
+				DisplayName = xDisplayNameElem.Value;
+
+                // <Logo>
+                if (appIconInfo != null)
 				{
 					var xname = xmlns + "Logo";
 					var xelem = properties.Element(xname);
