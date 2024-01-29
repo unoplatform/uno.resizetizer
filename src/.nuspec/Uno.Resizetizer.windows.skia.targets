@@ -82,7 +82,7 @@
 				AppIcon="@(UnoImage->WithMetadataValue('IsAppIcon', 'true'))"
 				TargetFramework="$(_UnoResizetizerPlatformIdentifier)"
 				SplashScreen="@(UnoSplashScreen)">
-            <Output ItemName="WindowTitle"
+            <Output PropertyName="WindowTitle"
 					TaskParameter="DisplayName"/>
         </GeneratePackageAppxManifest_v0>
 
