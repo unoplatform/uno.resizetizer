@@ -511,6 +511,11 @@
 			BeforeTargets="Build;CoreCompile;XamlPreCompile"
 			Inputs="@(UnoIcon)"
 			Outputs="@(_WindowIconExtension)">
+
+		<PropertyGroup>
+			<WindowTitle Condition="'$(WindowTitle)' == ''">$(ApplicationTitle)</WindowTitle>
+		</PropertyGroup>
+
 		<WindowIconGeneratorTask_v0
 				IntermediateOutputDirectory="$(_UnoResizetizerIntermediateOutputRoot)"
 				WindowTitle="$(WindowTitle)"
