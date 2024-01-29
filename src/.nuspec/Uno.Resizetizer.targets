@@ -509,7 +509,6 @@
 	<Target Name="_GenerateWindowUnoIconExtension"
 			Condition="'$(_UnoResizetizerIsCompatibleApp)' == 'True'"
 			BeforeTargets="Build;CoreCompile;XamlPreCompile"
-            DependsOnTargets="UnoGeneratePackageAppxManifest"
 			Inputs="@(UnoIcon)"
 			Outputs="@(_WindowIconExtension)">
 		<WindowIconGeneratorTask_v0

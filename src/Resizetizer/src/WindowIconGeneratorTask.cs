@@ -14,7 +14,6 @@ public class WindowIconGeneratorTask_V0 : Task
 	[Required]
 	public string IntermediateOutputDirectory { get; set; }
 
-	[Required]
 	public string WindowTitle { get; set; }
 
 	[Output]
