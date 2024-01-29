@@ -513,7 +513,7 @@
 			Outputs="@(_WindowIconExtension)">
 		<WindowIconGeneratorTask_v0
 				IntermediateOutputDirectory="$(_UnoResizetizerIntermediateOutputRoot)"
-                WindowTitle="$(WindowTitle)"
+				WindowTitle="$(WindowTitle)"
 				UnoIcons="@(UnoIcon)">
 			<Output ItemName="GeneratedFile"
 					TaskParameter="GeneratedClass"/>
