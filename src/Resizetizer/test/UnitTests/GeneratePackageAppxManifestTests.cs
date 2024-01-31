@@ -1,7 +1,8 @@
 ﻿#nullable enable
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using System.Collections.Generic;
+using System;
+using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -26,13 +27,39 @@ namespace Uno.Resizetizer.Tests
 				IntermediateOutputPath = DestinationDirectory,
 				BuildEngine = this,
 				GeneratedFilename = generatedFilename,
-				AppxManifest = new TaskItem(manifest),
+				AppxManifest = [new TaskItem(manifest)],
 				ApplicationId = guid,
 				ApplicationDisplayVersion = displayVersion,
 				ApplicationVersion = version,
 				ApplicationTitle = displayName,
-				AppIcon = appIcon == null ? null : new[] { appIcon },
-				SplashScreen = splashScreen == null ? null : new[] { splashScreen },
+				AppIcon = appIcon == null ? null : [appIcon],
+				SplashScreen = splashScreen == null ? null : [splashScreen],
+				TargetFramework = "windows"
+			};
+		}
+
+		protected GeneratePackageAppxManifest_v0 GetNewTask(
+		ITaskItem[] appxManifests,
+		string? generatedFilename = null,
+		string? guid = null,
+		string? displayVersion = null,
+		string? version = null,
+		string? displayName = null,
+		ITaskItem? appIcon = null,
+		ITaskItem? splashScreen = null)
+		{
+			return new()
+			{
+				IntermediateOutputPath = DestinationDirectory,
+				BuildEngine = this,
+				GeneratedFilename = generatedFilename,
+				AppxManifest = appxManifests,
+				ApplicationId = guid,
+				ApplicationDisplayVersion = displayVersion,
+				ApplicationVersion = version,
+				ApplicationTitle = displayName,
+				AppIcon = appIcon == null ? null : [appIcon],
+				SplashScreen = splashScreen == null ? null : [splashScreen],
 				TargetFramework = "windows"
 			};
 		}
@@ -45,6 +72,7 @@ namespace Uno.Resizetizer.Tests
 			var task = GetNewTask($"testdata/appxmanifest/typical.appxmanifest", generatedFilename: specificFn);
 
 			var success = task.Execute();
+
 			Assert.True(success, $"{task.GetType()}.Execute() failed: " + LogErrorEvents.FirstOrDefault()?.Message);
 
 			Assert.True(File.Exists(Path.Combine(DestinationDirectory, outputFn)), "Package.appxmanifest file was not generated.");
@@ -182,6 +210,20 @@ namespace Uno.Resizetizer.Tests
 		{
 			var result = GeneratePackageAppxManifest_v0.TryMergeVersionNumbers(displayVersion, appVersion, out var merged);
 			Assert.False(result);
+		}
+
+		[Fact]
+		public void TaskShouldFileAWarningIfMoreThanOneManifestIsProvided()
+		{
+			// Arrange
+			var taskItem = new TaskItem("testdata/appxmanifest/typical.appxmanifest");
+			var task = GetNewTask(appxManifests: [taskItem, taskItem]);
+
+			// Act
+			task.Execute();
+
+			// Assert
+			Assert.True(LogWarningEvents.Count > 0, "Warnings should be greater than zero");
 		}
 	}
 }
