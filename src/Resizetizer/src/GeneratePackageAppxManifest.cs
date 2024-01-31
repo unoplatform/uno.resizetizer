@@ -45,10 +45,13 @@ namespace Uno.Resizetizer
 		[Output]
 		public ITaskItem GeneratedAppxManifest { get; set; } = null!;
 
+		[Output]
+		public string DisplayName { get; private set; } = null!;
+
 		public override bool Execute()
 		{
 #if DEBUG_RESIZETIZER
-	//		System.Diagnostics.Debugger.Launch();
+			//System.Diagnostics.Debugger.Launch();
 #endif
 			try
 			{
@@ -144,15 +147,17 @@ namespace Uno.Resizetizer
 				}
 
 				// <DisplayName>
+				var xdisplayname = xmlns + "DisplayName";
 				if (!string.IsNullOrEmpty(ApplicationTitle))
 				{
-					var xname = xmlns + "DisplayName";
-					var xelem = properties.Element(xname);
+					var xelem = properties.Element(xdisplayname);
 					if (xelem == null || string.IsNullOrEmpty(xelem.Value) || xelem.Value == DefaultPlaceholder)
 					{
-						properties.SetElementValue(xname, ApplicationTitle);
+						properties.SetElementValue(xdisplayname, ApplicationTitle);
 					}
 				}
+
+				DisplayName = properties.Element(xdisplayname).Value;
 
 				// <Logo>
 				if (appIconInfo != null)
