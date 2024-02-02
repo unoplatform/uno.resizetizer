@@ -27,13 +27,12 @@ namespace Uno.Resizetizer.Tests
 				IntermediateOutputPath = DestinationDirectory,
 				BuildEngine = this,
 				GeneratedFilename = generatedFilename,
-				AppxManifest = [new TaskItem(manifest)],
+				AppxManifest = new []{new TaskItem(manifest)},
 				ApplicationId = guid,
 				ApplicationDisplayVersion = displayVersion,
 				ApplicationVersion = version,
-				ApplicationTitle = displayName,
-				AppIcon = appIcon == null ? null : [appIcon],
-				SplashScreen = splashScreen == null ? null : [splashScreen],
+				ApplicationTitle = displayName,AppIcon = appIcon == null ? null : new[] { appIcon },
+				SplashScreen = splashScreen == null ? null : new[] { splashScreen },
 				TargetFramework = "windows"
 			};
 		}
@@ -57,9 +56,8 @@ namespace Uno.Resizetizer.Tests
 				ApplicationId = guid,
 				ApplicationDisplayVersion = displayVersion,
 				ApplicationVersion = version,
-				ApplicationTitle = displayName,
-				AppIcon = appIcon == null ? null : [appIcon],
-				SplashScreen = splashScreen == null ? null : [splashScreen],
+				ApplicationTitle = displayName,AppIcon = appIcon == null ? null : new[] { appIcon },
+				SplashScreen = splashScreen == null ? null : new[] { splashScreen },
 				TargetFramework = "windows"
 			};
 		}
@@ -217,7 +215,7 @@ namespace Uno.Resizetizer.Tests
 		{
 			// Arrange
 			var taskItem = new TaskItem("testdata/appxmanifest/typical.appxmanifest");
-			var task = GetNewTask(appxManifests: [taskItem, taskItem]);
+			var task = GetNewTask(appxManifests: new [] {taskItem, taskItem});
 
 			// Act
 			task.Execute();

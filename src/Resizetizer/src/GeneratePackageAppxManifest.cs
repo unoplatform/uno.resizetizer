@@ -24,7 +24,7 @@ namespace Uno.Resizetizer
 		public string IntermediateOutputPath { get; set; } = null!;
 
 		[Required]
-		public ITaskItem[] AppxManifest { get; set; } = [];
+		public ITaskItem[] AppxManifest { get; set; } = Array.Empty<ITaskItem>();
 
 		public string? TargetFramework { get; set; }
 
