@@ -13,6 +13,11 @@
 			<UnoIcon Remove="@(UnoIcon)"/>
 			<UnoIcon Include="@(_UnoIconLinked)"/>
 		</ItemGroup>
+
+		<ItemGroup Condition="'@(_UnoIconLinked)' == ''">
+			<UnoIcon Update="@(UnoIcon)" Link="%(UnoIcon.Identity)" Condition="'%(UnoIcon.Link)' == ''"/>
+		</ItemGroup>
+
 	</Target>
 
 	<Target
