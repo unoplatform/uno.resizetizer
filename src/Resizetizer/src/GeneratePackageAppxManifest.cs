@@ -24,7 +24,7 @@ namespace Uno.Resizetizer
 		public string IntermediateOutputPath { get; set; } = null!;
 
 		[Required]
-		public ITaskItem AppxManifest { get; set; } = null!;
+		public ITaskItem[] AppxManifest { get; set; } = Array.Empty<ITaskItem>();
 
 		public string? TargetFramework { get; set; }
 
@@ -60,7 +60,12 @@ namespace Uno.Resizetizer
 
 				var filename = Path.Combine(IntermediateOutputPath, GeneratedFilename ?? "Package.appxmanifest");
 
-				var appx = XDocument.Load(AppxManifest.ItemSpec);
+				if (AppxManifest.Length > 1)
+				{
+					Log.LogWarning("Multiple AppxManifest files were provided. Only the first one will be used.");
+				}
+
+				var appx = XDocument.Load(AppxManifest[0].ItemSpec);
 
 				UpdateManifest(appx);
 
