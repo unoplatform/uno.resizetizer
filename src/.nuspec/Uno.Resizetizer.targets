@@ -2,14 +2,14 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<ItemGroup>
-		<AvailableItemName Include="UnoAsset"/>
-		<AvailableItemName Include="UnoImage"/>
-		<AvailableItemName Include="UnoIcon"/>
-		<AvailableItemName Include="UnoSplashScreen"/>
+		<AvailableItemName Include="UnoAsset" Exclude="@(AvailableItemName)" />
+		<AvailableItemName Include="UnoImage" Exclude="@(AvailableItemName)"/>
+		<AvailableItemName Include="UnoIcon" Exclude="@(AvailableItemName)"/>
+		<AvailableItemName Include="UnoSplashScreen" Exclude="@(AvailableItemName)"/>
 	</ItemGroup>
 
 	<PropertyGroup>
-		<_UnoResizetizerTaskAssemblyName>$(MSBuildThisFileDirectory)Uno.Resizetizer_v0.dll</_UnoResizetizerTaskAssemblyName>
+		<_UnoResizetizerTaskAssemblyName>$(MSBuildThisFileDirectory)netstandard2.0\Uno.Resizetizer_v0.dll</_UnoResizetizerTaskAssemblyName>
 	</PropertyGroup>
 
 	<UsingTask
