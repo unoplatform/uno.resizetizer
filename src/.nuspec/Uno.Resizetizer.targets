@@ -309,6 +309,22 @@
 	</Target>
 
 
+	<Target Name="CleanUpContent"
+		BeforeTargets="UnoResourcesGeneration"
+		Condition="$(_UnoResizetizerPlatformIsAndroid) == 'true'">
+
+		<ItemGroup>
+			<_MyFileBefore Include="@(Content)" />
+			<Content Remove="@(UnoImage)" />
+			<_MyFile Include="@(Content)" />
+
+			<_Temp Include="@(AndroidAssets)"></_Temp>
+			<_MyAssetsBefore Include="@(AndroidAsset)" />
+			<AndroidAsset Remove="@(UnoImage)"/>
+			<_MyAssetsAfter Include="@(AndroidAsset)" />
+		</ItemGroup>
+	</Target>
+
 	<!-- Collect images from referenced projects -->
 	<Target Name="UnoResizetizeCollectItems"
 			Condition="'$(_UnoResizetizerIsCompatibleApp)' == 'True' And '$(DisableUnoResizetizer)' != 'true'"
