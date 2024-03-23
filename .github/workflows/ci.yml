@@ -78,7 +78,7 @@ jobs:
     - name: Validate sample app
       run: |
         $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
-        & $msbuild /r /bl:.\logs\samples.binlog samples\NewTemplate\Resizetizer.Extensions.Sample.sln /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
+        & $msbuild /r /bl:.\logs\samples.binlog samples\NewTemplate\build.slnf /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
