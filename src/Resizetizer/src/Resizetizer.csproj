@@ -3,23 +3,21 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<RootNamespace>Uno.Resizetizer</RootNamespace>
-		<IsTool>true</IsTool>
+		<DevelopmentDependency>true</DevelopmentDependency>
 		<LangVersion>latest</LangVersion>
 		<Configurations>Debug;Release;DEBUG_RESIZETIZER</Configurations>
+		<BuildOutputTargetFolder>build</BuildOutputTargetFolder>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
 		
 		<!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
 		<Version>255.255.255.255</Version>
-
-		<_SkiaPackagePath>build\</_SkiaPackagePath>
-		<UnoNuSpecDirectory>$(MSBuildThisFileDirectory)..\..\.nuspec\</UnoNuSpecDirectory>
+		<UnoNuspecDirectory>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)', '..', '..', '.nuspec'))</UnoNuspecDirectory>
 		<DefaultLanguage>en-US</DefaultLanguage>
-
-		<IsTool>true</IsTool>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<AssemblyName>Uno.Resizetizer_v0</AssemblyName>		
-		<PackageProjectUrl>https://github.com/unoplatform/uno.resizetizer</PackageProjectUrl>
 		<RepositoryCommit>$(GITVERSION_SHA)</RepositoryCommit>
 		<PackageId>Uno.Resizetizer</PackageId>
 		<Description>Uno Platform package support for images.</Description>
@@ -34,37 +32,73 @@
 		<EmbeddedResource Include="Resources\UnoSplash.storyboard" LogicalName="UnoSplash.storyboard" />
 	</ItemGroup>
 
-	<Import Project="ResizetizerPackages.projitems" />
-
 	<ItemGroup>
-		<None Include="$(MSBuildThisFileDirectory)../../.nuspec/logo.png" Pack="true" Visible="false" PackagePath="\"/>
-
-		<!-- Make the package reference-able, but without any reference-able assembly -->
-		<None Include="../../.nuspec/_._" Pack="true" PackagePath="lib/$(TargetFramework)" />
-
-		<None Include="../../../README.md" Pack="true" PackagePath="/" />
-
-		<None Include="@(_ResizetizerFiles)" Visible="false" Pack="true" PackagePath="build/%(Arch)" CopyToOutputDirectory="PreserveNewest" />
-		<None Include="$(OutputPath)$(AssemblyName).dll" Visible="false" Pack="true" PackagePath="build" />
-		<None Include="$(OutputPath)$(AssemblyName).pdb" Visible="false" Pack="true" PackagePath="build" />
-		<None Include="../../.nuspec/Uno.Resizetizer.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).targets" CopyToOutputDirectory="PreserveNewest" />
-		<None Include="../../.nuspec/Uno.Resizetizer.android.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).android.targets" CopyToOutputDirectory="PreserveNewest" />
-		<None Include="../../.nuspec/Uno.Resizetizer.apple.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).apple.targets" CopyToOutputDirectory="PreserveNewest" />
-		<None Include="../../.nuspec/Uno.Resizetizer.wasm.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).wasm.targets" CopyToOutputDirectory="PreserveNewest" />
-		<None Include="../../.nuspec/Uno.Resizetizer.windows.skia.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).windows.skia.targets" CopyToOutputDirectory="PreserveNewest" />
+		<PackageReference Include="HarfBuzzSharp" Version="$(_HarfBuzzSharpVersion)" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" Version="$(_HarfBuzzSharpVersion)" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.Win32" Version="$(_HarfBuzzSharpVersion)" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.macOS" Version="$(_HarfBuzzSharpVersion)" />
+		<PackageReference Include="Microsoft.Build.Framework" Version="16.7.0" />
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.7.0" />
+		<PackageReference Include="SkiaSharp" Version="$(_SkiaSharpVersion)" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="$(_SkiaSharpVersion)" />
+		<PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="$(_SkiaSharpVersion)" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="$(_SkiaSharpVersion)" />
+		<PackageReference Include="SkiaSharp.HarfBuzz" Version="$(_SkiaSharpVersion)" />
+		<PackageReference Include="ExCSS" Version="4.2.3"  />
+		<PackageReference Include="Svg.Skia" Version="$(SvgSkiaPackageVersion)" />
+		<PackageReference Include="Svg.Custom" Version="$(SvgSkiaPackageVersion)" />
+		<PackageReference Include="Svg.Model" Version="$(SvgSkiaPackageVersion)" />
+		<PackageReference Include="ShimSkiaSharp" Version="$(SvgSkiaPackageVersion)" />
+		<PackageReference Include="Fizzler" Version="$(FizzlerPackageVersion)" />
+		<PackageReference Include="System.Memory" Version="4.5.5" />
+		<PackageReference Include="System.Buffers" Version="4.5.1" />
+		<PackageReference Include="System.Text.Json" Version="7.0.3" />
+		<PackageReference Include="System.Text.Encodings.Web" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
+		<PackageReference Include="System.IO.UnmanagedMemoryStream" Version="4.3.0" />
+		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+		<PackageReference Include="System.ObjectModel" Version="4.3.0" />
+		<PackageReference Include="Mono.ApiTools.MSBuildTasks" Version="0.1.0" />
 	</ItemGroup>
 
-	<Target Name="_CopyToNuspecDir" AfterTargets="Build">
-		<ItemGroup>
-			<_CopyItems Include="$(TargetDir)**\*.dll" Exclude="$(TargetDir)System.*.dll" />
-			<_CopyItems Include="$(TargetDir)**\*.so" />
-			<_CopyItems Include="$(TargetDir)**\*.pdb" />
-			<_CopyItems Include="$(TargetDir)**\*.dylib" />
-			<_CopyItems Include="$(TargetDir)**\*.pdb" />
-		</ItemGroup>
-		<Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(UnoNuSpecDirectory)%(RecursiveDir)" ContinueOnError="true" Retries="0" />
-	</Target>
+	<ItemGroup>
+		<None Include="../../../README.md" Pack="true" PackagePath="/" />
+
+		<None Include="$(UnoNuspecDirectory)Uno.Resizetizer.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).targets" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="$(UnoNuspecDirectory)Uno.Resizetizer.android.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).android.targets" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="$(UnoNuspecDirectory)Uno.Resizetizer.apple.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).apple.targets" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="$(UnoNuspecDirectory)Uno.Resizetizer.wasm.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).wasm.targets" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="$(UnoNuspecDirectory)Uno.Resizetizer.windows.skia.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).windows.skia.targets" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
 
 	<Import Project="../Directory.UnoMetadata.targets" />
+
+	<Target Name="PackNuGetLockFiles"
+			BeforeTargets="DownloadAndSetPackageIcon;Pack;GenerateNuspec">
+		<ItemGroup>
+			<None Include="@(ReferenceCopyLocalPaths)" Pack="true" PackagePath="$(BuildOutputTargetFolder)/$(TargetFramework)" />
+			<None Include="@(RuntimeTargetsCopyLocalItems)" Pack="true" PackagePath="$(BuildOutputTargetFolder)/$(TargetFramework)/%(RuntimeTargetsCopyLocalItems.RuntimeIdentifier)" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="CopyAssetsForSampleProject"
+		AfterTargets="Build">
+		<ItemGroup>
+			<_OutputFile Include="$(OutDir)\**\*.*" Exclude="$(OutDir)\**\*.targets"/>
+			<_RuntimeLibrary Include="@(RuntimeTargetsCopyLocalItems)"
+				OutputDirectory="$([MSBuild]::NormalizeDirectory('$(UnoNuspecDirectory)', '$(TargetFramework)\%(RuntimeTargetsCopyLocalItems.RuntimeIdentifier)'))" />
+		</ItemGroup>
+
+		<Copy SourceFiles="@(_OutputFile)"
+			DestinationFiles="@(_OutputFile->'$(UnoNuspecDirectory)$(TargetFramework)\%(Filename)%(Extension)')"
+			SkipUnchangedFiles="true"
+			OverwriteReadOnlyFiles="true" />
+
+		<Copy SourceFiles="@(_RuntimeLibrary)"
+			DestinationFiles="@(_RuntimeLibrary->'%(OutputDirectory)\%(Filename)%(Extension)')"
+			SkipUnchangedFiles="true"
+			OverwriteReadOnlyFiles="true" />
+	</Target>
 
 </Project>

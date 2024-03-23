@@ -13,7 +13,7 @@
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
 		<PackageReference Include="Microsoft.Build.Framework" Version="17.6.3" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.6.3" PrivateAssets="all" />
-		<PackageReference Include="SkiaSharp" Version="2.88.3" />
+		<PackageReference Include="SkiaSharp" Version="2.88.6" />
 		<PackageReference Include="SkiaSharp.Extended" Version="2.0.0-preview.61" />
 		<PackageReference Include="xunit" Version="2.4.2" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
@@ -21,7 +21,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Svg.Skia" Version="0.5.18" />
+		<PackageReference Include="Svg.Skia" Version="1.0.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -57,8 +57,4 @@
 			</PropertyGroup>
 		</When>
 	</Choose>
-
-	<PropertyGroup>
-		<AfterMicrosoftNETSdkTargets>$(AfterMicrosoftNETSdkTargets);$(MSBuildThisFileDirectory)..\..\src\.nuspec\Uno.Resizetizer.targets</AfterMicrosoftNETSdkTargets>
-	</PropertyGroup>
 </Project>

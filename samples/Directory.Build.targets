@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <_ResizetizerTargetsDirectory>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)', '..', 'src', '.nuspec'))</_ResizetizerTargetsDirectory>
+    <AfterMicrosoftNETSdkTargets>$(AfterMicrosoftNETSdkTargets);$(_ResizetizerTargetsDirectory)\Uno.Resizetizer.targets</AfterMicrosoftNETSdkTargets>
+  </PropertyGroup>
+</Project>

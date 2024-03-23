@@ -3,7 +3,7 @@
 			Name="GenerateUnoSplashWasm"
 			AfterTargets="GenerateUnoSplashScreens"
 			DependsOnTargets="GenerateUnoSplashScreens"
-			Condition="'$(DesignTimeBuild)' != 'true'">
+			Condition="'$(DesignTimeBuild)' != 'true' AND $(OutputType) == 'Exe'">
 
 		<!--Wasm-->
 		<GenerateWasmSplashAssets_v0
