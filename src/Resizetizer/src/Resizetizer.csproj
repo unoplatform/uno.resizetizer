@@ -91,7 +91,7 @@
 		</ItemGroup>
 
 		<Copy SourceFiles="@(_OutputFile)"
-			DestinationFiles="@(_OutputFile->'$(UnoNuspecDirectory)\$(TargetFramework)\%(Filename)%(Extension)')"
+			DestinationFiles="@(_OutputFile->'$(UnoNuspecDirectory)$(TargetFramework)\%(Filename)%(Extension)')"
 			SkipUnchangedFiles="true"
 			OverwriteReadOnlyFiles="true" />
 
