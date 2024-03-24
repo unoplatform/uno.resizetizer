@@ -74,11 +74,20 @@
 
 	<Import Project="../Directory.UnoMetadata.targets" />
 
+	<Target Name="GatherRuntimeAssets"
+		BeforeTargets="PackNuGetLockFiles;CopyAssetsForSampleProject">
+		<ItemGroup>
+			<_RuntimeAssets Include="@(RuntimeTargetsCopyLocalItems)"
+				OutputDirectory="$([System.Text.RegularExpressions.Regex]::Replace(%(RuntimeTargetsCopyLocalItems.RuntimeIdentifier), '^(linux|win)-', ''))"
+				Condition="%(RuntimeTargetsCopyLocalItems.RuntimeIdentifier) != 'win' AND %(RuntimeTargetsCopyLocalItems.RuntimeIdentifier) != 'unix'" />
+		</ItemGroup>
+	</Target>
+
 	<Target Name="PackNuGetLockFiles"
 			BeforeTargets="DownloadAndSetPackageIcon;Pack;GenerateNuspec">
 		<ItemGroup>
 			<None Include="@(ReferenceCopyLocalPaths)" Pack="true" PackagePath="$(BuildOutputTargetFolder)/$(TargetFramework)" />
-			<None Include="@(RuntimeTargetsCopyLocalItems)" Pack="true" PackagePath="$(BuildOutputTargetFolder)/$(TargetFramework)/%(RuntimeTargetsCopyLocalItems.RuntimeIdentifier)" />
+			<None Include="@(_RuntimeAssets)" Pack="true" PackagePath="$(BuildOutputTargetFolder)/$(TargetFramework)/%(_RuntimeAssets.OutputDirectory)" />
 		</ItemGroup>
 	</Target>
 
@@ -86,8 +95,6 @@
 		AfterTargets="Build">
 		<ItemGroup>
 			<_OutputFile Include="$(OutDir)\**\*.*" Exclude="$(OutDir)\**\*.targets"/>
-			<_RuntimeLibrary Include="@(RuntimeTargetsCopyLocalItems)"
-				OutputDirectory="$([MSBuild]::NormalizeDirectory('$(UnoNuspecDirectory)', '$(TargetFramework)\%(RuntimeTargetsCopyLocalItems.RuntimeIdentifier)'))" />
 		</ItemGroup>
 
 		<Copy SourceFiles="@(_OutputFile)"
@@ -95,8 +102,8 @@
 			SkipUnchangedFiles="true"
 			OverwriteReadOnlyFiles="true" />
 
-		<Copy SourceFiles="@(_RuntimeLibrary)"
-			DestinationFiles="@(_RuntimeLibrary->'%(OutputDirectory)\%(Filename)%(Extension)')"
+		<Copy SourceFiles="@(_RuntimeAssets)"
+			DestinationFiles="@(_RuntimeAssets->'$(UnoNuspecDirectory)$(TargetFramework)\%(OutputDirectory)\%(Filename)%(Extension)')"
 			SkipUnchangedFiles="true"
 			OverwriteReadOnlyFiles="true" />
 	</Target>
