@@ -151,7 +151,7 @@ Next, some adjustments are needed on `Android`, `Windows`, `WebAssembly`, `mac-c
 > [!TIP]
 > You can remove the old assets related to the app icon from the `Android` project.
 
-# [**Windows**](#tab/Windows)
+# [**Windows (WinUI)**](#tab/WindowsWinUI)
 
 * Open the [`Package.appxmanifest` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Windows/Package.appxmanifest) and look for the `Application` tag
 * Remove everything that's related to the application icon (BackgroundColor, Square and Wide property inside the `uap:DefaultTile` attribute). It should look like this:
@@ -170,6 +170,29 @@ Next, some adjustments are needed on `Android`, `Windows`, `WebAssembly`, `mac-c
        </Application>
      </Applications>
     ```
+
+# [**Windows (UWP)**](#tab/WindowsUWP)
+
+* Open the [`Package.appxmanifest` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/Legacy/Uno.Resizetizer.Sample/Uno.Resizetizer.Sample.Windows/Package.appxmanifest) and look for the `Application` tag
+* And replace everything that's related to the application icon (Square and Wide property inside the `uap:DefaultTile` attribute) with `placeholder$.png` and set `BackgroundColor` to transparent. It should look like this:
+
+```xml
+<Applications>
+  <Application Id="App"
+    Executable="$targetnametoken$.exe"
+    EntryPoint="$targetentrypoint$">
+	  <uap:VisualElements
+	    DisplayName="Resizetizer.Extensions.Sample"
+	    Description="Resizetizer.Extensions.Sample"
+	    Square150x150Logo="$placeholder$.png"
+	    Square44x44Logo="$placeholder$.png"
+        BackgroundColor="transparent">
+      <uap:SplashScreen Image="$placeholder$.png" />
+      <uap:DefaultTile/>
+    </uap:VisualElements>
+  </Application>
+</Applications>
+```
 
 # [**Web Assembly (Wasm)**](#tab/Wasm)
 
