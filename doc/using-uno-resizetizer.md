@@ -98,7 +98,7 @@ During the creation of your `svg` file, please remember to make the `ViewBox` bi
 # [**Class Library Based Solution**](#tab/classlib)
 
 * Create an `Icons` folder inside the Base project, and add the files related to the app icon there.
-* Now open the `base.props` file, inside the `MyApp.Base` folder project and add the following block:
+* Now open the `base.props` file, inside the `MyApp.Shared` project and add the following block:
 
 ```xml
 <ItemGroup>
@@ -218,7 +218,7 @@ Next, some adjustments are needed on `Android`, `Windows`, `WebAssembly`, `mac-c
 # [**Class Library Based Solution**](#tab/classlib)
 
 * Create a `SplashScreen` folder inside the Base project, and add the file related to the splash screen there.
-* Now, open the `base.props` file inside the `MyApp.Base` folder project and add the following block:
+* Now, open the `base.props` file inside the `MyApp.Shared` folder project and add the following block:
 
     ```xml
     <UnoSplashScreen
