@@ -536,4 +536,36 @@
 		</ItemGroup>
 	</Target>
 
+	<!--
+		This is used to get and copy the native runtime assets. This is a workaround as the assets aren't properly loading
+	-->
+	<Target Name="_ResizetizerInitialize"
+		BeforeTargets="UnoResizetizeImages">
+		<PropertyGroup>
+			<_ResizetizerRuntimeIdentifier>$(NETCoreSdkRuntimeIdentifier)</_ResizetizerRuntimeIdentifier>
+			<!-- NOTE: We may need to adjust this in the future if we end up with assets compiled for osx-arm64 and osx-x64 -->
+			<_ResizetizerRuntimeIdentifier Condition=" $(_ResizetizerRuntimeIdentifier.Contains('osx')) ">osx</_ResizetizerRuntimeIdentifier>
+			<_ResizetizerRuntimeIdentifierDirectory>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', 'netstandard2.0', 'runtimes', '$(_ResizetizerRuntimeIdentifier)'))</_ResizetizerRuntimeIdentifierDirectory>
+			<_ResizetizerRuntimeAssetsOutput>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', 'netstandard2.0'))</_ResizetizerRuntimeAssetsOutput>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<_ResiztizerRuntimeAssets Include="$(_ResizetizerRuntimeIdentifierDirectory)\**\*"
+				OutputDirectory="$(_ResizetizerRuntimeAssetsOutput)" />
+		</ItemGroup>
+
+		<Error Text="No Runtime was found."
+			Condition="$(_ResizetizerRuntimeIdentifier) == ''" />
+
+		<Error Text="The selected runtime directory does not exist"
+			Condition="!Exists('$(_ResizetizerRuntimeIdentifierDirectory)')" />
+
+		<Copy SourceFiles="@(_ResiztizerRuntimeAssets)"
+			DestinationFiles="@(_ResiztizerRuntimeAssets->'%(OutputDirectory)\%(Filename)%(Extension)')"
+			SkipUnchangedFiles="true"
+			OverwriteReadOnlyFiles="true"
+			Condition="Exists('$(_ResizetizerRuntimeIdentifierDirectory)')" />
+
+	</Target>
+
 </Project>
