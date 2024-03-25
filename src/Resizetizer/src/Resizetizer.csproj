@@ -13,7 +13,11 @@
 		<!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
 		<Version>255.255.255.255</Version>
 		<UnoNuspecDirectory>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)', '..', '..', '.nuspec'))</UnoNuspecDirectory>
+		<SamplesPackageDirectory>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)', '..', '..', '..', 'samples', 'packages'))</SamplesPackageDirectory>
 		<DefaultLanguage>en-US</DefaultLanguage>
+
+		<!-- Integration testing should happen with the NuGet and not local assets -->
+		<IsPackable>true</IsPackable>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -22,10 +26,6 @@
 		<PackageId>Uno.Resizetizer</PackageId>
 		<Description>Uno Platform package support for images.</Description>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='Release'">
-		<IsPackable>true</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -74,38 +74,49 @@
 
 	<Import Project="../Directory.UnoMetadata.targets" />
 
+	<!-- Gets the Runtime Assets that need to be copied to the NuGet -->
 	<Target Name="GatherRuntimeAssets"
 		BeforeTargets="PackNuGetLockFiles;CopyAssetsForSampleProject">
 		<ItemGroup>
 			<_RuntimeAssets Include="@(RuntimeTargetsCopyLocalItems)"
+				DestinationSubDirectory="%(RuntimeTargetsCopyLocalItems.DestinationSubDirectory)"
+
 				OutputDirectory="$([System.Text.RegularExpressions.Regex]::Replace(%(RuntimeTargetsCopyLocalItems.RuntimeIdentifier), '^(linux|win)-', ''))"
 				Condition="%(RuntimeTargetsCopyLocalItems.RuntimeIdentifier) != 'win' AND %(RuntimeTargetsCopyLocalItems.RuntimeIdentifier) != 'unix'" />
 		</ItemGroup>
 	</Target>
 
+	<!-- Updates the NuGet assets with the output assemblies and Runtime assets -->
 	<Target Name="PackNuGetLockFiles"
 			BeforeTargets="DownloadAndSetPackageIcon;Pack;GenerateNuspec">
 		<ItemGroup>
 			<None Include="@(ReferenceCopyLocalPaths)" Pack="true" PackagePath="$(BuildOutputTargetFolder)/$(TargetFramework)" />
-			<None Include="@(_RuntimeAssets)" Pack="true" PackagePath="$(BuildOutputTargetFolder)/$(TargetFramework)/%(_RuntimeAssets.OutputDirectory)" />
+			<None Include="@(_RuntimeAssets)" Pack="true" PackagePath="$(BuildOutputTargetFolder)/$(TargetFramework)/%(_RuntimeAssets.DestinationSubDirectory)" />
 		</ItemGroup>
 	</Target>
 
-	<Target Name="CopyAssetsForSampleProject"
-		AfterTargets="Build">
+	<!-- Copies the generated NuGet for use with the sample apps -->
+	<Target Name="ResizetizerIntegrationTests"
+		AfterTargets="Pack">
+		<RemoveDir Directories="$(SamplesPackageDirectory)" />
+		<Copy SourceFiles="@(NuGetPackOutput)"
+			DestinationFolder="$(SamplesPackageDirectory)"
+			SkipUnchangedFiles="false"
+			OverwriteReadOnlyFiles="true"
+			Condition="%(Extension) == '.nupkg'" />
+	</Target>
+
+	<!-- Deletes the local cache files for the NuGet to assist in Dev/Testing -->
+	<Target Name="DeleteCachedPackage" Condition="'$(CI)' != 'true'" BeforeTargets="Pack">
 		<ItemGroup>
-			<_OutputFile Include="$(OutDir)\**\*.*" Exclude="$(OutDir)\**\*.targets"/>
+			<ToDelete Include="$(PackageOutputPath)\$(PackageId).$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)*.*" />
+			<ToDelete Include="$(LocalArtifactStagingDirectory)\$(PackageId).$(GitBaseVersionMajor).$(GitBaseVersionMinor).*" />
 		</ItemGroup>
-
-		<Copy SourceFiles="@(_OutputFile)"
-			DestinationFiles="@(_OutputFile->'$(UnoNuspecDirectory)$(TargetFramework)\%(Filename)%(Extension)')"
-			SkipUnchangedFiles="true"
-			OverwriteReadOnlyFiles="true" />
-
-		<Copy SourceFiles="@(_RuntimeAssets)"
-			DestinationFiles="@(_RuntimeAssets->'$(UnoNuspecDirectory)$(TargetFramework)\%(OutputDirectory)\%(Filename)%(Extension)')"
-			SkipUnchangedFiles="true"
-			OverwriteReadOnlyFiles="true" />
+		<Delete Files="@(ToDelete)" />
+		<Exec Command="rd &quot;$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())&quot; /q /s"
+			Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') And '$(OS)' == 'Windows_NT'" />
+		<Exec Command="rm -rf &quot;$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())&quot;"
+			Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') And '$(OS)' != 'Windows_NT'" />
 	</Target>
 
 </Project>
