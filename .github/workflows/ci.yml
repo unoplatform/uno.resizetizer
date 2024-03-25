@@ -24,28 +24,28 @@ jobs:
     runs-on: windows-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
     - name: Setup .NET 5
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '5.0.408'
 
     - name: Setup .NET 7
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '7.0.100'
 
     - name: Setup GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.9
+      uses: gittools/actions/gitversion/setup@v1.1.1
       with:
         versionSpec: '5.6.11'
 
     - name: GitVersion
       id: gitversion
-      uses: gittools/actions/gitversion/execute@v0.9.9
+      uses: gittools/actions/gitversion/execute@v1.1.1
       with:
         useConfigFile: true
         configFilePath: gitversion.yml
@@ -66,7 +66,7 @@ jobs:
         dotnet pack  -c Release -p:PackageVersion=$adjustedPackageVersion -p:Version=${{ steps.gitversion.outputs.assemblySemVer }} -o .\artifacts src/Resizetizer/src/Resizetizer.csproj
 
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: NuGet
         path: .\artifacts
@@ -81,7 +81,7 @@ jobs:
         & $msbuild /r /bl:.\logs\samples.binlog samples\NewTemplate\build.slnf /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
 
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: logs
         path: .\logs
@@ -94,16 +94,16 @@ jobs:
       - build_tool
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: NuGet
           path: artifacts
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '3.1.x'
 
@@ -116,7 +116,7 @@ jobs:
           build\SignClient sign -i artifacts\*.nupkg -c build\SignClient.json -r "${{ secrets.UNO_PLATFORM_CODESIGN_USERNAME }}" -s "${{ secrets.UNO_PLATFORM_CODESIGN_SECRET }}" -n "uno.resizetizer" -d "uno.resizetizer" -u "https://github.com/unoplatform/uno.resizetizer"
 
       - name: Upload Signed Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: NuGet-Signed
           path: .\artifacts
