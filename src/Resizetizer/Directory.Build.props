@@ -1,14 +1,7 @@
 ﻿<Project>
 	<PropertyGroup>
-		<!--
-      SKIASHARP & HARFBUZZSHARP - the various things must be kept in sync with maui graphics:
-       - NuGet versions below
-       - Feed URI in the nuget.config
-       - Native assets build and sha
-    -->
 		<_SkiaSharpVersion>2.88.6</_SkiaSharpVersion>
 		<_HarfBuzzSharpVersion>7.3.0</_HarfBuzzSharpVersion>
-		<!-- <_SkiaSharpNativeAssetsVersion>0.0.0-commit.193b587552cb0ed39372a049d7e6c692db98c267.483</_SkiaSharpNativeAssetsVersion> -->
 		<SvgSkiaPackageVersion>1.0.0.3</SvgSkiaPackageVersion>
 		<FizzlerPackageVersion>1.3.0</FizzlerPackageVersion>
 	</PropertyGroup>
