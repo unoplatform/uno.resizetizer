@@ -15,8 +15,7 @@ on:
       - legacy/**
 
 env:
-  UnoCheck_Version: '1.11.0-dev.2'
-  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/146b0b4b23d866bef455494a12ad7ffd2f6f2d20/manifests/uno.ui.manifest.json'
+  UnoCheck_Version: '1.20.2'
 
 jobs:
   build_tool:
@@ -57,7 +56,7 @@ jobs:
 
     - run: |
           & dotnet tool update --global uno.check --version ${{ env.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
-          & uno-check -v --ci --non-interactive --fix --skip xcode --skip androidemulator --skip gtk3 --skip vswin --skip vsmac --manifest ${{ env.UnoCheck_Manifest }}
+          & uno-check -v --ci --non-interactive --fix --skip xcode --skip androidemulator --skip gtk3 --skip vswin --skip vsmac
       name: Install .NET Workloads
 
     - name: Build - CI
