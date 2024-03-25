@@ -1,6 +1,24 @@
 <Project>
-  <PropertyGroup>
-    <_ResizetizerTargetsDirectory>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)', '..', 'src', '.nuspec'))</_ResizetizerTargetsDirectory>
-    <AfterMicrosoftNETSdkTargets>$(AfterMicrosoftNETSdkTargets);$(_ResizetizerTargetsDirectory)\Uno.Resizetizer.targets</AfterMicrosoftNETSdkTargets>
-  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Uno.Resizetizer" />
+  </ItemGroup>
+
+  <Target Name="GetResizetizerVersion"
+          BeforeTargets="CollectPackageReferences;Restore;_GetAllRestoreProjectPathItems">
+
+    <Error Text="You must runt `dotnet pack` on Uno.Resizetizer before building the samples."
+           Condition="!Exists('$(MSBuildThisFileDirectory)packages')" />
+
+    <ItemGroup>
+      <_LocalPackage Include="$(MSBuildThisFileDirectory)packages\Uno.Resizetizer.*.nupkg" />
+    </ItemGroup>
+
+    <PropertyGroup>
+      <_LocalPackageVersion>$([System.Text.RegularExpressions.Regex]::Replace(%(_LocalPackage.Filename), '^(Uno\.Resizetizer\.)', ''))</_LocalPackageVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageVersion Include="Uno.Resizetizer" Version="$(_LocalPackageVersion)" />
+    </ItemGroup>
+  </Target>
 </Project>
