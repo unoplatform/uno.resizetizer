@@ -538,9 +538,15 @@
 
 	<!--
 		This is used to get and copy the native runtime assets. This is a workaround as the assets aren't properly loading
+
+		Executed before UnoResizetizeImages for TargetFrameworks=='' and TargetFramework!=''
+		Executed before _SetBuildInnerTarget;_ComputeTargetFrameworkItems for TargetFrameworks!='' and TargetFramework==''		
 	-->
 	<Target Name="_ResizetizerInitialize"
-		BeforeTargets="UnoResizetizeImages">
+		BeforeTargets="UnoResizetizeImages;_SetBuildInnerTarget;_ComputeTargetFrameworkItems"
+		Condition="
+			( '$(TargetFrameworks)' == '' AND '$(TargetFramework)' != '' )
+			OR ( '$(TargetFrameworks)' != '' AND '$(TargetFramework)' == '' ) ">
 		<PropertyGroup>
 			<_ResizetizerRuntimeIdentifier>$(NETCoreSdkRuntimeIdentifier)</_ResizetizerRuntimeIdentifier>
 			<!-- NOTE: We may need to adjust this in the future if we end up with assets compiled for osx-arm64 and osx-x64 -->
