@@ -52,6 +52,10 @@
 			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
 			TaskName="Uno.Resizetizer.WindowIconGeneratorTask_V0"/>
 
+	<UsingTask
+			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
+			TaskName="Uno.Resizetizer.CleanupAssetsTask_v0"/>
+
 	<PropertyGroup>
 		<CleanDependsOn>
 			$(CleanDependsOn);
@@ -310,14 +314,23 @@
 
 
 	<Target Name="CleanUpContent"
-		AfterTargets="UnoAssetsGeneration">
+		BeforeTargets="UnoAssetsGeneration;_UnoAddAssetsFilesToCopyLocal">
+
+		<CleanupAssetsTask_v0 UnoImagesCollection="@(UnoImage)"
+							  ContentCollection="@(ContentFilesProjectOutputGroupOutput)"
+							  AndroidAssetCollection="@(AndroidAsset)">
+			<Output TaskParameter="ContentCollection" ItemName="ContentResult"/>
+			<Output TaskParameter="AndroidAssetCollection" ItemName="AndroidAssetResult"/>
+		</CleanupAssetsTask_v0>
 
 		<ItemGroup>
-			<Content Remove="@(UnoImage)" />
+			<ContentFilesProjectOutputGroupOutput Remove="@(ContentFilesProjectOutputGroupOutput)" />
+			<ContentFilesProjectOutputGroupOutput Include="@(ContentResult)" />
 		</ItemGroup>
 		
 		<ItemGroup Condition="$(_UnoResizetizerPlatformIsAndroid) == 'true'">
-			<AndroidAsset Remove="@(UnoImage)"/>
+			<AndroidAsset Remove="@(AndroidAsset)"/>
+			<AndroidAsset Include="@(AndroidAssetResult)"/>
 		</ItemGroup>
 	</Target>
 
