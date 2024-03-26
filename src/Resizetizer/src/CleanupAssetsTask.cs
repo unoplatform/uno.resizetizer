@@ -20,15 +20,23 @@ public class CleanupAssetsTask_v0 : Task
 	[Output]
 	public ITaskItem[] AndroidAssetCollection { get; set; } = Array.Empty<ITaskItem>();
 
+	[Output]
+	public ITaskItem[] RemovedFiles { get; set; } = Array.Empty<ITaskItem>();
+
 	public override bool Execute()
 	{
 #if DEBUG_RESIZETIZER
-			// System.Diagnostics.Debugger.Launch();
+			//System.Diagnostics.Debugger.Launch();
 #endif
 		try
 		{
-			ContentCollection = RemoveUnoImageFrom(UnoImagesCollection, ContentCollection);
-			AndroidAssetCollection = RemoveUnoImageFrom(UnoImagesCollection, AndroidAssetCollection);
+			var removedItems = new List<ITaskItem>();
+			ContentCollection = RemoveUnoImageFrom(UnoImagesCollection, ContentCollection, removedItems);
+
+			var assetsCount = AndroidAssetCollection.Length;
+			AndroidAssetCollection = RemoveUnoImageFrom(UnoImagesCollection, AndroidAssetCollection, removedItems);
+
+			RemovedFiles = removedItems.ToArray();
 
 			return true;
 		}
@@ -39,8 +47,7 @@ public class CleanupAssetsTask_v0 : Task
 		}
 	}
 
-
-	static ITaskItem[] RemoveUnoImageFrom(ITaskItem[] unoImages, ITaskItem[] assets)
+	static ITaskItem[] RemoveUnoImageFrom(ITaskItem[] unoImages, ITaskItem[] assets, List<ITaskItem> removedItems)
 	{
 		var count = assets.Length;
 
@@ -50,6 +57,7 @@ public class CleanupAssetsTask_v0 : Task
 			{
 				if (assets[i].ItemSpec == unoImage.ItemSpec)
 				{
+					removedItems.Add(assets[i]);
 					assets[i] = null;
 					break;
 				}

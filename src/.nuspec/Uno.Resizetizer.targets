@@ -56,6 +56,10 @@
 			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
 			TaskName="Uno.Resizetizer.CleanupAssetsTask_v0"/>
 
+	<UsingTask
+			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
+			TaskName="Uno.Resizetizer.RemoveSvgFromContentTask_v0"/>
+
 	<PropertyGroup>
 		<CleanDependsOn>
 			$(CleanDependsOn);
@@ -321,6 +325,7 @@
 							  AndroidAssetCollection="@(AndroidAsset)">
 			<Output TaskParameter="ContentCollection" ItemName="ContentResult"/>
 			<Output TaskParameter="AndroidAssetCollection" ItemName="AndroidAssetResult"/>
+			<Output TaskParameter="RemovedFiles" ItemName="ItemsToNotIncludeOnContentFilesProjectOutputGroup"/>
 		</CleanupAssetsTask_v0>
 
 		<ItemGroup>
@@ -331,6 +336,19 @@
 		<ItemGroup Condition="$(_UnoResizetizerPlatformIsAndroid) == 'true'">
 			<AndroidAsset Remove="@(AndroidAsset)"/>
 			<AndroidAsset Include="@(AndroidAssetResult)"/>
+		</ItemGroup>
+	</Target>
+
+	<Target Name="CleanUpContentFilesProjectOutputGroupOutput"
+			BeforeTargets="_UnoAddAssetsFilesToCopyLocal"
+			AfterTargets="ContentFilesProjectOutputGroup">
+
+		<RemoveSvgFromContentTask_v0 CollectionToRemove="@(ContentFilesProjectOutputGroupOutput)">
+			<Output TaskParameter="RemovedItems" ItemName="FinalResult"/>
+		</RemoveSvgFromContentTask_v0>
+
+		<ItemGroup>
+			<ContentFilesProjectOutputGroupOutput Remove="@(FinalResult)"/>
 		</ItemGroup>
 	</Target>
 
