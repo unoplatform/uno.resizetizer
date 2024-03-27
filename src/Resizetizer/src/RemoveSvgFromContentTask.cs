@@ -20,7 +20,7 @@ public class RemoveSvgFromContentTask_v0 : Task
 		try
 		{
 #if DEBUG_RESIZETIZER
-			System.Diagnostics.Debugger.Launch();
+			//System.Diagnostics.Debugger.Launch();
 #endif
 			RemovedItems = RemoveDuplicateSvgAndPngFiles(CollectionToRemove);
 			return true;
