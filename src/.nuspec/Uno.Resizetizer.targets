@@ -52,6 +52,14 @@
 			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
 			TaskName="Uno.Resizetizer.WindowIconGeneratorTask_V0"/>
 
+	<UsingTask
+			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
+			TaskName="Uno.Resizetizer.CleanupAssetsTask_v0"/>
+
+	<UsingTask
+			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
+			TaskName="Uno.Resizetizer.RemoveSvgFromContentTask_v0"/>
+
 	<PropertyGroup>
 		<CleanDependsOn>
 			$(CleanDependsOn);
@@ -308,6 +316,52 @@
 		</ConvertToAbsolutePath>
 	</Target>
 
+
+        <!--
+           This target is executed before Uno's assets generation task, which takes Content and generates
+           native assets. This way, UnoImage items are not duplicated in AndroidAssets or others, and only
+           generated assets are embedded in the app.
+        -->
+	<Target Name="_UnoResizetizer_CleanUpUnoImageFromContent"
+		BeforeTargets="UnoAssetsGeneration;_UnoAddAssetsFilesToCopyLocal">
+
+		<CleanupAssetsTask_v0 UnoImagesCollection="@(UnoImage)"
+							  ContentCollection="@(ContentFilesProjectOutputGroupOutput)"
+							  AndroidAssetCollection="@(AndroidAsset)">
+			<Output TaskParameter="ContentCollection" ItemName="ContentResult"/>
+			<Output TaskParameter="AndroidAssetCollection" ItemName="AndroidAssetResult"/>
+			<Output TaskParameter="RemovedFiles" ItemName="ItemsToNotIncludeOnContentFilesProjectOutputGroup"/>
+		</CleanupAssetsTask_v0>
+
+		<ItemGroup>
+			<ContentFilesProjectOutputGroupOutput Remove="@(ContentFilesProjectOutputGroupOutput)" />
+			<ContentFilesProjectOutputGroupOutput Include="@(ContentResult)" />
+		</ItemGroup>
+		
+		<ItemGroup Condition="$(_UnoResizetizerPlatformIsAndroid) == 'true'">
+			<AndroidAsset Remove="@(AndroidAsset)"/>
+			<AndroidAsset Include="@(AndroidAssetResult)"/>
+		</ItemGroup>
+	</Target>
+
+        <!-- 
+            This target removes UnoImage processed content from transitive content propagation
+            when the head project enumerates content from its project references. This is needed
+            in order to avoid getting duplicate AndroidAssets.
+         -->
+
+	<Target Name="_UnoResizetizer_CleanUpContentFilesProjectOutputGroupOutput"
+			BeforeTargets="_UnoAddAssetsFilesToCopyLocal"
+			AfterTargets="ContentFilesProjectOutputGroup">
+
+		<RemoveSvgFromContentTask_v0 CollectionToRemove="@(ContentFilesProjectOutputGroupOutput)">
+			<Output TaskParameter="RemovedItems" ItemName="FinalResult"/>
+		</RemoveSvgFromContentTask_v0>
+
+		<ItemGroup>
+			<ContentFilesProjectOutputGroupOutput Remove="@(FinalResult)"/>
+		</ItemGroup>
+	</Target>
 
 	<!-- Collect images from referenced projects -->
 	<Target Name="UnoResizetizeCollectItems"
