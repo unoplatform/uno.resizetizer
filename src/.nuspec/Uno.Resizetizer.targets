@@ -543,10 +543,7 @@
 		Executed before _SetBuildInnerTarget;_ComputeTargetFrameworkItems for TargetFrameworks!='' and TargetFramework==''		
 	-->
 	<Target Name="_ResizetizerInitialize"
-		BeforeTargets="UnoResizetizeImages;_SetBuildInnerTarget;_ComputeTargetFrameworkItems"
-		Condition="
-			( '$(TargetFrameworks)' == '' AND '$(TargetFramework)' != '' )
-			OR ( '$(TargetFrameworks)' != '' AND '$(TargetFramework)' == '' ) ">
+		BeforeTargets="UnoResizetizeImages;_SetBuildInnerTarget;_ComputeTargetFrameworkItems">
 		<PropertyGroup>
 			<_ResizetizerRuntimeIdentifier>$(NETCoreSdkRuntimeIdentifier)</_ResizetizerRuntimeIdentifier>
 			<!-- NOTE: We may need to adjust this in the future if we end up with assets compiled for osx-arm64 and osx-x64 -->
@@ -565,12 +562,34 @@
 
 		<Error Text="The selected runtime directory does not exist"
 			Condition="!Exists('$(_ResizetizerRuntimeIdentifierDirectory)')" />
+		
+		<!-- 
+			Try to copy files with one retry, fail fast and ignore the error if this happens, then retry 
+			copying the files in a second time. This is present to avoid a race condition during 
+			cross-targeted builds when this current target is executed concurrently.
+			
+			When running, the Copy task may detect that files are not present for two 
+			threads/processes, then assume it's safe to copy, while only one of them can do 
+			so. Later on, the copied files may be locked by dotnet/msbuild and the other copy
+			instance never finishes sucessfully, regardless of SkipUnchangedFiles.
+		-->
+		<Copy SourceFiles="@(_ResiztizerRuntimeAssets)"
+			DestinationFiles="@(_ResiztizerRuntimeAssets->'%(OutputDirectory)\%(Filename)%(Extension)')"
+			SkipUnchangedFiles="true"
+			OverwriteReadOnlyFiles="true"
+			Condition="Exists('$(_ResizetizerRuntimeIdentifierDirectory)')"
+			UseHardlinksIfPossible="true"
+			ContinueOnError="true"
+			Retries="1"
+			UseSymboliclinksIfPossible="true" />
 
 		<Copy SourceFiles="@(_ResiztizerRuntimeAssets)"
 			DestinationFiles="@(_ResiztizerRuntimeAssets->'%(OutputDirectory)\%(Filename)%(Extension)')"
 			SkipUnchangedFiles="true"
 			OverwriteReadOnlyFiles="true"
-			Condition="Exists('$(_ResizetizerRuntimeIdentifierDirectory)')" />
+			Condition="Exists('$(_ResizetizerRuntimeIdentifierDirectory)')"
+			UseHardlinksIfPossible="true"
+			UseSymboliclinksIfPossible="true" />
 
 	</Target>
 
