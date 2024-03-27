@@ -42,7 +42,7 @@ public class CleanupAssetsTask_v0 : Task
 		}
 		catch (Exception ex)
 		{
-			Log.LogError($"error: {ex} message: {ex.Message}");
+			Log.LogError($"Failed to remove items: {ex.Message}");
 			return false;
 		}
 	}

@@ -40,7 +40,7 @@ public class RemoveSvgFromContentTask_v0 : Task
 		{
 			var item = assets[i].ItemSpec;
 			var extension = Path.GetExtension(item) ?? string.Empty;
-			if (!extension.Equals(".svg", StringComparison.CurrentCultureIgnoreCase))
+			if (!extension.Equals(".svg", StringComparison.OrdinalIgnoreCase))
 			{
 				continue;
 			}
@@ -49,7 +49,7 @@ public class RemoveSvgFromContentTask_v0 : Task
 			foreach (var item2 in assets)
 			{
 				var extension2 = Path.GetExtension(item2.ItemSpec) ?? string.Empty;
-				if (extension2.Equals(".svg", StringComparison.CurrentCultureIgnoreCase)
+				if (extension2.Equals(".svg", StringComparison.OrdinalIgnoreCase)
 					|| !extension2.Equals(".png", StringComparison.CurrentCultureIgnoreCase))
 				{
 					continue;
