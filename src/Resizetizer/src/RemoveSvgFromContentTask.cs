@@ -58,7 +58,6 @@ public class RemoveSvgFromContentTask_v0 : Task
 				if (svgFileName == Path.GetFileNameWithoutExtension(item2.ItemSpec))
 				{
 					list.Add(assets[i]);
-					assets[i] = null;
 				}
 			}
 		}
