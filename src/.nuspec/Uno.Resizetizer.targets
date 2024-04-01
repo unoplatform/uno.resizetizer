@@ -273,7 +273,8 @@
 
 
 	<Target Name="ValidateAvailableItems"
-			BeforeTargets="UnoResizetizeCollectItems">
+			BeforeTargets="UnoResizetizeCollectItems"
+			DependsOnTargets="_ResizetizerInitialize">
 
 		<Warning
 				Condition="'%(UnoIcon.Link)' != ''"
