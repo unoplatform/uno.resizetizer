@@ -25,6 +25,10 @@
 		</ItemGroup>
 	</Target>
 
+	<PropertyGroup>
+		<_UnoResizetizerResourceStampFile>$(IntermediateOutputPath)g\uno.resizetizer.stamp</_UnoResizetizerResourceStampFile>
+	</PropertyGroup>
+
 	<Target
 			Name="ProcessResizedImagesAndroid_v0"
 			AfterTargets="ProcessResizedImages_v0"
@@ -33,9 +37,9 @@
 
 		<!-- Android -->
 		<ItemGroup>
-			<AndroidResource Include="@(_UnoResizetizerCollectedAppIcons)"
-							 Link="%(_UnoResizetizerCollectedAppIcons.RecursiveDir)%(_UnoResizetizerCollectedAppIcons.Filename)%(_UnoResizetizerCollectedAppIcons.Extension)">
-			</AndroidResource>
+			<LibraryResourceDirectories Condition="'@(_UnoResizetizerCollectedAppIcons->Count ())' != '0' " Include="$(_UnoIntermediateAppIcon)">
+                <StampFile>$(_UnoResizetizerResourceStampFile)</StampFile>
+            </LibraryResourceDirectories>
 		</ItemGroup>
 	</Target>
 </Project>
