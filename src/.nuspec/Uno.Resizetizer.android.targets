@@ -3,6 +3,8 @@
 			Name="GenerateUnoSplashAndroid"
 			AfterTargets="GenerateUnoSplashScreens"
 			DependsOnTargets="GenerateUnoSplashScreens"
+			Inputs="$(_UnoSplashInputsFile);@(UnoSplashScreen)"
+			Outputs="$(_UnoSplashStampFile)"
 			Condition="'$(DesignTimeBuild)' != 'True' And '@(UnoSplashScreen)' != ''">
 		<!-- Android -->
 		<GenerateSplashAndroidResources_v0
