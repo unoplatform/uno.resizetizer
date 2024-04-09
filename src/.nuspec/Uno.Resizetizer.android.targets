@@ -11,10 +11,11 @@
 		/>
 	</Target>
 
+	<!-- ProcessUnoSplashScreens must run at design time to avoid interactions with the `.R` generation on Android -->
 	<Target Name="ProcessUnoSplashScreens"
 			AfterTargets="GenerateUnoSplashAndroid"
 			DependsOnTargets="GenerateUnoSplashAndroid"
-			Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
+			Condition="'@(UnoSplashScreen)' != ''">
 
 		<!-- Android -->
 		<ItemGroup>
@@ -29,11 +30,11 @@
 		<_UnoResizetizerResourceStampFile>$(IntermediateOutputPath)g\uno.resizetizer.stamp</_UnoResizetizerResourceStampFile>
 	</PropertyGroup>
 
+	<!-- ProcessResizedImagesAndroid_v0 must run at design time to avoid interactions with the `.R` generation on Android -->
 	<Target
 			Name="ProcessResizedImagesAndroid_v0"
 			AfterTargets="ProcessResizedImages_v0"
-			DependsOnTargets="ProcessResizedImages_v0"
-			Condition="'$(DesignTimeBuild)' != 'true'">
+			DependsOnTargets="ProcessResizedImages_v0">
 
 		<!-- Android -->
 		<ItemGroup>

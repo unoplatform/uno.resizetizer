@@ -484,11 +484,11 @@
 
 	</Target>
 
+	<!-- UnoResizetizeImages must run at design time to avoid interactions with the `.R` generation on Android -->
 	<Target Name="UnoResizetizeImages"
 			Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoResizetizerInputsFile);@(UnoImage);$(_UnoSplashInputsFile)"
 			Outputs="$(_UnoResizetizerStampFile)"
 			AfterTargets="$(UnoResizetizeAfterTargets)"
-			Condition="'$(DesignTimeBuild)' != 'true'"
 			BeforeTargets="$(UnoResizetizeBeforeTargets)"
 			DependsOnTargets="$(UnoResizetizeDependsOnTargets)">
 
@@ -549,10 +549,10 @@
 		</ItemGroup>
 	</Target>
 
+	<!-- ProcessResizedImages_v0 must run at design time to avoid interactions with the `.R` generation on Android -->
 	<Target Name="ProcessResizedImages_v0"
 			AfterTargets="UnoResizetizeImages"
-			DependsOnTargets="UnoResizetizeImages"
-			Condition="'$(DesignTimeBuild)' != 'true'">
+			DependsOnTargets="UnoResizetizeImages">
 
 		<ItemGroup Condition="'$(_UnoResizetizerIsWasmApp)' != 'True'">
 			<Content Include="@(_UnoResizetizerCollectedImages)"
