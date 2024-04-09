@@ -13,7 +13,7 @@
 				IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
 				UnoSplashScreen="@(UnoSplashScreen)"
 		/>
-	</Target>	
+	</Target>
 
 	<!-- ProcessUnoSplashScreens must run at design time to avoid interactions with the `.R` generation on Android -->
 	<Target Name="ProcessUnoSplashScreens"
@@ -46,5 +46,5 @@
                 <StampFile>$(_UnoResizetizerResourceStampFile)</StampFile>
             </LibraryResourceDirectories>
 		</ItemGroup>
-	</Target>	
+	</Target>
 </Project>
