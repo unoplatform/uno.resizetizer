@@ -448,11 +448,9 @@
 		</GetUnoAssetPath_v0>
 	</Target>
 
+	<!-- This target is meant to be called by platform specific splash screen targets -->
 	<Target Name="GenerateUnoSplashScreens"
-			BeforeTargets="ProcessUnoSplashScreens"
-			Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'"
-			Inputs="$(_UnoSplashInputsFile);@(UnoSplashScreen)"
-			Outputs="$(_UnoSplashStampFile)">
+			Condition="'@(UnoSplashScreen)' != ''">
 
 		<!--If not Windows-->
 		<ItemGroup Condition="$(_UnoResizetizerIsWasmApp) == 'True' Or $(_UnoResizetizerIsSkiaApp) == 'True' or '$(_UnoResizetizerIsAndroidApp)' == 'True' or ('$(_UnoResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst')">
@@ -465,23 +463,6 @@
 		<ItemGroup>
 			<FileWrites Include="$(_UnoSplashStampFile)"/>
 		</ItemGroup>
-
-		<!-- 
-			We cannot use Input/Output targets for GenerateUnoSplashAndroid (this target modifies them) so we 
-			propagate the requirement through a property.
-		-->
-		<CreateProperty Value="true">
-			<Output
-				TaskParameter="Value"
-				PropertyName="_ShouldRunPlatformGenerateUnoSplashScreens" />
-		</CreateProperty>
-
-		<CreateProperty Value="x86">
-			<Output
-				TaskParameter="Value"
-				PropertyName="_WindowsAppSDKFoundationPlatform" />
-		</CreateProperty>
-
 	</Target>
 
 	<!-- UnoResizetizeImages must run at design time to avoid interactions with the `.R` generation on Android -->

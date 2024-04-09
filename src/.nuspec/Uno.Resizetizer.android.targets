@@ -1,15 +1,19 @@
 <Project>
 	<Target
 			Name="GenerateUnoSplashAndroid"
-			AfterTargets="GenerateUnoSplashScreens"
-			DependsOnTargets="GenerateUnoSplashScreens"
-			Condition=" '$(_ShouldRunPlatformGenerateUnoSplashScreens)' == 'true' and '$(DesignTimeBuild)' != 'True' And '@(UnoSplashScreen)' != ''">
+			BeforeTargets="ProcessUnoSplashScreens"
+			Condition=" '@(UnoSplashScreen)' != '' "
+			Inputs="$(_UnoSplashInputsFile);@(UnoSplashScreen)"
+			Outputs="$(_UnoSplashStampFile)">
+
+		<CallTarget Targets="GenerateUnoSplashScreens" />
+
 		<!-- Android -->
 		<GenerateSplashAndroidResources_v0
 				IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
 				UnoSplashScreen="@(UnoSplashScreen)"
 		/>
-	</Target>
+	</Target>	
 
 	<!-- ProcessUnoSplashScreens must run at design time to avoid interactions with the `.R` generation on Android -->
 	<Target Name="ProcessUnoSplashScreens"
@@ -42,5 +46,5 @@
                 <StampFile>$(_UnoResizetizerResourceStampFile)</StampFile>
             </LibraryResourceDirectories>
 		</ItemGroup>
-	</Target>
+	</Target>	
 </Project>

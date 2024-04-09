@@ -21,10 +21,12 @@
 	</Target>
 
 	<Target
-			Name="GenerateUnoSplashWindowsSkia"
-			AfterTargets="GenerateUnoSplashScreens"
-			DependsOnTargets="GenerateUnoSplashScreens"
+			Name="GenerateUnoSplashWindowsSkia"			
+			BeforeTargets="ProcessUnoSplashScreens"
 			Condition="'$(DesignTimeBuild)' != 'True' And '@(UnoSplashScreen)' != ''">
+			Inputs="$(_UnoSplashInputsFile);@(UnoSplashScreen)"
+			Outputs="$(_UnoSplashStampFile)">
+
 		<!-- UWP / WinUI -->
 		<ItemGroup
 				Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
