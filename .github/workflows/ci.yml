@@ -79,6 +79,11 @@ jobs:
         $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
         & $msbuild /r /bl:.\logs\samples.binlog samples\NewTemplate\build.slnf /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
 
+    - name: Validate sample app (incremental)
+      run: |
+        $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+        & $msbuild /r /bl:.\logs\samples.binlog samples\NewTemplate\build.slnf /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
+  
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
