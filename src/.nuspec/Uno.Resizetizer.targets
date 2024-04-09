@@ -472,7 +472,14 @@
 		-->
 		<CreateProperty Value="true">
 			<Output
+				TaskParameter="Value"
 				PropertyName="_ShouldRunPlatformGenerateUnoSplashScreens" />
+		</CreateProperty>
+
+		<CreateProperty Value="x86">
+			<Output
+				TaskParameter="Value"
+				PropertyName="_WindowsAppSDKFoundationPlatform" />
 		</CreateProperty>
 
 	</Target>
