@@ -466,6 +466,15 @@
 			<FileWrites Include="$(_UnoSplashStampFile)"/>
 		</ItemGroup>
 
+		<!-- 
+			We cannot use Input/Output targets for GenerateUnoSplashAndroid (this target modifies them) so we 
+			propagate the requirement through a property.
+		-->
+		<CreateProperty Value="true">
+			<Output
+				PropertyName="_ShouldRunPlatformGenerateUnoSplashScreens" />
+		</CreateProperty>
+
 	</Target>
 
 	<Target Name="UnoResizetizeImages"
