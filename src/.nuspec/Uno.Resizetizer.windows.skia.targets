@@ -27,6 +27,8 @@
 			Inputs="$(_UnoSplashInputsFile);@(UnoSplashScreen)"
 			Outputs="$(_UnoSplashStampFile)">
 
+		<CallTarget Targets="GenerateUnoSplashScreens" />
+		
 		<!-- UWP / WinUI -->
 		<ItemGroup
 				Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">

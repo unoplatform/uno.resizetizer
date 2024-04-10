@@ -6,6 +6,7 @@
 			Inputs="$(_UnoSplashInputsFile);@(UnoSplashScreen)"
 			Outputs="$(_UnoSplashStampFile)">
 
+		<CallTarget Targets="GenerateUnoSplashScreens" />
 
 		<!--Wasm-->
 		<GenerateWasmSplashAssets_v0
