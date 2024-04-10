@@ -90,8 +90,8 @@ jobs:
         name: logs
         path: .\logs
 
-  publish:
-    name: Publish
+  sign:
+    name: Sign
     if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')) }}
     runs-on: windows-latest
     needs:
@@ -124,6 +124,41 @@ jobs:
         with:
           name: NuGet-Signed
           path: .\artifacts
+          
+  publish_dev:
+    name: Publish Dev
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    environment: Development
+    runs-on: windows-latest
+    needs:
+      - sign
+
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: NuGet-Signed
+          path: artifacts
+
+      - name: NuGet Push
+        shell: pwsh
+        run: |
+          dotnet nuget push artifacts\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_ORG_API_KEY }}
+
+  publish_prod:
+    name: Publish Prod
+    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/') }}
+    runs-on: windows-latest
+    environment: Stable
+    needs:
+      - sign
+
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: NuGet-Signed
+          path: artifacts
 
       - name: NuGet Push
         shell: pwsh
