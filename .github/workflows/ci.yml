@@ -126,7 +126,7 @@ jobs:
           path: .\artifacts
           
   publish_dev:
-    name: Publish
+    name: Publish Dev
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     environment: Development
     runs-on: windows-latest
@@ -146,7 +146,7 @@ jobs:
           dotnet nuget push artifacts\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_ORG_API_KEY }}
 
   publish_prod:
-    name: Publish
+    name: Publish Prod
     if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/') }}
     runs-on: windows-latest
     environment: Stable
