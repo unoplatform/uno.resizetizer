@@ -134,7 +134,7 @@ You can also make specific files to be `UnoIcon` using Visual Studio, by right-c
 
 -----
 
-Next, some adjustments are needed on `Android`, `Windows`, `WebAssembly`, `mac-catalyst`, and `iOS`.
+Next, some adjustments are needed on `Android`, `Windows (WinUI)`, `WebAssembly`, `mac-catalyst`, and `iOS`.
 
 # [**Android**](#tab/Android)
 
@@ -151,7 +151,10 @@ Next, some adjustments are needed on `Android`, `Windows`, `WebAssembly`, `mac-c
 > [!TIP]
 > You can remove the old assets related to the app icon from the `Android` project.
 
-# [**Windows**](#tab/Windows)
+# [**Windows (WinUI)**](#tab/Windows)
+
+> [!NOTE]
+> Uno.Resizetizer is currently only supported on WinUI, UWP is not supported."
 
 * Open the [`Package.appxmanifest` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Windows/Package.appxmanifest) and look for the `Application` tag
 * Remove everything that's related to the application icon (BackgroundColor, Square and Wide property inside the `uap:DefaultTile` attribute). It should look like this:
