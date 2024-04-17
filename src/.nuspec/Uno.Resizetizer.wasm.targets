@@ -3,7 +3,6 @@
 			Name="GenerateUnoSplashWasm"
 			BeforeTargets="ProcessUnoSplashScreens"
 			Condition="'$(DesignTimeBuild)' != 'true' AND $(OutputType) == 'Exe'"
-			Inputs="$(_UnoSplashInputsFile);@(UnoSplashScreen)"
 			Outputs="$(_UnoSplashStampFile)">
 
 		<CallTarget Targets="GenerateUnoSplashScreens" />
