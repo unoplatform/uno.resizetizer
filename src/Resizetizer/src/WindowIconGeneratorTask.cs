@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -14,6 +13,8 @@ public class WindowIconGeneratorTask_V0 : Task
 
 	[Required]
 	public string IntermediateOutputDirectory { get; set; }
+
+	public string WindowTitle { get; set; }
 
 	[Output]
 	public ITaskItem[] GeneratedClass { get; private set; } = Array.Empty<ITaskItem>();
@@ -68,6 +69,7 @@ namespace Uno.Resizetizer
 			global::Microsoft.UI.Windowing.AppWindow appWindow =
 				global::Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
 			appWindow.SetIcon(""{iconName}.ico"");
+			appWindow.Title = ""{WindowTitle}"";
 #endif
 		}}
 	}}
@@ -82,5 +84,5 @@ namespace Uno.Resizetizer
 		File.WriteAllText(item.ItemSpec, code);
 		GeneratedClass = new [] { item };
 		return true;
-	}
+    }
 }

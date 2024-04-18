@@ -2,14 +2,14 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<ItemGroup>
-		<AvailableItemName Include="UnoAsset"/>
-		<AvailableItemName Include="UnoImage"/>
-		<AvailableItemName Include="UnoIcon"/>
-		<AvailableItemName Include="UnoSplashScreen"/>
+		<AvailableItemName Include="UnoAsset" Exclude="@(AvailableItemName)" />
+		<AvailableItemName Include="UnoImage" Exclude="@(AvailableItemName)"/>
+		<AvailableItemName Include="UnoIcon" Exclude="@(AvailableItemName)"/>
+		<AvailableItemName Include="UnoSplashScreen" Exclude="@(AvailableItemName)"/>
 	</ItemGroup>
 
 	<PropertyGroup>
-		<_UnoResizetizerTaskAssemblyName>$(MSBuildThisFileDirectory)Uno.Resizetizer_v0.dll</_UnoResizetizerTaskAssemblyName>
+		<_UnoResizetizerTaskAssemblyName>$(MSBuildThisFileDirectory)netstandard2.0\Uno.Resizetizer_v0.dll</_UnoResizetizerTaskAssemblyName>
 	</PropertyGroup>
 
 	<UsingTask
@@ -52,6 +52,14 @@
 			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
 			TaskName="Uno.Resizetizer.WindowIconGeneratorTask_V0"/>
 
+	<UsingTask
+			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
+			TaskName="Uno.Resizetizer.CleanupAssetsTask_v0"/>
+
+	<UsingTask
+			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
+			TaskName="Uno.Resizetizer.RemoveSvgFromContentTask_v0"/>
+
 	<PropertyGroup>
 		<CleanDependsOn>
 			$(CleanDependsOn);
@@ -93,11 +101,11 @@
 
 	<PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
 		<_UnoResizetizerIsNetCore>True</_UnoResizetizerIsNetCore>
-		<_UnoResizetizerIsSkiaApp Condition="'$(UnoRuntimeIdentifier)' == 'Skia'">True</_UnoResizetizerIsSkiaApp>
+		<_UnoResizetizerIsSkiaApp Condition="'$(UnoRuntimeIdentifier)' == 'Skia' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">True</_UnoResizetizerIsSkiaApp>
 		<_UnoResizetizerIsAndroidApp Condition=" '$(_UnoResizetizerPlatformIsAndroid)' == 'True' And '$(AndroidApplication)' == 'True'">True</_UnoResizetizerIsAndroidApp>
 		<_UnoResizetizerIsiOSApp Condition="( '$(_UnoResizetizerPlatformIsiOS)' == 'True' OR '$(_UnoResizetizerPlatformIsMacCatalyst)' == 'True' ) And ('$(OutputType)' == 'Exe' Or '$(IsAppExtension)' == 'True')">True</_UnoResizetizerIsiOSApp>
 		<_UnoResizetizerIsWindowsAppSdk Condition="('$(ProjectReunionWinUI)'=='True' Or '$(WindowsAppSDKWinUI)'=='true' or '$(UseWinUITools)'=='true') And '$(_UnoResizetizerPlatformIsWindows)' == 'True' And ('$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe')">True</_UnoResizetizerIsWindowsAppSdk>
-		<_UnoResizetizerIsWasmApp Condition="'$(UnoRuntimeIdentifier)' == 'WebAssembly'">True</_UnoResizetizerIsWasmApp>
+		<_UnoResizetizerIsWasmApp Condition="'$(UnoRuntimeIdentifier)' == 'WebAssembly' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">True</_UnoResizetizerIsWasmApp>
 	</PropertyGroup>
 
 	<Import Project="Uno.Resizetizer.android.targets" Condition="'$(_UnoResizetizerIsAndroidApp)' == 'True'"/>
@@ -265,7 +273,8 @@
 
 
 	<Target Name="ValidateAvailableItems"
-			BeforeTargets="UnoResizetizeCollectItems">
+			BeforeTargets="UnoResizetizeCollectItems"
+			DependsOnTargets="_ResizetizerInitialize">
 
 		<Warning
 				Condition="'%(UnoIcon.Link)' != ''"
@@ -308,6 +317,52 @@
 		</ConvertToAbsolutePath>
 	</Target>
 
+
+        <!--
+           This target is executed before Uno's assets generation task, which takes Content and generates
+           native assets. This way, UnoImage items are not duplicated in AndroidAssets or others, and only
+           generated assets are embedded in the app.
+        -->
+	<Target Name="_UnoResizetizer_CleanUpUnoImageFromContent"
+		BeforeTargets="UnoAssetsGeneration;_UnoAddAssetsFilesToCopyLocal">
+
+		<CleanupAssetsTask_v0 UnoImagesCollection="@(UnoImage)"
+							  ContentCollection="@(ContentFilesProjectOutputGroupOutput)"
+							  AndroidAssetCollection="@(AndroidAsset)">
+			<Output TaskParameter="ContentCollection" ItemName="ContentResult"/>
+			<Output TaskParameter="AndroidAssetCollection" ItemName="AndroidAssetResult"/>
+			<Output TaskParameter="RemovedFiles" ItemName="ItemsToNotIncludeOnContentFilesProjectOutputGroup"/>
+		</CleanupAssetsTask_v0>
+
+		<ItemGroup>
+			<ContentFilesProjectOutputGroupOutput Remove="@(ContentFilesProjectOutputGroupOutput)" />
+			<ContentFilesProjectOutputGroupOutput Include="@(ContentResult)" />
+		</ItemGroup>
+		
+		<ItemGroup Condition="$(_UnoResizetizerPlatformIsAndroid) == 'true'">
+			<AndroidAsset Remove="@(AndroidAsset)"/>
+			<AndroidAsset Include="@(AndroidAssetResult)"/>
+		</ItemGroup>
+	</Target>
+
+        <!-- 
+            This target removes UnoImage processed content from transitive content propagation
+            when the head project enumerates content from its project references. This is needed
+            in order to avoid getting duplicate AndroidAssets.
+         -->
+
+	<Target Name="_UnoResizetizer_CleanUpContentFilesProjectOutputGroupOutput"
+			BeforeTargets="_UnoAddAssetsFilesToCopyLocal"
+			AfterTargets="ContentFilesProjectOutputGroup">
+
+		<RemoveSvgFromContentTask_v0 CollectionToRemove="@(ContentFilesProjectOutputGroupOutput)">
+			<Output TaskParameter="RemovedItems" ItemName="FinalResult"/>
+		</RemoveSvgFromContentTask_v0>
+
+		<ItemGroup>
+			<ContentFilesProjectOutputGroupOutput Remove="@(FinalResult)"/>
+		</ItemGroup>
+	</Target>
 
 	<!-- Collect images from referenced projects -->
 	<Target Name="UnoResizetizeCollectItems"
@@ -393,11 +448,9 @@
 		</GetUnoAssetPath_v0>
 	</Target>
 
+	<!-- This target is meant to be called by platform specific splash screen targets -->
 	<Target Name="GenerateUnoSplashScreens"
-			BeforeTargets="ProcessUnoSplashScreens"
-			Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'"
-			Inputs="$(_UnoSplashInputsFile);@(UnoSplashScreen)"
-			Outputs="$(_UnoSplashStampFile)">
+			Condition="'@(UnoSplashScreen)' != ''">
 
 		<!--If not Windows-->
 		<ItemGroup Condition="$(_UnoResizetizerIsWasmApp) == 'True' Or $(_UnoResizetizerIsSkiaApp) == 'True' or '$(_UnoResizetizerIsAndroidApp)' == 'True' or ('$(_UnoResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst')">
@@ -410,14 +463,13 @@
 		<ItemGroup>
 			<FileWrites Include="$(_UnoSplashStampFile)"/>
 		</ItemGroup>
-
 	</Target>
 
+	<!-- UnoResizetizeImages must run at design time to avoid interactions with the `.R` generation on Android -->
 	<Target Name="UnoResizetizeImages"
 			Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoResizetizerInputsFile);@(UnoImage);$(_UnoSplashInputsFile)"
 			Outputs="$(_UnoResizetizerStampFile)"
 			AfterTargets="$(UnoResizetizeAfterTargets)"
-			Condition="'$(DesignTimeBuild)' != 'true'"
 			BeforeTargets="$(UnoResizetizeBeforeTargets)"
 			DependsOnTargets="$(UnoResizetizeDependsOnTargets)">
 
@@ -478,10 +530,13 @@
 		</ItemGroup>
 	</Target>
 
+	<!-- ProcessResizedImages_v0 must run at design time to avoid interactions with the `.R` generation on Android -->
 	<Target Name="ProcessResizedImages_v0"
 			AfterTargets="UnoResizetizeImages"
 			DependsOnTargets="UnoResizetizeImages"
-			Condition="'$(DesignTimeBuild)' != 'true'">
+			Condition="
+				'$(DesignTimeBuild)' != 'true' 
+				OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' ">
 
 		<ItemGroup Condition="'$(_UnoResizetizerIsWasmApp)' != 'True'">
 			<Content Include="@(_UnoResizetizerCollectedImages)"
@@ -511,8 +566,14 @@
 			BeforeTargets="Build;CoreCompile;XamlPreCompile"
 			Inputs="@(UnoIcon)"
 			Outputs="@(_WindowIconExtension)">
+
+		<PropertyGroup>
+			<WindowTitle Condition="'$(WindowTitle)' == ''">$(ApplicationTitle)</WindowTitle>
+		</PropertyGroup>
+
 		<WindowIconGeneratorTask_v0
 				IntermediateOutputDirectory="$(_UnoResizetizerIntermediateOutputRoot)"
+				WindowTitle="$(WindowTitle)"
 				UnoIcons="@(UnoIcon)">
 			<Output ItemName="GeneratedFile"
 					TaskParameter="GeneratedClass"/>
@@ -528,6 +589,63 @@
 		<ItemGroup Condition="Exists('@(_WindowIconExtension->FullPath())')">
 			<Compile Include="@(_WindowIconExtension)"/>
 		</ItemGroup>
+	</Target>
+
+	<!--
+		This is used to get and copy the native runtime assets. This is a workaround as the assets aren't properly loading
+
+		Executed before UnoResizetizeImages for TargetFrameworks=='' and TargetFramework!=''
+		Executed before _SetBuildInnerTarget;_ComputeTargetFrameworkItems for TargetFrameworks!='' and TargetFramework==''		
+	-->
+	<Target Name="_ResizetizerInitialize"
+		BeforeTargets="UnoResizetizeImages;_SetBuildInnerTarget;_ComputeTargetFrameworkItems">
+		<PropertyGroup>
+			<_ResizetizerRuntimeIdentifier>$(NETCoreSdkRuntimeIdentifier)</_ResizetizerRuntimeIdentifier>
+			<!-- NOTE: We may need to adjust this in the future if we end up with assets compiled for osx-arm64 and osx-x64 -->
+			<_ResizetizerRuntimeIdentifier Condition=" $(_ResizetizerRuntimeIdentifier.Contains('osx')) ">osx</_ResizetizerRuntimeIdentifier>
+			<_ResizetizerRuntimeIdentifierDirectory>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', 'netstandard2.0', 'runtimes', '$(_ResizetizerRuntimeIdentifier)'))</_ResizetizerRuntimeIdentifierDirectory>
+			<_ResizetizerRuntimeAssetsOutput>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', 'netstandard2.0'))</_ResizetizerRuntimeAssetsOutput>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<_ResiztizerRuntimeAssets Include="$(_ResizetizerRuntimeIdentifierDirectory)\**\*"
+				OutputDirectory="$(_ResizetizerRuntimeAssetsOutput)" />
+		</ItemGroup>
+
+		<Error Text="No Runtime was found."
+			Condition="$(_ResizetizerRuntimeIdentifier) == ''" />
+
+		<Error Text="The selected runtime directory does not exist"
+			Condition="!Exists('$(_ResizetizerRuntimeIdentifierDirectory)')" />
+		
+		<!-- 
+			Try to copy files with one retry, fail fast and ignore the error if this happens, then retry 
+			copying the files in a second time. This is present to avoid a race condition during 
+			cross-targeted builds when this current target is executed concurrently.
+			
+			When running, the Copy task may detect that files are not present for two 
+			threads/processes, then assume it's safe to copy, while only one of them can do 
+			so. Later on, the copied files may be locked by dotnet/msbuild and the other copy
+			instance never finishes sucessfully, regardless of SkipUnchangedFiles.
+		-->
+		<Copy SourceFiles="@(_ResiztizerRuntimeAssets)"
+			DestinationFiles="@(_ResiztizerRuntimeAssets->'%(OutputDirectory)\%(Filename)%(Extension)')"
+			SkipUnchangedFiles="true"
+			OverwriteReadOnlyFiles="true"
+			Condition="Exists('$(_ResizetizerRuntimeIdentifierDirectory)')"
+			UseHardlinksIfPossible="true"
+			ContinueOnError="true"
+			Retries="1"
+			UseSymboliclinksIfPossible="true" />
+
+		<Copy SourceFiles="@(_ResiztizerRuntimeAssets)"
+			DestinationFiles="@(_ResiztizerRuntimeAssets->'%(OutputDirectory)\%(Filename)%(Extension)')"
+			SkipUnchangedFiles="true"
+			OverwriteReadOnlyFiles="true"
+			Condition="Exists('$(_ResizetizerRuntimeIdentifierDirectory)')"
+			UseHardlinksIfPossible="true"
+			UseSymboliclinksIfPossible="true" />
+
 	</Target>
 
 </Project>

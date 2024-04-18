@@ -1,25 +1,34 @@
 <Project>
 
-	<Target 
+	<Target
 		Name="UpdatePathOfUnoIcon"
 		BeforeTargets="UnoResizetizeCollectItems"
 		DependsOnTargets="ValidateAvailableItems">
-		
+
 		<AssignLinkMetadata Items="@(UnoIcon)">
 			<Output TaskParameter="OutputItems" ItemName="_UnoIconLinked"/>
 		</AssignLinkMetadata>
 
-		<ItemGroup>
+		<ItemGroup Condition="@(_UnoIconLinked) != ''">
 			<UnoIcon Remove="@(UnoIcon)"/>
 			<UnoIcon Include="@(_UnoIconLinked)"/>
 		</ItemGroup>
+
+		<ItemGroup Condition="'@(_UnoIconLinked)' == ''">
+			<UnoIcon Update="@(UnoIcon)" Link="%(UnoIcon.Identity)" Condition="'%(UnoIcon.Link)' == ''"/>
+		</ItemGroup>
+
 	</Target>
 
 	<Target
-			Name="GenerateUnoSplashWindowsSkia"
-			AfterTargets="GenerateUnoSplashScreens"
-			DependsOnTargets="GenerateUnoSplashScreens"
-			Condition="'$(DesignTimeBuild)' != 'True' And '@(UnoSplashScreen)' != ''">
+			Name="GenerateUnoSplashWindowsSkia"			
+			BeforeTargets="ProcessUnoSplashScreens"
+			Condition="'$(DesignTimeBuild)' != 'True' And '@(UnoSplashScreen)' != ''"
+			Inputs="$(_UnoSplashInputsFile);@(UnoSplashScreen)"
+			Outputs="$(_UnoSplashStampFile)">
+
+		<CallTarget Targets="GenerateUnoSplashScreens" />
+		
 		<!-- UWP / WinUI -->
 		<ItemGroup
 				Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
@@ -52,10 +61,11 @@
 			BeforeTargets="_ValidatePresenceOfAppxManifestItems"
 			DependsOnTargets="UnoGeneratePackageAppxManifest"
 			Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True'"/>
+
 	<Target Name="UnoGeneratePackageAppxManifest"
 			Condition="('$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_UnoAppxManifest)' !='' Or @(_SkiaManifest) != '')"
 			DependsOnTargets="$(UnoGeneratePackageAppxManifestDependsOnTargets)"
-			BeforeTargets="$(UnoGeneratePackageAppxManifestBeforeTargets)"
+			BeforeTargets="$(UnoGeneratePackageAppxManifestBeforeTargets);_GenerateWindowUnoIconExtension"
 			Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoResizetizerInputsFile);$(_UnoSplashInputsFile);@(AppxManifest);@(_UnoAppxManifest)"
 			Outputs="$(_UnoManifestStampFile);$(_UnoIntermediateManifest)Package.appxmanifest">
 
@@ -81,7 +91,10 @@
 				ApplicationTitle="$(ApplicationTitle)"
 				AppIcon="@(UnoImage->WithMetadataValue('IsAppIcon', 'true'))"
 				TargetFramework="$(_UnoResizetizerPlatformIdentifier)"
-				SplashScreen="@(UnoSplashScreen)"/>
+				SplashScreen="@(UnoSplashScreen)">
+			<Output PropertyName="WindowTitle"
+					TaskParameter="DisplayName"/>
+		</GeneratePackageAppxManifest_v0>
 
 		<!-- replace user manifest -->
 		<ItemGroup Condition="'@(AppxManifest)' != ''">

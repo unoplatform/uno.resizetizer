@@ -3,6 +3,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
+		<DotNetVersion>net7.0</DotNetVersion>
 		<DebugType>portable</DebugType>
 		<DebugSymbols>True</DebugSymbols>
 		<SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
@@ -56,8 +57,4 @@
 			</PropertyGroup>
 		</When>
 	</Choose>
-
-	<PropertyGroup>
-		<AfterMicrosoftNETSdkTargets>$(AfterMicrosoftNETSdkTargets);$(MSBuildThisFileDirectory)..\..\src\.nuspec\Uno.Resizetizer.targets</AfterMicrosoftNETSdkTargets>
-	</PropertyGroup>
 </Project>

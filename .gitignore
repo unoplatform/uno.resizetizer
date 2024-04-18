@@ -332,5 +332,10 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
-/src/.nuspec
+
+# nuspec files
+/src/.nuspec/*
+!/src/.nuspec/*.targets
+
+# Apple files
 *.DS_Store

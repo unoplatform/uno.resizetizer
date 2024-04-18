@@ -24,7 +24,7 @@ namespace Uno.Resizetizer
 		public string IntermediateOutputPath { get; set; } = null!;
 
 		[Required]
-		public ITaskItem AppxManifest { get; set; } = null!;
+		public ITaskItem[] AppxManifest { get; set; } = Array.Empty<ITaskItem>();
 
 		public string? TargetFramework { get; set; }
 
@@ -45,10 +45,13 @@ namespace Uno.Resizetizer
 		[Output]
 		public ITaskItem GeneratedAppxManifest { get; set; } = null!;
 
+		[Output]
+		public string DisplayName { get; private set; } = null!;
+
 		public override bool Execute()
 		{
 #if DEBUG_RESIZETIZER
-	//		System.Diagnostics.Debugger.Launch();
+			//System.Diagnostics.Debugger.Launch();
 #endif
 			try
 			{
@@ -57,7 +60,12 @@ namespace Uno.Resizetizer
 
 				var filename = Path.Combine(IntermediateOutputPath, GeneratedFilename ?? "Package.appxmanifest");
 
-				var appx = XDocument.Load(AppxManifest.ItemSpec);
+				if (AppxManifest.Length > 1)
+				{
+					Log.LogWarning("Multiple AppxManifest files were provided. Only the first one will be used.");
+				}
+
+				var appx = XDocument.Load(AppxManifest[0].ItemSpec);
 
 				UpdateManifest(appx);
 
@@ -144,15 +152,17 @@ namespace Uno.Resizetizer
 				}
 
 				// <DisplayName>
+				var xdisplayname = xmlns + "DisplayName";
 				if (!string.IsNullOrEmpty(ApplicationTitle))
 				{
-					var xname = xmlns + "DisplayName";
-					var xelem = properties.Element(xname);
+					var xelem = properties.Element(xdisplayname);
 					if (xelem == null || string.IsNullOrEmpty(xelem.Value) || xelem.Value == DefaultPlaceholder)
 					{
-						properties.SetElementValue(xname, ApplicationTitle);
+						properties.SetElementValue(xdisplayname, ApplicationTitle);
 					}
 				}
+
+				DisplayName = properties.Element(xdisplayname).Value;
 
 				// <Logo>
 				if (appIconInfo != null)
