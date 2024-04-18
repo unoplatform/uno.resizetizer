@@ -174,7 +174,7 @@ Icon = "@mipmap/iconapp",
 # [**Windows (UWP)**](#tab/WindowsUWP)
 
 * Open the [`Package.appxmanifest` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/Legacy/Uno.Resizetizer.Sample/Uno.Resizetizer.Sample.Windows/Package.appxmanifest) and look for the `Application` tag
-* And replace everything that's related to the application icon (Square and Wide property inside the `uap:DefaultTile` attribute) with `placeholder$.png` and set `BackgroundColor` to transparent. It should look like this:
+* Replace everything that's related to the application icon (Square and Wide property inside the `uap:DefaultTile` attribute) with `placeholder$.png` and set `BackgroundColor` to transparent. It should look like this:
 
 ```xml
 <Applications>
