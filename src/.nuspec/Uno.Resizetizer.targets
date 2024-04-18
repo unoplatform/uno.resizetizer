@@ -471,7 +471,10 @@
 			Outputs="$(_UnoResizetizerStampFile)"
 			AfterTargets="$(UnoResizetizeAfterTargets)"
 			BeforeTargets="$(UnoResizetizeBeforeTargets)"
-			DependsOnTargets="$(UnoResizetizeDependsOnTargets)">
+			DependsOnTargets="$(UnoResizetizeDependsOnTargets)"
+			Condition="
+				'$(DesignTimeBuild)' != 'true' 
+				OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' ">
 
 		<DetectInvalidResourceOutputFilenamesTask_v0
 				Items="@(UnoImage->Distinct())"
