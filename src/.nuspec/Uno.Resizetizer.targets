@@ -544,12 +544,23 @@
 		<ItemGroup Condition="'$(_UnoResizetizerIsWasmApp)' != 'True'">
 			<Content Include="@(_UnoResizetizerCollectedImages)"
 					 Link="%(_UnoResizetizerCollectedImages.RecursiveDir)%(_UnoResizetizerCollectedImages.Filename)%(_UnoResizetizerCollectedImages.Extension)"
-					 TargetPath="%(_UnoResizetizerCollectedImages.RecursiveDir)%(_UnoResizetizerCollectedImages.Filename)%(_UnoResizetizerCollectedImages.Extension)"/>
+					 TargetPath="%(_UnoResizetizerCollectedImages.RecursiveDir)%(_UnoResizetizerCollectedImages.Filename)%(_UnoResizetizerCollectedImages.Extension)" />
 
-			<Content Update="@(Content)" Condition="'%(Content.Extension)' == '.ico' And '$(_UnoResizetizerIsWindowsAppSdk)' == 'True'" CopyToOutputDirectory="PreserveNewest"/>
+			<!-- 
+				Resizetizer output for WinAppSDK needs to be set to PreserveNewest
+				in order to be present in the final layout of an unpackaged app
+			-->
+			<Content Update="@(_UnoResizetizerIsWasmApp)"
+					 Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'"
+					 CopyToOutputDirectory="PreserveNewest"/>
+			
+			<Content Update="@(Content)"
+					 Condition="'%(Content.Extension)' == '.ico' And '$(_UnoResizetizerIsWindowsAppSdk)' == 'True'"
+					 CopyToOutputDirectory="PreserveNewest"/>
 
 			<FileWrites Include="@(_UnoResizetizerCollectedImages)"/>
 		</ItemGroup>
+
 
 		<!--
 		Disables "XA0101 build action is not supported" as Uno handles Content items explicitly
