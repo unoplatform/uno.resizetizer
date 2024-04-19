@@ -76,13 +76,11 @@ jobs:
 
     - name: Validate 5.2 Samples app
       run: |
-        $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
-        & $msbuild /r -p:Configuration=Release /p:WindowsAppSDKSelfContained=false /p:SelfContained=false /p:WindowsPackageType=None /bl:.\logs\sample-5.2.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
+        & dotnet build -c Release /p:WindowsAppSDKSelfContained=false /p:SelfContained=false /p:WindowsPackageType=None /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
 
     - name: Validate 5.2 Samples app (incremental)
       run: |
-        $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
-        & $msbuild /r -p:Configuration=Release /p:WindowsAppSDKSelfContained=false /p:SelfContained=false /p:WindowsPackageType=None /bl:.\logs\sample-5.2-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
+        & dotnet build -c Release /p:WindowsAppSDKSelfContained=false /p:SelfContained=false /p:WindowsPackageType=None /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
 
     - name: Validate 5.1 Samples app
       run: |
