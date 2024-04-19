@@ -76,11 +76,11 @@ jobs:
 
     - name: Validate 5.2 Samples app
       run: |
-        & dotnet build -c Release /p:WindowsAppSDKSelfContained=false /p:SelfContained=false /p:WindowsPackageType=None /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
+        & dotnet build -c Release /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
 
     - name: Validate 5.2 Samples app (incremental)
       run: |
-        & dotnet build -c Release /p:WindowsAppSDKSelfContained=false /p:SelfContained=false /p:WindowsPackageType=None /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
+        & dotnet build -c Release /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
 
     - name: Validate 5.1 Samples app
       run: |
