@@ -1,5 +1,5 @@
 <Project>
-	<ItemGroup>
+	<ItemGroup Condition=" '$(UsingUnoSdk)'=='' ">
 		<PackageReference Include="Uno.Resizetizer" />
 	</ItemGroup>
 
@@ -20,7 +20,7 @@
 		<Message Text="Using resizetizer $(_LocalPackageVersion)"
 				 Importance="high" />
 
-		<ItemGroup Condition="'$(UsingUnoSdk)'==''">
+		<ItemGroup Condition=" '$(UsingUnoSdk)'=='' ">
 			<PackageVersion Include="Uno.Resizetizer" Version="$(_LocalPackageVersion)" />
 		</ItemGroup>
 		
