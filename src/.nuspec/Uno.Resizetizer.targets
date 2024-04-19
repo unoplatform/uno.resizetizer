@@ -549,10 +549,10 @@
 			<!-- 
 				Resizetizer output for WinAppSDK needs to be set to PreserveNewest
 				in order to be present in the final layout of an unpackaged app
+			-->
 			<Content Update="@(_UnoResizetizerCollectedImages)"
 					 Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'"
 					 CopyToOutputDirectory="PreserveNewest"/>
-			-->
 			
 			<Content Update="@(Content)"
 					 Condition="'%(Content.Extension)' == '.ico' And '$(_UnoResizetizerIsWindowsAppSdk)' == 'True'"
