@@ -77,12 +77,12 @@ jobs:
     - name: Validate 5.2 Samples app
       run: |
         $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
-        & $msbuild /r -p=Configuration=Release /bl:.\logs\sample-5.2.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
+        & $msbuild /r -p:Configuration=Release /bl:.\logs\sample-5.2.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
 
     - name: Validate 5.2 Samples app (incremental)
       run: |
         $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
-        & $msbuild /r -p=Configuration=Release /bl:.\logs\sample-5.2-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
+        & $msbuild /r -p:Configuration=Release /bl:.\logs\sample-5.2-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
 
     - name: Validate 5.1 Samples app
       run: |
