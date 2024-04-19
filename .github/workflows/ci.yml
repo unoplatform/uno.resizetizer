@@ -15,7 +15,7 @@ on:
       - legacy/**
 
 env:
-  UnoCheck_Version: '1.20.2'
+  UnoCheck_Version: '1.21.1'
 
 jobs:
   build_tool:
@@ -74,18 +74,35 @@ jobs:
       run: |
         dotnet test src/Resizetizer/test/UnitTests/Resizetizer.UnitTests.csproj
 
-    - name: Validate sample app
+    - name: Validate 5.2 Samples app (Debug)
+      run: |
+        & dotnet build -c Debug /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Debug.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
+  
+    - name: Validate 5.2 Samples app (Debug Incremental)
+      run: |
+        & dotnet build -c Debug /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Debug-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
+  
+    - name: Validate 5.2 Samples app (Release)
+      run: |
+        & dotnet build -c Release /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Release.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
+
+    - name: Validate 5.2 Samples app (Release Incremental)
+      run: |
+        & dotnet build -c Release /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Release-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
+
+    - name: Validate 5.1 Samples app
       run: |
         $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
         & $msbuild /r /bl:.\logs\samples.binlog samples\NewTemplate\build.slnf /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
 
-    - name: Validate sample app (incremental)
+    - name: Validate 5.1 Samples (incremental)
       run: |
         $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
         & $msbuild /r /bl:.\logs\samples-incremental.binlog samples\NewTemplate\build.slnf /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
-  
+
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: logs
         path: .\logs

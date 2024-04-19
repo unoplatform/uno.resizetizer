@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "Uno52ResizetizerTests",
+  "display": "standalone",
+  "name": "Uno52ResizetizerTests",
+  "short_name": "Uno52ResizetizerTests",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}

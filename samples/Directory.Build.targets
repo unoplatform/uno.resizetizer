@@ -1,24 +1,32 @@
 <Project>
-  <ItemGroup>
-    <PackageReference Include="Uno.Resizetizer" />
-  </ItemGroup>
+	<ItemGroup Condition=" '$(UsingUnoSdk)'=='' ">
+		<PackageReference Include="Uno.Resizetizer" />
+	</ItemGroup>
 
-  <Target Name="GetResizetizerVersion"
-          BeforeTargets="CollectPackageReferences;Restore;_GetAllRestoreProjectPathItems">
+	<Target Name="GetResizetizerVersion"
+			BeforeTargets="CollectPackageReferences;Restore;_GetAllRestoreProjectPathItems;UnoImplicitPackages">
 
-    <Error Text="You must runt `dotnet pack` on Uno.Resizetizer before building the samples."
-           Condition="!Exists('$(MSBuildThisFileDirectory)packages')" />
+		<Error Text="You must run `dotnet pack` on Uno.Resizetizer before building the samples."
+			   Condition="!Exists('$(MSBuildThisFileDirectory)packages')" />
 
-    <ItemGroup>
-      <_LocalPackage Include="$(MSBuildThisFileDirectory)packages\Uno.Resizetizer.*.nupkg" />
-    </ItemGroup>
+		<ItemGroup>
+			<_LocalPackage Include="$(MSBuildThisFileDirectory)packages\Uno.Resizetizer.*.nupkg" />
+		</ItemGroup>
 
-    <PropertyGroup>
-      <_LocalPackageVersion>$([System.Text.RegularExpressions.Regex]::Replace(%(_LocalPackage.Filename), '^(Uno\.Resizetizer\.)', ''))</_LocalPackageVersion>
-    </PropertyGroup>
+		<PropertyGroup>
+			<_LocalPackageVersion>$([System.Text.RegularExpressions.Regex]::Replace(%(_LocalPackage.Filename), '^(Uno\.Resizetizer\.)', ''))</_LocalPackageVersion>
+		</PropertyGroup>
 
-    <ItemGroup>
-      <PackageVersion Include="Uno.Resizetizer" Version="$(_LocalPackageVersion)" />
-    </ItemGroup>
-  </Target>
+		<Message Text="Using resizetizer $(_LocalPackageVersion)"
+				 Importance="high" />
+
+		<ItemGroup Condition=" '$(UsingUnoSdk)'=='' ">
+			<PackageVersion Include="Uno.Resizetizer" Version="$(_LocalPackageVersion)" />
+		</ItemGroup>
+		
+		<PropertyGroup>
+			<UnoResizetizerVersion>$(_LocalPackageVersion)</UnoResizetizerVersion>
+		</PropertyGroup>
+
+	</Target>
 </Project>
