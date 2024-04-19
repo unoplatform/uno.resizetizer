@@ -3,7 +3,6 @@
 			Name="GenerateUnoSplashApple"
 			BeforeTargets="ProcessUnoSplashScreens"
 			Condition="'$(DesignTimeBuild)' != 'True' And '@(UnoSplashScreen)' != ''"
-			Inputs="$(_UnoSplashInputsFile);@(UnoSplashScreen)"
 			Outputs="$(_UnoSplashStampFile)">
 			
 		<CallTarget Targets="GenerateUnoSplashScreens" />

@@ -3,7 +3,6 @@
 			Name="GenerateUnoSplashAndroid"
 			BeforeTargets="ProcessUnoSplashScreens"
 			Condition=" '@(UnoSplashScreen)' != '' "
-			Inputs="$(_UnoSplashInputsFile);@(UnoSplashScreen)"
 			Outputs="$(_UnoSplashStampFile)">
 
 		<CallTarget Targets="GenerateUnoSplashScreens" />
