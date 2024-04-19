@@ -74,13 +74,21 @@ jobs:
       run: |
         dotnet test src/Resizetizer/test/UnitTests/Resizetizer.UnitTests.csproj
 
-    - name: Validate 5.2 Samples app
+    - name: Validate 5.2 Samples app (Release)
       run: |
-        & dotnet build -c Release /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
+        & dotnet build -c Debug /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Debug.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
+  
+    - name: Validate 5.2 Samples app (Release Incremental)
+      run: |
+        & dotnet build -c Debug /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Debug-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
+  
+    - name: Validate 5.2 Samples app (Release)
+      run: |
+        & dotnet build -c Release /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Release.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
 
-    - name: Validate 5.2 Samples app (incremental)
+    - name: Validate 5.2 Samples app (Release Incremental)
       run: |
-        & dotnet build -c Release /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
+        & dotnet build -c Release /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Release-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
 
     - name: Validate 5.1 Samples app
       run: |
