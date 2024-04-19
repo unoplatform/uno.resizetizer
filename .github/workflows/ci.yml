@@ -15,7 +15,7 @@ on:
       - legacy/**
 
 env:
-  UnoCheck_Version: '1.20.2'
+  UnoCheck_Version: '1.21.1'
 
 jobs:
   build_tool:
