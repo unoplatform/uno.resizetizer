@@ -74,11 +74,11 @@ jobs:
       run: |
         dotnet test src/Resizetizer/test/UnitTests/Resizetizer.UnitTests.csproj
 
-    - name: Validate 5.2 Samples app (Release)
+    - name: Validate 5.2 Samples app (Debug)
       run: |
         & dotnet build -c Debug /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Debug.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
   
-    - name: Validate 5.2 Samples app (Release Incremental)
+    - name: Validate 5.2 Samples app (Debug Incremental)
       run: |
         & dotnet build -c Debug /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Debug-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
   
