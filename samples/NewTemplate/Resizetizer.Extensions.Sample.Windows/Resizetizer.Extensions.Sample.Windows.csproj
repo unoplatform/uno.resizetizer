@@ -61,6 +61,7 @@
 
 	
 	<Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'!=''">
+		<Message Text="Validating local assets in '$(OutputPath)'" Importance="high" />
 		<Error Condition="!Exists('$(OutputPath)\Resizetizer.Extensions.Sample\Assets\Icons\back.png')" Text="back.png file wasn't created." />
 		<Error Condition="!Exists('$(OutputPath)\Resizetizer.Extensions.Sample\Assets\Icons\back.scale-100.png')" Text="back.scale-100.png file wasn't created." />
 	</Target>
