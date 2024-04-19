@@ -74,18 +74,27 @@ jobs:
       run: |
         dotnet test src/Resizetizer/test/UnitTests/Resizetizer.UnitTests.csproj
 
-    - name: Validate sample app
+    - name: Validate 5.2 Samples app
+      run: |
+        & dotnet build -c Release /r /bl:.\logs\sample-5.2.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
+
+    - name: Validate 5.2 Samples app (incremental)
+      run: |
+        & dotnet build -c Release /r /bl:.\logs\sample-5.2-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
+
+    - name: Validate 5.1 Samples app
       run: |
         $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
         & $msbuild /r /bl:.\logs\samples.binlog samples\NewTemplate\build.slnf /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
 
-    - name: Validate sample app (incremental)
+    - name: Validate 5.1 Samples (incremental)
       run: |
         $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
         & $msbuild /r /bl:.\logs\samples-incremental.binlog samples\NewTemplate\build.slnf /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
-  
+
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: logs
         path: .\logs
