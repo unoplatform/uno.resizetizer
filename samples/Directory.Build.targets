@@ -6,7 +6,7 @@
   <Target Name="GetResizetizerVersion"
           BeforeTargets="CollectPackageReferences;Restore;_GetAllRestoreProjectPathItems">
 
-    <Error Text="You must runt `dotnet pack` on Uno.Resizetizer before building the samples."
+    <Error Text="You must run `dotnet pack` on Uno.Resizetizer before building the samples."
            Condition="!Exists('$(MSBuildThisFileDirectory)packages')" />
 
     <ItemGroup>
@@ -16,9 +16,13 @@
     <PropertyGroup>
       <_LocalPackageVersion>$([System.Text.RegularExpressions.Regex]::Replace(%(_LocalPackage.Filename), '^(Uno\.Resizetizer\.)', ''))</_LocalPackageVersion>
     </PropertyGroup>
+	  
+    <Message Text="Using resizetizer $(_LocalPackageVersion)" 
+			 Importance="high" />
 
     <ItemGroup>
       <PackageVersion Include="Uno.Resizetizer" Version="$(_LocalPackageVersion)" />
+      <PackageReference Include="Uno.Resizetizer" />
     </ItemGroup>
   </Target>
 </Project>
