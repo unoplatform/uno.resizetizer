@@ -136,6 +136,11 @@ jobs:
       with:
         name: NuGet
         path: samples/packages
+        
+    - run: |
+          & dotnet tool update --global uno.check --version ${{ env.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
+          & uno-check -v --ci --non-interactive --fix --skip xcode --skip androidemulator --skip gtk3 --skip vswin --skip vsmac
+      name: Install .NET Workloads
 
     - name: Validate 5.1 Samples app
       run: |
