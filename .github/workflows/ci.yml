@@ -78,6 +78,16 @@ jobs:
       run: |
         & dotnet build -c Debug /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Debug.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
   
+    - name: Validate 5.2 Sample app (Debug - DesignTimeBuild)
+      run: |
+        $installationPath = vswhere -latest -property installationPath
+        $designTimeTarget = Join-Path $installationPath -ChildPath "\MSBuild\Microsoft\VisualStudio\Managed\Microsoft.CSharp.DesignTime.targets"
+        
+        $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+        & $msbuild samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln /r /p:TargetFramework=net8.0-android /p:Configuration=Debug /p:Platform=AnyCPU
+        & $msbuild samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln /t:ResolveProjectReferencesDesignTime2 /t:CollectResolvedSDKReferencesDesignTime /t:CollectPackageReferences /t:ResolveComReferencesDesignTime /t:BuiltProjectOutputGroup /t:CollectFrameworkReferences /t:CollectUpToDateCheckBuiltDesignTime /t:CollectPackageDownloads /t:CollectBuildAccelerationIncompatiblePackageDesignTime /t:ResolveAssemblyReferencesDesignTime /t:GenerateSupportedTargetFrameworkAlias /t:CollectAnalyzersDesignTime /t:CollectUpToDateCheckInputDesignTime /t:CollectUpToDateCheckOutputDesignTime /t:ResolvePackageDependenciesDesignTime /t:CollectSuggestedWorkloads /t:CollectCentralPackageVersions /t:CompileDesignTime /t:CollectCopyToOutputDirectoryItemDesignTime /t:CollectResolvedCompilationReferencesDesignTime /p:DesignTimeBuild=true /p:TargetFramework=net8.0-android /bl /p:Configuration=Debug /p:BuildingInsideVisualStudio=true /p:ProvideCommandLineArgs=true /p:DefineExplicitDefaults=true /p:Platform=AnyCPU /p:ResolveAssemblyReferencesSilent=false /p:SkipCompilerExecution=true /p:AfterMicrosoftNETSdkTargets=$designTimeTarget
+        & $msbuild samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln /p:TargetFramework=net8.0-android /p:Configuration=Debug /p:Platform=AnyCPU
+
     - name: Validate 5.2 Samples app (Debug Incremental)
       run: |
         & dotnet build -c Debug /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Debug-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
