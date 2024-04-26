@@ -74,6 +74,21 @@ jobs:
       run: |
         dotnet test src/Resizetizer/test/UnitTests/Resizetizer.UnitTests.csproj
 
+  validation_5_2:
+    name: Validate 5.2 Samples
+    needs: build_tool
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Download Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: NuGet
+        path: samples/packages
+
     - name: Validate 5.2 Samples app (Debug)
       run: |
         & dotnet build -c Debug /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Debug.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
@@ -100,6 +115,28 @@ jobs:
       run: |
         & dotnet build -c Release /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Release-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
 
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: logs
+        path: .\logs
+        
+  validation_5_1:
+    name: Validate 5.1 Samples
+    needs: build_tool
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Download Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: NuGet
+        path: samples/packages
+
     - name: Validate 5.1 Samples app
       run: |
         $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
@@ -123,6 +160,8 @@ jobs:
     runs-on: windows-latest
     needs:
       - build_tool
+      - validation_5_1
+      - validation_5_2
     steps:
       - name: Checkout
         uses: actions/checkout@v4
