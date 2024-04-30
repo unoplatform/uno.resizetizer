@@ -2,6 +2,7 @@
 using Microsoft.Build.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -12,6 +13,8 @@ public class RemoveSvgFromContentTask_v0 : Task
 	[Required]
 	public ITaskItem[] CollectionToRemove { get; set; } = Array.Empty<ITaskItem>();
 
+	public ITaskItem[] UnoImages { get; set; } = [];
+
 	[Output]
 	public ITaskItem[] RemovedItems { get; set; } = Array.Empty<ITaskItem>();
 
@@ -20,9 +23,9 @@ public class RemoveSvgFromContentTask_v0 : Task
 		try
 		{
 #if DEBUG_RESIZETIZER
-			//System.Diagnostics.Debugger.Launch();
+			System.Diagnostics.Debugger.Launch();
 #endif
-			RemovedItems = RemoveDuplicateSvgAndPngFiles(CollectionToRemove);
+			RemovedItems = RemoveUnoImagesSvgFromContent();
 			return true;
 		}
 		catch (Exception ex)
@@ -32,32 +35,26 @@ public class RemoveSvgFromContentTask_v0 : Task
 		}
 	}
 
-	static ITaskItem[] RemoveDuplicateSvgAndPngFiles(ITaskItem[] assets)
+	ITaskItem[] RemoveUnoImagesSvgFromContent()
 	{
 		var list = new List<ITaskItem>();
-		var count = assets.Length;
-		for (var i = 0; i < count; i++)
+		foreach (var asset in CollectionToRemove)
 		{
-			var item = assets[i].ItemSpec;
-			var extension = Path.GetExtension(item) ?? string.Empty;
-			if (!extension.Equals(".svg", StringComparison.OrdinalIgnoreCase))
+			var extension2 = Path.GetExtension(asset.ItemSpec) ?? string.Empty;
+			var isSvg = extension2.Equals(".svg", StringComparison.OrdinalIgnoreCase);
+
+			if (string.IsNullOrEmpty(extension2) || !isSvg)
 			{
 				continue;
 			}
-			var svgFileName = Path.GetFileNameWithoutExtension(item);
 
-			foreach (var item2 in assets)
+			var assetFullPath = asset.GetMetadata("fullpath");
+			foreach (var unoImage in UnoImages)
 			{
-				var extension2 = Path.GetExtension(item2.ItemSpec) ?? string.Empty;
-				if (extension2.Equals(".svg", StringComparison.OrdinalIgnoreCase)
-					|| !extension2.Equals(".png", StringComparison.CurrentCultureIgnoreCase))
+				var fullPath = unoImage.GetMetadata("fullpath");
+				if (fullPath == assetFullPath)
 				{
-					continue;
-				}
-
-				if (svgFileName == Path.GetFileNameWithoutExtension(item2.ItemSpec))
-				{
-					list.Add(assets[i]);
+					list.Add(asset);
 				}
 			}
 		}
