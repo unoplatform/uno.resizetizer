@@ -2,9 +2,7 @@
 using Microsoft.Build.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 
 namespace Uno.Resizetizer;
 
@@ -13,7 +11,7 @@ public class RemoveSvgFromContentTask_v0 : Task
 	[Required]
 	public ITaskItem[] CollectionToRemove { get; set; } = Array.Empty<ITaskItem>();
 
-	public ITaskItem[] UnoImages { get; set; } = [];
+	public ITaskItem[] UnoImages { get; set; } = Array.Empty<ITaskItem>();
 
 	[Output]
 	public ITaskItem[] RemovedItems { get; set; } = Array.Empty<ITaskItem>();
