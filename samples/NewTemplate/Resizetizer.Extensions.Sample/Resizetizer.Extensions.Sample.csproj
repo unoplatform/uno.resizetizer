@@ -60,6 +60,13 @@
 		</Content>
 	</ItemGroup>
 
+	<ItemGroup>
+		<UnoImage Remove="Assets\SVG\back.svg"/>
+	  <Content Update="Assets\SVG\back.svg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+
 
 	<Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'!=''">
 		<PropertyGroup>
