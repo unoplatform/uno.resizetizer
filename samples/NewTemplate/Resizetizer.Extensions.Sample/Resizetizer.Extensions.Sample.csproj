@@ -61,10 +61,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<UnoImage Remove="Assets\SVG\back.svg"/>
-	  <Content Update="Assets\SVG\back.svg">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
+		<UnoImage Remove="Assets\Svg\back.svg" />
+		<Content Update="Assets\Svg\back.svg">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 
 
