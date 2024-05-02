@@ -71,7 +71,9 @@
 	<Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'!=''">
 		<PropertyGroup>
 			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateImages)Images\dotnet_bot.scale-200.png</_ResizetizerAppIconImagesPath>
+			<_SvgContent>$(OutputPath)Assets\Svg\back.svg</_SvgContent>
 		</PropertyGroup>
 		<Error Condition="!Exists('$(_ResizetizerAppIconImagesPath)')" Text="image file wasn't created." />
+		<Error Condition="!Exists('$(_SvgContent)')" Text="Svg file wasn't in place." />
 	</Target>
 </Project>
