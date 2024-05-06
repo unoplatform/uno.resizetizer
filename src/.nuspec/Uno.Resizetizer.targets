@@ -572,7 +572,19 @@
 	</Target>
 
 	<Target Name="_CleanUnoResizetizer">
+		<ItemGroup>
+			<_ResizetizerFilesToClean Include="$(_UnoResizetizerInputsFile)"/>
+			<_ResizetizerFilesToClean Include="$(_UnoResizetizerStampFile)"/>
+			<_ResizetizerFilesToClean Include="$(_UnoSplashInputsFile)"/>
+			<_ResizetizerFilesToClean Include="$(_UnoSplashStampFile)"/>
+			<_ResizetizerFilesToClean Include="$(_UnoManifestStampFile)"/>
+		</ItemGroup>
 		<RemoveDir Directories="$(_UnoResizetizerIntermediateOutputRoot)" Condition="Exists ('$(_UnoResizetizerIntermediateOutputRoot)' )"/>
+		<Delete Files="@(_ResizetizerFilesToClean)" />
+
+		<ItemGroup>
+			<_ResizetizerFilesToClean Remove="@(_ResizetizerFilesToClean)"/>
+		</ItemGroup>
 	</Target>
 
 	<Target Name="_GenerateWindowUnoIconExtension"
