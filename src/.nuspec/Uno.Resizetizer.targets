@@ -355,7 +355,8 @@
 			BeforeTargets="_UnoAddAssetsFilesToCopyLocal"
 			AfterTargets="ContentFilesProjectOutputGroup">
 
-		<RemoveSvgFromContentTask_v0 CollectionToRemove="@(ContentFilesProjectOutputGroupOutput)">
+		<RemoveSvgFromContentTask_v0 CollectionToRemove="@(ContentFilesProjectOutputGroupOutput)" 
+				UnoImages="@(UnoImage)">
 			<Output TaskParameter="RemovedItems" ItemName="FinalResult"/>
 		</RemoveSvgFromContentTask_v0>
 
