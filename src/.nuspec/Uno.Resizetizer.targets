@@ -534,8 +534,8 @@
 		</ItemGroup>
 	</Target>
 
-	<!-- ProcessResizedImages_v0 must run at design time to avoid interactions with the `.R` generation on Android -->
-	<Target Name="ProcessResizedImages_v0"
+	<!-- ProcessResizedImages must run at design time to avoid interactions with the `.R` generation on Android -->
+	<Target Name="ProcessResizedImages"
 			AfterTargets="UnoResizetizeImages"
 			DependsOnTargets="UnoResizetizeImages"
 			Condition="

@@ -54,8 +54,8 @@
 
 	<Target
 			Name="ProcessResizedImagesApple_v0"
-			AfterTargets="ProcessResizedImages_v0"
-			DependsOnTargets="ProcessResizedImages_v0"
+			AfterTargets="ProcessResizedImages"
+			DependsOnTargets="ProcessResizedImages"
 			Condition="'$(DesignTimeBuild)' != 'true'">
 		<ItemGroup>
 			<_UnoResizetizerCollectedBundleResourceImages Include="@(_UnoResizetizerCollectedImages->'%(FullPath)')">

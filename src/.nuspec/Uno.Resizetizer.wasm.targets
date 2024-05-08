@@ -42,9 +42,9 @@
 	<Target Name="ProcessUnoSplashScreens"/>
 
 	<Target
-			Name="ProcessResizedImagesWasm_v0"
-			AfterTargets="ProcessResizedImages_v0"
-			DependsOnTargets="ProcessResizedImages_v0"
+			Name="ProcessResizedImagesWasm"
+			AfterTargets="ProcessResizedImages"
+			DependsOnTargets="ProcessResizedImages"
 			Condition="'$(DesignTimeBuild)' != 'true'">
 
 		<!-- Wasm -->
