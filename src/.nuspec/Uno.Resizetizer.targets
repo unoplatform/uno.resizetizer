@@ -639,6 +639,9 @@
 				OutputDirectory="$(_ResizetizerRuntimeAssetsOutput)" />
 		</ItemGroup>
 
+		<Error Text="The Processor Architecture '$(PROCESSOR_ARCHITECTURE)' does not match the current tooling Runtime '$(NETCoreSdkRuntimeIdentifier)'. Be sure to build within the correct runtime environment as the .NET Tooling."
+			Condition="'$(NETCoreSdkRuntimeIdentifier)' != '' AND $(NETCoreSdkRuntimeIdentifier.Contains('win-')) AND '$(PROCESSOR_ARCHITECTURE)' != '' AND !$(NETCoreSdkRuntimeIdentifier.Contains('$(PROCESSOR_ARCHITECTURE.Replace('AMD', 'x'))'))" />
+
 		<Error Text="No Runtime was found."
 			Condition="$(_ResizetizerRuntimeIdentifier) == ''" />
 
