@@ -74,6 +74,37 @@ jobs:
       run: |
         dotnet test src/Resizetizer/test/UnitTests/Resizetizer.UnitTests.csproj
 
+  validation_5_2:
+    name: Validate 5.2 Samples
+    needs: build_tool
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Download Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: NuGet
+        path: samples/packages
+        
+    - name: Validate 5.2 Sample app (Debug - DesignTimeBuild)
+      run: |
+        $installationPath = vswhere -latest -property installationPath
+        $designTimeTarget = Join-Path $installationPath -ChildPath "\MSBuild\Microsoft\VisualStudio\Managed\Microsoft.CSharp.DesignTime.targets"
+        $sampleSolution = 'samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln'
+        $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+
+        dotnet restore $sampleSolution
+        & $msbuild $sampleSolution /p:TargetFramework=net8.0-android /p:AfterMicrosoftNETSdkTargets=$designTimeTarget /p:Configuration=Debug /p:DesignTimeBuild=true /p:DefineExplicitDefaults=true /p:ProvideCommandLineArgs=true /p:ResolveAssemblyReferencesSilent=false /p:SkipCompilerExecution=true /p:ContinueOnError=ErrorAndContinue /p:DesignTimeSilentResolution=false /t:ResolveFrameworkReferencesDesignTime /t:ResolveProjectReferencesDesignTime2 /t:CollectResolvedSDKReferencesDesignTime /t:CollectPackageReferences /t:ResolveComReferencesDesignTime /t:BuiltProjectOutputGroup /t:CollectFrameworkReferences /t:CollectUpToDateCheckBuiltDesignTime /t:CollectPackageDownloads /t:CollectBuildAccelerationIncompatiblePackageDesignTime /t:ResolveAssemblyReferencesDesignTime /t:GenerateSupportedTargetFrameworkAlias /t:CollectAnalyzersDesignTime /t:CollectUpToDateCheckInputDesignTime /t:CollectUpToDateCheckOutputDesignTime /t:ResolvePackageDependenciesDesignTime /t:CollectCentralPackageVersions /t:CollectCopyToOutputDirectoryItemDesignTime /t:CollectResolvedCompilationReferencesDesignTime
+        & $msbuild $sampleSolution /p:TargetFramework=net8.0-android /p:Configuration=Debug /p:AndroidInstallAfterBuild=False /p:BuildingInsideVisualStudio=true /p:UseHostCompilerIfAvailable=false /p:DefineExplicitDefaults=true /p:RunConfiguration=Default /t:GetAndroidDependencies
+        & $msbuild $sampleSolution /p:TargetFramework=net8.0-android /p:AfterMicrosoftNETSdkTargets=$designTimeTarget /p:Configuration=Debug /p:DesignTimeBuild=true /p:BuildingInsideVisualStudio=true /p:DefineExplicitDefaults=true /p:ProvideCommandLineArgs=true /p:ResolveAssemblyReferencesSilent=false /p:SkipCompilerExecution=true /p:ContinueOnError=ErrorAndContinue /p:DesignTimeSilentResolution=false /t:ResolveFrameworkReferencesDesignTime /t:ResolveProjectReferencesDesignTime2 /t:CollectResolvedSDKReferencesDesignTime /t:CollectPackageReferences /t:ResolveComReferencesDesignTime /t:BuiltProjectOutputGroup /t:CollectFrameworkReferences /t:CollectUpToDateCheckBuiltDesignTime /t:CollectPackageDownloads /t:CollectBuildAccelerationIncompatiblePackageDesignTime /t:ResolveAssemblyReferencesDesignTime /t:GenerateSupportedTargetFrameworkAlias /t:CollectAnalyzersDesignTime /t:CollectUpToDateCheckInputDesignTime /t:CollectUpToDateCheckOutputDesignTime /t:ResolvePackageDependenciesDesignTime /t:CollectSuggestedWorkloads /t:CollectCentralPackageVersions /t:CompileDesignTime /t:CollectCopyToOutputDirectoryItemDesignTime /t:CollectResolvedCompilationReferencesDesignTime
+        & $msbuild $sampleSolution /p:TargetFramework=net8.0-android /p:AfterMicrosoftNETSdkTargets=$designTimeTarget /p:Configuration=Debug /p:DesignTimeBuild=true /p:BuildingInsideVisualStudio=true /p:DefineExplicitDefaults=true /p:ProvideCommandLineArgs=true /p:ResolveAssemblyReferencesSilent=false /p:SkipCompilerExecution=true /p:ContinueOnError=ErrorAndContinue /p:DesignTimeSilentResolution=false /t:ResolveFrameworkReferencesDesignTime /t:ResolveProjectReferencesDesignTime2 /t:CollectResolvedSDKReferencesDesignTime /t:CollectPackageReferences /t:ResolveComReferencesDesignTime /t:BuiltProjectOutputGroup /t:CollectFrameworkReferences /t:CollectUpToDateCheckBuiltDesignTime /t:CollectPackageDownloads /t:CollectBuildAccelerationIncompatiblePackageDesignTime /t:ResolveAssemblyReferencesDesignTime /t:GenerateSupportedTargetFrameworkAlias /t:CollectAnalyzersDesignTime /t:CollectUpToDateCheckInputDesignTime /t:CollectUpToDateCheckOutputDesignTime /t:ResolvePackageDependenciesDesignTime /t:CollectSuggestedWorkloads /t:CollectCentralPackageVersions /t:CompileDesignTime /t:CollectCopyToOutputDirectoryItemDesignTime /t:CollectResolvedCompilationReferencesDesignTime
+        & $msbuild $sampleSolution /p:TargetFramework=net8.0-android /p:AfterMicrosoftNETSdkTargets=$designTimeTarget /p:Configuration=Debug /p:DesignTimeBuild=true /p:BuildingInsideVisualStudio=true /p:DefineExplicitDefaults=true /p:ProvideCommandLineArgs=true /p:ResolveAssemblyReferencesSilent=false /p:SkipCompilerExecution=true /p:ContinueOnError=ErrorAndContinue /p:DesignTimeSilentResolution=false /t:ResolveFrameworkReferencesDesignTime /t:ResolveProjectReferencesDesignTime2 /t:CollectResolvedSDKReferencesDesignTime /t:CollectPackageReferences /t:ResolveComReferencesDesignTime /t:BuiltProjectOutputGroup /t:CollectFrameworkReferences /t:CollectUpToDateCheckBuiltDesignTime /t:CollectPackageDownloads /t:CollectBuildAccelerationIncompatiblePackageDesignTime /t:ResolveAssemblyReferencesDesignTime /t:GenerateSupportedTargetFrameworkAlias /t:CollectAnalyzersDesignTime /t:CollectUpToDateCheckInputDesignTime /t:CollectUpToDateCheckOutputDesignTime /t:ResolvePackageDependenciesDesignTime /t:CollectSuggestedWorkloads /t:CollectCentralPackageVersions /t:CompileDesignTime /t:CollectCopyToOutputDirectoryItemDesignTime /t:CollectResolvedCompilationReferencesDesignTime
+        & $msbuild $sampleSolution /p:TargetFramework=net8.0-android /p:Configuration=Debug /p:AndroidInstallAfterBuild=False /p:BuildingInsideVisualStudio=true /p:DefineExplicitDefaults=true /p:RunConfiguration=Default /t:GetAndroidDependencies
+        & $msbuild $sampleSolution /p:TargetFramework= /p:Configuration=Debug /p:AndroidInstallAfterBuild=False /p:BuildingInsideVisualStudio=true /p:UseHostCompilerIfAvailable=false /p:DefineExplicitDefaults=true /p:RunConfiguration=Default /t:rebuild
+
     - name: Validate 5.2 Samples app (Debug)
       run: |
         & dotnet build -c Debug /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Debug.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
@@ -90,6 +121,33 @@ jobs:
       run: |
         & dotnet build -c Release /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Release-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
 
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: logs_5_2
+        path: .\logs
+        
+  validation_5_1:
+    name: Validate 5.1 Samples
+    needs: build_tool
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Download Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: NuGet
+        path: samples/packages
+        
+    - run: |
+          & dotnet tool update --global uno.check --version ${{ env.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
+          & uno-check -v --ci --non-interactive --fix --skip xcode --skip androidemulator --skip gtk3 --skip vswin --skip vsmac
+      name: Install .NET Workloads
+
     - name: Validate 5.1 Samples app
       run: |
         $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
@@ -104,7 +162,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: logs
+        name: logs_5_1
         path: .\logs
 
   sign:
@@ -113,6 +171,8 @@ jobs:
     runs-on: windows-latest
     needs:
       - build_tool
+      - validation_5_1
+      - validation_5_2
     steps:
       - name: Checkout
         uses: actions/checkout@v4
