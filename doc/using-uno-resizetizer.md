@@ -358,7 +358,74 @@ Next, some adjustments are needed on `Android`, `Windows`, and `iOS`.
 > Feel free to delete old assets related to the splash screen.
 
 -----
+## Platform-Specific Customization
+The Uno Resizetizer SDK allows for detailed control over how assets are rendered on different platforms. This can be particularly useful for properties such as icon and splash screen backgrounds, which may need to vary between platforms due to design or visibility concerns.
+#### Customizing Background Colors Per Platform
+For properties like BackgroundColor, which might need different values per platform (for example, transparent backgrounds on Windows and WASM but a solid color on iOS and Android), you can specify platform-specific properties in your project file:
 
+```xml
+<PropertyGroup>
+    <!-- Default background color -->
+    <UnoIconBackgroundColor>#FFFFFF</UnoIconBackgroundColor>
+
+    <!-- Platform-specific overrides -->
+    <UnoIconBackgroundColor Condition="'$(TargetFramework)' == 'net6.0-android'">#000000</UnoIconBackgroundColor>
+    <UnoIconBackgroundColor Condition="'$(TargetFramework)' == 'net6.0-ios'">#FF0000</UnoIconBackgroundColor>
+    <UnoIconBackgroundColor Condition="'$(TargetFramework)' == 'net6.0-windows10.0.19041.0'">Transparent</UnoIconBackgroundColor>
+    <UnoIconBackgroundColor Condition="'$(TargetFramework)' == 'net6.0-wasm'">Transparent</UnoIconBackgroundColor>
+</PropertyGroup>
+```
+This setup demonstrates setting a default background color that is overridden on specific platforms. Adjust the conditions to match your project's target frameworks as defined in your project files or SDK documentation.
+
+#### Applying Platform-Specific Scale
+Similarly, if you want to apply different scaling factors for the icon foreground across platforms, use the platform-specific properties:
+
+```xml
+<PropertyGroup>
+    <!-- Default scale -->
+    <UnoIconForegroundScale>0.5</UnoIconForegroundScale>
+
+    <!-- Platform-specific scales -->
+    <AndroidForegroundScale Condition="'$(TargetFramework)' == 'net6.0-android'">0.6</AndroidForegroundScale>
+    <WasmForegroundScale Condition="'$(TargetFramework)' == 'net6.0-wasm'">0.4</WasmForegroundScale>
+    <WindowsForegroundScale Condition="'$(TargetFramework)' == 'net6.0-windows10.0.19041.0'">0.3</WindowsForegroundScale>
+    <IOSForegroundScale Condition="'$(TargetFramework)' == 'net6.0-ios'">0.55</IOSForegroundScale>
+</PropertyGroup>
+```
+## Using SVG Images vs PNG Images with SVG underneath
+The Uno Platform allows for flexible image handling through direct SVG use or through asset generation via Uno.Resizetizer. Understanding when to use each approach can optimize your app's performance and visual quality.
+
+#### Direct SVG Usage
+When to Use:
+
+* You require vector graphics to be scalable without loss of quality.
+* Your app needs to dynamically change aspects of the image, such as color or size, at runtime.
+#### How to Implement:
+
+* Set the build action of your SVG file to Content.
+* Reference the SVG file directly in the Image control's Source property.
+```xml
+<Image Source="/Assets/my_vector_image.svg" />
+```
+[Using Svg Images](https://platform.uno/docs/articles/features/svg.html?tabs=singleproject)
+
+#### Using Uno.Resizetizer for SVG to PNG Conversion
+When to Use:
+
+* You need raster graphics to optimize performance on platforms where SVG rendering might be less efficient.
+* Your app targets multiple platforms and requires consistent image rendering across all.
+
+How to Implement:
+
+* Set the build action of your SVG file to UnoImage.
+* Uno.Resizetizer will generate PNG assets at various scales.
+* Reference the generated PNG in the Image control's Source property.
+```xml
+<Image Source="/Assets/Generated/my_vector_image.png" />
+```
+[Using Uno Resizetizer ](https://platform.uno/docs/articles/external/uno.resizetizer/doc/using-uno-resizetizer.html?tabs=classlib%2CAndroid#unoimage)
+
+Choosing between direct SVG usage and PNG conversion with Uno.Resizetizer depends on your specific application needs. Consider factors such as platform target, performance requirements, and how you plan to manipulate the images within your app.
 ## Sample App Example
 
 A sample app is available [here](https://github.com/unoplatform/uno.resizetizer/tree/main/samples/NewTemplate) as an example for all the previous steps detailed above.
