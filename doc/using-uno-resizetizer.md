@@ -267,7 +267,7 @@ Next, some adjustments are needed on `Android`, `Windows (WinUI)`, `WebAssembly`
     <UnoSplashScreenColor>#512BD4</UnoSplashScreenColor>
 </PropertyGroup>
 ```
-In addition to the direct XML configurations, the Uno Platform SDK exposes several properties that simplify the customization of your app icon. These properties allow you to easily adjust key aspects like the base size, color, and icon files without detailed XML changes, making your development process more streamlined.
+In addition to the direct XML configurations, the Uno Platform SDK exposes several properties that simplify the customization of your splash screen. These properties allow you to easily adjust key aspects like the base size, color, and icon files without detailed XML changes, making your development process more streamlined.
 
 * `UnoSplashScreenFile`: Specifies the image file for the splash screen.
 * `UnoSplashScreenBaseSize`: Sets the base size for the splash screen image.
