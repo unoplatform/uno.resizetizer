@@ -95,6 +95,36 @@ During the creation of your `svg` file, please remember to make the `ViewBox` bi
 
 ### 4. Configuring the project to use generated app icon
 
+# [**Single Project Based Solution**](#tab/singleproject)
+In the single project structure, you will configure your app icon directly in the .csproj file, streamlining the setup across all platforms.
+
+* Create an `Icons` folder within your project under the `Assets` directory and add your icon files there. For example, place your `iconapp.svg` and its corresponding `appconfig.svg` in the `Assets\Icons` folder.
+* Open your `MyApp.csproj` file and add the following XML block to include the UnoIcon directly, which simplifies managing multiple project heads:
+
+```xml
+<ItemGroup>
+    <UnoIcon Include="Assets\Icons\iconapp.svg"
+             ForegroundFile="Assets\Icons\appconfig.svg"
+             Color="#FF0000"/>
+</ItemGroup>
+```
+This configuration automatically applies across all target platforms included in the single project structure.
+## Utilizing SDK Properties
+For basic adjustments, such as changing the icon's foreground color or applying a common modification across platforms, you can use SDK properties. This method is simpler and reduces the need for extensive XML configurations:
+
+```xml
+<PropertyGroup>
+    <UnoIconForegroundFile>Assets\Icons\appconfig.svg</UnoIconForegroundFile>
+    <UnoIconColor>#FF0000</UnoIconColor>
+</PropertyGroup>
+```
+
+In addition to the direct XML configurations, the Uno Platform SDK exposes several properties that simplify the customization of your app icon. These properties allow you to easily adjust key aspects like the base size, color, and icon files without detailed XML changes, making your development process more streamlined.
+
+* `UnoIconBackgroundFile`: Sets the background image file for the icon.
+* `UnoIconForegroundFile`: Sets the foreground image file for the icon.
+* `UnoIconForegroundScale`: Adjusts the scaling of the icon's foreground.
+* `UnoIconBackgroundColor`: Sets the background color of the icon.
 # [**Class Library Based Solution**](#tab/classlib)
 
 * Create an `Icons` folder inside the Base project, and add the files related to the app icon there.
@@ -217,6 +247,33 @@ Next, some adjustments are needed on `Android`, `Windows (WinUI)`, `WebAssembly`
 * `Color`: It's the background color that will be used to fill the empty space on the final SplashScreen asset. The default value is `#FFFFFF` (white).
 
 ### 5. Configuring the project to use generated splash screen
+# [**Single Project Based Solution**](#tab/singleproject)
+*  Create a `SplashScreen` folder within the `Assets` directory of your project and add your splash screen files there. For example, you might include a `splash_screen.svg` file in the Assets\SplashScreen folder.
+* Open your `MyApp.csproj` file and add the following XML block. This setup will apply the splash screen configuration to all platforms included in the single project:
+
+```xml
+<ItemGroup>
+    <UnoSplashScreen Include="Assets\SplashScreen\splash_screen.svg"
+                     BaseSize="128,128"
+                     Color="#512BD4"/>
+</ItemGroup>
+```
+## Utilizing SDK Properties
+* To facilitate easier customization, such as adjusting the base size or color of the splash screen, you can leverage SDK properties:
+```xml
+<PropertyGroup>
+    <UnoSplashScreenFile>Assets\SplashScreen\splash_screen.svg</UnoSplashScreenFile>
+    <UnoSplashScreenBaseSize>128,128</UnoSplashScreenBaseSize>
+    <UnoSplashScreenColor>#512BD4</UnoSplashScreenColor>
+</PropertyGroup>
+```
+In addition to the direct XML configurations, the Uno Platform SDK exposes several properties that simplify the customization of your app icon. These properties allow you to easily adjust key aspects like the base size, color, and icon files without detailed XML changes, making your development process more streamlined.
+
+* `UnoSplashScreenFile`: Specifies the image file for the splash screen.
+* `UnoSplashScreenBaseSize`: Sets the base size for the splash screen image.
+* `UnoSplashScreenColor`: Determines the background color of the splash screen.
+
+This setup ensures that the splash screen settings are centralized, simplifying the maintenance and updating process.
 
 # [**Class Library Based Solution**](#tab/classlib)
 
