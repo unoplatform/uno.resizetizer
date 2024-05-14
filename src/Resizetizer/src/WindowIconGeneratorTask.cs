@@ -80,7 +80,7 @@ namespace Uno.Resizetizer
 			{{
 				try
 				{{
-					if (Package.Current != null)
+					if (global::Windows.ApplicationModel.Package.Current != null)
 						return true;
 				}}
 				catch
