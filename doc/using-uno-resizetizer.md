@@ -100,6 +100,7 @@ During the creation of your `svg` file, please remember to make the `ViewBox` bi
 * When you create a new Uno Platform application, an `Icons` folder is automatically generated under the `Assets` directory. This folder contains `icon.svg` and `icon_foreground.svg` files.
 * You can simply replace these files with your custom icons while retaining the file names, or you can customize the icon configuration using SDK properties if different names or additional configurations are needed.
 * This configuration automatically applies across all target platforms included in the single project structure.
+
 ## Utilizing SDK Properties
 
 The Uno Platform SDK exposes several properties that simplify the customization of your app icon. These properties allow you to easily adjust key aspects like the base size, color, and icon files without detailed XML changes, making your development process more streamlined.
@@ -109,7 +110,7 @@ The Uno Platform SDK exposes several properties that simplify the customization 
 * `UnoIconForegroundScale`: Adjusts the scaling of the icon's foreground.
 * `UnoIconBackgroundColor`: Sets the background color of the icon.
 
-For basic adjustments, such as changing the icon's foreground color or applying a common modification across platforms, you can use SDK properties. This method is simpler and reduces the need for extensive XML configurations:
+For basic adjustments, such as changing the icon's foreground color or applying a common modification across platforms, you can use SDK properties:
 
 ```xml
 <PropertyGroup>
@@ -127,7 +128,7 @@ This setup ensures that the icon settings are centralized, simplifying the maint
 ```xml
 <ItemGroup>
     <UnoIcon Include="$(MSBuildThisFileDirectory)Icons\iconapp.svg"
-             ForegroundFile="$(MSBuildThisFileDirectory)Icons\appconfig.svg"
+             ForegroundFile="$(MSBuildThisFileDirectory)Icons\customicon.svg"
              Color="#FF0000"/>
 </ItemGroup>
 ```
@@ -247,6 +248,7 @@ Next, some adjustments are needed on `Android`, `Windows (WinUI)`, `WebAssembly`
 * This configuration automatically applies across all target platforms included in the single project structure.
 
 ## Utilizing SDK Properties
+
 The Uno Platform SDK exposes several properties that simplify the customization of your splash screen. These properties allow you to easily adjust key aspects like the base size, color, and icon files without detailed XML changes, making your development process more streamlined.
 
 * `UnoSplashScreenFile`: Specifies the image file for the splash screen.
@@ -256,7 +258,7 @@ The Uno Platform SDK exposes several properties that simplify the customization 
 To facilitate easier customization, such as adjusting the base size or color of the splash screen, you can leverage SDK properties:
 ```xml
 <PropertyGroup>
-    <UnoSplashScreenFile>Assets\SplashScreen\splash_screen.svg</UnoSplashScreenFile>
+    <UnoSplashScreenFile>Assets\SplashScreen\custom_splash_screen.svg</UnoSplashScreenFile>
     <UnoSplashScreenBaseSize>128,128</UnoSplashScreenBaseSize>
     <UnoSplashScreenColor>#512BD4</UnoSplashScreenColor>
 </PropertyGroup>
@@ -358,9 +360,12 @@ Next, some adjustments are needed on `Android`, `Windows`, and `iOS`.
 > Feel free to delete old assets related to the splash screen.
 
 -----
+
 ## Platform-Specific Customization
 The Uno Resizetizer SDK allows for detailed control over how assets are rendered on different platforms. This can be particularly useful for properties such as icon and splash screen backgrounds, which may need to vary between platforms due to design or visibility concerns.
-#### Customizing Background Colors Per Platform
+
+### Customizing Background Colors Per Platform
+
 For properties like BackgroundColor, which might need different values per platform (for example, transparent backgrounds on Windows and WASM but a solid color on iOS and Android), you can specify platform-specific properties in your project file:
 
 ```xml
@@ -368,11 +373,11 @@ For properties like BackgroundColor, which might need different values per platf
     <!-- Default background color -->
     <UnoIconBackgroundColor>#FFFFFF</UnoIconBackgroundColor>
 
-    <!-- Platform-specific overrides -->
-    <UnoIconBackgroundColor Condition="'$(TargetFramework)' == 'net6.0-android'">#000000</UnoIconBackgroundColor>
-    <UnoIconBackgroundColor Condition="'$(TargetFramework)' == 'net6.0-ios'">#FF0000</UnoIconBackgroundColor>
-    <UnoIconBackgroundColor Condition="'$(TargetFramework)' == 'net6.0-windows10.0.19041.0'">Transparent</UnoIconBackgroundColor>
-    <UnoIconBackgroundColor Condition="'$(TargetFramework)' == 'net6.0-wasm'">Transparent</UnoIconBackgroundColor>
+    <!-- Platform-specific overrides using Uno SDK properties -->
+    <UnoIconBackgroundColor Condition="'$(IsAndroid)' == 'true'">#000000</UnoIconBackgroundColor>
+    <UnoIconBackgroundColor Condition="'$(IsIOS)' == 'true'">#FF0000</UnoIconBackgroundColor>
+    <UnoIconBackgroundColor Condition="'$(IsWinAppSdk)' == 'true'">Transparent</UnoIconBackgroundColor>
+    <UnoIconBackgroundColor Condition="'$(IsBrowserWasm)' == 'true'">Transparent</UnoIconBackgroundColor>
 </PropertyGroup>
 ```
 This setup demonstrates setting a default background color that is overridden on specific platforms. Adjust the conditions to match your project's target frameworks as defined in your project files or SDK documentation.
@@ -385,18 +390,20 @@ Similarly, if you want to apply different scaling factors for the icon foregroun
     <!-- Default scale -->
     <UnoIconForegroundScale>0.5</UnoIconForegroundScale>
 
-    <!-- Platform-specific scales -->
-    <AndroidForegroundScale Condition="'$(TargetFramework)' == 'net6.0-android'">0.6</AndroidForegroundScale>
-    <WasmForegroundScale Condition="'$(TargetFramework)' == 'net6.0-wasm'">0.4</WasmForegroundScale>
-    <WindowsForegroundScale Condition="'$(TargetFramework)' == 'net6.0-windows10.0.19041.0'">0.3</WindowsForegroundScale>
-    <IOSForegroundScale Condition="'$(TargetFramework)' == 'net6.0-ios'">0.55</IOSForegroundScale>
+    <!-- Platform-specific scales using Uno SDK properties -->
+    <UnoIconForegroundScale Condition="'$(IsAndroid)' == 'true'">0.6</UnoIconForegroundScale>
+    <UnoIconForegroundScale Condition="'$(IsBrowserWasm)' == 'true'">0.4</UnoIconForegroundScale>
+    <UnoIconForegroundScale Condition="'$(IsWinAppSdk)' == 'true'">0.3</UnoIconForegroundScale>
+    <UnoIconForegroundScale Condition="'$(IsIOS)' == 'true'">0.55</UnoIconForegroundScale>
 </PropertyGroup>
+
 ```
 ## Using SVG Images vs PNG Images with SVG underneath
 The Uno Platform allows for flexible image handling through direct SVG use or through asset generation via Uno.Resizetizer. Understanding when to use each approach can optimize your app's performance and visual quality.
 
-#### Direct SVG Usage
-When to Use:
+### Direct SVG Usage
+
+#### When to Use:
 
 * You require vector graphics to be scalable without loss of quality.
 * Your app needs to dynamically change aspects of the image, such as color or size, at runtime.
@@ -409,13 +416,14 @@ When to Use:
 ```
 [Using Svg Images](https://platform.uno/docs/articles/features/svg.html?tabs=singleproject)
 
-#### Using Uno.Resizetizer for SVG to PNG Conversion
-When to Use:
+### Using Uno.Resizetizer for SVG to PNG Conversion
+
+#### When to Use:
 
 * You need raster graphics to optimize performance on platforms where SVG rendering might be less efficient.
 * Your app targets multiple platforms and requires consistent image rendering across all.
 
-How to Implement:
+#### How to Implement:
 
 * Set the build action of your SVG file to UnoImage.
 * Uno.Resizetizer will generate PNG assets at various scales.
