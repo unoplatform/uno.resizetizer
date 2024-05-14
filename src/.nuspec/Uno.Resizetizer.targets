@@ -595,7 +595,7 @@
 			Outputs="@(_WindowIconExtension)">
 
 		<PropertyGroup>
-			<WindowTitle Condition="'$(WindowTitle)' == ''">$(ApplicationTitle)</WindowTitle>
+			<WindowTitle Condition="'$(WindowTitle)' == ''">$([MSBuild]::ValueOrDefault('$(ApplicationTitle)', '$(AssemblyName)'))</WindowTitle>
 		</PropertyGroup>
 
 		<WindowIconGeneratorTask_v0
