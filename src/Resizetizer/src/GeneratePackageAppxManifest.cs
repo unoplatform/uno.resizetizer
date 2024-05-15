@@ -12,10 +12,9 @@ namespace Uno.Resizetizer
 	{
 		const string DefaultPlaceholder = "$placeholder$";
 		const string PngPlaceholder = "$placeholder$.png";
-		const string PackageNamePlaceholder = "uno-package-name-placeholder";
 		const string PackageVersionPlaceholder = "0.0.0.0";
+		const string ImageExtension = ".png";
 
-		const string ErrorInvalidApplicationId = "ApplicationId '{0}' was not a valid GUID. Windows apps use a GUID for an application ID instead of the reverse domain used by Android and/or iOS apps. Either set the <ApplicationIdGuid> property to a valid GUID or use a condition on <ApplicationId> for Windows apps.";
 		const string ErrorVersionNumberCombination = "ApplicationDisplayVersion '{0}' was not a valid 3 part semver version number and/or ApplicationVersion '{1}' was not a valid integer.";
 
 		static readonly XNamespace xmlnsUap = "http://schemas.microsoft.com/appx/manifest/uap/windows10";
@@ -38,6 +37,12 @@ namespace Uno.Resizetizer
 
 		public string? ApplicationTitle { get; set; }
 
+		public string? AssemblyName { get; set; }
+
+		public string? Authors { get; set; }
+
+		public string? Description { get; set; }
+
 		public ITaskItem[]? AppIcon { get; set; }
 
 		public ITaskItem[]? SplashScreen { get; set; }
@@ -55,6 +60,11 @@ namespace Uno.Resizetizer
 #endif
 			try
 			{
+				ApplicationTitle ??= AssemblyName;
+				ApplicationId ??= AssemblyName;
+				Description ??= ApplicationTitle;
+				Authors ??= ApplicationTitle;
+
 				ResizetizeImages_v0._TargetFramework = TargetFramework;
 				Directory.CreateDirectory(IntermediateOutputPath);
 
@@ -85,98 +95,40 @@ namespace Uno.Resizetizer
 		{
 			var appIconInfo = AppIcon?.Length > 0 ? ResizeImageInfo.Parse(AppIcon[0]) : null;
 			var splashInfo = SplashScreen?.Length > 0 ? ResizeImageInfo.Parse(SplashScreen[0]) : null;
-			var imageExtension = ".png";
 
 			var xmlns = appx.Root!.GetDefaultNamespace();
 
 			// <Identity Name="" Version="" />
-			if (!string.IsNullOrEmpty(ApplicationId) || !string.IsNullOrEmpty(ApplicationDisplayVersion) || !string.IsNullOrEmpty(ApplicationVersion))
+			// <Identity>
+			var xidentity = xmlns + "Identity";
+			var identity = appx.Root.Element(xidentity);
+			if (identity == null)
 			{
-				// <Identity>
-				var xidentity = xmlns + "Identity";
-				var identity = appx.Root.Element(xidentity);
-				if (identity == null)
-				{
-					identity = new XElement(xidentity);
-					appx.Root.Add(identity);
-				}
-
-				// Name=""
-				if (!string.IsNullOrEmpty(ApplicationId))
-				{
-					var xname = "Name";
-					var attr = identity.Attribute(xname);
-					if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PackageNamePlaceholder)
-					{
-						if (!Guid.TryParse(ApplicationId, out _))
-						{
-							Log.LogError(ErrorInvalidApplicationId, ApplicationId);
-							return;
-						}
-
-						identity.SetAttributeValue(xname, ApplicationId);
-					}
-				}
-
-				// Version=""
-				if (!string.IsNullOrEmpty(ApplicationDisplayVersion) || !string.IsNullOrEmpty(ApplicationVersion))
-				{
-					var xname = "Version";
-					var attr = identity.Attribute(xname);
-					if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PackageVersionPlaceholder)
-					{
-						if (!TryMergeVersionNumbers(ApplicationDisplayVersion, ApplicationVersion, out var finalVersion))
-						{
-							Log.LogError(ErrorVersionNumberCombination, ApplicationDisplayVersion, ApplicationVersion);
-							return;
-						}
-
-						identity.SetAttributeValue(xname, finalVersion);
-					}
-				}
+				identity = new XElement(xidentity);
+				appx.Root.Add(identity);
 			}
+
+			// Name=""
+			UpdateIdentityName(identity);
+
+			// Version=""
+			UpdateIdentityVersion(identity);
 
 			// <Properties>
 			//   <DisplayName />
 			//   <Logo />
 			// </Properties>
-			if (!string.IsNullOrEmpty(ApplicationTitle) || appIconInfo != null)
+			var xproperties = xmlns + "Properties";
+			var properties = appx.Root.Element(xproperties);
+			if (properties == null)
 			{
-				// <Properties>
-				var xproperties = xmlns + "Properties";
-				var properties = appx.Root.Element(xproperties);
-				if (properties == null)
-				{
-					properties = new XElement(xproperties);
-					appx.Root.Add(properties);
-				}
-
-				// <DisplayName>
-				var xdisplayname = xmlns + "DisplayName";
-				if (!string.IsNullOrEmpty(ApplicationTitle))
-				{
-					var xelem = properties.Element(xdisplayname);
-					if (xelem == null || string.IsNullOrEmpty(xelem.Value) || xelem.Value == DefaultPlaceholder)
-					{
-						properties.SetElementValue(xdisplayname, ApplicationTitle);
-					}
-				}
-
-				DisplayName = properties.Element(xdisplayname).Value;
-
-				// <Logo>
-				if (appIconInfo != null)
-				{
-					var xname = xmlns + "Logo";
-					var xelem = properties.Element(xname);
-					if (xelem == null || string.IsNullOrEmpty(xelem.Value) || xelem.Value == PngPlaceholder)
-					{
-						var dpi = DpiPath.Windows.StoreLogo[0];
-						var path = Path.Combine(dpi.Path + appIconInfo.OutputPath, appIconInfo.OutputName + dpi.NameSuffix + imageExtension);
-						properties.SetElementValue(xname, path);
-					}
-				}
+				properties = new XElement(xproperties);
+				appx.Root.Add(properties);
 			}
+
+			UpdatePropertiesDisplayName(properties, xmlns);
+			UpdatePropertiesPublisherDisplayName(properties, xmlns);
+			UpdatePropertiesLogo(properties, xmlns, appIconInfo);
 
 			// <Applications>
 			//   <Application>
@@ -190,166 +142,67 @@ namespace Uno.Resizetizer
 			//     </uap:VisualElements>
 			//   </Application>
 			// </Applications>
-			if (!string.IsNullOrEmpty(ApplicationTitle) || appIconInfo != null || splashInfo != null)
+			var xapplications = xmlns + "Applications";
+			var applications = appx.Root.Element(xapplications);
+			if (applications == null)
 			{
-				// <Applications>
-				var xapplications = xmlns + "Applications";
-				var applications = appx.Root.Element(xapplications);
-				if (applications == null)
-				{
-					applications = new XElement(xapplications);
-					appx.Root.Add(applications);
-				}
+				applications = new XElement(xapplications);
+				appx.Root.Add(applications);
+			}
 
-				// <Application>
-				var xapplication = xmlns + "Application";
-				var application = applications.Element(xapplication);
-				if (application == null)
-				{
-					application = new XElement(xapplication);
-					applications.Add(application);
-				}
+			// <Application>
+			var xapplication = xmlns + "Application";
+			var application = applications.Element(xapplication);
+			if (application == null)
+			{
+				application = new XElement(xapplication);
+				applications.Add(application);
+			}
 
-				// <uap:VisualElements>
-				var xvisual = xmlnsUap + "VisualElements";
-				var visual = application.Element(xvisual);
-				if (visual == null)
-				{
-					visual = new XElement(xvisual);
-					application.Add(visual);
-				}
+			// <uap:VisualElements>
+			var xvisual = xmlnsUap + "VisualElements";
+			var visual = application.Element(xvisual);
+			if (visual == null)
+			{
+				visual = new XElement(xvisual);
+				application.Add(visual);
+			}
 
-				if (!string.IsNullOrEmpty(ApplicationTitle))
-				{
-					// DisplayName=""
-					{
-						var xname = "DisplayName";
-						var attr = visual.Attribute(xname);
-						if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == DefaultPlaceholder)
-						{
-							visual.SetAttributeValue(xname, ApplicationTitle);
-						}
-					}
+			// <uap:DefaultTile>
+			var xtile = xmlnsUap + "DefaultTile";
+			var tile = visual.Element(xtile);
+			if (tile == null)
+			{
+				tile = new XElement(xtile);
+				visual.Add(tile);
+			}
 
-					// Description=""
-					{
-						var xname = "Description";
-						var attr = visual.Attribute(xname);
-						if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == DefaultPlaceholder)
-						{
-							visual.SetAttributeValue(xname, ApplicationTitle);
-						}
-					}
-				}
+			// <uap:ShowNameOnTiles>
+			var xshowname = xmlnsUap + "ShowNameOnTiles";
+			var showname = tile.Element(xshowname);
+			if (showname == null)
+			{
+				showname = new XElement(xshowname);
+				tile.Add(showname);
+			}
 
-				// BackgroundColor=""
-				{
-					var xname = "BackgroundColor";
-					var attr = visual.Attribute(xname);
+			if (!string.IsNullOrEmpty(ApplicationTitle))
+			{
+				UpdateVisualElementsDisplayName(visual);
+				UpdateVisualElementsDescription(visual);
 
-					if (attr is null || string.IsNullOrEmpty(attr.Value))
-					{
-						if (appIconInfo?.Color is not null)
-						{
-							visual.SetAttributeValue(xname, Utils.SkiaColorWithoutAlpha(appIconInfo.Color));
-						}
-					}
-				}
+				UpdateDefaultTileShortName(tile);
+			}
 
-				if (appIconInfo != null)
-				{
-					// Square150x150Logo=""
-					{
-						var xname = "Square150x150Logo";
-						var attr = visual.Attribute(xname);
-						if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PngPlaceholder)
-						{
-							var dpi = DpiPath.Windows.MediumTile[0];
-							var path = Path.Combine(dpi.Path + appIconInfo.OutputPath, appIconInfo.OutputName + dpi.NameSuffix + imageExtension);
-							visual.SetAttributeValue(xname, path);
-						}
-					}
+			if (appIconInfo != null)
+			{
+				UpdateVisualElementsBackground(visual, appIconInfo);
+				UpdateVisualElementsSquare150Logo(visual, appIconInfo);
+				UpdateVisualElementsSquare44Logo(visual, appIconInfo);
 
-					// Square44x44Logo=""
-					{
-						var xname = "Square44x44Logo";
-						var attr = visual.Attribute(xname);
-						if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PngPlaceholder)
-						{
-							var dpi = DpiPath.Windows.Logo[0];
-							var path = Path.Combine(dpi.Path + appIconInfo.OutputPath, appIconInfo.OutputName + dpi.NameSuffix + imageExtension);
-							visual.SetAttributeValue(xname, path);
-						}
-					}
-				}
-
-				// <uap:DefaultTile>
-				var xtile = xmlnsUap + "DefaultTile";
-				var tile = visual.Element(xtile);
-				if (tile == null)
-				{
-					tile = new XElement(xtile);
-					visual.Add(tile);
-				}
-
-				if (appIconInfo != null)
-				{
-					// Wide310x150Logo=""
-					{
-						var xname = "Wide310x150Logo";
-						var attr = tile.Attribute(xname);
-						if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PngPlaceholder)
-						{
-							var dpi = DpiPath.Windows.WideTile[0];
-							var path = Path.Combine(dpi.Path + appIconInfo.OutputPath, appIconInfo.OutputName + dpi.NameSuffix + imageExtension);
-							tile.SetAttributeValue(xname, path);
-						}
-					}
-
-					// Square71x71Logo=""
-					{
-						var xname = "Square71x71Logo";
-						var attr = tile.Attribute(xname);
-						if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PngPlaceholder)
-						{
-							var dpi = DpiPath.Windows.SmallTile[0];
-							var path = Path.Combine(dpi.Path + appIconInfo.OutputPath, appIconInfo.OutputName + dpi.NameSuffix + imageExtension);
-							tile.SetAttributeValue(xname, path);
-						}
-					}
-
-					// Square310x310Logo=""
-					{
-						var xname = "Square310x310Logo";
-						var attr = tile.Attribute(xname);
-						if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PngPlaceholder)
-						{
-							var dpi = DpiPath.Windows.LargeTile[0];
-							var path = Path.Combine(dpi.Path + appIconInfo.OutputPath, appIconInfo.OutputName + dpi.NameSuffix + imageExtension);
-							tile.SetAttributeValue(xname, path);
-						}
-					}
-				}
-
-				// ShortName=""
-				if (!string.IsNullOrEmpty(ApplicationTitle))
-				{
-					var xname = "ShortName";
-					var attr = tile.Attribute(xname);
-					if (attr == null || string.IsNullOrEmpty(attr.Value))
-					{
-						tile.SetAttributeValue(xname, ApplicationTitle);
-					}
-				}
-
-				// <uap:ShowNameOnTiles>
-				var xshowname = xmlnsUap + "ShowNameOnTiles";
-				var showname = tile.Element(xshowname);
-				if (showname == null)
-				{
-					showname = new XElement(xshowname);
-					tile.Add(showname);
-				}
+				UpdateDefaultTileWide310Logo(tile, appIconInfo);
+				UpdateDefaultTileSquare71Logo(tile, appIconInfo);
+				UpdateDefaultTileSquare310Logo(tile, appIconInfo);
 
 				// <ShowOn>
 				var xshowon = xmlnsUap + "ShowOn";
@@ -363,44 +216,236 @@ namespace Uno.Resizetizer
 				{
 					showname.Add(new XElement(xshowon, new XAttribute("Tile", "wide310x150Logo")));
 				}
+			}
 
-				if (splashInfo != null)
+			if (splashInfo != null)
+			{
+				// <uap:SplashScreen>
+				var xsplash = xmlnsUap + "SplashScreen";
+				var splash = visual.Element(xsplash);
+				if (splash == null)
 				{
-					// <uap:SplashScreen>
-					var xsplash = xmlnsUap + "SplashScreen";
-					var splash = visual.Element(xsplash);
-					if (splash == null)
-					{
-						splash = new XElement(xsplash);
-						visual.Add(splash);
-					}
-
-					// Image=""
-					{
-						var xname = "Image";
-						var attr = splash.Attribute(xname);
-						if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PngPlaceholder)
-						{
-							var dpi = DpiPath.Windows.SplashScreen[0];
-							var path = Path.Combine(dpi.Path, splashInfo.OutputName + dpi.NameSuffix + imageExtension);
-							splash.SetAttributeValue(xname, path);
-						}
-					}
-
-					// BackgroundColor=""
-					{
-						var xname = "BackgroundColor";
-						var attr = visual.Element(xsplash);
-
-						if (attr is null || string.IsNullOrEmpty(attr.Value))
-						{
-							if (splashInfo?.Color is not null)
-							{
-								splash.SetAttributeValue(xname, Utils.SkiaColorWithoutAlpha(splashInfo.Color));
-							}
-						}
-					}
+					splash = new XElement(xsplash);
+					visual.Add(splash);
 				}
+
+				UpdateSplashScreenImage(splash, splashInfo);
+				UpdateSplashScreenBackgroundColor(splash, splashInfo);
+			}
+		}
+
+		private void UpdateIdentityName(XElement identity)
+		{
+			if (!string.IsNullOrEmpty(ApplicationId))
+			{
+				var xname = "Name";
+				var attr = identity.Attribute(xname);
+				if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == DefaultPlaceholder)
+				{
+					identity.SetAttributeValue(xname, ApplicationId);
+				}
+			}
+		}
+
+		private void UpdateIdentityVersion(XElement identity)
+		{
+			ApplicationDisplayVersion ??= "1.0.0";
+			ApplicationVersion ??= "1";
+			var xname = "Version";
+			var attr = identity.Attribute(xname);
+			if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PackageVersionPlaceholder)
+			{
+				if (!TryMergeVersionNumbers(ApplicationDisplayVersion, ApplicationVersion, out var finalVersion))
+				{
+					Log.LogError(ErrorVersionNumberCombination, ApplicationDisplayVersion, ApplicationVersion);
+					return;
+				}
+
+				identity.SetAttributeValue(xname, finalVersion);
+			}
+		}
+
+		private void UpdatePropertiesDisplayName(XElement properties, XNamespace xmlns)
+		{
+			// <DisplayName>
+			var xdisplayname = xmlns + "DisplayName";
+			if (!string.IsNullOrEmpty(ApplicationTitle))
+			{
+				var xelem = properties.Element(xdisplayname);
+				if (xelem == null || string.IsNullOrEmpty(xelem.Value) || xelem.Value == DefaultPlaceholder)
+				{
+					properties.SetElementValue(xdisplayname, ApplicationTitle);
+				}
+			}
+
+			DisplayName = properties.Element(xdisplayname).Value;
+		}
+
+		private void UpdatePropertiesPublisherDisplayName(XElement properties, XNamespace xmlns)
+		{
+			// <PublisherDisplayName>
+			var xpublisherDisplayName = xmlns + "PublisherDisplayName";
+			if (!string.IsNullOrEmpty(Authors))
+			{
+				var xelem = properties.Element(xpublisherDisplayName);
+				if (xelem == null || string.IsNullOrEmpty(xelem.Value) || xelem.Value == DefaultPlaceholder)
+				{
+					properties.SetElementValue(xpublisherDisplayName, Authors);
+				}
+			}
+		}
+
+		private void UpdatePropertiesLogo(XElement properties, XNamespace xmlns, ResizeImageInfo? appIconInfo)
+		{
+			// <Logo>
+			if (appIconInfo != null)
+			{
+				var xname = xmlns + "Logo";
+				var xelem = properties.Element(xname);
+				if (xelem == null || string.IsNullOrEmpty(xelem.Value) || xelem.Value == PngPlaceholder)
+				{
+					var dpi = DpiPath.Windows.StoreLogo[0];
+					var path = Path.Combine(dpi.Path + appIconInfo.OutputPath, appIconInfo.OutputName + dpi.NameSuffix + ImageExtension);
+					properties.SetElementValue(xname, path);
+				}
+			}
+		}
+
+		private void UpdateVisualElementsDisplayName(XElement visual)
+		{
+			// DisplayName=""
+			var xname = "DisplayName";
+			var attr = visual.Attribute(xname);
+			if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == DefaultPlaceholder)
+			{
+				visual.SetAttributeValue(xname, ApplicationTitle);
+			}
+		}
+
+		private void UpdateVisualElementsDescription(XElement visual)
+		{
+			// Description=""
+			var xname = "Description";
+			var attr = visual.Attribute(xname);
+			if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == DefaultPlaceholder)
+			{
+				visual.SetAttributeValue(xname, Description);
+			}
+		}
+
+		private static void UpdateVisualElementsBackground(XElement visual, ResizeImageInfo appIconInfo)
+		{
+			// BackgroundColor=""
+			var xname = "BackgroundColor";
+			var attr = visual.Attribute(xname);
+
+			if (attr is null || string.IsNullOrEmpty(attr.Value))
+			{
+				if (appIconInfo?.Color is not null)
+				{
+					visual.SetAttributeValue(xname, Utils.SkiaColorWithoutAlpha(appIconInfo.Color));
+				}
+			}
+		}
+
+		private static void UpdateVisualElementsSquare150Logo(XElement visual, ResizeImageInfo appIconInfo)
+		{
+			// Square150x150Logo=""
+			var xname = "Square150x150Logo";
+			var attr = visual.Attribute(xname);
+			if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PngPlaceholder)
+			{
+				var dpi = DpiPath.Windows.MediumTile[0];
+				var path = Path.Combine(dpi.Path + appIconInfo.OutputPath, appIconInfo.OutputName + dpi.NameSuffix + ImageExtension);
+				visual.SetAttributeValue(xname, path);
+			}
+		}
+
+		private static void UpdateVisualElementsSquare44Logo(XElement visual, ResizeImageInfo appIconInfo)
+		{
+			// Square44x44Logo=""
+			var xname = "Square44x44Logo";
+			var attr = visual.Attribute(xname);
+			if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PngPlaceholder)
+			{
+				var dpi = DpiPath.Windows.Logo[0];
+				var path = Path.Combine(dpi.Path + appIconInfo.OutputPath, appIconInfo.OutputName + dpi.NameSuffix + ImageExtension);
+				visual.SetAttributeValue(xname, path);
+			}
+		}
+
+		private static void UpdateDefaultTileWide310Logo(XElement tile, ResizeImageInfo appIconInfo)
+		{
+			// Wide310x150Logo=""
+			var xname = "Wide310x150Logo";
+			var attr = tile.Attribute(xname);
+			if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PngPlaceholder)
+			{
+				var dpi = DpiPath.Windows.WideTile[0];
+				var path = Path.Combine(dpi.Path + appIconInfo.OutputPath, appIconInfo.OutputName + dpi.NameSuffix + ImageExtension);
+				tile.SetAttributeValue(xname, path);
+			}
+		}
+
+		private static void UpdateDefaultTileSquare71Logo(XElement tile, ResizeImageInfo appIconInfo)
+		{
+			// Square71x71Logo=""
+			var xname = "Square71x71Logo";
+			var attr = tile.Attribute(xname);
+			if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PngPlaceholder)
+			{
+				var dpi = DpiPath.Windows.SmallTile[0];
+				var path = Path.Combine(dpi.Path + appIconInfo.OutputPath, appIconInfo.OutputName + dpi.NameSuffix + ImageExtension);
+				tile.SetAttributeValue(xname, path);
+			}
+		}
+
+		private static void UpdateDefaultTileSquare310Logo(XElement tile, ResizeImageInfo appIconInfo)
+		{
+			// Square310x310Logo=""
+			var xname = "Square310x310Logo";
+			var attr = tile.Attribute(xname);
+			if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PngPlaceholder)
+			{
+				var dpi = DpiPath.Windows.LargeTile[0];
+				var path = Path.Combine(dpi.Path + appIconInfo.OutputPath, appIconInfo.OutputName + dpi.NameSuffix + ImageExtension);
+				tile.SetAttributeValue(xname, path);
+			}
+		}
+
+		private void UpdateDefaultTileShortName(XElement tile)
+		{
+			// ShortName=""
+			var xname = "ShortName";
+			var attr = tile.Attribute(xname);
+			if (attr == null || string.IsNullOrEmpty(attr.Value))
+			{
+				tile.SetAttributeValue(xname, ApplicationTitle);
+			}
+		}
+
+		private static void UpdateSplashScreenImage(XElement splash, ResizeImageInfo splashInfo)
+		{
+			// Image=""
+			var xname = "Image";
+			var attr = splash.Attribute(xname);
+			if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == PngPlaceholder)
+			{
+				var dpi = DpiPath.Windows.SplashScreen[0];
+				var path = Path.Combine(dpi.Path, splashInfo.OutputName + dpi.NameSuffix + ImageExtension);
+				splash.SetAttributeValue(xname, path);
+			}
+		}
+
+		private static void UpdateSplashScreenBackgroundColor(XElement splash, ResizeImageInfo splashInfo)
+		{
+			// BackgroundColor=""
+			var xname = "BackgroundColor";
+			var attr = splash.Element(xname);
+
+			if (splashInfo?.Color is not null && (attr is null || string.IsNullOrEmpty(attr.Value)))
+			{
+				splash.SetAttributeValue(xname, Utils.SkiaColorWithoutAlpha(splashInfo.Color));
 			}
 		}
 
