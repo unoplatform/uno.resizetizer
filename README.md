@@ -5,3 +5,7 @@ Based on [the work](https://github.com/Redth/Resizetizer) from [@redth](https://
 [![NuGet](https://badgen.net/nuget/v/Uno.Resizetizer)](https://www.nuget.org/packages/Uno.Resizetizer)
 
 To get started with Uno Platform, [follow our guides](https://aka.platform.uno/get-started), and get started with Resizetizer [with our documentation](doc/using-uno-resizetizer.md)!
+
+<!--
+This is a test... place your bets... will the build fail?
+-->
