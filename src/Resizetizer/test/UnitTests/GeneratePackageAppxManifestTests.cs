@@ -15,10 +15,11 @@ namespace Uno.Resizetizer.Tests
 		protected GeneratePackageAppxManifest_v0 GetNewTask(
 			string manifest,
 			string? generatedFilename = null,
-			string? guid = null,
+			string? applicationId = null,
 			string? displayVersion = null,
 			string? version = null,
 			string? displayName = null,
+			string? description = null,
 			ITaskItem? appIcon = null,
 			ITaskItem? splashScreen = null)
 		{
@@ -28,10 +29,13 @@ namespace Uno.Resizetizer.Tests
 				BuildEngine = this,
 				GeneratedFilename = generatedFilename,
 				AppxManifest = new []{new TaskItem(manifest)},
-				ApplicationId = guid,
+				ApplicationId = applicationId,
 				ApplicationDisplayVersion = displayVersion,
 				ApplicationVersion = version,
-				ApplicationTitle = displayName,AppIcon = appIcon == null ? null : new[] { appIcon },
+				ApplicationTitle = displayName,
+				AssemblyName = GetType().Assembly.FullName,
+				Description = description,
+				AppIcon = appIcon == null ? null : new[] { appIcon },
 				SplashScreen = splashScreen == null ? null : new[] { splashScreen },
 				TargetFramework = "windows"
 			};
@@ -40,10 +44,11 @@ namespace Uno.Resizetizer.Tests
 		protected GeneratePackageAppxManifest_v0 GetNewTask(
 		ITaskItem[] appxManifests,
 		string? generatedFilename = null,
-		string? guid = null,
+		string? applicationId = null,
 		string? displayVersion = null,
 		string? version = null,
 		string? displayName = null,
+		string? description = null,
 		ITaskItem? appIcon = null,
 		ITaskItem? splashScreen = null)
 		{
@@ -53,10 +58,13 @@ namespace Uno.Resizetizer.Tests
 				BuildEngine = this,
 				GeneratedFilename = generatedFilename,
 				AppxManifest = appxManifests,
-				ApplicationId = guid,
+				ApplicationId = applicationId,
 				ApplicationDisplayVersion = displayVersion,
 				ApplicationVersion = version,
-				ApplicationTitle = displayName,AppIcon = appIcon == null ? null : new[] { appIcon },
+				ApplicationTitle = displayName,
+				Description = description,
+                AssemblyName = GetType().Assembly.FullName,
+                AppIcon = appIcon == null ? null : new[] { appIcon },
 				SplashScreen = splashScreen == null ? null : new[] { splashScreen },
 				TargetFramework = "windows"
 			};
@@ -88,7 +96,7 @@ namespace Uno.Resizetizer.Tests
 
 			var inputFilename = $"testdata/appxmanifest/typical.appxmanifest";
 			var task = GetNewTask(inputFilename,
-				guid: "3505f9e4-fa3e-4742-d1ac-daff4ec89b2b",
+                applicationId: "com.contoso.myapp",
 				displayVersion: "2.5",
 				version: "3",
 				displayName: "Fishy Things",
@@ -126,14 +134,12 @@ namespace Uno.Resizetizer.Tests
 
 			var inputFilename = $"testdata/appxmanifest/{input}.appxmanifest";
 			var task = GetNewTask(inputFilename,
-				guid: "f9e4fa3e-3505-4742-9b2b-d1acdaff4ec8",
+                applicationId: "com.contoso.myapp",
 				displayVersion: "1.0.0",
 				version: "1",
 				displayName: "Sample App",
 				appIcon: appIcon,
 				splashScreen: splashScreen);
-
-
 
 			var success = task.Execute();
 			Assert.True(success, $"{task.GetType()}.Execute() failed: " + LogErrorEvents.FirstOrDefault()?.Message);
@@ -164,7 +170,7 @@ namespace Uno.Resizetizer.Tests
 
 			var inputFilename = $"testdata/appxmanifest/{input}.appxmanifest";
 			var task = GetNewTask(inputFilename,
-				guid: "f9e4fa3e-3505-4742-9b2b-d1acdaff4ec8",
+				applicationId: "com.contoso.myapp",
 				displayVersion: "1.0.0",
 				version: "1",
 				displayName: "Sample App",

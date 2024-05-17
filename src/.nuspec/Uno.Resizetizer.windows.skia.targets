@@ -68,26 +68,16 @@
 			Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoResizetizerInputsFile);$(_UnoSplashInputsFile);@(AppxManifest);@(_UnoAppxManifest)"
 			Outputs="$(_UnoManifestStampFile);$(_UnoIntermediateManifest)Package.appxmanifest">
 
-
-		<PropertyGroup>
-			<_UnoWindowsApplicationId
-					Condition="'$(_UnoWindowsApplicationId)' == '' and '$(ApplicationIdGuid)' != ''">
-				$(ApplicationIdGuid)
-			</_UnoWindowsApplicationId>
-			<_UnoWindowsApplicationId
-					Condition="'$(_UnoWindowsApplicationId)' == '' and '$(ApplicationId)' != ''">
-				$(ApplicationId)
-			</_UnoWindowsApplicationId>
-		</PropertyGroup>
-
 		<GeneratePackageAppxManifest_v0
 				IntermediateOutputPath="$(_UnoIntermediateManifest)"
 				AppxManifest="@(AppxManifest);@(_UnoAppxManifest);@(_SkiaManifest)"
 				GeneratedFilename="Package.appxmanifest"
-				ApplicationId="$(_UnoWindowsApplicationId)"
+				ApplicationId="$(ApplicationId)"
 				ApplicationDisplayVersion="$(ApplicationDisplayVersion)"
 				ApplicationVersion="$(ApplicationVersion)"
 				ApplicationTitle="$(ApplicationTitle)"
+				AssemblyName="$(AssemblyName)"
+				Description="$(Description)"
 				AppIcon="@(UnoImage->WithMetadataValue('IsAppIcon', 'true'))"
 				TargetFramework="$(_UnoResizetizerPlatformIdentifier)"
 				SplashScreen="@(UnoSplashScreen)">
