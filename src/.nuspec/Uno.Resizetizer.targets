@@ -627,7 +627,7 @@
 	<Target Name="_ResizetizerInitialize"
 		BeforeTargets="UnoResizetizeImages;_SetBuildInnerTarget;_ComputeTargetFrameworkItems">
 		<PropertyGroup>
-			<_ResizetizerRuntimeIdentifier>$(NETCoreSdkRuntimeIdentifier)</_ResizetizerRuntimeIdentifier>
+			<_ResizetizerRuntimeIdentifier>$(NETCoreSdkPortableRuntimeIdentifier)</_ResizetizerRuntimeIdentifier>
 			<!-- NOTE: We may need to adjust this in the future if we end up with assets compiled for osx-arm64 and osx-x64 -->
 			<_ResizetizerRuntimeIdentifier Condition=" $(_ResizetizerRuntimeIdentifier.Contains('osx')) ">osx</_ResizetizerRuntimeIdentifier>
 			<_ResizetizerRuntimeIdentifierDirectory>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', 'netstandard2.0', 'runtimes', '$(_ResizetizerRuntimeIdentifier)'))</_ResizetizerRuntimeIdentifierDirectory>
