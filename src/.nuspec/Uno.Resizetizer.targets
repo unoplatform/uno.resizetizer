@@ -627,21 +627,11 @@
 	<Target Name="_ResizetizerInitialize"
 		BeforeTargets="UnoResizetizeImages;_SetBuildInnerTarget;_ComputeTargetFrameworkItems">
 		<PropertyGroup>
-			<_ResizetizerRuntimeIdentifier>$(NETCoreSdkRuntimeIdentifier)</_ResizetizerRuntimeIdentifier>
+			<_ResizetizerRuntimeIdentifier>$(NETCoreSdkPortableRuntimeIdentifier)</_ResizetizerRuntimeIdentifier>
 			<!-- NOTE: We may need to adjust this in the future if we end up with assets compiled for osx-arm64 and osx-x64 -->
 			<_ResizetizerRuntimeIdentifier Condition=" $(_ResizetizerRuntimeIdentifier.Contains('osx')) ">osx</_ResizetizerRuntimeIdentifier>
 			<_ResizetizerRuntimeIdentifierDirectory>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', 'netstandard2.0', 'runtimes', '$(_ResizetizerRuntimeIdentifier)'))</_ResizetizerRuntimeIdentifierDirectory>
 			<_ResizetizerRuntimeAssetsOutput>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', 'netstandard2.0'))</_ResizetizerRuntimeAssetsOutput>
-		</PropertyGroup>
-
-		<!-- NOTE: This is meant to sanitize linux runtimes like ubuntu.22.04-x64-->
-		<PropertyGroup Condition=" !Exists($(_ResizetizerRuntimeIdentifierDirectory)) AND !$(_ResizetizerRuntimeIdentifier.Contains('osx')) AND !$(_ResizetizerRuntimeIdentifier.Contains('win')) AND !$(_ResizetizerRuntimeIdentifier.Contains('linux')) ">
-			<_ResizetizerRuntimeIdentifier Condition=" $(_ResizetizerRuntimeIdentifier.EndsWith('arm'))">linux-arm</_ResizetizerRuntimeIdentifier>
-			<_ResizetizerRuntimeIdentifier Condition=" $(_ResizetizerRuntimeIdentifier.EndsWith('arm64'))">linux-arm64</_ResizetizerRuntimeIdentifier>
-			<_ResizetizerRuntimeIdentifier Condition=" $(_ResizetizerRuntimeIdentifier.EndsWith('x64')) AND !$(_ResizetizerRuntimeIdentifier.Contains('msul'))">linux-x64</_ResizetizerRuntimeIdentifier>
-			<_ResizetizerRuntimeIdentifier Condition=" $(_ResizetizerRuntimeIdentifier.EndsWith('x86'))">linux-x86</_ResizetizerRuntimeIdentifier>
-			<_ResizetizerRuntimeIdentifier Condition=" $(_ResizetizerRuntimeIdentifier.Contains('musl'))">linux-musl-x64</_ResizetizerRuntimeIdentifier>
-			<_ResizetizerRuntimeIdentifierDirectory>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', 'netstandard2.0', 'runtimes', '$(_ResizetizerRuntimeIdentifier)'))</_ResizetizerRuntimeIdentifierDirectory>
 		</PropertyGroup>
 
 		<ItemGroup>
