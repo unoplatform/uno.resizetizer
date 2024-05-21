@@ -41,6 +41,8 @@ namespace Uno.Resizetizer
 
 		public string? Authors { get; set; }
 
+		public string? ApplicationPublisher { get; set; }
+
 		public string? Description { get; set; }
 
 		public ITaskItem[]? AppIcon { get; set; }
@@ -64,6 +66,7 @@ namespace Uno.Resizetizer
 				ApplicationId ??= AssemblyName;
 				Description ??= ApplicationTitle;
 				Authors ??= ApplicationTitle;
+				ApplicationPublisher ??= Authors;
 
 				ResizetizeImages_v0._TargetFramework = TargetFramework;
 				Directory.CreateDirectory(IntermediateOutputPath);
@@ -110,6 +113,9 @@ namespace Uno.Resizetizer
 
 			// Name=""
 			UpdateIdentityName(identity);
+
+			// Publisher=""
+			UpdateIdentityPublisher(identity);
 
 			// Version=""
 			UpdateIdentityVersion(identity);
@@ -247,6 +253,19 @@ namespace Uno.Resizetizer
 			}
 		}
 
+		private void UpdateIdentityPublisher(XElement identity)
+		{
+			if (!string.IsNullOrEmpty(ApplicationPublisher))
+			{
+				var xpublisher = "Publisher";
+				var attr = identity.Attribute(xpublisher);
+				if (attr == null || string.IsNullOrEmpty(attr.Value) || attr.Value == DefaultPlaceholder)
+				{
+					identity.SetAttributeValue(xpublisher, $"O={ApplicationPublisher}");
+				}
+			}
+		}
+
 		private void UpdateIdentityVersion(XElement identity)
 		{
 			ApplicationDisplayVersion ??= "1.0.0";
@@ -285,12 +304,12 @@ namespace Uno.Resizetizer
 		{
 			// <PublisherDisplayName>
 			var xpublisherDisplayName = xmlns + "PublisherDisplayName";
-			if (!string.IsNullOrEmpty(Authors))
+			if (!string.IsNullOrEmpty(ApplicationPublisher))
 			{
 				var xelem = properties.Element(xpublisherDisplayName);
 				if (xelem == null || string.IsNullOrEmpty(xelem.Value) || xelem.Value == DefaultPlaceholder)
 				{
-					properties.SetElementValue(xpublisherDisplayName, Authors);
+					properties.SetElementValue(xpublisherDisplayName, ApplicationPublisher);
 				}
 			}
 		}

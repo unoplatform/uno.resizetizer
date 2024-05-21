@@ -76,6 +76,8 @@
 				ApplicationDisplayVersion="$(ApplicationDisplayVersion)"
 				ApplicationVersion="$(ApplicationVersion)"
 				ApplicationTitle="$(ApplicationTitle)"
+				ApplicationPublisher="$(ApplicationPublisher)"
+				Authors="$(Authors)"
 				AssemblyName="$(AssemblyName)"
 				Description="$(Description)"
 				AppIcon="@(UnoImage->WithMetadataValue('IsAppIcon', 'true'))"
