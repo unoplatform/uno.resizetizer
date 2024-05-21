@@ -45,6 +45,10 @@ namespace Uno.Resizetizer
 
 		public string? Description { get; set; }
 
+		public string? TargetPlatformVersion { get; set; }
+
+		public string? TargetPlatformMinVersion { get; set; }
+
 		public ITaskItem[]? AppIcon { get; set; }
 
 		public ITaskItem[]? SplashScreen { get; set; }
@@ -119,6 +123,11 @@ namespace Uno.Resizetizer
 
 			// Version=""
 			UpdateIdentityVersion(identity);
+
+			if (!string.IsNullOrEmpty(TargetPlatformVersion) && !string.IsNullOrEmpty(TargetPlatformMinVersion))
+			{
+				SetDependencyTargetDeviceFamily(appx, TargetPlatformVersion!, TargetPlatformMinVersion!);
+			}
 
 			// <Properties>
 			//   <DisplayName />
@@ -465,6 +474,46 @@ namespace Uno.Resizetizer
 			if (splashInfo?.Color is not null && (attr is null || string.IsNullOrEmpty(attr.Value)))
 			{
 				splash.SetAttributeValue(xname, Utils.SkiaColorWithoutAlpha(splashInfo.Color));
+			}
+		}
+
+		private static void SetDependencyTargetDeviceFamily(XDocument appx, string targetPlatformVersion, string targetPlatformMinVersion)
+		{
+			var xmlns = appx.Root!.GetDefaultNamespace();
+			var xdependencies = xmlns + "Dependencies";
+			var dependencies = appx.Root.Element(xdependencies);
+			if (dependencies is null)
+			{
+				dependencies = new XElement(xdependencies);
+				appx.Root.Add(dependencies);
+			}
+
+			var targetDeviceFamilyElements = dependencies.Elements().Where(x => x.Name == xmlns + "TargetDeviceFamily");
+			if (targetDeviceFamilyElements is null || !targetDeviceFamilyElements.Any())
+			{
+				var universal = new XElement(xmlns + "TargetDeviceFamily");
+				universal.SetAttributeValue(xmlns + "Name", "Windows.Universal");
+
+				var desktop = new XElement(xmlns + "TargetDeviceFamily");
+				desktop.SetAttributeValue(xmlns + "Name", "Windows.Desktop");
+
+				dependencies.Add(universal, desktop);
+				targetDeviceFamilyElements = [universal, desktop];
+			}
+
+			foreach (var target in targetDeviceFamilyElements)
+			{
+				SetVersion(target, xmlns + "MinVersion", targetPlatformMinVersion);
+				SetVersion(target, xmlns + "MaxVersionTested", targetPlatformVersion);
+			}
+		}
+
+		private static void SetVersion(XElement target, XName attributeName, string version)
+		{
+			var attr = target.Attribute(attributeName);
+			if (attr is null || string.IsNullOrEmpty(attr.Value) || attr.Value == PackageVersionPlaceholder)
+			{
+				target.SetAttributeValue(attributeName, version);
 			}
 		}
 

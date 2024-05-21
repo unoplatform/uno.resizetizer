@@ -80,6 +80,8 @@
 				Authors="$(Authors)"
 				AssemblyName="$(AssemblyName)"
 				Description="$(Description)"
+				TargetPlatformMinVersion="$(TargetPlatformMinVersion)"
+				TargetPlatformVersion="$(TargetPlatformVersion)"
 				AppIcon="@(UnoImage->WithMetadataValue('IsAppIcon', 'true'))"
 				TargetFramework="$(_UnoResizetizerPlatformIdentifier)"
 				SplashScreen="@(UnoSplashScreen)">
