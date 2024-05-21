@@ -64,9 +64,7 @@
 	<Target Name="UnoGeneratePackageAppxManifest"
 			Condition="('$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_UnoAppxManifest)' !='' Or @(_SkiaManifest) != '')"
 			DependsOnTargets="$(UnoGeneratePackageAppxManifestDependsOnTargets)"
-			BeforeTargets="$(UnoGeneratePackageAppxManifestBeforeTargets);_GenerateWindowUnoIconExtension"
-			Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoResizetizerInputsFile);$(_UnoSplashInputsFile);@(AppxManifest);@(_UnoAppxManifest)"
-			Outputs="$(_UnoManifestStampFile);$(_UnoIntermediateManifest)Package.appxmanifest">
+			BeforeTargets="$(UnoGeneratePackageAppxManifestBeforeTargets);_GenerateWindowUnoIconExtension">
 
 		<GeneratePackageAppxManifest_v0
 				IntermediateOutputPath="$(_UnoIntermediateManifest)"
