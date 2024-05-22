@@ -82,11 +82,17 @@ namespace Uno.Resizetizer
 					Log.LogWarning("Multiple AppxManifest files were provided. Only the first one will be used.");
 				}
 
-				var appx = XDocument.Load(AppxManifest[0].ItemSpec);
+				FileHelper.WriteFileIfChanged(
+					filename,
+					Log,
+					writer =>
+					{
+						var appx = XDocument.Load(AppxManifest[0].ItemSpec);
 
-				UpdateManifest(appx);
+						UpdateManifest(appx);
 
-				appx.Save(filename);
+						appx.Save(writer);
+					});
 
 				GeneratedAppxManifest = new TaskItem(filename);
 			}

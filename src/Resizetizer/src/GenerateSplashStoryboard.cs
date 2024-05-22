@@ -43,10 +43,10 @@ namespace Uno.Resizetizer
 			var dir = Path.GetDirectoryName(OutputFile);
 			Directory.CreateDirectory(dir);
 
-			using (var writer = File.CreateText(OutputFile))
-			{
-				SubstituteStoryboard(writer, image, rStr, gStr, bStr, aStr);
-			}
+			FileHelper.WriteFileIfChanged(
+				OutputFile,
+				Log,
+				writer => SubstituteStoryboard(writer, image, rStr, gStr, bStr, aStr));
 
 			return !Log.HasLoggedErrors;
 		}
