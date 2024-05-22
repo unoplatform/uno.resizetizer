@@ -34,18 +34,21 @@ namespace Uno.Resizetizer
 
 				var plistFilename = Path.Combine(IntermediateOutputPath, PlistName ?? "PartialInfo.plist");
 
-				using (var f = File.CreateText(plistFilename))
-				{
-					f.WriteLine(plistHeader);
-
-					if (!string.IsNullOrEmpty(Storyboard))
+				FileHelper.WriteFileIfChanged(
+					plistFilename,
+					Log,
+					writer =>
 					{
-						f.WriteLine("  <key>UILaunchStoryboardName</key>");
-						f.WriteLine($"  <string>{Path.GetFileNameWithoutExtension(Storyboard)}</string>");
-					}
+						writer.WriteLine(plistHeader);
 
-					f.WriteLine(plistFooter);
-				}
+						if (!string.IsNullOrEmpty(Storyboard))
+						{
+							writer.WriteLine("  <key>UILaunchStoryboardName</key>");
+							writer.WriteLine($"  <string>{Path.GetFileNameWithoutExtension(Storyboard)}</string>");
+						}
+
+						writer.WriteLine(plistFooter);
+					});
 			}
 			catch (Exception ex)
 			{

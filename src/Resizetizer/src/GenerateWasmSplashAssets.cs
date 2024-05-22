@@ -63,9 +63,10 @@ public class GenerateWasmSplashAssets_v0 : Task
 		var dir = Path.GetDirectoryName(OutputFile);
 		Directory.CreateDirectory(dir);
 
-		using var writer = File.CreateText(OutputFile);
-
-		ProcessAppManifestFile(UserAppManifest.ToString(), info, writer);
+		FileHelper.WriteFileIfChanged(
+			OutputFile,
+			Log,
+			writer => ProcessAppManifestFile(UserAppManifest.ToString(), info, writer));
 
 		return true;
 	}
