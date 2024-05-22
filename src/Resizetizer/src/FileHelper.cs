@@ -14,9 +14,10 @@ namespace Uno.Resizetizer
             var tempFile = Path.GetTempFileName();
             try
             {
-                using var writer = File.CreateText(tempFile);
-
-                action(writer);
+                using (var writer = File.CreateText(tempFile))
+                {
+                    action(writer);
+                }
 
                 if (!File.Exists(fileName)
                     || !File.ReadAllText(fileName).Equals(File.ReadAllText(tempFile)))

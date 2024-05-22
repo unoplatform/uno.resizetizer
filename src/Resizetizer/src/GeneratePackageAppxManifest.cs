@@ -70,7 +70,6 @@ namespace Uno.Resizetizer
 					Log,
 					writer =>
 					{
-
 						var appx = XDocument.Load(AppxManifest[0].ItemSpec);
 
 						UpdateManifest(appx);
