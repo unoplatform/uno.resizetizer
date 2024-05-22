@@ -321,10 +321,10 @@ A sample app is available [here](https://github.com/unoplatform/uno.resizetizer/
 
 ### Windows (WinUI)
 
-In some cases the OS caches the app icon and your changes might not be applied. To fix this issue, first uninstall your app and then use one of the following options:
+In some cases, the OS caches the app icon and your changes might not be applied. To fix this issue, first uninstall your app and then use one of the following options:
 
 1. In the run dialog (Win + R) execute `ie4uinit.exe -ClearIconCache`
 2. Restart `explorer.exe` process (in **Task Manager - Details** select `explorer.exe` in the list and click on **Restart task**).
 3. Reboot your PC
 
-Afterward try to deploy the app again and your icons should be updated correctly.
+Afterward, try to deploy the app again and your icons should be updated correctly.
