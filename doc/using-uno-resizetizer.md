@@ -114,7 +114,7 @@ For basic adjustments, such as changing the icon's foreground color or applying 
 
 ```xml
 <PropertyGroup>
-    <UnoIconForegroundFile>Assets\Icons\appconfig.svg</UnoIconForegroundFile>
+    <UnoIconForegroundFile>Assets\Icons\customicon.svg</UnoIconForegroundFile>
     <UnoIconColor>#FF0000</UnoIconColor>
 </PropertyGroup>
 ```
@@ -128,7 +128,7 @@ This setup ensures that the icon settings are centralized, simplifying the maint
 ```xml
 <ItemGroup>
     <UnoIcon Include="$(MSBuildThisFileDirectory)Icons\iconapp.svg"
-             ForegroundFile="$(MSBuildThisFileDirectory)Icons\customicon.svg"
+             ForegroundFile="$(MSBuildThisFileDirectory)Icons\appconfig.svg"
              Color="#FF0000"/>
 </ItemGroup>
 ```
