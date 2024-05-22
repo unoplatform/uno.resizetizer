@@ -95,6 +95,31 @@ During the creation of your `svg` file, please remember to make the `ViewBox` bi
 
 ### 4. Configuring the project to use generated app icon
 
+# [**Single Project Based Solution**](#tab/singleproject)
+
+* When you create a new Uno Platform application, an `Icons` folder is automatically generated under the `Assets` directory. This folder contains `icon.svg` and `icon_foreground.svg` files.
+* You can simply replace these files with your custom icons while retaining the file names, or you can customize the icon configuration using SDK properties if different names or additional configurations are needed.
+* This configuration automatically applies across all target platforms included in the single project structure.
+
+## Utilizing SDK Properties
+
+The Uno Platform SDK exposes several properties that simplify the customization of your app icon. These properties allow you to easily adjust key aspects like the base size, color, and icon files without detailed XML changes, making your development process more streamlined.
+
+* `UnoIconBackgroundFile`: Sets the background image file for the icon.
+* `UnoIconForegroundFile`: Sets the foreground image file for the icon.
+* `UnoIconForegroundScale`: Adjusts the scaling of the icon's foreground.
+* `UnoIconBackgroundColor`: Sets the background color of the icon.
+
+For basic adjustments, such as changing the icon's foreground color or applying a common modification across platforms, you can use SDK properties:
+
+```xml
+<PropertyGroup>
+    <UnoIconForegroundFile>Assets\Icons\customicon.svg</UnoIconForegroundFile>
+    <UnoIconColor>#FF0000</UnoIconColor>
+</PropertyGroup>
+```
+This setup ensures that the icon settings are centralized, simplifying the maintenance and updating process.
+
 # [**Class Library Based Solution**](#tab/classlib)
 
 * Create an `Icons` folder inside the Base project, and add the files related to the app icon there.
@@ -217,6 +242,29 @@ Next, some adjustments are needed on `Android`, `Windows (WinUI)`, `WebAssembly`
 * `Color`: It's the background color that will be used to fill the empty space on the final SplashScreen asset. The default value is `#FFFFFF` (white).
 
 ### 5. Configuring the project to use generated splash screen
+# [**Single Project Based Solution**](#tab/singleproject)
+* When you create a new Uno Platform application, a `Splash` folder is automatically generated under the `Assets` directory. This folder contains `splash_screen.svg` file.
+* You can simply replace these files with your custom splash screen while retaining the file names, or you can customize the splash screen configuration using SDK properties if different names or additional configurations are needed.
+* This configuration automatically applies across all target platforms included in the single project structure.
+
+## Utilizing SDK Properties
+
+The Uno Platform SDK exposes several properties that simplify the customization of your splash screen. These properties allow you to easily adjust key aspects like the base size, color, and icon files without detailed XML changes, making your development process more streamlined.
+
+* `UnoSplashScreenFile`: Specifies the image file for the splash screen.
+* `UnoSplashScreenBaseSize`: Sets the base size for the splash screen image.
+* `UnoSplashScreenColor`: Determines the background color of the splash screen.
+
+To facilitate easier customization, such as adjusting the base size or color of the splash screen, you can leverage SDK properties:
+```xml
+<PropertyGroup>
+    <UnoSplashScreenFile>Assets\SplashScreen\custom_splash_screen.svg</UnoSplashScreenFile>
+    <UnoSplashScreenBaseSize>128,128</UnoSplashScreenBaseSize>
+    <UnoSplashScreenColor>#512BD4</UnoSplashScreenColor>
+</PropertyGroup>
+```
+
+This setup ensures that the splash screen settings are centralized, simplifying the maintenance and updating process.
 
 # [**Class Library Based Solution**](#tab/classlib)
 
@@ -313,6 +361,79 @@ Next, some adjustments are needed on `Android`, `Windows`, and `iOS`.
 
 -----
 
+## Platform-Specific Customization
+The Uno Resizetizer SDK allows for detailed control over how assets are rendered on different platforms. This can be particularly useful for properties such as icon and splash screen backgrounds, which may need to vary between platforms due to design or visibility concerns.
+
+### Customizing Background Colors Per Platform
+
+For properties like BackgroundColor, which might need different values per platform (for example, transparent backgrounds on Windows and WASM but a solid color on iOS and Android), you can specify platform-specific properties in your project file:
+
+```xml
+<PropertyGroup>
+    <!-- Default background color -->
+    <UnoIconBackgroundColor>#FFFFFF</UnoIconBackgroundColor>
+
+    <!-- Platform-specific overrides using Uno SDK properties -->
+    <UnoIconBackgroundColor Condition="'$(IsAndroid)' == 'true'">#000000</UnoIconBackgroundColor>
+    <UnoIconBackgroundColor Condition="'$(IsIOS)' == 'true'">#FF0000</UnoIconBackgroundColor>
+    <UnoIconBackgroundColor Condition="'$(IsWinAppSdk)' == 'true'">Transparent</UnoIconBackgroundColor>
+    <UnoIconBackgroundColor Condition="'$(IsBrowserWasm)' == 'true'">Transparent</UnoIconBackgroundColor>
+</PropertyGroup>
+```
+This setup demonstrates setting a default background color that is overridden on specific platforms. Adjust the conditions to match your project's target frameworks as defined in your project files or SDK documentation.
+
+#### Applying Platform-Specific Scale
+Similarly, if you want to apply different scaling factors for the icon foreground across platforms, use the platform-specific properties:
+
+```xml
+<PropertyGroup>
+    <!-- Default scale -->
+    <UnoIconForegroundScale>0.5</UnoIconForegroundScale>
+
+    <!-- Platform-specific scales using Uno SDK properties -->
+    <UnoIconForegroundScale Condition="'$(IsAndroid)' == 'true'">0.6</UnoIconForegroundScale>
+    <UnoIconForegroundScale Condition="'$(IsBrowserWasm)' == 'true'">0.4</UnoIconForegroundScale>
+    <UnoIconForegroundScale Condition="'$(IsWinAppSdk)' == 'true'">0.3</UnoIconForegroundScale>
+    <UnoIconForegroundScale Condition="'$(IsIOS)' == 'true'">0.55</UnoIconForegroundScale>
+</PropertyGroup>
+
+```
+## Using SVG Images vs PNG Images with SVG underneath
+The Uno Platform allows for flexible image handling through direct SVG use or through asset generation via Uno.Resizetizer. Understanding when to use each approach can optimize your app's performance and visual quality.
+
+### Direct SVG Usage
+
+#### When to Use:
+
+* You require vector graphics to be scalable without loss of quality.
+* Your app needs to dynamically change aspects of the image, such as color or size, at runtime.
+#### How to Implement:
+
+* Set the build action of your SVG file to Content.
+* Reference the SVG file directly in the Image control's Source property.
+```xml
+<Image Source="/Assets/my_vector_image.svg" />
+```
+[Using Svg Images](https://platform.uno/docs/articles/features/svg.html?tabs=singleproject)
+
+### Using Uno.Resizetizer for SVG to PNG Conversion
+
+#### When to Use:
+
+* You need raster graphics to optimize performance on platforms where SVG rendering might be less efficient.
+* Your app targets multiple platforms and requires consistent image rendering across all.
+
+#### How to Implement:
+
+* Set the build action of your SVG file to UnoImage.
+* Uno.Resizetizer will generate PNG assets at various scales.
+* Reference the generated PNG in the Image control's Source property.
+```xml
+<Image Source="/Assets/Generated/my_vector_image.png" />
+```
+[Using Uno Resizetizer ](https://platform.uno/docs/articles/external/uno.resizetizer/doc/using-uno-resizetizer.html?tabs=classlib%2CAndroid#unoimage)
+
+Choosing between direct SVG usage and PNG conversion with Uno.Resizetizer depends on your specific application needs. Consider factors such as platform target, performance requirements, and how you plan to manipulate the images within your app.
 ## Sample App Example
 
 A sample app is available [here](https://github.com/unoplatform/uno.resizetizer/tree/main/samples/NewTemplate) as an example for all the previous steps detailed above.
