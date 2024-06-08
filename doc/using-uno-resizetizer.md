@@ -449,3 +449,9 @@ In some cases, the OS caches the app icon and your changes might not be applied.
 3. Reboot your PC
 
 Afterward, try to deploy the app again and your icons should be updated correctly.
+
+### Icon Assets
+
+The Icon Extension generation will not succeed if the project cannot find `/Assets/Icons/icon.svg` and `/Assets/Icons/icon_foreground.svg`. You can find the related GitHub issue [here](https://github.com/unoplatform/uno.resizetizer/issues/289).
+
+Without these icon assets, a reference error will occur: _CS0234: The type or namespace name 'Resizetizer' does not exist in the namespace 'Uno' (are you missing an assembly reference?)_.
