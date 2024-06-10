@@ -22,6 +22,12 @@ namespace Uno.Resizetizer
                 if (!File.Exists(fileName)
                     || !File.ReadAllText(fileName).Equals(File.ReadAllText(tempFile)))
                 {
+                    if (File.Exists(fileName))
+                    {
+                        log.LogMessage(MessageImportance.Low, $"Updating file: {fileName}");
+                        File.Delete(fileName);
+                    }
+
                     File.Move(tempFile, fileName);
                 }
                 else
