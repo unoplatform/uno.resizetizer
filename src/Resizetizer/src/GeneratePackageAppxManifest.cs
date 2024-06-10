@@ -516,11 +516,26 @@ namespace Uno.Resizetizer
 
 		private static void SetVersion(XElement target, XName attributeName, string version)
 		{
-			var attr = target.Attribute(attributeName);
+			var attr = target.Attributes().FirstOrDefault(x => IsVersionAttribute(x, attributeName));
 			if (attr is null || string.IsNullOrEmpty(attr.Value) || attr.Value == PackageVersionPlaceholder)
 			{
 				target.SetAttributeValue(attributeName, version);
 			}
+		}
+
+		static bool IsVersionAttribute(XAttribute attribute, XName attributeName)
+		{
+			var currentAttributeName = attribute.Name.LocalName;
+			var expectedAttributeName = attributeName.LocalName;
+
+			var currentAttributeNamespace = attribute.Name.Namespace.NamespaceName;
+			var expectedAttributeNamespace = attributeName.NamespaceName;
+
+			// The Version may not have a current Namespace and should use the default namespace
+			if (string.IsNullOrEmpty(currentAttributeNamespace))
+				return currentAttributeName == expectedAttributeName;
+
+			return currentAttributeName == expectedAttributeName && currentAttributeNamespace == expectedAttributeNamespace;
 		}
 
 		public static bool TryMergeVersionNumbers(string? displayVersion, string? version, out string? finalVersion)
