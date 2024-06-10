@@ -449,7 +449,7 @@
 		</GetUnoAssetPath_v0>
 	</Target>
 
-	<!-- This target is meant to be called by platform specific splash screen targets -->
+	<!-- This target is meant to be called by platform specific splash screen targets at its beginning -->
 	<Target Name="GenerateUnoSplashScreens"
 			Condition="'@(UnoSplashScreen)' != ''">
 
@@ -459,6 +459,12 @@
 		</ItemGroup>
 
 		<MakeDir Directories="$(IntermediateOutputPath)"/>
+	</Target>
+
+	<!-- This target is meant to be called by platform specific splash screen targets at its end -->
+	<Target Name="PostGenerateUnoSplashScreens"
+			Condition="'@(UnoSplashScreen)' != ''">
+
 		<!-- Stamp file for Outputs -->
 		<Touch Files="$(_UnoSplashStampFile)" AlwaysCreate="True"/>
 		<ItemGroup>
