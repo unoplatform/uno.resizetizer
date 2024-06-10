@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using System;
@@ -20,6 +20,7 @@ namespace Uno.Resizetizer.Tests
 			string? version = null,
 			string? displayName = null,
 			string? description = null,
+			string? applicationPublisher = null,
 			ITaskItem? appIcon = null,
 			ITaskItem? splashScreen = null)
 		{
@@ -35,6 +36,7 @@ namespace Uno.Resizetizer.Tests
 				ApplicationTitle = displayName,
 				AssemblyName = GetType().Assembly.FullName,
 				Description = description,
+				ApplicationPublisher = applicationPublisher,
 				AppIcon = appIcon == null ? null : new[] { appIcon },
 				SplashScreen = splashScreen == null ? null : new[] { splashScreen },
 				TargetFramework = "windows"
@@ -49,8 +51,11 @@ namespace Uno.Resizetizer.Tests
 		string? version = null,
 		string? displayName = null,
 		string? description = null,
+		string? applicationPublisher = null,
 		ITaskItem? appIcon = null,
-		ITaskItem? splashScreen = null)
+		ITaskItem? splashScreen = null,
+		string? targetPlatformVersion = null,
+		string? targetPlatformMinVersion = null)
 		{
 			return new()
 			{
@@ -63,10 +68,13 @@ namespace Uno.Resizetizer.Tests
 				ApplicationVersion = version,
 				ApplicationTitle = displayName,
 				Description = description,
-                AssemblyName = GetType().Assembly.FullName,
-                AppIcon = appIcon == null ? null : new[] { appIcon },
+				ApplicationPublisher = applicationPublisher,
+				AssemblyName = GetType().Assembly.GetName().Name,
+				AppIcon = appIcon == null ? null : new[] { appIcon },
 				SplashScreen = splashScreen == null ? null : new[] { splashScreen },
-				TargetFramework = "windows"
+				TargetFramework = "windows",
+				TargetPlatformVersion = targetPlatformVersion,
+				TargetPlatformMinVersion = targetPlatformMinVersion
 			};
 		}
 
@@ -96,7 +104,7 @@ namespace Uno.Resizetizer.Tests
 
 			var inputFilename = $"testdata/appxmanifest/typical.appxmanifest";
 			var task = GetNewTask(inputFilename,
-                applicationId: "com.contoso.myapp",
+				applicationId: "com.contoso.myapp",
 				displayVersion: "2.5",
 				version: "3",
 				displayName: "Fishy Things",
@@ -134,7 +142,7 @@ namespace Uno.Resizetizer.Tests
 
 			var inputFilename = $"testdata/appxmanifest/{input}.appxmanifest";
 			var task = GetNewTask(inputFilename,
-                applicationId: "com.contoso.myapp",
+				applicationId: "com.contoso.myapp",
 				displayVersion: "1.0.0",
 				version: "1",
 				displayName: "Sample App",
@@ -228,6 +236,66 @@ namespace Uno.Resizetizer.Tests
 
 			// Assert
 			Assert.True(LogWarningEvents.Count > 0, "Warnings should be greater than zero");
+		}
+
+		[Fact]
+		public void TaskShouldNotDuplicateTargetVersions()
+		{
+			// Arrange
+			var taskItem = new TaskItem("testdata/appxmanifest/duplicate-versions.input.appxmanifest");
+			var task = GetNewTask(
+				appxManifests: [taskItem],
+				targetPlatformVersion: "10.0.19041.0",
+				targetPlatformMinVersion: "10.0.17763.0");
+
+			// Act
+			task.Execute();
+
+			// Assert
+			AssertExpectedManifest(task.GeneratedAppxManifest.ItemSpec, taskItem.ItemSpec);
+		}
+
+		[Fact]
+		public void TaskShouldBeAbleToOverwriteAppxManifest()
+		{
+			// Arrange
+			var taskItem = new TaskItem("testdata/appxmanifest/empty.appxmanifest");
+			var task = GetNewTask(
+				appxManifests: [taskItem],
+				displayVersion: "1.0.0",
+				version: "1",
+				targetPlatformVersion: "10.0.19041.0",
+				targetPlatformMinVersion: "10.0.17763.0");
+
+			// Act
+			task.Execute();
+
+			// Assert
+			var generatedPath = task.GeneratedAppxManifest.ItemSpec;
+			var initial = XDocument.Load(generatedPath).ToString();
+			Assert.True(File.Exists(generatedPath));
+
+			// Act
+			for (var i = 2; i < 5; i++)
+			{
+				task.ApplicationVersion = $"{i}";
+				task.Execute();
+
+				// Assert
+				Assert.Equal(generatedPath, task.GeneratedAppxManifest.ItemSpec);
+				Assert.True(File.Exists(task.GeneratedAppxManifest.ItemSpec));
+				var updated = XDocument.Load(generatedPath).ToString();
+
+				Assert.NotEqual(initial, updated);
+			}
+		}
+
+		static void AssertExpectedManifest(string generatedManifestPath, string inputManifestPath)
+		{
+			var generated = XDocument.Load(generatedManifestPath).ToString();
+			var expected = XDocument.Load(inputManifestPath.Replace(".input.", ".expected.")).ToString();
+
+			Assert.Equal(expected, generated);
 		}
 	}
 }
