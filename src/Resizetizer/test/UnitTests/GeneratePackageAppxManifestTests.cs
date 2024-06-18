@@ -1,8 +1,10 @@
 #nullable enable
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using Resizetizer.UnitTests.Mocks;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -29,7 +31,7 @@ namespace Uno.Resizetizer.Tests
 				IntermediateOutputPath = DestinationDirectory,
 				BuildEngine = this,
 				GeneratedFilename = generatedFilename,
-				AppxManifest = new []{new TaskItem(manifest)},
+				AppxManifest = [new TaskItem(manifest)],
 				ApplicationId = applicationId,
 				ApplicationDisplayVersion = displayVersion,
 				ApplicationVersion = version,
@@ -37,8 +39,8 @@ namespace Uno.Resizetizer.Tests
 				AssemblyName = GetType().Assembly.FullName,
 				Description = description,
 				ApplicationPublisher = applicationPublisher,
-				AppIcon = appIcon == null ? null : new[] { appIcon },
-				SplashScreen = splashScreen == null ? null : new[] { splashScreen },
+				AppIcon = appIcon == null ? null : [appIcon],
+				SplashScreen = splashScreen == null ? null : [splashScreen],
 				TargetFramework = "windows"
 			};
 		}
@@ -70,8 +72,8 @@ namespace Uno.Resizetizer.Tests
 				Description = description,
 				ApplicationPublisher = applicationPublisher,
 				AssemblyName = GetType().Assembly.GetName().Name,
-				AppIcon = appIcon == null ? null : new[] { appIcon },
-				SplashScreen = splashScreen == null ? null : new[] { splashScreen },
+				AppIcon = appIcon == null ? null : [appIcon],
+				SplashScreen = splashScreen == null ? null : [splashScreen],
 				TargetFramework = "windows",
 				TargetPlatformVersion = targetPlatformVersion,
 				TargetPlatformMinVersion = targetPlatformMinVersion
@@ -95,12 +97,8 @@ namespace Uno.Resizetizer.Tests
 		[Fact]
 		public void ManifestTakesPriority()
 		{
-			var appIcon = new TaskItem("images/camera.svg");
-			appIcon.SetMetadata("ForegroundFile", "images/loginbg.png");
-			appIcon.SetMetadata("IsAppIcon", "true");
-
-			var splashScreen = new TaskItem("images/dotnet_logo.svg");
-			splashScreen.SetMetadata("Color", "#FFFFFF");
+			var appIcon = MockTaskItem.CreateAppIcon("images/camera.svg", "images/loginbg.png");
+			var splashScreen = MockTaskItem.CreateSplashScreen("images/dotnet_logo.svg", "#FFFFFF");
 
 			var inputFilename = $"testdata/appxmanifest/typical.appxmanifest";
 			var task = GetNewTask(inputFilename,
@@ -131,14 +129,9 @@ namespace Uno.Resizetizer.Tests
 		{
 			var input = "empty";
 			var expected = "typicalWithNoBackground";
-			var appIcon = new TaskItem("images\\appicon.svg");
-			appIcon.SetMetadata("ForegroundFile", "images\\appiconfg.svg");
-			appIcon.SetMetadata("Link", "images\\appicon.svg");
-			appIcon.SetMetadata("IsAppIcon", "true");
-
-			var splashScreen = new TaskItem("images/dotnet_bot.svg");
-			splashScreen.SetMetadata("Color", "#FFFFFF");
+			var appIcon = MockTaskItem.CreateAppIcon("images/appicon.svg", "images/appiconfg.svg");
 			appIcon.SetMetadata("Color", "#FFFFFF");
+			var splashScreen = MockTaskItem.CreateSplashScreen("images/dotnet_bot.svg", "#FFFFFF");
 
 			var inputFilename = $"testdata/appxmanifest/{input}.appxmanifest";
 			var task = GetNewTask(inputFilename,
@@ -169,12 +162,9 @@ namespace Uno.Resizetizer.Tests
 		{
 			var input = "typical";
 			var expected = "typical";
-			var appIcon = new TaskItem("images/appicon.svg");
-			appIcon.SetMetadata("ForegroundFile", "images/appiconfg.svg");
-			appIcon.SetMetadata("IsAppIcon", "true");
 
-			var splashScreen = new TaskItem("images/dotnet_bot.svg");
-			splashScreen.SetMetadata("Color", "#FFFFFF");
+			var appIcon = MockTaskItem.CreateAppIcon("images/appicon.svg", "images/appiconfg.svg");
+			var splashScreen = MockTaskItem.CreateSplashScreen("images/dotnet_bot.svg", "#FFFFFF");
 
 			var inputFilename = $"testdata/appxmanifest/{input}.appxmanifest";
 			var task = GetNewTask(inputFilename,
@@ -252,6 +242,36 @@ namespace Uno.Resizetizer.Tests
 			task.Execute();
 
 			// Assert
+			AssertExpectedManifest(task.GeneratedAppxManifest.ItemSpec, taskItem.ItemSpec);
+		}
+
+		[Theory]
+		[InlineData("template")]
+		public void GeneratesExpectedAppxManifest(string manifestName)
+		{
+			// Arrange
+			var appIcon = MockTaskItem.CreateAppIcon("images/camera.svg", "images/loginbg.png");
+			var splashScreen = MockTaskItem.CreateSplashScreen("images/dotnet_logo.svg", "#FFFFFF");
+
+			var taskItem = new TaskItem($"testdata/appxmanifest/{manifestName}.input.appxmanifest");
+			var task = GetNewTask(
+				appxManifests: [taskItem],
+				applicationId: "com.contoso.myapp",
+				displayVersion: "1.0.0",
+				version: "1",
+				displayName: "Sample App",
+				description: "This is a sample from the Unit Tests",
+				appIcon: appIcon,
+				splashScreen: splashScreen,
+				targetPlatformVersion: "10.0.19041.0",
+				targetPlatformMinVersion: "10.0.17763.0");
+
+			// Act
+			task.Execute();
+
+			// Assert
+			Assert.False(task.Log.HasLoggedErrors);
+			Assert.NotNull(task.GeneratedAppxManifest);
 			AssertExpectedManifest(task.GeneratedAppxManifest.ItemSpec, taskItem.ItemSpec);
 		}
 

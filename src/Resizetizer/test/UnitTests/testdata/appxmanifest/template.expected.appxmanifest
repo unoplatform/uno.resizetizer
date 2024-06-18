@@ -1,0 +1,32 @@
+﻿<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" IgnorableNamespaces="uap rescap">
+	<Identity Publisher="CN=Uno Platform" Name="com.contoso.myapp" Version="1.0.0.1" />
+	<Properties>
+		<PublisherDisplayName>Uno Platform</PublisherDisplayName>
+		<DisplayName>Sample App</DisplayName>
+		<Logo>images\cameraStoreLogo.png</Logo>
+	</Properties>
+	<Dependencies>
+		<TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19041.0" />
+		<TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19041.0" />
+	</Dependencies>
+	<Resources>
+		<Resource Language="x-generate" />
+	</Resources>
+	<Applications>
+		<Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="$targetentrypoint$">
+			<VisualElements DisplayName="Sample App" Description="This is a sample from the Unit Tests" Square150x150Logo="images\cameraMediumTile.png" Square44x44Logo="images\cameraLogo.png">
+				<DefaultTile ShortName="Sample App" Wide310x150Logo="images\cameraWideTile.png" Square71x71Logo="images\cameraSmallTile.png" Square310x310Logo="images\cameraLargeTile.png">
+					<ShowNameOnTiles>
+						<ShowOn Tile="square150x150Logo" />
+						<ShowOn Tile="wide310x150Logo" />
+					</ShowNameOnTiles>
+				</DefaultTile>
+				<SplashScreen Image="dotnet_logo.png" BackgroundColor="#ffffff" />
+			</VisualElements>
+		</Application>
+	</Applications>
+	<Capabilities>
+		<rescap:Capability Name="runFullTrust" />
+		<DeviceCapability Name="location" />
+	</Capabilities>
+</Package>
