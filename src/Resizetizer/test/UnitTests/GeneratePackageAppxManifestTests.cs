@@ -113,7 +113,7 @@ namespace Uno.Resizetizer.Tests
 			Assert.True(success, $"{task.GetType()}.Execute() failed: " + LogErrorEvents.FirstOrDefault()?.Message);
 
 			var outputFilename = Path.Combine(DestinationDirectory, "Package.appxmanifest");
-			var expectedFilename = $"testdata/appxmanifest/typical.appxmanifest";
+			var expectedFilename = $"testdata/appxmanifest/typical.expected.appxmanifest";
 
 			var outputDoc = XDocument.Load(outputFilename);
 			var expectedDoc = XDocument.Load(expectedFilename);
