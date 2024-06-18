@@ -1,4 +1,6 @@
 #nullable enable
+//#define WRITE_EXPECTED
+
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Resizetizer.UnitTests.Mocks;
@@ -85,7 +87,7 @@ namespace Uno.Resizetizer.Tests
 		[InlineData("GenPkg.appxmanifest", "GenPkg.appxmanifest")]
 		public void FileIsGenerated(string? specificFn, string outputFn)
 		{
-			var task = GetNewTask($"testdata/appxmanifest/typical.appxmanifest", generatedFilename: specificFn);
+			var task = GetNewTask($"testdata/appxmanifest/typical.input.appxmanifest", generatedFilename: specificFn);
 
 			var success = task.Execute();
 
@@ -100,7 +102,7 @@ namespace Uno.Resizetizer.Tests
 			var appIcon = MockTaskItem.CreateAppIcon("images/camera.svg", "images/loginbg.png");
 			var splashScreen = MockTaskItem.CreateSplashScreen("images/dotnet_logo.svg", "#FFFFFF");
 
-			var inputFilename = $"testdata/appxmanifest/typical.appxmanifest";
+			var inputFilename = $"testdata/appxmanifest/manifestTakesPriority.input.appxmanifest";
 			var task = GetNewTask(inputFilename,
 				applicationId: "com.contoso.myapp",
 				displayVersion: "2.5",
@@ -112,28 +114,17 @@ namespace Uno.Resizetizer.Tests
 			var success = task.Execute();
 			Assert.True(success, $"{task.GetType()}.Execute() failed: " + LogErrorEvents.FirstOrDefault()?.Message);
 
-			var outputFilename = Path.Combine(DestinationDirectory, "Package.appxmanifest");
-			var expectedFilename = $"testdata/appxmanifest/typical.expected.appxmanifest";
-
-			var outputDoc = XDocument.Load(outputFilename);
-			var expectedDoc = XDocument.Load(expectedFilename);
-
-			if (!XNode.DeepEquals(outputDoc, expectedDoc))
-			{
-				Assert.Equal(expectedDoc.ToString(), outputDoc.ToString());
-			}
+			AssertExpectedManifest(task, inputFilename);
 		}
 
 		[Fact]
 		public void CorrectGenerationWhenUserSpecifyBackgroundColor()
 		{
-			var input = "empty";
-			var expected = "typicalWithNoBackground";
 			var appIcon = MockTaskItem.CreateAppIcon("images/appicon.svg", "images/appiconfg.svg");
 			appIcon.SetMetadata("Color", "#FFFFFF");
 			var splashScreen = MockTaskItem.CreateSplashScreen("images/dotnet_bot.svg", "#FFFFFF");
 
-			var inputFilename = $"testdata/appxmanifest/{input}.appxmanifest";
+			var inputFilename = $"testdata/appxmanifest/correctGenerationWhenUserSpecifyBackgroundColor.input.appxmanifest";
 			var task = GetNewTask(inputFilename,
 				applicationId: "com.contoso.myapp",
 				displayVersion: "1.0.0",
@@ -143,30 +134,18 @@ namespace Uno.Resizetizer.Tests
 				splashScreen: splashScreen);
 
 			var success = task.Execute();
+
 			Assert.True(success, $"{task.GetType()}.Execute() failed: " + LogErrorEvents.FirstOrDefault()?.Message);
-
-			var outputFilename = Path.Combine(DestinationDirectory, "Package.appxmanifest");
-			var expectedFilename = $"testdata/appxmanifest/{expected}.appxmanifest";
-
-			var outputDoc = XDocument.Load(outputFilename);
-			var expectedDoc = XDocument.Load(expectedFilename);
-
-			if (!XNode.DeepEquals(outputDoc, expectedDoc))
-			{
-				Assert.Equal(expectedDoc.ToString(), outputDoc.ToString());
-			}
+			AssertExpectedManifest(task, inputFilename);
 		}
 
 		[Fact]
-		public void CorrectGenerationWhitOutBackgroundColor()
+		public void CorrectGenerationWithOutBackgroundColor()
 		{
-			var input = "typical";
-			var expected = "typical";
-
 			var appIcon = MockTaskItem.CreateAppIcon("images/appicon.svg", "images/appiconfg.svg");
 			var splashScreen = MockTaskItem.CreateSplashScreen("images/dotnet_bot.svg", "#FFFFFF");
 
-			var inputFilename = $"testdata/appxmanifest/{input}.appxmanifest";
+			var inputFilename = $"testdata/appxmanifest/correctGenerationWithOutBackgroundColor.input.appxmanifest";
 			var task = GetNewTask(inputFilename,
 				applicationId: "com.contoso.myapp",
 				displayVersion: "1.0.0",
@@ -178,16 +157,7 @@ namespace Uno.Resizetizer.Tests
 			var success = task.Execute();
 			Assert.True(success, $"{task.GetType()}.Execute() failed: " + LogErrorEvents.FirstOrDefault()?.Message);
 
-			var outputFilename = Path.Combine(DestinationDirectory, "Package.appxmanifest");
-			var expectedFilename = $"testdata/appxmanifest/{expected}.appxmanifest";
-
-			var outputDoc = XDocument.Load(outputFilename);
-			var expectedDoc = XDocument.Load(expectedFilename);
-
-			if (!XNode.DeepEquals(outputDoc, expectedDoc))
-			{
-				Assert.Equal(expectedDoc.ToString(), outputDoc.ToString());
-			}
+			AssertExpectedManifest(task, inputFilename);
 		}
 
 		[Theory]
@@ -219,7 +189,7 @@ namespace Uno.Resizetizer.Tests
 		{
 			// Arrange
 			var taskItem = new TaskItem("testdata/appxmanifest/typical.appxmanifest");
-			var task = GetNewTask(appxManifests: new [] {taskItem, taskItem});
+			var task = GetNewTask(appxManifests: new[] { taskItem, taskItem });
 
 			// Act
 			task.Execute();
@@ -242,7 +212,7 @@ namespace Uno.Resizetizer.Tests
 			task.Execute();
 
 			// Assert
-			AssertExpectedManifest(task.GeneratedAppxManifest.ItemSpec, taskItem.ItemSpec);
+			AssertExpectedManifest(task, taskItem);
 		}
 
 		[Theory]
@@ -270,9 +240,7 @@ namespace Uno.Resizetizer.Tests
 			task.Execute();
 
 			// Assert
-			Assert.False(task.Log.HasLoggedErrors);
-			Assert.NotNull(task.GeneratedAppxManifest);
-			AssertExpectedManifest(task.GeneratedAppxManifest.ItemSpec, taskItem.ItemSpec);
+			AssertExpectedManifest(task, taskItem);
 		}
 
 		[Fact]
@@ -310,12 +278,22 @@ namespace Uno.Resizetizer.Tests
 			}
 		}
 
-		static void AssertExpectedManifest(string generatedManifestPath, string inputManifestPath)
-		{
-			var generated = XDocument.Load(generatedManifestPath).ToString();
-			var expected = XDocument.Load(inputManifestPath.Replace(".input.", ".expected.")).ToString();
+		static void AssertExpectedManifest(GeneratePackageAppxManifest_v0 task, string inputManifest) =>
+			AssertExpectedManifest(task, new TaskItem(inputManifest));
 
-			Assert.Equal(expected, generated);
+		static void AssertExpectedManifest(GeneratePackageAppxManifest_v0 task, ITaskItem inputManifest)
+		{
+			Assert.False(task.Log.HasLoggedErrors);
+			Assert.NotNull(task.GeneratedAppxManifest);
+
+			var generated = File.ReadAllText(task.GeneratedAppxManifest.ItemSpec);
+			var expectedFile = inputManifest.ItemSpec.Replace(".input.", ".expected.");
+#if WRITE_EXPECTED
+			File.WriteAllText(expectedFile, generated);
+#endif
+			var expected = File.ReadAllText(expectedFile);
+
+			Assert.Equal(expected, generated, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true);
 		}
 	}
 }
