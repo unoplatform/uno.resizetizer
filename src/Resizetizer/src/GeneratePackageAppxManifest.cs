@@ -120,10 +120,10 @@ namespace Uno.Resizetizer
 			var splashInfo = SplashScreen?.Length > 0 ? ResizeImageInfo.Parse(SplashScreen[0]) : null;
 
 			var uapXmlns = appx.Root.Attributes()
-                .Where(a => a.IsNamespaceDeclaration && a.Value == UapNamespace)
+				.Where(a => a.IsNamespaceDeclaration && a.Value == UapNamespace)
 				.Select(a => XNamespace.Get(a.Value))
 				.FirstOrDefault();
-            var xmlns = appx.Root!.GetDefaultNamespace();
+			var xmlns = appx.Root!.GetDefaultNamespace();
 
 			// <Identity Name="" Version="" />
 			// <Identity>
