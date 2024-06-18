@@ -4,7 +4,7 @@
   <Properties>
     <PublisherDisplayName>Uno Platform</PublisherDisplayName>
     <DisplayName>Sample App</DisplayName>
-    <Logo>images\cameraStoreLogo.png</Logo>
+    <Logo>images\appiconStoreLogo.png</Logo>
   </Properties>
   <Dependencies>
     <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19041.0" />
@@ -15,14 +15,14 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="$targetentrypoint$">
-      <uap:VisualElements DisplayName="Sample App" Description="This is a sample from the Unit Tests" Square150x150Logo="images\cameraMediumTile.png" Square44x44Logo="images\cameraLogo.png">
-        <uap:DefaultTile ShortName="Sample App" Wide310x150Logo="images\cameraWideTile.png" Square71x71Logo="images\cameraSmallTile.png" Square310x310Logo="images\cameraLargeTile.png">
+      <uap:VisualElements DisplayName="Sample App" Description="Sample App" BackgroundColor="#ffffff" Square150x150Logo="images\appiconMediumTile.png" Square44x44Logo="images\appiconLogo.png">
+        <uap:DefaultTile ShortName="Sample App" Wide310x150Logo="images\appiconWideTile.png" Square71x71Logo="images\appiconSmallTile.png" Square310x310Logo="images\appiconLargeTile.png">
           <uap:ShowNameOnTiles>
             <ShowOn Tile="square150x150Logo" />
             <ShowOn Tile="wide310x150Logo" />
           </uap:ShowNameOnTiles>
         </uap:DefaultTile>
-        <uap:SplashScreen Image="dotnet_logo.png" BackgroundColor="#ffffff" />
+        <uap:SplashScreen Image="dotnet_bot.png" BackgroundColor="#ffffff" />
       </uap:VisualElements>
     </Application>
   </Applications>
