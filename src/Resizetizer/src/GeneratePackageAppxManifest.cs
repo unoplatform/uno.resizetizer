@@ -4,6 +4,7 @@ using Microsoft.Build.Utilities;
 using System;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace Uno.Resizetizer
@@ -89,7 +90,16 @@ namespace Uno.Resizetizer
 
 						UpdateManifest(appx);
 
-						appx.Save(writer);
+						// Define the settings for the XmlWriter
+						var settings = new XmlWriterSettings
+						{
+							Indent = true,
+							Encoding = writer.Encoding,
+							OmitXmlDeclaration = false // Ensure the XML declaration is included
+						};
+
+						using var xmlWriter = XmlWriter.Create(writer, settings);
+						appx.Save(xmlWriter);
 					});
 
 				GeneratedAppxManifest = new TaskItem(filename);
