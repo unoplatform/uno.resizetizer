@@ -16,6 +16,8 @@ namespace Uno.Resizetizer
 		const string PackageVersionPlaceholder = "0.0.0.0";
 		const string ImageExtension = ".png";
 
+		const string UapNamespace = "http://schemas.microsoft.com/appx/manifest/uap/windows10";
+
 		const string ErrorVersionNumberCombination = "ApplicationDisplayVersion '{0}' was not a valid 3 part semver version number and/or ApplicationVersion '{1}' was not a valid integer.";
 
 		[Required]
@@ -117,7 +119,11 @@ namespace Uno.Resizetizer
 			var appIconInfo = AppIcon?.Length > 0 ? ResizeImageInfo.Parse(AppIcon[0]) : null;
 			var splashInfo = SplashScreen?.Length > 0 ? ResizeImageInfo.Parse(SplashScreen[0]) : null;
 
-			var xmlns = appx.Root!.GetDefaultNamespace();
+			var uapXmlns = appx.Root.Attributes()
+                .Where(a => a.IsNamespaceDeclaration && a.Value == UapNamespace)
+				.Select(a => XNamespace.Get(a.Value))
+				.FirstOrDefault();
+            var xmlns = appx.Root!.GetDefaultNamespace();
 
 			// <Identity Name="" Version="" />
 			// <Identity>
@@ -189,7 +195,7 @@ namespace Uno.Resizetizer
 			}
 
 			// <uap:VisualElements>
-			var xvisual = xmlns + "VisualElements";
+			var xvisual = uapXmlns + "VisualElements";
 			var visual = application.Element(xvisual);
 			if (visual == null)
 			{
@@ -198,7 +204,7 @@ namespace Uno.Resizetizer
 			}
 
 			// <uap:DefaultTile>
-			var xtile = xmlns + "DefaultTile";
+			var xtile = uapXmlns + "DefaultTile";
 			var tile = visual.Element(xtile);
 			if (tile == null)
 			{
@@ -207,7 +213,7 @@ namespace Uno.Resizetizer
 			}
 
 			// <uap:ShowNameOnTiles>
-			var xshowname = xmlns + "ShowNameOnTiles";
+			var xshowname = uapXmlns + "ShowNameOnTiles";
 			var showname = tile.Element(xshowname);
 			if (showname == null)
 			{
@@ -250,7 +256,7 @@ namespace Uno.Resizetizer
 			if (splashInfo != null)
 			{
 				// <uap:SplashScreen>
-				var xsplash = xmlns + "SplashScreen";
+				var xsplash = uapXmlns + "SplashScreen";
 				var splash = visual.Element(xsplash);
 				if (splash == null)
 				{
