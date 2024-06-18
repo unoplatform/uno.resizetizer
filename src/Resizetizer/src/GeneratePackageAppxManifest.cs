@@ -119,7 +119,7 @@ namespace Uno.Resizetizer
 			var appIconInfo = AppIcon?.Length > 0 ? ResizeImageInfo.Parse(AppIcon[0]) : null;
 			var splashInfo = SplashScreen?.Length > 0 ? ResizeImageInfo.Parse(SplashScreen[0]) : null;
 
-			var uapXmlns = appx.Root.Attributes()
+			var xmlnsUap = appx.Root.Attributes()
 				.Where(a => a.IsNamespaceDeclaration && a.Value == UapNamespace)
 				.Select(a => XNamespace.Get(a.Value))
 				.FirstOrDefault();
@@ -195,7 +195,7 @@ namespace Uno.Resizetizer
 			}
 
 			// <uap:VisualElements>
-			var xvisual = uapXmlns + "VisualElements";
+			var xvisual = xmlnsUap + "VisualElements";
 			var visual = application.Element(xvisual);
 			if (visual == null)
 			{
@@ -204,7 +204,7 @@ namespace Uno.Resizetizer
 			}
 
 			// <uap:DefaultTile>
-			var xtile = uapXmlns + "DefaultTile";
+			var xtile = xmlnsUap + "DefaultTile";
 			var tile = visual.Element(xtile);
 			if (tile == null)
 			{
@@ -213,7 +213,7 @@ namespace Uno.Resizetizer
 			}
 
 			// <uap:ShowNameOnTiles>
-			var xshowname = uapXmlns + "ShowNameOnTiles";
+			var xshowname = xmlnsUap + "ShowNameOnTiles";
 			var showname = tile.Element(xshowname);
 			if (showname == null)
 			{
@@ -256,7 +256,7 @@ namespace Uno.Resizetizer
 			if (splashInfo != null)
 			{
 				// <uap:SplashScreen>
-				var xsplash = uapXmlns + "SplashScreen";
+				var xsplash = xmlnsUap + "SplashScreen";
 				var splash = visual.Element(xsplash);
 				if (splash == null)
 				{
