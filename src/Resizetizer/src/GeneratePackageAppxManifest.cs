@@ -17,8 +17,6 @@ namespace Uno.Resizetizer
 
 		const string ErrorVersionNumberCombination = "ApplicationDisplayVersion '{0}' was not a valid 3 part semver version number and/or ApplicationVersion '{1}' was not a valid integer.";
 
-		static readonly XNamespace xmlnsUap = "http://schemas.microsoft.com/appx/manifest/uap/windows10";
-
 		[Required]
 		public string IntermediateOutputPath { get; set; } = null!;
 
@@ -181,7 +179,7 @@ namespace Uno.Resizetizer
 			}
 
 			// <uap:VisualElements>
-			var xvisual = xmlnsUap + "VisualElements";
+			var xvisual = xmlns + "VisualElements";
 			var visual = application.Element(xvisual);
 			if (visual == null)
 			{
@@ -190,7 +188,7 @@ namespace Uno.Resizetizer
 			}
 
 			// <uap:DefaultTile>
-			var xtile = xmlnsUap + "DefaultTile";
+			var xtile = xmlns + "DefaultTile";
 			var tile = visual.Element(xtile);
 			if (tile == null)
 			{
@@ -199,7 +197,7 @@ namespace Uno.Resizetizer
 			}
 
 			// <uap:ShowNameOnTiles>
-			var xshowname = xmlnsUap + "ShowNameOnTiles";
+			var xshowname = xmlns + "ShowNameOnTiles";
 			var showname = tile.Element(xshowname);
 			if (showname == null)
 			{
@@ -226,7 +224,7 @@ namespace Uno.Resizetizer
 				UpdateDefaultTileSquare310Logo(tile, appIconInfo);
 
 				// <ShowOn>
-				var xshowon = xmlnsUap + "ShowOn";
+				var xshowon = xmlns + "ShowOn";
 				var showons = showname.Elements(xshowon).ToArray();
 				if (showons.All(x => x.Attribute("Tile")?.Value != "square150x150Logo"))
 				{
@@ -242,7 +240,7 @@ namespace Uno.Resizetizer
 			if (splashInfo != null)
 			{
 				// <uap:SplashScreen>
-				var xsplash = xmlnsUap + "SplashScreen";
+				var xsplash = xmlns + "SplashScreen";
 				var splash = visual.Element(xsplash);
 				if (splash == null)
 				{
