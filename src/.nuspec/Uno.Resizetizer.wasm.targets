@@ -3,9 +3,12 @@
 			Name="GenerateUnoSplashWasm"
 			BeforeTargets="ProcessUnoSplashScreens"
 			Condition="'$(DesignTimeBuild)' != 'true' AND $(OutputType) == 'Exe'"
+			Inputs="@(EmbeddedResource);@(UnoSplashScreen)"
 			Outputs="$(_UnoSplashStampFile)">
 
 		<CallTarget Targets="GenerateUnoSplashScreens" />
+
+		<MakeDir Directories="$(IntermediateOutputPath)"/>
 
 		<!--Wasm-->
 		<GenerateWasmSplashAssets_v0
@@ -36,6 +39,12 @@
 			<EmbeddedResource Remove="$(UserAppManifest)"/>
 			<EmbeddedResource Include="$(_UnoIntermediateAppManifestWasm)"
 							  Link="$(UserAppManifest)"/>
+		</ItemGroup>
+
+		<!-- Stamp file for Outputs -->
+		<Touch Files="$(_UnoSplashStampFile)" AlwaysCreate="True"/>
+		<ItemGroup>
+			<FileWrites Include="$(_UnoSplashStampFile)"/>
 		</ItemGroup>
 	</Target>
 
