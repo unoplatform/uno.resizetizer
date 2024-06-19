@@ -18,8 +18,8 @@
       <uap:VisualElements DisplayName="Sample App" Description="Sample App" BackgroundColor="#ffffff" Square150x150Logo="images\appiconMediumTile.png" Square44x44Logo="images\appiconLogo.png">
         <uap:DefaultTile ShortName="Sample App" Wide310x150Logo="images\appiconWideTile.png" Square71x71Logo="images\appiconSmallTile.png" Square310x310Logo="images\appiconLargeTile.png">
           <uap:ShowNameOnTiles>
-            <ShowOn Tile="square150x150Logo" />
-            <ShowOn Tile="wide310x150Logo" />
+            <uap:ShowOn Tile="square150x150Logo" />
+            <uap:ShowOn Tile="wide310x150Logo" />
           </uap:ShowNameOnTiles>
         </uap:DefaultTile>
         <uap:SplashScreen Image="dotnet_bot.png" BackgroundColor="#ffffff" />
