@@ -20,8 +20,6 @@
           <uap:ShowNameOnTiles>
             <uap:ShowOn Tile="square150x150Logo" />
             <uap:ShowOn Tile="wide310x150Logo" />
-            <ShowOn Tile="square150x150Logo" />
-            <ShowOn Tile="wide310x150Logo" />
           </uap:ShowNameOnTiles>
         </uap:DefaultTile>
         <uap:SplashScreen Image="dotnet_bot.png" BackgroundColor="#ffffff" />
