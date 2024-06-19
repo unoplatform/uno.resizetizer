@@ -1,61 +1,92 @@
 #nullable enable
+//#define WRITE_EXPECTED
+
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using System;
-using System.Collections;
+using Resizetizer.UnitTests.Mocks;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Uno.Resizetizer.Tests
 {
-	public class GeneratePackageAppxManifestTests : MSBuildTaskTestFixture<GeneratePackageAppxManifest_v0>
+    public class GeneratePackageAppxManifestTests(ITestOutputHelper testOutput) : MSBuildTaskTestFixture<GeneratePackageAppxManifest_v0>(testOutput)
 	{
-		protected GeneratePackageAppxManifest_v0 GetNewTask(
-			string manifest,
+        protected GeneratePackageAppxManifest_v0 GetNewTask(
+			string appxManifest,
 			string? generatedFilename = null,
 			string? applicationId = null,
-			string? displayVersion = null,
-			string? version = null,
-			string? displayName = null,
+			string? applicationDisplayVersion = null,
+			string? applicationVersion = null,
+			string? applicationTitle = null,
 			string? description = null,
 			string? applicationPublisher = null,
 			ITaskItem? appIcon = null,
-			ITaskItem? splashScreen = null)
-		{
-			return new()
-			{
-				IntermediateOutputPath = DestinationDirectory,
-				BuildEngine = this,
-				GeneratedFilename = generatedFilename,
-				AppxManifest = new []{new TaskItem(manifest)},
-				ApplicationId = applicationId,
-				ApplicationDisplayVersion = displayVersion,
-				ApplicationVersion = version,
-				ApplicationTitle = displayName,
-				AssemblyName = GetType().Assembly.FullName,
-				Description = description,
-				ApplicationPublisher = applicationPublisher,
-				AppIcon = appIcon == null ? null : new[] { appIcon },
-				SplashScreen = splashScreen == null ? null : new[] { splashScreen },
-				TargetFramework = "windows"
-			};
-		}
+			ITaskItem? splashScreen = null,
+			string? targetPlatformVersion = null,
+			string? targetPlatformMinVersion = null,
+			string? authors = null) =>
+			GetNewTask(
+				[new TaskItem(appxManifest)],
+				generatedFilename,
+				applicationId,
+				applicationDisplayVersion,
+				applicationVersion,
+				applicationTitle,
+				description,
+				applicationPublisher,
+				appIcon,
+				splashScreen,
+				targetPlatformVersion,
+				targetPlatformMinVersion,
+				authors);
 
 		protected GeneratePackageAppxManifest_v0 GetNewTask(
-		ITaskItem[] appxManifests,
-		string? generatedFilename = null,
-		string? applicationId = null,
-		string? displayVersion = null,
-		string? version = null,
-		string? displayName = null,
-		string? description = null,
-		string? applicationPublisher = null,
-		ITaskItem? appIcon = null,
-		ITaskItem? splashScreen = null,
-		string? targetPlatformVersion = null,
-		string? targetPlatformMinVersion = null)
+			ITaskItem appxManifest,
+			string? generatedFilename = null,
+			string? applicationId = null,
+			string? applicationDisplayVersion = null,
+			string? applicationVersion = null,
+			string? applicationTitle = null,
+			string? description = null,
+			string? applicationPublisher = null,
+			ITaskItem? appIcon = null,
+			ITaskItem? splashScreen = null,
+			string? targetPlatformVersion = null,
+			string? targetPlatformMinVersion = null,
+			string? authors = null) =>
+			GetNewTask(
+				[appxManifest],
+				generatedFilename,
+				applicationId,
+				applicationDisplayVersion,
+				applicationVersion,
+				applicationTitle,
+				description,
+				applicationPublisher,
+				appIcon,
+				splashScreen,
+				targetPlatformVersion,
+				targetPlatformMinVersion,
+				authors);
+
+
+		protected GeneratePackageAppxManifest_v0 GetNewTask(
+			ITaskItem[] appxManifests,
+			string? generatedFilename = null,
+			string? applicationId = null,
+			string? applicationDisplayVersion = null,
+			string? applicationVersion = null,
+			string? applicationTitle = null,
+			string? description = null,
+			string? applicationPublisher = null,
+			ITaskItem? appIcon = null,
+			ITaskItem? splashScreen = null,
+			string? targetPlatformVersion = null,
+			string? targetPlatformMinVersion = null,
+			string? authors = null)
 		{
 			return new()
 			{
@@ -64,15 +95,16 @@ namespace Uno.Resizetizer.Tests
 				GeneratedFilename = generatedFilename,
 				AppxManifest = appxManifests,
 				ApplicationId = applicationId,
-				ApplicationDisplayVersion = displayVersion,
-				ApplicationVersion = version,
-				ApplicationTitle = displayName,
+				ApplicationDisplayVersion = applicationDisplayVersion,
+				ApplicationVersion = applicationVersion,
+				ApplicationTitle = applicationTitle,
 				Description = description,
 				ApplicationPublisher = applicationPublisher,
 				AssemblyName = GetType().Assembly.GetName().Name,
-				AppIcon = appIcon == null ? null : new[] { appIcon },
-				SplashScreen = splashScreen == null ? null : new[] { splashScreen },
+				AppIcon = appIcon == null ? null : [appIcon],
+				SplashScreen = splashScreen == null ? null : [splashScreen],
 				TargetFramework = "windows",
+				Authors = authors,
 				TargetPlatformVersion = targetPlatformVersion,
 				TargetPlatformMinVersion = targetPlatformMinVersion
 			};
@@ -95,109 +127,65 @@ namespace Uno.Resizetizer.Tests
 		[Fact]
 		public void ManifestTakesPriority()
 		{
-			var appIcon = new TaskItem("images/camera.svg");
-			appIcon.SetMetadata("ForegroundFile", "images/loginbg.png");
-			appIcon.SetMetadata("IsAppIcon", "true");
+			var appIcon = MockTaskItem.CreateAppIcon("images/camera.svg", "images/loginbg.png");
+			var splashScreen = MockTaskItem.CreateSplashScreen("images/dotnet_logo.svg", "#FFFFFF");
 
-			var splashScreen = new TaskItem("images/dotnet_logo.svg");
-			splashScreen.SetMetadata("Color", "#FFFFFF");
-
-			var inputFilename = $"testdata/appxmanifest/typical.appxmanifest";
+			var inputFilename = $"testdata/appxmanifest/manifestTakesPriority.input.appxmanifest";
 			var task = GetNewTask(inputFilename,
 				applicationId: "com.contoso.myapp",
-				displayVersion: "2.5",
-				version: "3",
-				displayName: "Fishy Things",
+				applicationDisplayVersion: "2.5",
+				applicationVersion: "3",
+				applicationTitle: "Fishy Things",
 				appIcon: appIcon,
 				splashScreen: splashScreen);
 
 			var success = task.Execute();
 			Assert.True(success, $"{task.GetType()}.Execute() failed: " + LogErrorEvents.FirstOrDefault()?.Message);
 
-			var outputFilename = Path.Combine(DestinationDirectory, "Package.appxmanifest");
-			var expectedFilename = $"testdata/appxmanifest/typical.appxmanifest";
-
-			var outputDoc = XDocument.Load(outputFilename);
-			var expectedDoc = XDocument.Load(expectedFilename);
-
-			if (!XNode.DeepEquals(outputDoc, expectedDoc))
-			{
-				Assert.Equal(expectedDoc.ToString(), outputDoc.ToString());
-			}
+			AssertExpectedManifest(task, inputFilename);
 		}
 
 		[Fact]
 		public void CorrectGenerationWhenUserSpecifyBackgroundColor()
 		{
-			var input = "empty";
-			var expected = "typicalWithNoBackground";
-			var appIcon = new TaskItem("images\\appicon.svg");
-			appIcon.SetMetadata("ForegroundFile", "images\\appiconfg.svg");
-			appIcon.SetMetadata("Link", "images\\appicon.svg");
-			appIcon.SetMetadata("IsAppIcon", "true");
-
-			var splashScreen = new TaskItem("images/dotnet_bot.svg");
-			splashScreen.SetMetadata("Color", "#FFFFFF");
+			var appIcon = MockTaskItem.CreateAppIcon("images/appicon.svg", "images/appiconfg.svg");
 			appIcon.SetMetadata("Color", "#FFFFFF");
+			var splashScreen = MockTaskItem.CreateSplashScreen("images/dotnet_bot.svg", "#FFFFFF");
 
-			var inputFilename = $"testdata/appxmanifest/{input}.appxmanifest";
+			var inputFilename = $"testdata/appxmanifest/correctGenerationWhenUserSpecifyBackgroundColor.input.appxmanifest";
 			var task = GetNewTask(inputFilename,
 				applicationId: "com.contoso.myapp",
-				displayVersion: "1.0.0",
-				version: "1",
-				displayName: "Sample App",
+				applicationDisplayVersion: "1.0.0",
+				applicationVersion: "1",
+				applicationTitle: "Sample App",
 				appIcon: appIcon,
 				splashScreen: splashScreen);
 
 			var success = task.Execute();
+
 			Assert.True(success, $"{task.GetType()}.Execute() failed: " + LogErrorEvents.FirstOrDefault()?.Message);
-
-			var outputFilename = Path.Combine(DestinationDirectory, "Package.appxmanifest");
-			var expectedFilename = $"testdata/appxmanifest/{expected}.appxmanifest";
-
-			var outputDoc = XDocument.Load(outputFilename);
-			var expectedDoc = XDocument.Load(expectedFilename);
-
-			if (!XNode.DeepEquals(outputDoc, expectedDoc))
-			{
-				Assert.Equal(expectedDoc.ToString(), outputDoc.ToString());
-			}
+			AssertExpectedManifest(task, inputFilename);
 		}
 
 		[Fact]
-		public void CorrectGenerationWhitOutBackgroundColor()
+		public void CorrectGenerationWithOutBackgroundColor()
 		{
-			var input = "typical";
-			var expected = "typical";
-			var appIcon = new TaskItem("images/appicon.svg");
-			appIcon.SetMetadata("ForegroundFile", "images/appiconfg.svg");
-			appIcon.SetMetadata("IsAppIcon", "true");
+			var appIcon = MockTaskItem.CreateAppIcon("images/appicon.svg", "images/appiconfg.svg");
+			var splashScreen = MockTaskItem.CreateSplashScreen("images/dotnet_bot.svg", "#FFFFFF");
 
-			var splashScreen = new TaskItem("images/dotnet_bot.svg");
-			splashScreen.SetMetadata("Color", "#FFFFFF");
-
-			var inputFilename = $"testdata/appxmanifest/{input}.appxmanifest";
+			var inputFilename = $"testdata/appxmanifest/correctGenerationWithOutBackgroundColor.input.appxmanifest";
 			var task = GetNewTask(inputFilename,
 				applicationId: "com.contoso.myapp",
-				displayVersion: "1.0.0",
-				version: "1",
-				displayName: "Sample App",
+				applicationDisplayVersion: "1.0.0",
+				applicationVersion: "1",
+				applicationTitle: "Sample App",
 				appIcon: appIcon,
 				splashScreen: splashScreen);
 
 			var success = task.Execute();
 			Assert.True(success, $"{task.GetType()}.Execute() failed: " + LogErrorEvents.FirstOrDefault()?.Message);
 
-			var outputFilename = Path.Combine(DestinationDirectory, "Package.appxmanifest");
-			var expectedFilename = $"testdata/appxmanifest/{expected}.appxmanifest";
-
-			var outputDoc = XDocument.Load(outputFilename);
-			var expectedDoc = XDocument.Load(expectedFilename);
-
-			if (!XNode.DeepEquals(outputDoc, expectedDoc))
-			{
-				Assert.Equal(expectedDoc.ToString(), outputDoc.ToString());
-			}
+			AssertExpectedManifest(task, inputFilename);
 		}
 
 		[Theory]
@@ -229,7 +217,7 @@ namespace Uno.Resizetizer.Tests
 		{
 			// Arrange
 			var taskItem = new TaskItem("testdata/appxmanifest/typical.appxmanifest");
-			var task = GetNewTask(appxManifests: new [] {taskItem, taskItem});
+			var task = GetNewTask(appxManifests: [taskItem, taskItem]);
 
 			// Act
 			task.Execute();
@@ -252,18 +240,46 @@ namespace Uno.Resizetizer.Tests
 			task.Execute();
 
 			// Assert
-			AssertExpectedManifest(task.GeneratedAppxManifest.ItemSpec, taskItem.ItemSpec);
+			AssertExpectedManifest(task, taskItem);
+		}
+
+		[Theory]
+		[InlineData("template")]
+		public void GeneratesExpectedAppxManifest(string manifestName)
+		{
+			// Arrange
+			var appIcon = MockTaskItem.CreateAppIcon("images/camera.svg", "images/loginbg.png");
+			var splashScreen = MockTaskItem.CreateSplashScreen("images/dotnet_logo.svg", "#FFFFFF");
+
+			var taskItem = $"testdata/appxmanifest/{manifestName}.input.appxmanifest";
+			var task = GetNewTask(
+				appxManifest: taskItem,
+				applicationId: "com.contoso.myapp",
+				applicationDisplayVersion: "1.0.0",
+				applicationVersion: "1",
+				applicationTitle: "Sample App",
+				description: "This is a sample from the Unit Tests",
+				appIcon: appIcon,
+				splashScreen: splashScreen,
+				targetPlatformVersion: "10.0.19041.0",
+				targetPlatformMinVersion: "10.0.17763.0");
+
+			// Act
+			task.Execute();
+
+			// Assert
+			AssertExpectedManifest(task, taskItem);
 		}
 
 		[Fact]
 		public void TaskShouldBeAbleToOverwriteAppxManifest()
 		{
 			// Arrange
-			var taskItem = new TaskItem("testdata/appxmanifest/empty.appxmanifest");
+			var taskItem = "testdata/appxmanifest/empty.appxmanifest";
 			var task = GetNewTask(
-				appxManifests: [taskItem],
-				displayVersion: "1.0.0",
-				version: "1",
+				appxManifest: taskItem,
+				applicationDisplayVersion: "1.0.0",
+				applicationVersion: "1",
 				targetPlatformVersion: "10.0.19041.0",
 				targetPlatformMinVersion: "10.0.17763.0");
 
@@ -290,12 +306,58 @@ namespace Uno.Resizetizer.Tests
 			}
 		}
 
-		static void AssertExpectedManifest(string generatedManifestPath, string inputManifestPath)
+		[Fact]
+		public void UnoIssue17199()
 		{
-			var generated = XDocument.Load(generatedManifestPath).ToString();
-			var expected = XDocument.Load(inputManifestPath.Replace(".input.", ".expected.")).ToString();
+			var appIcon = MockTaskItem.CreateAppIcon(@"images\appicon.svg", @"images\appiconfg.svg");
+			appIcon.SetMetadata("ForegroundScale", "0.65");
+			appIcon.SetMetadata("Color", "#00000000");
+			appIcon.SetMetadata("IsDefaultItem", "true");
 
-			Assert.Equal(expected, generated);
+			var splashScreen = MockTaskItem.CreateSplashScreen(@"images\dotnet_bot.svg");
+			splashScreen.SetMetadata("BaseSize", "128,128");
+
+			var inputFile = "testdata/appxmanifest/unoIssue17199.input.appxmanifest";
+
+			var task = GetNewTask(
+				appxManifest: inputFile,
+				applicationTitle: "Sample App",
+				description: "SampleApp powered by Uno Platform",
+				applicationVersion: "1",
+				applicationPublisher: "Uno Platform",
+				applicationDisplayVersion: "1.0",
+				targetPlatformVersion: "10.0.19041.0",
+				targetPlatformMinVersion: "10.0.18362.0",
+				applicationId: "com.contoso.sampleapp",
+				authors: "Uno Platform",
+				appIcon: appIcon,
+				splashScreen: splashScreen
+			);
+
+			// Act
+			task.Execute();
+
+			// Assert
+			AssertExpectedManifest(task, inputFile);
+
+		}
+
+		static void AssertExpectedManifest(GeneratePackageAppxManifest_v0 task, string inputManifest) =>
+			AssertExpectedManifest(task, new TaskItem(inputManifest));
+
+		static void AssertExpectedManifest(GeneratePackageAppxManifest_v0 task, ITaskItem inputManifest)
+		{
+			Assert.False(task.Log.HasLoggedErrors);
+			Assert.NotNull(task.GeneratedAppxManifest);
+
+			var generated = File.ReadAllText(task.GeneratedAppxManifest.ItemSpec);
+			var expectedFile = inputManifest.ItemSpec.Replace(".input.", ".expected.");
+#if WRITE_EXPECTED
+			File.WriteAllText(expectedFile, generated);
+#endif
+			var expected = File.ReadAllText(expectedFile);
+
+			Assert.Equal(expected, generated, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true);
 		}
 	}
 }

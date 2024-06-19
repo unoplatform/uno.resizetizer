@@ -62,7 +62,7 @@ jobs:
     - name: Build - CI
       run: |
         $adjustedPackageVersion="${{ steps.gitversion.outputs.semVer }}".ToLower();
-        dotnet pack  -c Release -p:PackageVersion=$adjustedPackageVersion -p:Version=${{ steps.gitversion.outputs.assemblySemVer }} -o .\artifacts src/Resizetizer/src/Resizetizer.csproj
+        dotnet pack -c Release -p:PackageVersion=$adjustedPackageVersion -p:Version=${{ steps.gitversion.outputs.assemblySemVer }} -o .\artifacts src/Resizetizer/src/Resizetizer.csproj
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
@@ -72,7 +72,7 @@ jobs:
     
     - name: Run UnitTests
       run: |
-        dotnet test src/Resizetizer/test/UnitTests/Resizetizer.UnitTests.csproj
+        dotnet test src/Resizetizer/test/UnitTests/Resizetizer.UnitTests.csproj -c Release -p:PackageVersion=$adjustedPackageVersion -p:Version=${{ steps.gitversion.outputs.assemblySemVer }} --logger GitHubActions --blame-crash --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
   validation_5_2:
     name: Validate 5.2 Samples
