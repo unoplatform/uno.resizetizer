@@ -97,6 +97,7 @@ namespace Uno.Resizetizer
 						{
 							Indent = true,
 							Encoding = writer.Encoding,
+							NamespaceHandling = NamespaceHandling.OmitDuplicates,
 							OmitXmlDeclaration = false // Ensure the XML declaration is included
 						};
 
@@ -240,7 +241,7 @@ namespace Uno.Resizetizer
 				UpdateDefaultTileSquare310Logo(tile, appIconInfo);
 
 				// <ShowOn>
-				var xshowon = xmlns + "ShowOn";
+				var xshowon = xmlnsUap + "ShowOn";
 				var showons = showname.Elements(xshowon).ToArray();
 				if (showons.All(x => x.Attribute("Tile")?.Value != "square150x150Logo"))
 				{
