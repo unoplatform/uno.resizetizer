@@ -4,6 +4,7 @@ using Microsoft.Build.Utilities;
 using System;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace Uno.Resizetizer
@@ -15,9 +16,9 @@ namespace Uno.Resizetizer
 		const string PackageVersionPlaceholder = "0.0.0.0";
 		const string ImageExtension = ".png";
 
-		const string ErrorVersionNumberCombination = "ApplicationDisplayVersion '{0}' was not a valid 3 part semver version number and/or ApplicationVersion '{1}' was not a valid integer.";
+		const string UapNamespace = "http://schemas.microsoft.com/appx/manifest/uap/windows10";
 
-		static readonly XNamespace xmlnsUap = "http://schemas.microsoft.com/appx/manifest/uap/windows10";
+		const string ErrorVersionNumberCombination = "ApplicationDisplayVersion '{0}' was not a valid 3 part semver version number and/or ApplicationVersion '{1}' was not a valid integer.";
 
 		[Required]
 		public string IntermediateOutputPath { get; set; } = null!;
@@ -91,7 +92,17 @@ namespace Uno.Resizetizer
 
 						UpdateManifest(appx);
 
-						appx.Save(writer);
+						// Define the settings for the XmlWriter
+						var settings = new XmlWriterSettings
+						{
+							Indent = true,
+							Encoding = writer.Encoding,
+							NamespaceHandling = NamespaceHandling.OmitDuplicates,
+							OmitXmlDeclaration = false // Ensure the XML declaration is included
+						};
+
+						using var xmlWriter = XmlWriter.Create(writer, settings);
+						appx.Save(xmlWriter);
 					});
 
 				GeneratedAppxManifest = new TaskItem(filename);
@@ -109,6 +120,10 @@ namespace Uno.Resizetizer
 			var appIconInfo = AppIcon?.Length > 0 ? ResizeImageInfo.Parse(AppIcon[0]) : null;
 			var splashInfo = SplashScreen?.Length > 0 ? ResizeImageInfo.Parse(SplashScreen[0]) : null;
 
+			var xmlnsUap = appx.Root.Attributes()
+				.Where(a => a.IsNamespaceDeclaration && a.Value == UapNamespace)
+				.Select(a => XNamespace.Get(a.Value))
+				.FirstOrDefault();
 			var xmlns = appx.Root!.GetDefaultNamespace();
 
 			// <Identity Name="" Version="" />
@@ -498,10 +513,10 @@ namespace Uno.Resizetizer
 			if (targetDeviceFamilyElements is null || !targetDeviceFamilyElements.Any())
 			{
 				var universal = new XElement(xmlns + "TargetDeviceFamily");
-				universal.SetAttributeValue(xmlns + "Name", "Windows.Universal");
+				universal.SetAttributeValue("Name", "Windows.Universal");
 
 				var desktop = new XElement(xmlns + "TargetDeviceFamily");
-				desktop.SetAttributeValue(xmlns + "Name", "Windows.Desktop");
+				desktop.SetAttributeValue("Name", "Windows.Desktop");
 
 				dependencies.Add(universal, desktop);
 				targetDeviceFamilyElements = [universal, desktop];
@@ -509,8 +524,8 @@ namespace Uno.Resizetizer
 
 			foreach (var target in targetDeviceFamilyElements)
 			{
-				SetVersion(target, xmlns + "MinVersion", targetPlatformMinVersion);
-				SetVersion(target, xmlns + "MaxVersionTested", targetPlatformVersion);
+				SetVersion(target, "MinVersion", targetPlatformMinVersion);
+				SetVersion(target, "MaxVersionTested", targetPlatformVersion);
 			}
 		}
 
