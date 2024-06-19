@@ -513,10 +513,10 @@ namespace Uno.Resizetizer
 			if (targetDeviceFamilyElements is null || !targetDeviceFamilyElements.Any())
 			{
 				var universal = new XElement(xmlns + "TargetDeviceFamily");
-				universal.SetAttributeValue(xmlns + "Name", "Windows.Universal");
+				universal.SetAttributeValue("Name", "Windows.Universal");
 
 				var desktop = new XElement(xmlns + "TargetDeviceFamily");
-				desktop.SetAttributeValue(xmlns + "Name", "Windows.Desktop");
+				desktop.SetAttributeValue("Name", "Windows.Desktop");
 
 				dependencies.Add(universal, desktop);
 				targetDeviceFamilyElements = [universal, desktop];
@@ -524,8 +524,8 @@ namespace Uno.Resizetizer
 
 			foreach (var target in targetDeviceFamilyElements)
 			{
-				SetVersion(target, xmlns + "MinVersion", targetPlatformMinVersion);
-				SetVersion(target, xmlns + "MaxVersionTested", targetPlatformVersion);
+				SetVersion(target, "MinVersion", targetPlatformMinVersion);
+				SetVersion(target, "MaxVersionTested", targetPlatformVersion);
 			}
 		}
 

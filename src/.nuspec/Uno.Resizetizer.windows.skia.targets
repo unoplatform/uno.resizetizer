@@ -21,7 +21,7 @@
 	</Target>
 
 	<Target
-			Name="GenerateUnoSplashWindowsSkia"			
+			Name="GenerateUnoSplashWindowsSkia"
 			BeforeTargets="ProcessUnoSplashScreens"
 			Condition="'$(DesignTimeBuild)' != 'True' And '@(UnoSplashScreen)' != ''"
 			Outputs="$(_UnoSplashStampFile)">
