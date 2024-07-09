@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace Uno.Resizetizer
 {
@@ -147,7 +148,7 @@ namespace Uno.Resizetizer
 				copiedResources.Add(taskItem);
 			}
 
-			CopiedResources = copiedResources.ToArray();
+			CopiedResources = [.. copiedResources];
 
 			return System.Threading.Tasks.Task.CompletedTask;
 		}
@@ -178,11 +179,12 @@ namespace Uno.Resizetizer
 					androidAppIcons.Add(new TaskItem(iconGenerated.Filename));
 				}
 
-				AndroidAppIcons = androidAppIcons.ToArray();
+				AndroidAppIcons = [.. androidAppIcons];
 			}
-			else if (PlatformType == "ios")
+			else if (PlatformType == "ios" || (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && TargetFramework.Equals("desktop", StringComparison.InvariantCultureIgnoreCase)))
 			{
-				LogDebugMessage($"iOS Icon Assets Generator");
+				var logMessage = PlatformType == "ios" ? "iOS Icon Assets Generator" : "MacOS Icon Assets Generator";
+				LogDebugMessage(logMessage);
 
 				var appleAssetGen = new AppleIconAssetsGenerator(img, appIconName, IntermediateOutputPath, appIconDpis, this);
 
