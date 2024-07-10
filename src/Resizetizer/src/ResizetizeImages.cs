@@ -183,7 +183,7 @@ namespace Uno.Resizetizer
 			}
 			else if (PlatformType == "ios" || (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && TargetFramework.Equals("desktop", StringComparison.InvariantCultureIgnoreCase)))
 			{
-				var logMessage = PlatformType == "ios" ? "iOS Icon Assets Generator" : "MacOS Icon Assets Generator";
+				var logMessage = !TargetFramework.Equals("desktop", StringComparison.InvariantCultureIgnoreCase) ? "iOS Icon Assets Generator" : "MacOS Icon Assets Generator";
 				LogDebugMessage(logMessage);
 
 				var appleAssetGen = new AppleIconAssetsGenerator(img, appIconName, IntermediateOutputPath, appIconDpis, this);

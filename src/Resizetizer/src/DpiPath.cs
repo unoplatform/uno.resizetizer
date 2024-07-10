@@ -1,4 +1,4 @@
-﻿using SkiaSharp;
+using SkiaSharp;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -63,20 +63,20 @@ namespace Uno.Resizetizer
 
 			public static DpiPath[] AppIcon =>
 				[
-					new DpiPath(AppIconPath, 1.0m, "16x16", "1x", new SKSize(16, 16), ["mac"]),
-					new DpiPath(AppIconPath, 2.0m, "16x16", "2x", new SKSize(16, 16), ["mac"]),
+					new DpiPath(AppIconPath, 1.0m, "16x16", "@1x", new SKSize(16, 16), ["mac"]),
+					new DpiPath(AppIconPath, 2.0m, "16x16", "@2x", new SKSize(16, 16), ["mac"]),
 
-					new DpiPath(AppIconPath, 1.0m, "32x32", "1x", new SKSize(32, 32), ["mac"]),
-					new DpiPath(AppIconPath, 2.0m, "32x32", "2x", new SKSize(32, 32), ["mac"]),
+					new DpiPath(AppIconPath, 1.0m, "32x32", "@1x", new SKSize(32, 32), ["mac"]),
+					new DpiPath(AppIconPath, 2.0m, "32x32", "@2x", new SKSize(32, 32), ["mac"]),
 
-					new DpiPath(AppIconPath, 1.0m, "128x128", "1x", new SKSize(128, 128), ["mac"]),
-					new DpiPath(AppIconPath, 2.0m, "128x128", "2x", new SKSize(128, 128), ["mac"]),
+					new DpiPath(AppIconPath, 1.0m, "128x128", "@1x", new SKSize(128, 128), ["mac"]),
+					new DpiPath(AppIconPath, 2.0m, "128x128", "@2x", new SKSize(128, 128), ["mac"]),
 
-					new DpiPath(AppIconPath, 1.0m, "256x256", "1x", new SKSize(256, 256), ["mac"]),
-					new DpiPath(AppIconPath, 2.0m, "256x256", "2x", new SKSize(256, 256), ["mac"]),
+					new DpiPath(AppIconPath, 1.0m, "256x256", "@1x", new SKSize(256, 256), ["mac"]),
+					new DpiPath(AppIconPath, 2.0m, "256x256", "@2x", new SKSize(256, 256), ["mac"]),
 
-					new DpiPath(AppIconPath, 1.0m, "512x512", "1x", new SKSize(512, 512), ["mac"]),
-					new DpiPath(AppIconPath, 2.0m, "512x512", "2x", new SKSize(512, 512), ["mac"]),
+					new DpiPath(AppIconPath, 1.0m, "512x512", "@1x", new SKSize(512, 512), ["mac"]),
+					new DpiPath(AppIconPath, 2.0m, "512x512", "@2x", new SKSize(512, 512), ["mac"]),
 				];
 		}
 
