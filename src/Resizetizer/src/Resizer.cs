@@ -30,7 +30,11 @@ namespace Uno.Resizetizer
 			var platform = Environment.OSVersion.Platform;
 
 			string path;
-			if (platform == PlatformID.MacOSX)
+			if (dpi.Path.EndsWith(".appiconset", StringComparison.InvariantCultureIgnoreCase))
+			{
+				path = string.Empty;
+			}
+			else if (platform == PlatformID.MacOSX)
 			{
 				path = Path.GetFullPath(info.OutputPath);
 			}
