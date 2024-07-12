@@ -19,6 +19,7 @@ namespace Uno.Resizetizer.Tests
 			protected ResizetizeImages_v0 GetNewTask(string type, params ITaskItem[] items) =>
 				new ResizetizeImages_v0
 				{
+					TargetFramework = type ?? string.Empty,
 					PlatformType = type,
 					IntermediateOutputPath = DestinationDirectory,
 					IntermediateOutputIconPath = DestinationDirectory,
