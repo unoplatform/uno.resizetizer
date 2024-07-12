@@ -19,6 +19,7 @@ namespace Uno.Resizetizer.Tests
 			protected ResizetizeImages_v0 GetNewTask(string type, params ITaskItem[] items) =>
 				new ResizetizeImages_v0
 				{
+					TargetFramework = type ?? string.Empty,
 					PlatformType = type,
 					IntermediateOutputPath = DestinationDirectory,
 					IntermediateOutputIconPath = DestinationDirectory,
@@ -360,9 +361,9 @@ namespace Uno.Resizetizer.Tests
 				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
 
 				var fn = filename.Replace("camera.", "", StringComparison.OrdinalIgnoreCase);
-				AssertFileMatches($"mipmap-mdpi/camera.png", new object[] { fn, colorString, tintColorString, "m", "i" });
-				AssertFileMatches($"mipmap-mdpi/camera_background.png", new object[] { fn, colorString, tintColorString, "m", "b" });
-				AssertFileMatches($"mipmap-mdpi/camera_foreground.png", new object[] { fn, colorString, tintColorString, "m", "f" });
+				AssertFileMatches($"mipmap-mdpi/camera.png", [fn, colorString, tintColorString, "m", "i"]);
+				AssertFileMatches($"mipmap-mdpi/camera_background.png", [fn, colorString, tintColorString, "m", "b"]);
+				AssertFileMatches($"mipmap-mdpi/camera_foreground.png", [fn, colorString, tintColorString, "m", "f"]);
 			}
 
 			[Theory]

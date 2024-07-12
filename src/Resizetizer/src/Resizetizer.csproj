@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
@@ -65,11 +65,11 @@
 	<ItemGroup>
 		<None Include="../../../README.md" Pack="true" PackagePath="/" />
 
-		<None Include="$(UnoNuspecDirectory)Uno.Resizetizer.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).targets" CopyToOutputDirectory="PreserveNewest" />
-		<None Include="$(UnoNuspecDirectory)Uno.Resizetizer.android.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).android.targets" CopyToOutputDirectory="PreserveNewest" />
-		<None Include="$(UnoNuspecDirectory)Uno.Resizetizer.apple.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).apple.targets" CopyToOutputDirectory="PreserveNewest" />
-		<None Include="$(UnoNuspecDirectory)Uno.Resizetizer.wasm.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).wasm.targets" CopyToOutputDirectory="PreserveNewest" />
-		<None Include="$(UnoNuspecDirectory)Uno.Resizetizer.windows.skia.targets" Visible="false" Pack="true" PackagePath="build/$(PackageId).windows.skia.targets" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="$(UnoNuspecDirectory)Uno.Resizetizer.targets" LinkBase="build" Pack="true" PackagePath="build/$(PackageId).targets" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="$(UnoNuspecDirectory)Uno.Resizetizer.android.targets" LinkBase="build" Pack="true" PackagePath="build/$(PackageId).android.targets" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="$(UnoNuspecDirectory)Uno.Resizetizer.apple.targets" LinkBase="build" Pack="true" PackagePath="build/$(PackageId).apple.targets" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="$(UnoNuspecDirectory)Uno.Resizetizer.wasm.targets" LinkBase="build" Pack="true" PackagePath="build/$(PackageId).wasm.targets" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="$(UnoNuspecDirectory)Uno.Resizetizer.windows.skia.targets" LinkBase="build" Pack="true" PackagePath="build/$(PackageId).windows.skia.targets" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
 	<Import Project="../Directory.UnoMetadata.targets" />

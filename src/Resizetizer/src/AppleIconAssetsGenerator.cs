@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -33,8 +34,9 @@ namespace Uno.Resizetizer
 		{
 			var outputAppIconSetDir = Path.Combine(IntermediateOutputPath, DpiPath.Ios.AppIconPath.Replace("{name}", AppIconName));
 			var outputAssetsDir = Path.Combine(outputAppIconSetDir, "..");
+			var targetIdiom = Dpis.Any(x => x.Idioms.Contains("mac")) ? "MacOS" : "iOS";
 
-			Logger.Log("iOS App Icon Set Directory: " + outputAppIconSetDir);
+			Logger.Log($"{targetIdiom} App Icon Set Directory: " + outputAppIconSetDir);
 
 			Directory.CreateDirectory(outputAppIconSetDir);
 
