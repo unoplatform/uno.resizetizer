@@ -41,7 +41,7 @@ namespace Uno.Resizetizer
 		public ITaskItem[] AndroidAppIcons { get; set; }
 
 		[Output]
-		public ITaskItem PwaGeneratedManifestPath { get; set; }
+		public string PwaGeneratedManifestPath { get; set; }
 
 		public string IsMacEnabled { get; set; }
 
@@ -212,7 +212,7 @@ namespace Uno.Resizetizer
 
 				var icon = wasmIconGen.Generate();
 				var manifestPath = wasmIconGen.ProcessThePwaManifest();
-				PwaGeneratedManifestPath = new TaskItem(manifestPath);
+				PwaGeneratedManifestPath = manifestPath;
 
 				string itemSpec = Path.GetFullPath(icon.Filename);
 				GeneratedIconPath = new TaskItem(itemSpec);
