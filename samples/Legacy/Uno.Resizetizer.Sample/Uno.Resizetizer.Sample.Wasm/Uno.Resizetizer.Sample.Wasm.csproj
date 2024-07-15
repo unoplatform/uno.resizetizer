@@ -69,7 +69,7 @@
 			<_ResizetizerSplashScreenPath>$(_UnoIntermediateImages)splash_screen.scale-300.png</_ResizetizerSplashScreenPath>
 			<_ResizetizerAppIconPath>$(_UnoIntermediateAppIcon)favicon.ico</_ResizetizerAppIconPath>
 			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateAppIcon)iconapp-128.png</_ResizetizerAppIconImagesPath>
-			<_ResizetizerUnoManifestJson>$(_UnoIntermediateAppIcon)Unomanifest.webmanifest</_ResizetizerUnoManifestJson>
+			<_ResizetizerUnoManifestJson>$(_UnoIntermediateAppIcon)..\manifest.webmanifest</_ResizetizerUnoManifestJson>
 			<_ResizetizerImagesNestedPath>$(_UnoIntermediateImages)MyAssets\Nested\dotnet_bot.scale-300.png</_ResizetizerImagesNestedPath>
 			<_ResizetizerImagesPath>$(_UnoIntermediateImages)Assets\Images\dotnet_bot2.scale-300.png</_ResizetizerImagesPath>
 		</PropertyGroup>
@@ -77,7 +77,7 @@
 		<Error Condition="!Exists('$(_ResizetizerSplashScreenPath)')" Text="SplashScreen file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerAppIconPath)')" Text=".ico file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerAppIconImagesPath)')" Text="App icon image file wasn't created." />
-		<Error Condition="!Exists('$(_ResizetizerUnoManifestJson)')" Text="Unomanifest.json file wasn't created." />
+		<Error Condition="!Exists('$(_ResizetizerUnoManifestJson)')" Text="manifest.json file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerImagesNestedPath)')" Text="images file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerImagesPath)')" Text="images file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerManifestPath)')" Text="Manifest file wasn't created." />
