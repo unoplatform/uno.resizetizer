@@ -48,6 +48,10 @@
 			Condition="'$(DesignTimeBuild)' != 'true'">
 
 		<!-- Wasm -->
+		<PropertyGroup>
+			<WasmPWAManifestFile Condition="'$(UnoResizetizerPwaManifest)'!=''">$(UnoResizetizerPwaManifest)</WasmPWAManifestFile>
+		</PropertyGroup>
+
 		<ItemGroup>
 			<Content Include="@(_UnoResizetizerCollectedImages->FullPath())"
 					 Link="%(_UnoResizetizerCollectedImages.RecursiveDir)%(_UnoResizetizerCollectedImages.Filename)%(_UnoResizetizerCollectedImages.Extension)">
@@ -63,15 +67,6 @@
 					 Link="%(_UnoResizetizerCollectedAppIcons.RecursiveDir)%(_UnoResizetizerCollectedAppIcons.Filename)%(_UnoResizetizerCollectedAppIcons.Extension)"/>
 
 			<FileWrites Include="@(_UnoResizetizerCollectedImages)"/>
-		</ItemGroup>
-
-		<ItemGroup Condition="'$(UnoResizetizerPwaManifest)' != ''">
-			<Content Remove="$(WasmPWAManifestFile)"/>
-			<Content Include="$(UnoResizetizerPwaManifest)"
-					 CopyToOutputDirectory="PreserveNewest"
-					 ExcludeFromSingleFile="True"
-					 CopyToPublishDirectory="PreserveNewest"
-					 Link="$(WasmPWAManifestFile)"/>
 		</ItemGroup>
 	</Target>
 </Project>
