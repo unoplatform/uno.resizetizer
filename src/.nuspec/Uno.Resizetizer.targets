@@ -507,15 +507,16 @@
 			<_UnoResizetizerCollectedImages Condition="'@(CopiedResources)' == ''" Include="$(_UnoIntermediateImages)**\*"/>
 			<_UnoResizetizerCollectedAppIcons Include="$(_UnoIntermediateAppIcon)**\*"/>
 
-			<!-- If the PWA manifest is empty we can try to find it on the disk -->
-			<_UnoUnoResizetizerPwaManifestItemGroup Condition="'$(UnoResizetizerPwaManifest)' ==''" Include="$(_UnoIntermediateAppIcon)**\*.json"/>
 			<!-- If the AppIcon property is empty we can try to find it on the disk -->
 			<_AppIconItemGroup Condition="'$(AppIconPath)' == ''" Include="$(_UnoResizetizerIntermediateOutputRoot)**\*.ico"/>
 		</ItemGroup>
 
 		<PropertyGroup>
-			<!-- If the PWA manifest is empty we can try to find it on the disk -->
-			<UnoResizetizerPwaManifest Condition="'$(UnoResizetizerPwaManifest)' ==''">%(_UnoUnoResizetizerPwaManifestItemGroup.FullPath)</UnoResizetizerPwaManifest>
+			<!-- If the PWA manifest is empty we can try to find it on disk -->
+			<_UnoResizetizerPwaManifest>$(_UnoIntermediateAppIcon)..\$([System.IO.Path]::GetFileName($(WasmPWAManifestFile)))</_UnoResizetizerPwaManifest>
+			<UnoResizetizerPwaManifest Condition="
+				'$(UnoResizetizerPwaManifest)'=='' and
+				Exists('$(_UnoResizetizerPwaManifest)')">$(_UnoResizetizerPwaManifest)</UnoResizetizerPwaManifest>
 			<!-- If the AppIcon property is empty we can try to find it on the disk -->
 			<AppIconPath Condition="'$(AppIconPath)' == ''">%(_AppIconItemGroup.Identity)</AppIconPath>
 		</PropertyGroup>

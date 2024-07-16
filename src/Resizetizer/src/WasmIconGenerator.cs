@@ -83,8 +83,10 @@ internal sealed class WasmIconGenerator
 		};
 
 		Logger.Log("Writing the PWA manifest with the icons property.");
-		var newPwaManifestName = "Uno" + Path.GetFileName(pwaManifestPath);
-		var outputPath = Path.Combine(IntermediateOutputPath, newPwaManifestName);
+
+		var outputPath = Path.Combine(
+			Path.GetDirectoryName(Path.GetDirectoryName(IntermediateOutputPath)),
+			Path.GetFileName(pwaManifestPath));
 
 		using var fs = File.Create(outputPath);
 		using var writer = new Utf8JsonWriter(fs, writeOptions);

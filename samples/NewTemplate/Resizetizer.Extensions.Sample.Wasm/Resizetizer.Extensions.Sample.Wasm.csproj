@@ -81,13 +81,13 @@
 			<_ResizetizerSplashScreenPath>$(_UnoIntermediateImages)splash_screen.scale-300.png</_ResizetizerSplashScreenPath>
 			<_ResizetizerAppIconPath>$(_UnoIntermediateAppIcon)favicon.ico</_ResizetizerAppIconPath>
 			<_ResizetizerAppIconImagesPath>$(_UnoIntermediateAppIcon)iconapp-128.png</_ResizetizerAppIconImagesPath>
-			<_ResizetizerUnoManifestJson>$(_UnoIntermediateAppIcon)Unomanifest.webmanifest</_ResizetizerUnoManifestJson>
+			<_ResizetizerUnoManifestJson>$(_UnoIntermediateAppIcon)..\manifest.webmanifest</_ResizetizerUnoManifestJson>
 		</PropertyGroup>
 		<Message Text="Validating local assets at '$(_UnoIntermediateImages)'" Importance="high" />
 		<Error Condition="!Exists('$(_ResizetizerManifestPath)')" Text="Manifest file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerSplashScreenPath)')" Text="SplashScreen file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerAppIconPath)')" Text=".ico file wasn't created." />
 		<Error Condition="!Exists('$(_ResizetizerAppIconImagesPath)')" Text="App icon image file wasn't created." />
-		<Error Condition="!Exists('$(_ResizetizerUnoManifestJson)')" Text="Unomanifest.webmanifest file wasn't created." />
+		<Error Condition="!Exists('$(_ResizetizerUnoManifestJson)')" Text="manifest.webmanifest file wasn't created." />
 	</Target>
 </Project>
