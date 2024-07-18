@@ -3,7 +3,7 @@
 			Name="GenerateUnoSplashApple"
 			BeforeTargets="ProcessUnoSplashScreens"
 			Condition="'$(DesignTimeBuild)' != 'True' And '@(UnoSplashScreen)' != ''"
-			Outputs="$(_UnoSplashStampFile)">
+			Outputs="$(_UnoSplashStampFile)"> <!-- TODO: Specify Inputs on this target -->
 			
 		<CallTarget Targets="GenerateUnoSplashScreens" />
 
@@ -27,6 +27,8 @@
 				IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
 				PlistName="UnoInfo.plist"
 				Storyboard="$(_UnoIntermediateSplashScreenFile)"/>
+
+		<CallTarget Targets="PostGenerateUnoSplashScreens" />
 	</Target>
 
 	<Target Name="ProcessUnoSplashScreens"
