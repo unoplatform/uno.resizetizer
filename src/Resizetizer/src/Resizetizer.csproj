@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
@@ -72,6 +72,13 @@
 		<None Include="$(UnoNuspecDirectory)Uno.Resizetizer.windows.skia.targets" LinkBase="build" Pack="true" PackagePath="build/$(PackageId).windows.skia.targets" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\Resizetizer.Generators\Resizetizer.Generators.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<OutputItemType>Analyzer</OutputItemType>
+		</ProjectReference>
+	</ItemGroup>
+
 	<Import Project="../Directory.UnoMetadata.targets" />
 
 	<!-- Gets the Runtime Assets that need to be copied to the NuGet -->
@@ -117,6 +124,15 @@
 			Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') And '$(OS)' == 'Windows_NT'" />
 		<Exec Command="rm -rf &quot;$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())&quot;"
 			Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') And '$(OS)' != 'Windows_NT'" />
+	</Target>
+
+	<Target Name="BundleGenerators" BeforeTargets="Pack;_LoadPackInputItems;_GetPackageFiles">
+		<ItemGroup>
+			<None Include="..\Resizetizer.Generators\bin\$(Configuration)\netstandard2.0\Resizetizer.Generators.dll"
+				Pack="true"
+				PackagePath="analyzers\dotnet\cs\Resizetizer.Generators.dll"
+				Visible="false" />
+		</ItemGroup>
 	</Target>
 
 </Project>

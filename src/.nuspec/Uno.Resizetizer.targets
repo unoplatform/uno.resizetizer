@@ -50,10 +50,6 @@
 
 	<UsingTask
 			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-			TaskName="Uno.Resizetizer.WindowIconGeneratorTask_V0"/>
-
-	<UsingTask
-			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
 			TaskName="Uno.Resizetizer.CleanupAssetsTask_v0"/>
 
 	<UsingTask
@@ -589,25 +585,13 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="_GenerateWindowUnoIconExtension"
-			Condition="'$(_UnoResizetizerIsCompatibleApp)' == 'True'"
-			BeforeTargets="Build;CoreCompile;XamlPreCompile"
-			Inputs="@(UnoIcon)"
-			Outputs="@(_WindowIconExtension)">
-
-		<PropertyGroup>
-			<WindowTitle Condition="'$(WindowTitle)' == ''">$([MSBuild]::ValueOrDefault('$(ApplicationTitle)', '$(AssemblyName)'))</WindowTitle>
-		</PropertyGroup>
-
-		<WindowIconGeneratorTask_v0
-				IntermediateOutputDirectory="$(_UnoResizetizerIntermediateOutputRoot)"
-				WindowTitle="$(WindowTitle)"
-				UnoIcons="@(UnoIcon)">
-			<Output ItemName="GeneratedFile"
-					TaskParameter="GeneratedClass"/>
-			<Output ItemName="FilesWrite"
-					TaskParameter="GeneratedClass"/>
-		</WindowIconGeneratorTask_v0>
+	<Target Name="SetUnoImage"
+			BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;GenerateMSBuildEditorConfigFileCore">
+		<CreateProperty Value="@(UnoIcon, ',')">
+			<Output
+					TaskParameter="Value"
+					PropertyName="UnoResizetizerIcon" />
+		</CreateProperty>
 	</Target>
 
 	<Target Name="_AddResizetizerWindowIconExtensions"
