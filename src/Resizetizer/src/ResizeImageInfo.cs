@@ -50,7 +50,7 @@ namespace Uno.Resizetizer
 
 		public bool IsAppIcon { get; set; }
 
-		public bool UseIconBackground { get; set; }
+		public bool UseIconBackground { get; set; } = true;
 
 		public bool IsSplashScreen { get; set; }
 
