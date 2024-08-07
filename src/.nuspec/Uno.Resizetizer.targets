@@ -586,10 +586,9 @@
 	</Target>
 
 	<Target Name="SetUnoImage"
-			BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;GenerateMSBuildEditorConfigFileCore">
+			BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;GenerateMSBuildEditorConfigFileCore;ResolveFrameworkReferencesDesignTime;ResolveProjectReferencesDesignTime2;CollectAnalyzersDesignTime;GetAndroidDependencies">
 		<CreateProperty Value="@(UnoIcon, ',')">
-			<Output
-					TaskParameter="Value"
+			<Output TaskParameter="Value"
 					PropertyName="UnoResizetizerIcon" />
 		</CreateProperty>
 	</Target>
