@@ -1,39 +1,60 @@
+﻿using System;
 using System.IO;
+using System.Text;
 using CodeGenHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Resizetizer.Generators;
 
 [Generator(LanguageNames.CSharp)]
-internal sealed class WindowTitleGenerator : ISourceGenerator
+internal sealed class WindowTitleGenerator : IIncrementalGenerator
 {
-    public void Execute(GeneratorExecutionContext context)
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var options = context.AnalyzerConfigOptions.GlobalOptions;
-        if (!GetProperty(options, "IsUnoHead") || !HasUnoIcon(options, out var unoIcon))
+        // Get the AnalyzerConfigOptionsProvider
+        var optionsProvider = context.AnalyzerConfigOptionsProvider;
+        var compilationProvider = context.CompilationProvider;
+
+        // Combine optionsProvider and compilationProvider
+        var combinedProvider = optionsProvider.Combine(compilationProvider);
+
+        // Define the source generator logic
+        var sourceCodeProvider = combinedProvider.Select((combined, cancellationToken) =>
         {
-            return;
-        }
+            var options = combined.Left.GlobalOptions;
+            if (!GetProperty(options, "IsUnoHead") || !HasUnoIcon(options, out var unoIcon))
+            {
+                return Array.Empty<ClassBuilder>();
+            }
 
-        GenerateLegacyNamespaceCompat(context);
+            var compilation = combined.Right;
+            return 
+            [
+                GenerateLegacyNamespaceCompat(),
+                GenerateWindowTitleExtension(options, compilation.AssemblyName, unoIcon)
+            ];
+        });
 
-        GenerateWindowTitleExtension(context, unoIcon);
+        // Register the source generator logic to add the generated source code
+        context.RegisterSourceOutput(sourceCodeProvider, (context, classBuilders) =>
+        {
+            foreach (var classBuilder in classBuilders)
+            {
+                AddSource(context, classBuilder);
+            }
+        });
     }
 
-    public void Initialize(GeneratorInitializationContext context)
+    private static ClassBuilder GenerateWindowTitleExtension(AnalyzerConfigOptions options, string assemblyName, string unoIcon)
     {
-    }
-
-    private static void GenerateWindowTitleExtension(GeneratorExecutionContext context, string unoIcon)
-    {
-        var options = context.AnalyzerConfigOptions.GlobalOptions;
         var rootNamespace = GetPropertyValue(options, "RootNamespace");
         var iconName = Path.GetFileNameWithoutExtension(unoIcon);
         var windowTitle = GetPropertyValue(options, "ApplicationTitle");
         if (string.IsNullOrEmpty(windowTitle))
         {
-            windowTitle = context.Compilation.AssemblyName!;
+            windowTitle = assemblyName!;
         }
 
         var builder = CodeBuilder.Create(rootNamespace)
@@ -69,6 +90,8 @@ internal sealed class WindowTitleGenerator : ISourceGenerator
                 w.AppendUnindentedLine("#endif");
             });
 
+        return builder;
+
         //builder.AddMethod("IsPackaged")
         //    .WithReturnType("bool")
         //    .MakePrivateMethod()
@@ -84,8 +107,6 @@ internal sealed class WindowTitleGenerator : ISourceGenerator
         //            w.AppendLine("return false;");
         //        }
         //    });
-
-        AddSource(context, builder);
     }
 
     private static string GetPropertyValue(AnalyzerConfigOptions options, string key) =>
@@ -100,16 +121,14 @@ internal sealed class WindowTitleGenerator : ISourceGenerator
         return !string.IsNullOrEmpty(unoIcon) && !unoIcon.Contains(",");
     }
 
-    private static void GenerateLegacyNamespaceCompat(GeneratorExecutionContext context)
+    private static ClassBuilder GenerateLegacyNamespaceCompat()
     {
-        var builder = CodeBuilder.Create("Uno.Resizetizer")
+        return CodeBuilder.Create("Uno.Resizetizer")
             .AddClass("__LegacyResizetizerSupport__")
             .WithSummary("This is added to ensure the Uno.Resizetizer namespace is present to avoid breaking any applications.")
             .MakeStaticClass();
-
-        AddSource(context, builder);
     }
 
-    private static void AddSource(GeneratorExecutionContext context, ClassBuilder builder) =>
-        context.AddSource($"{builder.FullyQualifiedName}.g.cs", builder.Build());
+    private static void AddSource(SourceProductionContext context, ClassBuilder builder) =>
+        context.AddSource($"{builder.FullyQualifiedName}.g.cs", SourceText.From(builder.Build(), Encoding.UTF8));
 }
