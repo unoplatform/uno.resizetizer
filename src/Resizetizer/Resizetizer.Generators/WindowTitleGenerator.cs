@@ -11,6 +11,9 @@ namespace Resizetizer.Generators;
 [Generator(LanguageNames.CSharp)]
 internal sealed class WindowTitleGenerator : IIncrementalGenerator
 {
+    private const string UnoResizetizerIcon = nameof(UnoResizetizerIcon);
+    private const string IsUnoHead = nameof(IsUnoHead);
+
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         // Get the AnalyzerConfigOptionsProvider
@@ -24,13 +27,18 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
         var sourceCodeProvider = combinedProvider.Select((combined, cancellationToken) =>
         {
             var options = combined.Left.GlobalOptions;
-            if (!GetProperty(options, "IsUnoHead") || !HasUnoIcon(options, out var unoIcon))
+            if (!GetProperty(options, IsUnoHead) || !HasUnoIcon(options, out var unoIcon))
             {
-                return Array.Empty<ClassBuilder>();
+
+                return (ClassBuilder[])[
+                    CodeBuilder.Create("__Empty__")
+                        .AddClass("GeneratorResult")
+                        .WithSummary($"IsUnoHead: {GetPropertyValue(options, IsUnoHead)}, UnoResizetizerIcon: {GetPropertyValue(options, UnoResizetizerIcon)}")
+                ];
             }
 
             var compilation = combined.Right;
-            return 
+            return
             [
                 GenerateLegacyNamespaceCompat(),
                 GenerateWindowTitleExtension(options, compilation.AssemblyName, unoIcon)
@@ -117,7 +125,7 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
 
     private static bool HasUnoIcon(AnalyzerConfigOptions options, out string unoIcon)
     {
-        unoIcon = GetPropertyValue(options, "UnoResizetizerIcon");
+        unoIcon = GetPropertyValue(options, UnoResizetizerIcon);
         return !string.IsNullOrEmpty(unoIcon) && !unoIcon.Contains(",");
     }
 
