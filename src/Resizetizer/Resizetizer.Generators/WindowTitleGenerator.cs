@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using CodeGenHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -96,7 +96,7 @@ internal sealed class WindowTitleGenerator : ISourceGenerator
 
     private static bool HasUnoIcon(AnalyzerConfigOptions options, out string unoIcon)
     {
-        unoIcon = GetPropertyValue(options, "UnoIcon");
+        unoIcon = GetPropertyValue(options, "UnoResizetizerIcon");
         return !string.IsNullOrEmpty(unoIcon) && !unoIcon.Contains(",");
     }
 
