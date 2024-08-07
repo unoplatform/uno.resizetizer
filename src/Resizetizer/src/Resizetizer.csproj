@@ -128,9 +128,9 @@
 
 	<Target Name="BundleGenerators" BeforeTargets="Pack;_LoadPackInputItems;_GetPackageFiles">
 		<ItemGroup>
-			<None Include="..\Resizetizer.Generators\bin\$(Configuration)\netstandard2.0\Resizetizer.Generators.dll"
+			<None Include="..\Resizetizer.Generators\bin\$(Configuration)\netstandard2.0\Uno.Resizetizer.dll"
 				Pack="true"
-				PackagePath="analyzers\dotnet\cs\Resizetizer.Generators.dll"
+				PackagePath="analyzers\dotnet\cs\Uno.Resizetizer.dll"
 				Visible="false" />
 		</ItemGroup>
 	</Target>

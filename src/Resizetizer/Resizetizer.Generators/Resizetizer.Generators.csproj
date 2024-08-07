@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <IsPackable>false</IsPackable>
+    <AssemblyName>Uno.Resizetizer</AssemblyName>
     <DevelopmentDependency>true</DevelopmentDependency>
     <BuildOutputTargetFolder>analyzers/dotnet/cs</BuildOutputTargetFolder>
     <LangVersion>latest</LangVersion>
