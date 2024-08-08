@@ -50,10 +50,6 @@
 
 	<UsingTask
 			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-			TaskName="Uno.Resizetizer.WindowIconGeneratorTask_V0"/>
-
-	<UsingTask
-			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
 			TaskName="Uno.Resizetizer.CleanupAssetsTask_v0"/>
 
 	<UsingTask
@@ -231,6 +227,8 @@
 			_ComputeAndroidResourcePaths;
 			$(UnoResizetizeCollectItemsAfterTargets);
 			UnoAssetsGeneration;
+			GenerateMSBuildEditorConfigFileShouldRun;
+			GenerateMSBuildEditorConfigFileCore;
 		</UnoResizetizeCollectItemsBeforeTargets>
 
 		<UnoResizetizeAfterTargets>
@@ -418,6 +416,7 @@
 				WriteOnlyWhenDifferent="true"/>
 
 		<ItemGroup>
+			<AdditionalFiles Include="$(_UnoResizetizerInputsFile)"/>
 			<FileWrites Include="$(_UnoResizetizerInputsFile)"/>
 			<FileWrites Include="$(_UnoSplashInputsFile)"/>
 		</ItemGroup>
@@ -589,25 +588,12 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="_GenerateWindowUnoIconExtension"
-			Condition="'$(_UnoResizetizerIsCompatibleApp)' == 'True'"
-			BeforeTargets="Build;CoreCompile;XamlPreCompile"
-			Inputs="@(UnoIcon)"
-			Outputs="@(_WindowIconExtension)">
-
-		<PropertyGroup>
-			<WindowTitle Condition="'$(WindowTitle)' == ''">$([MSBuild]::ValueOrDefault('$(ApplicationTitle)', '$(AssemblyName)'))</WindowTitle>
-		</PropertyGroup>
-
-		<WindowIconGeneratorTask_v0
-				IntermediateOutputDirectory="$(_UnoResizetizerIntermediateOutputRoot)"
-				WindowTitle="$(WindowTitle)"
-				UnoIcons="@(UnoIcon)">
-			<Output ItemName="GeneratedFile"
-					TaskParameter="GeneratedClass"/>
-			<Output ItemName="FilesWrite"
-					TaskParameter="GeneratedClass"/>
-		</WindowIconGeneratorTask_v0>
+	<Target Name="SetUnoImage"
+			BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;GenerateMSBuildEditorConfigFileCore;ResolveFrameworkReferencesDesignTime;ResolveProjectReferencesDesignTime2;CollectAnalyzersDesignTime;GetAndroidDependencies">
+		<CreateProperty Value="@(UnoIcon, ',')">
+			<Output TaskParameter="Value"
+					PropertyName="UnoResizetizerIcon" />
+		</CreateProperty>
 	</Target>
 
 	<Target Name="_AddResizetizerWindowIconExtensions"
