@@ -227,6 +227,8 @@
 			_ComputeAndroidResourcePaths;
 			$(UnoResizetizeCollectItemsAfterTargets);
 			UnoAssetsGeneration;
+			GenerateMSBuildEditorConfigFileShouldRun;
+			GenerateMSBuildEditorConfigFileCore;
 		</UnoResizetizeCollectItemsBeforeTargets>
 
 		<UnoResizetizeAfterTargets>
@@ -414,6 +416,7 @@
 				WriteOnlyWhenDifferent="true"/>
 
 		<ItemGroup>
+			<AdditionalFiles Include="$(_UnoResizetizerInputsFile)"/>
 			<FileWrites Include="$(_UnoResizetizerInputsFile)"/>
 			<FileWrites Include="$(_UnoSplashInputsFile)"/>
 		</ItemGroup>

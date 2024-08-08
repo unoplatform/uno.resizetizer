@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using CodeGenHelpers;
 using Microsoft.CodeAnalysis;
@@ -19,52 +20,84 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
         // Get the AnalyzerConfigOptionsProvider
         var optionsProvider = context.AnalyzerConfigOptionsProvider;
         var compilationProvider = context.CompilationProvider;
+        var additionalTextsProvider = context.AdditionalTextsProvider;
 
         // Combine optionsProvider and compilationProvider
-        var combinedProvider = optionsProvider.Combine(compilationProvider);
+        var combinedProvider = additionalTextsProvider
+            .Combine(compilationProvider)
+            .Combine(optionsProvider);
+
 
         // Define the source generator logic
         var sourceCodeProvider = combinedProvider.Select((combined, cancellationToken) =>
         {
-            var options = combined.Left.GlobalOptions;
-            if (!GetProperty(options, IsUnoHead) || !HasUnoIcon(options, out var unoIcon))
-            {
+            var ((additionalText, compilation), options) = combined;
+            var additionalFile = additionalText;
 
-                return (ClassBuilder[])[
-                    CodeBuilder.Create("__Empty__")
-                        .AddClass("GeneratorResult")
-                        .WithSummary($"IsUnoHead: {GetPropertyValue(options, IsUnoHead)}, UnoResizetizerIcon: {GetPropertyValue(options, UnoResizetizerIcon)}")
-                ];
+            if (!GetProperty(options.GlobalOptions, IsUnoHead))
+            {
+                return null;
+            }
+            else if (Path.GetFileName(additionalFile.Path) == "unoimages.inputs")
+            {
+                var text = additionalFile.GetText(cancellationToken);
+                var textContent = text?.ToString();
+                var unoIcon = ParseFile(textContent);
+
+                var rootNamespace = GetPropertyValue(options.GlobalOptions, "RootNamespace");
+                var iconName = Path.GetFileNameWithoutExtension(unoIcon);
+                var windowTitle = GetPropertyValue(options.GlobalOptions, "ApplicationTitle");
+                if (string.IsNullOrEmpty(windowTitle))
+                {
+                    windowTitle = compilation.AssemblyName!;
+                }
+
+                return new ExtensionGenerationContext(rootNamespace, iconName, windowTitle);
             }
 
-            var compilation = combined.Right;
-            return
-            [
-                GenerateLegacyNamespaceCompat(),
-                GenerateWindowTitleExtension(options, compilation.AssemblyName, unoIcon)
-            ];
-        });
+            return null;
+        }).Where(result => result != null);
 
         // Register the source generator logic to add the generated source code
-        context.RegisterSourceOutput(sourceCodeProvider, (context, classBuilders) =>
+        context.RegisterSourceOutput(sourceCodeProvider, (sourceContext, extensionContext) =>
         {
-            foreach (var classBuilder in classBuilders)
+            if (!string.IsNullOrEmpty(extensionContext.WindowTitle))
             {
-                AddSource(context, classBuilder);
+                GenerateLegacyNamespaceCompat();
+                GenerateWindowTitleExtension(extensionContext.RootNamespace, extensionContext.UnoIcon, extensionContext.WindowTitle);
             }
         });
     }
 
-    private static ClassBuilder GenerateWindowTitleExtension(AnalyzerConfigOptions options, string assemblyName, string unoIcon)
+    internal record ExtensionGenerationContext(string RootNamespace, string UnoIcon, string WindowTitle);
+
+    private static string ParseFile(string content)
     {
-        var rootNamespace = GetPropertyValue(options, "RootNamespace");
-        var iconName = Path.GetFileNameWithoutExtension(unoIcon);
-        var windowTitle = GetPropertyValue(options, "ApplicationTitle");
-        if (string.IsNullOrEmpty(windowTitle))
+        // Split the content into lines
+        var lines = content.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (var line in lines)
         {
-            windowTitle = assemblyName!;
+            // Split the line into key-value pairs
+            var properties = line.Split(';').Select(property => property.Split('=')).ToDictionary(parts => parts[0], parts => parts.Length > 1 ? parts[1] : null);
+
+            // Check if IsAppIcon is true
+            if (properties.TryGetValue("IsAppIcon", out var isAppIcon) && bool.TryParse(isAppIcon, out var isAppIconValue) && isAppIconValue)
+            {
+                // Return the file path
+                if (properties.TryGetValue("File", out var filePath))
+                {
+                    return filePath;
+                }
+            }
         }
 
+        // Return null if no app icon is found
+        return null;
+    }
+
+    private static ClassBuilder GenerateWindowTitleExtension(string rootNamespace, string iconName, string windowTitle)
+    {
         var builder = CodeBuilder.Create(rootNamespace)
             .AddClass("WindowExtensions")
             .MakeStaticClass()
@@ -98,8 +131,7 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
                 w.AppendUnindentedLine("#endif");
             });
 
-        return builder;
-
+        // NOTE: This method has been removed as it seems WinUI isn't setting the title when Packaged. Keeping in case we need this in the future.
         //builder.AddMethod("IsPackaged")
         //    .WithReturnType("bool")
         //    .MakePrivateMethod()
@@ -115,6 +147,8 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
         //            w.AppendLine("return false;");
         //        }
         //    });
+
+        return builder;
     }
 
     private static string GetPropertyValue(AnalyzerConfigOptions options, string key) =>
