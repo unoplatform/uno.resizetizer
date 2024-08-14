@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using CodeGenHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -27,36 +28,8 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
             .Combine(compilationProvider)
             .Combine(optionsProvider);
 
-
         // Define the source generator logic
-        var sourceCodeProvider = combinedProvider.Select((combined, cancellationToken) =>
-        {
-            var ((additionalText, compilation), options) = combined;
-            var additionalFile = additionalText;
-
-            if (!GetProperty(options.GlobalOptions, IsUnoHead))
-            {
-                return null;
-            }
-            else if (Path.GetFileName(additionalFile.Path) == "unoimages.inputs")
-            {
-                var text = additionalFile.GetText(cancellationToken);
-                var textContent = text?.ToString();
-                var unoIcon = ParseFile(textContent);
-
-                var rootNamespace = GetPropertyValue(options.GlobalOptions, "RootNamespace");
-                var iconName = Path.GetFileNameWithoutExtension(unoIcon);
-                var windowTitle = GetPropertyValue(options.GlobalOptions, "ApplicationTitle");
-                if (string.IsNullOrEmpty(windowTitle))
-                {
-                    windowTitle = compilation.AssemblyName!;
-                }
-
-                return new ExtensionGenerationContext(rootNamespace, iconName, windowTitle);
-            }
-
-            return null;
-        }).Where(result => result != null);
+        var sourceCodeProvider = combinedProvider.Select(GenerateExtensionGenerationContext).Where(result => result != null);
 
         // Register the source generator logic to add the generated source code
         context.RegisterSourceOutput(sourceCodeProvider, (sourceContext, extensionContext) =>
@@ -67,6 +40,35 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
                 GenerateWindowTitleExtension(extensionContext.RootNamespace, extensionContext.UnoIcon, extensionContext.WindowTitle);
             }
         });
+    }
+
+    static ExtensionGenerationContext GenerateExtensionGenerationContext(((AdditionalText, Compilation), AnalyzerConfigOptionsProvider) combined, CancellationToken cancellationToken)
+    {
+        var ((additionalText, compilation), options) = combined;
+        var additionalFile = additionalText;
+
+        if (!GetProperty(options.GlobalOptions, IsUnoHead))
+        {
+            return null;
+        }
+        else if (Path.GetFileName(additionalFile.Path).Equals("UnoImage.inputs", StringComparison.InvariantCultureIgnoreCase))
+        {
+            var text = additionalFile.GetText(cancellationToken);
+            var textContent = text?.ToString();
+            var unoIcon = ParseFile(textContent);
+
+            var rootNamespace = GetPropertyValue(options.GlobalOptions, "RootNamespace");
+            var iconName = Path.GetFileNameWithoutExtension(unoIcon);
+            var windowTitle = GetPropertyValue(options.GlobalOptions, "ApplicationTitle");
+            if (string.IsNullOrEmpty(windowTitle))
+            {
+                windowTitle = compilation.AssemblyName!;
+            }
+
+            return new ExtensionGenerationContext(rootNamespace, iconName, windowTitle);
+        }
+
+        return null;
     }
 
     internal record ExtensionGenerationContext(string RootNamespace, string UnoIcon, string WindowTitle);
