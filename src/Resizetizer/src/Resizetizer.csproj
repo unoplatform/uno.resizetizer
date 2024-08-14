@@ -21,7 +21,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<AssemblyName>Uno.Resizetizer_v0</AssemblyName>		
+		<AssemblyName>Uno.Resizetizer_v0</AssemblyName>
 		<RepositoryCommit>$(GITVERSION_SHA)</RepositoryCommit>
 		<PackageId>Uno.Resizetizer</PackageId>
 		<Description>Uno Platform package support for images.</Description>
@@ -44,7 +44,7 @@
 		<PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="$(_SkiaSharpVersion)" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="$(_SkiaSharpVersion)" />
 		<PackageReference Include="SkiaSharp.HarfBuzz" Version="$(_SkiaSharpVersion)" />
-		<PackageReference Include="ExCSS" Version="4.2.3"  />
+		<PackageReference Include="ExCSS" Version="4.2.3" />
 		<PackageReference Include="Svg.Skia" Version="$(SvgSkiaPackageVersion)" />
 		<PackageReference Include="Svg.Custom" Version="$(SvgSkiaPackageVersion)" />
 		<PackageReference Include="Svg.Model" Version="$(SvgSkiaPackageVersion)" />
@@ -75,7 +75,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Resizetizer.Generators\Resizetizer.Generators.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-			<OutputItemType>Analyzer</OutputItemType>
 		</ProjectReference>
 	</ItemGroup>
 
