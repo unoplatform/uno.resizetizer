@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using CodeGenHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -20,58 +19,62 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
     {
         // Get the AnalyzerConfigOptionsProvider
         var optionsProvider = context.AnalyzerConfigOptionsProvider;
-        var compilationProvider = context.CompilationProvider;
+        var assemblyNameProvider = context.CompilationProvider.Select((compilation, _) => compilation.Assembly.Name);
         var additionalTextsProvider = context.AdditionalTextsProvider;
 
+        var extensionPropertiesProvider = optionsProvider.Combine(assemblyNameProvider).Select((x, cancellationToken) =>
+        {
+            var (options, assemblyName) = x;
+            if (!GetProperty(options.GlobalOptions, IsUnoHead))
+            {
+                return null;
+            }
+
+            var rootNamespace = GetPropertyValue(options.GlobalOptions, "RootNamespace");
+            var windowTitle = GetPropertyValue(options.GlobalOptions, "ApplicationTitle");
+            if (string.IsNullOrEmpty(windowTitle))
+            {
+                windowTitle = assemblyName;
+            }
+
+            return string.IsNullOrEmpty(rootNamespace) || string.IsNullOrEmpty(windowTitle) ? null : new ExtensionPropertiesContext(rootNamespace, windowTitle); 
+        });
+
         // Combine optionsProvider and compilationProvider
-        var combinedProvider = additionalTextsProvider
-            .Combine(compilationProvider)
-            .Combine(optionsProvider);
+        var iconNameProvider = additionalTextsProvider
+            .Where(x => Path.GetFileName(x.Path).Equals("UnoImage.inputs", StringComparison.InvariantCultureIgnoreCase))
+            .Select((additionalText, cancellationToken) =>
+            {
+                var sourceText = additionalText.GetText(cancellationToken);
+                return ParseFile(sourceText.ToString());
+            })
+            .Where(x => !string.IsNullOrEmpty(x))
+            .Select((x, _) => Path.GetFileNameWithoutExtension(x));
 
         // Define the source generator logic
-        var sourceCodeProvider = combinedProvider.Select(GenerateExtensionGenerationContext).Where(result => result != null);
+        var sourceCodeProvider = iconNameProvider.Combine(extensionPropertiesProvider).Select((x, _) =>
+        {
+            var (iconName, coreContext) = x;
+            if (string.IsNullOrEmpty(iconName) || string.IsNullOrEmpty(coreContext?.RootNamespace) || string.IsNullOrEmpty(coreContext?.WindowTitle))
+                return null;
+
+            return new ExtensionGenerationContext(coreContext.RootNamespace, iconName, coreContext.WindowTitle);
+        }).Where(result => result != null);
 
         // Register the source generator logic to add the generated source code
         context.RegisterSourceOutput(sourceCodeProvider, (sourceContext, extensionContext) =>
         {
             if (!string.IsNullOrEmpty(extensionContext.WindowTitle))
             {
-                GenerateLegacyNamespaceCompat();
-                GenerateWindowTitleExtension(extensionContext.RootNamespace, extensionContext.UnoIcon, extensionContext.WindowTitle);
+                AddSource(sourceContext, GenerateLegacyNamespaceCompat());
+                AddSource(sourceContext, GenerateWindowTitleExtension(extensionContext.RootNamespace, extensionContext.IconName, extensionContext.WindowTitle));
             }
         });
     }
 
-    static ExtensionGenerationContext GenerateExtensionGenerationContext(((AdditionalText, Compilation), AnalyzerConfigOptionsProvider) combined, CancellationToken cancellationToken)
-    {
-        var ((additionalText, compilation), options) = combined;
-        var additionalFile = additionalText;
+    internal record ExtensionPropertiesContext(string RootNamespace, string WindowTitle);
 
-        if (!GetProperty(options.GlobalOptions, IsUnoHead))
-        {
-            return null;
-        }
-        else if (Path.GetFileName(additionalFile.Path).Equals("UnoImage.inputs", StringComparison.InvariantCultureIgnoreCase))
-        {
-            var text = additionalFile.GetText(cancellationToken);
-            var textContent = text?.ToString();
-            var unoIcon = ParseFile(textContent);
-
-            var rootNamespace = GetPropertyValue(options.GlobalOptions, "RootNamespace");
-            var iconName = Path.GetFileNameWithoutExtension(unoIcon);
-            var windowTitle = GetPropertyValue(options.GlobalOptions, "ApplicationTitle");
-            if (string.IsNullOrEmpty(windowTitle))
-            {
-                windowTitle = compilation.AssemblyName!;
-            }
-
-            return new ExtensionGenerationContext(rootNamespace, iconName, windowTitle);
-        }
-
-        return null;
-    }
-
-    internal record ExtensionGenerationContext(string RootNamespace, string UnoIcon, string WindowTitle);
+    internal record ExtensionGenerationContext(string RootNamespace, string IconName, string WindowTitle);
 
     private static string ParseFile(string content)
     {
