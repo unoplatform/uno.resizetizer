@@ -204,7 +204,7 @@ Next, some adjustments are needed on `Android`, `Windows (WinUI)`, `WebAssembly`
 > [!NOTE]
 > You will only need to configure this platform if you want to deploy it as a PWA.
 
-* Open the [`manifest.webmanifest` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Wasm/manifest.json) and look for the `icons` tag and remove all the values inside it. You should be seeing an empty array like this:
+* Open the [`manifest.webmanifest` file](https://github.com/unoplatform/uno.resizetizer/blob/main/samples/NewTemplate/Resizetizer.Extensions.Sample.Wasm/manifest.webmanifest) and look for the `icons` tag and remove all the values inside it. You should be seeing an empty array like this:
 
     ```json
     {
