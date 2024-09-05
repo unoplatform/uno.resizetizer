@@ -73,7 +73,7 @@
 		<_UnoManifestStampFile>$(IntermediateOutputPath)Unomanifest.stamp</_UnoManifestStampFile>
 
 
-		<_UnoResizetizerIntermediateOutputRoot>$(IntermediateOutputPath)unoresizetizer\</_UnoResizetizerIntermediateOutputRoot>
+		<_UnoResizetizerIntermediateOutputRoot>$([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)unoresizetizer\'))</_UnoResizetizerIntermediateOutputRoot>
 		<_UnoIntermediateImages>$(_UnoResizetizerIntermediateOutputRoot)r\</_UnoIntermediateImages>
 		<_UnoIntermediateAppIcon>$(_UnoResizetizerIntermediateOutputRoot)AppIcons\</_UnoIntermediateAppIcon>
 		<_UnoIntermediateSplashScreen>$(_UnoResizetizerIntermediateOutputRoot)sp\</_UnoIntermediateSplashScreen>
