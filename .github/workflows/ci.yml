@@ -15,7 +15,7 @@ on:
       - legacy/**
 
 env:
-  UnoCheck_Version: '1.21.1'
+  UnoCheck_Version: '1.26.0-dev.28'
 
 jobs:
   build_tool:
@@ -32,10 +32,10 @@ jobs:
       with:
         dotnet-version: '5.0.408'
 
-    - name: Setup .NET 7
+    - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '7.0.100'
+        dotnet-version: '8.0.401'
 
     - name: Setup GitVersion
       uses: gittools/actions/gitversion/setup@v1.1.1
@@ -55,8 +55,8 @@ jobs:
         gci -r -File -Include *.cs,*.targets,*.props,*.csproj | foreach-object { $a = $_.fullname; ( get-content $a ) | foreach-object { $_ -replace "v0","${{steps.gitversion.outputs.sha}}" }  | set-content $a }
 
     - run: |
-          & dotnet tool update --global uno.check --version ${{ env.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
-          & uno-check -v --ci --non-interactive --fix --skip xcode --skip androidemulator --skip gtk3 --skip vswin --skip vsmac
+        & dotnet tool update --global uno.check --version ${{ env.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
+        & uno-check -v --ci --non-interactive --fix --skip xcode --skip androidemulator --skip gtk3 --skip vswin --skip vsmac
       name: Install .NET Workloads
 
     - name: Build - CI
@@ -74,15 +74,113 @@ jobs:
       run: |
         dotnet test src/Resizetizer/test/UnitTests/Resizetizer.UnitTests.csproj -c Release -p:PackageVersion=$adjustedPackageVersion -p:Version=${{ steps.gitversion.outputs.assemblySemVer }} --logger GitHubActions --blame-crash --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
-  validation_5_2:
-    name: Validate 5.2 Samples
+  validation_5_2_nix:
+    name: Validate 5.2
     needs: build_tool
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        config: [Debug, Release]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Download Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: NuGet
+        path: samples/packages
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.401'
+
+    - run: |
+        ubuntu_release=`lsb_release -rs`
+        wget https://packages.microsoft.com/config/ubuntu/${ubuntu_release}/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+        sudo dpkg -i packages-microsoft-prod.deb
+        sudo apt-get install apt-transport-https
+        sudo apt-get update
+        sudo apt-get install -y msopenjdk-11
+        sudo update-alternatives --list java
+        echo "JAVA_HOME=/usr/lib/jvm/msopenjdk-11-amd64" >> "$GITHUB_ENV"
+      if: runner.os == 'Linux'
+      name: Install OpenJDK 11
+
+    - run: |
+        & dotnet tool update --global uno.check --version ${{ env.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
+        & uno-check -v --ci --non-interactive --fix --skip xcode --skip androidemulator --skip gtk3 --skip vswin --skip vsmac
+      shell: pwsh
+      name: Install .NET Workloads
+
+    - name: Restore 5.2 Sample App (${{ matrix.config }})
+      shell: pwsh
+      run: |
+        cd samples/5.2/Uno52ResizetizerTests
+        & dotnet restore
+
+    - name: Delete nupkg files
+      run: |
+        Remove-Item -Recurse -Path $env:USERPROFILE\.nuget\packages\*.nupkg -Force
+      if: runner.os == 'Windows'
+      shell: pwsh
+
+    - name: Delete nupkg files
+      run: |
+        Remove-Item -Recurse -Path $env:HOME\.nuget\packages\*.nupkg -Force
+      if: runner.os != 'Windows'
+      shell: pwsh
+
+    - name: Validate 5.2 Samples app (${{ matrix.config }})
+      shell: pwsh
+
+      # Skip the macOS release build, the agent does not have 
+      # enough disk space to handle it.
+      if: matrix.os == 'macos-latest' && matrix.config != 'Release'
+
+      run: |
+        & dotnet build -c ${{ matrix.config }} -p:RunAOTCompilation=false -p:WasmShellILLinkerEnabled=false /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None -bl:./logs/sample-5.2-${{ matrix.config }}.binlog samples/5.2/Uno52ResizetizerTests/Uno52ResizetizerTests.sln
+  
+    - name: Validate 5.2 Samples app (${{ matrix.config }} Incremental)
+  
+      # Skip the macOS release build, the agent does not have 
+      # enough disk space to handle it.
+      if: matrix.os == 'macos-latest' && matrix.config != 'Release'
+
+      shell: pwsh
+      run: |
+        & dotnet build -c ${{ matrix.config }} /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None /bl:.\logs\sample-5.2-${{ matrix.config }}-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: logs_5_2_${{ matrix.config }}_${{ matrix.os }}
+        path: .\logs
+
+
+  validation_5_2_win:
+    name: Validate 5.2 Samples (msbuild)
+    needs: build_tool   
     runs-on: windows-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.401'
+
     - name: Download Artifact
       uses: actions/download-artifact@v4
       with:
@@ -105,22 +203,6 @@ jobs:
         & $msbuild $sampleSolution /p:TargetFramework=net8.0-android /p:Configuration=Debug /p:AndroidInstallAfterBuild=False /p:BuildingInsideVisualStudio=true /p:DefineExplicitDefaults=true /p:RunConfiguration=Default /t:GetAndroidDependencies
         & $msbuild $sampleSolution /p:TargetFramework= /p:Configuration=Debug /p:AndroidInstallAfterBuild=False /p:BuildingInsideVisualStudio=true /p:UseHostCompilerIfAvailable=false /p:DefineExplicitDefaults=true /p:RunConfiguration=Default /t:rebuild
 
-    - name: Validate 5.2 Samples app (Debug)
-      run: |
-        & dotnet build -c Debug /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Debug.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
-  
-    - name: Validate 5.2 Samples app (Debug Incremental)
-      run: |
-        & dotnet build -c Debug /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Debug-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
-  
-    - name: Validate 5.2 Samples app (Release)
-      run: |
-        & dotnet build -c Release /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Release.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
-
-    - name: Validate 5.2 Samples app (Release Incremental)
-      run: |
-        & dotnet build -c Release /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /bl:.\logs\sample-5.2-Release-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
-
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       if: always()
@@ -142,7 +224,12 @@ jobs:
       with:
         name: NuGet
         path: samples/packages
-        
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.401'
+
     - run: |
           & dotnet tool update --global uno.check --version ${{ env.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
           & uno-check -v --ci --non-interactive --fix --skip xcode --skip androidemulator --skip gtk3 --skip vswin --skip vsmac
@@ -151,12 +238,12 @@ jobs:
     - name: Validate 5.1 Samples app
       run: |
         $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
-        & $msbuild /r /bl:.\logs\samples.binlog samples\NewTemplate\build.slnf /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
+        & $msbuild /r /bl:.\logs\samples.binlog samples\NewTemplate\build.slnf /p:AotAssemblies=false /p:WindowsPackageType=None /p:WasmShellILLinkerEnabled=false
 
     - name: Validate 5.1 Samples (incremental)
       run: |
         $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
-        & $msbuild /r /bl:.\logs\samples-incremental.binlog samples\NewTemplate\build.slnf /p:AotAssemblies=false /p:WasmShellILLinkerEnabled=false
+        & $msbuild /r /bl:.\logs\samples-incremental.binlog samples\NewTemplate\build.slnf /p:AotAssemblies=false /p:WindowsPackageType=None /p:WasmShellILLinkerEnabled=false
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
@@ -172,7 +259,8 @@ jobs:
     needs:
       - build_tool
       - validation_5_1
-      - validation_5_2
+      - validation_5_2_win
+      - validation_5_2_nix
     steps:
       - name: Checkout
         uses: actions/checkout@v4
