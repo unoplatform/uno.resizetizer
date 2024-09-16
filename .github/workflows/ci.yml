@@ -252,6 +252,20 @@ jobs:
         name: logs_5_1
         path: .\logs
 
+  # This step is only used to add a required check for the PR
+  Validation_Check:
+    name: Validation Check
+    runs-on: windows-latest
+    needs:
+      - build_tool
+      - validation_5_1
+      - validation_5_2_win
+      - validation_5_2_nix
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
   sign:
     name: Sign
     if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')) }}
