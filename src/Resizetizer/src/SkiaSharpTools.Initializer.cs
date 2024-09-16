@@ -36,6 +36,31 @@ internal abstract partial class SkiaSharpTools
             {
                 SetupResolver();
             }
+            else
+            {
+                SetupWindows();
+            }
+        }
+    }
+
+    /// <remarks>
+    /// Load libraries explicitly on Windows, as search paths may not be available when
+    /// running inside VS msbuild nodes.
+    /// </remarks>
+    private static void SetupWindows()
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            foreach (var runtimePath in GetRuntimesFolder())
+            {
+                if (Directory.Exists(runtimePath))
+                {
+                    foreach (var file in Directory.GetFiles(runtimePath, "*.dll"))
+                    {
+                        var r = LoadLibrary(file);
+                    }
+                }
+            }
         }
     }
 
@@ -183,6 +208,10 @@ internal abstract partial class SkiaSharpTools
 
     [DllImport("libSystem.dylib", EntryPoint = "dlopen")]
     public static extern IntPtr dlopen_macos(string fileName, int flags);
+
+    // Declare dllimport for loadlibrary
+    [DllImport("kernel32.dll", SetLastError = true)]
+    public static extern IntPtr LoadLibrary(string lpFileName);
 
     // Imported from https://github.com/mono/SkiaSharp/blob/482e6ee2913a08a7cad76520ccf5fbce97c7c23b/binding/Binding.Shared/LibraryLoader.cs
     private static class Linux
