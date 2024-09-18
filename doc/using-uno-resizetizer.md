@@ -109,6 +109,7 @@ The Uno Platform SDK exposes several properties that simplify the customization 
 * `UnoIconForegroundFile`: Sets the foreground image file for the icon.
 * `UnoIconForegroundScale`: Adjusts the scaling of the icon's foreground.
 * `UnoIconBackgroundColor`: Sets the background color of the icon.
+* `UnoUseIconBackgroundFile`: Controls whether the background file is used (useful for platforms where icons can have transparent background, e.g. desktop).
 
 For basic adjustments, such as changing the icon's foreground color or applying a common modification across platforms, you can use SDK properties:
 
@@ -362,6 +363,7 @@ Next, some adjustments are needed on `Android`, `Windows`, and `iOS`.
 -----
 
 ## Platform-Specific Customization
+
 The Uno Resizetizer SDK allows for detailed control over how assets are rendered on different platforms. This can be particularly useful for properties such as icon and splash screen backgrounds, which may need to vary between platforms due to design or visibility concerns.
 
 ### Customizing Background Colors Per Platform
@@ -382,7 +384,7 @@ For properties like BackgroundColor, which might need different values per platf
 ```
 This setup demonstrates setting a default background color that is overridden on specific platforms. Adjust the conditions to match your project's target frameworks as defined in your project files or SDK documentation.
 
-#### Applying Platform-Specific Scale
+### Applying Platform-Specific Scale
 Similarly, if you want to apply different scaling factors for the icon foreground across platforms, use the platform-specific properties:
 
 ```xml
