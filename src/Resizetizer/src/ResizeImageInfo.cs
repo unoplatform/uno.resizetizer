@@ -140,12 +140,12 @@ namespace Uno.Resizetizer
 					info.ForegroundScale = fsc;
 				}
 
-                if (bool.TryParse(image.GetMetadata(nameof(UseIconBackground)), out var uib))
-                {
-                    info.UseIconBackground = uib;
-                }
+				if (bool.TryParse(image.GetMetadata(nameof(UseIconBackground)), out var uib))
+				{
+					info.UseIconBackground = uib;
+				}
 
-                if (info.IsSplashScreen)
+				if (info.IsSplashScreen)
 				{
 					SetPlatformForegroundScale(image, "Scale", info);
 					ApplyPlatformScale(image, info);
