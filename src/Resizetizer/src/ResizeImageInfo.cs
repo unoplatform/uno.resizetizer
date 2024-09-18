@@ -50,7 +50,7 @@ namespace Uno.Resizetizer
 
 		public bool IsAppIcon { get; set; }
 
-		public bool UseIconBackground { get; set; } = true;
+		public bool UseBackgroundFile { get; set; } = true;
 
 		public bool IsSplashScreen { get; set; }
 
@@ -140,9 +140,9 @@ namespace Uno.Resizetizer
 					info.ForegroundScale = fsc;
 				}
 
-				if (bool.TryParse(image.GetMetadata(nameof(UseIconBackground)), out var uib))
+				if (bool.TryParse(image.GetMetadata(nameof(UseBackgroundFile)), out var uib))
 				{
-					info.UseIconBackground = uib;
+					info.UseBackgroundFile = uib;
 				}
 
 				if (info.IsSplashScreen)
@@ -163,7 +163,7 @@ namespace Uno.Resizetizer
 					info.ForegroundFilename = fgFileInfo.FullName;
 
 					// If we don't want to apply icon background, we set it to null.
-					if (!info.UseIconBackground)
+					if (!info.UseBackgroundFile)
 					{
 						info.Filename = null;
 					}
