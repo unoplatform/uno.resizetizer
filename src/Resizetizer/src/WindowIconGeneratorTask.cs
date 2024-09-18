@@ -78,17 +78,11 @@ namespace Uno.Resizetizer
 
 			static bool IsPackaged()
 			{{
-				try
-				{{
-					if (global::Windows.ApplicationModel.Package.Current != null)
-						return true;
-				}}
-				catch
-				{{
-					// no-op
-				}}
-
+#if WINAPPSDK_PACKAGED // Defined in the Uno.Sdk for WinAppSDK Packaged apps.
+				return true;
+#else
 				return false;
+#endif
 			}}
 #endif
 		}}
