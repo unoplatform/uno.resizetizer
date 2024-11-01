@@ -512,7 +512,7 @@
 
 		<PropertyGroup>
 			<!-- If the PWA manifest is empty we can try to find it on disk -->
-			<_UnoResizetizerPwaManifest>$(_UnoIntermediateAppIcon)..\$([System.IO.Path]::GetFileName($(WasmPWAManifestFile)))</_UnoResizetizerPwaManifest>
+			<_UnoResizetizerPwaManifest Condition="exists($(WasmPWAManifestFile))">$(_UnoIntermediateAppIcon)..\$([System.IO.Path]::GetFileName($(WasmPWAManifestFile)))</_UnoResizetizerPwaManifest>
 			<UnoResizetizerPwaManifest Condition="
 				'$(UnoResizetizerPwaManifest)'=='' and
 				Exists('$(_UnoResizetizerPwaManifest)')">$(_UnoResizetizerPwaManifest)</UnoResizetizerPwaManifest>
