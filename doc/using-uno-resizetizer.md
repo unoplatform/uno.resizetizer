@@ -418,8 +418,8 @@ The Uno Platform allows for flexible image handling through direct SVG use or th
 * Your app needs to dynamically change aspects of the image, such as color or size, at runtime.
 #### How to Implement:
 
-* Add a folder Svg and add here your SVG file.
-* Set the build action of your SVG file to Content.
+* Add a folder named `Svg` in `Assets` and add your SVG file.
+* Set the build action of your SVG file to `Content`.
 * Reference the SVG file directly in the Image control's Source property.
 ```xml
 <Image Source="Assets/Svg/my_vector_image.svg" />
