@@ -27,15 +27,10 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Setup .NET 5
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '5.0.408'
-
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.401'
+        dotnet-version: '9.0.100'
 
     - name: Setup GitVersion
       uses: gittools/actions/gitversion/setup@v1.1.1
@@ -100,7 +95,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.401'
+        dotnet-version: '9.0.100'
 
     - run: |
         ubuntu_release=`lsb_release -rs`
@@ -179,7 +174,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.401'
+        dotnet-version: '9.0.100'
 
     - name: Download Artifact
       uses: actions/download-artifact@v4
@@ -228,7 +223,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.401'
+        dotnet-version: '9.0.100'
 
     - run: |
           & dotnet tool update --global uno.check --version ${{ env.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
@@ -288,7 +283,7 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '3.1.x'
+          dotnet-version: '9.0.100'
 
       - name: Setup SignClient
         run: |
