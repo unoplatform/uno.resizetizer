@@ -4,15 +4,13 @@ on:
   push:
     branches:
       - main
-      - release/**
-      - legacy/**
+      - release/*/*
 
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
       - main
-      - release/**
-      - legacy/**
+      - release/*/*
 
 env:
   UnoCheck_Version: '1.27.1'
