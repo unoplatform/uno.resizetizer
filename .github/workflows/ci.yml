@@ -203,55 +203,12 @@ jobs:
         name: logs_5_2
         path: .\logs
         
-  validation_5_1:
-    name: Validate 5.1 Samples
-    needs: build_tool
-    runs-on: windows-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    - name: Download Artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: NuGet
-        path: samples/packages
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '9.0.100'
-
-    - run: |
-          & dotnet tool update --global uno.check --version ${{ env.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
-          & uno-check -v --ci --non-interactive --fix --skip xcode --skip androidemulator --skip gtk3 --skip vswin --skip vsmac
-      name: Install .NET Workloads
-
-    - name: Validate 5.1 Samples app
-      run: |
-        $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
-        & $msbuild /r /bl:.\logs\samples.binlog samples\NewTemplate\build.slnf /p:AotAssemblies=false /p:WindowsPackageType=None /p:WasmShellILLinkerEnabled=false
-
-    - name: Validate 5.1 Samples (incremental)
-      run: |
-        $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
-        & $msbuild /r /bl:.\logs\samples-incremental.binlog samples\NewTemplate\build.slnf /p:AotAssemblies=false /p:WindowsPackageType=None /p:WasmShellILLinkerEnabled=false
-
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: logs_5_1
-        path: .\logs
-
   # This step is only used to add a required check for the PR
   Validation_Check:
     name: Validation Check
     runs-on: windows-latest
     needs:
       - build_tool
-      - validation_5_1
       - validation_5_2_win
       - validation_5_2_nix
 
@@ -265,7 +222,6 @@ jobs:
     runs-on: windows-latest
     needs:
       - build_tool
-      - validation_5_1
       - validation_5_2_win
       - validation_5_2_nix
     steps:
