@@ -1,7 +1,0 @@
-<Project>
-	<Import Project="..\Directory.Build.targets" />
-	<ItemGroup>
-		<!-- Removes native usings to avoid Ambiguous reference -->
-		<Using Remove="@(Using->HasMetadata('Platform'))" />
-	</ItemGroup>
-</Project>

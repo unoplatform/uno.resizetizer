@@ -4,18 +4,16 @@ on:
   push:
     branches:
       - main
-      - release/**
-      - legacy/**
+      - release/*/*
 
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
       - main
-      - release/**
-      - legacy/**
+      - release/*/*
 
 env:
-  UnoCheck_Version: '1.26.0-dev.28'
+  UnoCheck_Version: '1.27.1'
 
 jobs:
   build_tool:
@@ -27,20 +25,15 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Setup .NET 5
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '5.0.408'
-
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.401'
+        dotnet-version: '9.0.100'
 
     - name: Setup GitVersion
       uses: gittools/actions/gitversion/setup@v1.1.1
       with:
-        versionSpec: '5.6.11'
+        versionSpec: '5.10.3'
 
     - name: GitVersion
       id: gitversion
@@ -81,7 +74,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-15]
         config: [Debug, Release]
 
     runs-on: ${{ matrix.os }}
@@ -100,7 +93,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.401'
+        dotnet-version: '9.0.100'
 
     - run: |
         ubuntu_release=`lsb_release -rs`
@@ -179,7 +172,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.401'
+        dotnet-version: '9.0.100'
 
     - name: Download Artifact
       uses: actions/download-artifact@v4
@@ -210,55 +203,12 @@ jobs:
         name: logs_5_2
         path: .\logs
         
-  validation_5_1:
-    name: Validate 5.1 Samples
-    needs: build_tool
-    runs-on: windows-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    - name: Download Artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: NuGet
-        path: samples/packages
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.401'
-
-    - run: |
-          & dotnet tool update --global uno.check --version ${{ env.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
-          & uno-check -v --ci --non-interactive --fix --skip xcode --skip androidemulator --skip gtk3 --skip vswin --skip vsmac
-      name: Install .NET Workloads
-
-    - name: Validate 5.1 Samples app
-      run: |
-        $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
-        & $msbuild /r /bl:.\logs\samples.binlog samples\NewTemplate\build.slnf /p:AotAssemblies=false /p:WindowsPackageType=None /p:WasmShellILLinkerEnabled=false
-
-    - name: Validate 5.1 Samples (incremental)
-      run: |
-        $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
-        & $msbuild /r /bl:.\logs\samples-incremental.binlog samples\NewTemplate\build.slnf /p:AotAssemblies=false /p:WindowsPackageType=None /p:WasmShellILLinkerEnabled=false
-
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: logs_5_1
-        path: .\logs
-
   # This step is only used to add a required check for the PR
   Validation_Check:
     name: Validation Check
     runs-on: windows-latest
     needs:
       - build_tool
-      - validation_5_1
       - validation_5_2_win
       - validation_5_2_nix
 
@@ -272,7 +222,6 @@ jobs:
     runs-on: windows-latest
     needs:
       - build_tool
-      - validation_5_1
       - validation_5_2_win
       - validation_5_2_nix
     steps:
@@ -288,7 +237,7 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '3.1.x'
+          dotnet-version: '9.0.100'
 
       - name: Setup SignClient
         run: |

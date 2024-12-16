@@ -1,7 +1,0 @@
-{
-	"profiles": {
-		"Uno.Resizetizer.Sample.Windows (Package)": {
-			"commandName": "MsixPackage"
-		}
-	}
-}
