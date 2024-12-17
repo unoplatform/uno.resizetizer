@@ -198,6 +198,15 @@ Next, some adjustments are needed on `Android`, `Windows (WinUI)`, `WebAssembly`
        </Application>
      </Applications>
     ```
+* In a multi-window environment, you need to call 'SetWindowIcon' for each new window created to show the app icon on the app bar:
+    ```c#
+    using System;
+    using Uno.Resizetizer;
+
+    newwindow = new Window();
+    newwindow.SetWindowIcon();
+    newwindow.Activate();
+    ```
 
 # [**Web Assembly (Wasm)**](#tab/Wasm)
 
@@ -409,10 +418,11 @@ The Uno Platform allows for flexible image handling through direct SVG use or th
 * Your app needs to dynamically change aspects of the image, such as color or size, at runtime.
 #### How to Implement:
 
-* Set the build action of your SVG file to Content.
+* Add a folder named `Svg` in `Assets` and add your SVG file.
+* Set the build action of your SVG file to `Content`.
 * Reference the SVG file directly in the Image control's Source property.
 ```xml
-<Image Source="/Assets/my_vector_image.svg" />
+<Image Source="Assets/Svg/my_vector_image.svg" />
 ```
 [Using Svg Images](https://platform.uno/docs/articles/features/svg.html?tabs=singleproject)
 
@@ -429,7 +439,7 @@ The Uno Platform allows for flexible image handling through direct SVG use or th
 * Uno.Resizetizer will generate PNG assets at various scales.
 * Reference the generated PNG in the Image control's Source property.
 ```xml
-<Image Source="/Assets/Generated/my_vector_image.png" />
+<Image Source="Assets/Images/my_vector_image.png" />
 ```
 [Using Uno Resizetizer ](https://platform.uno/docs/articles/external/uno.resizetizer/doc/using-uno-resizetizer.html?tabs=classlib%2CAndroid#unoimage)
 
