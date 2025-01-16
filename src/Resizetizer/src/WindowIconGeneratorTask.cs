@@ -71,18 +71,9 @@ namespace Uno.Resizetizer
 			appWindow.SetIcon(""{iconName}.ico"");
 
 			// Set the Window Title Only if it has the Default WinUI Desktop value and we are running Unpackaged
-			if (!IsPackaged() && appWindow.Title == ""WinUI Desktop"")
+			if (appWindow.Title == ""WinUI Desktop"")
 			{{
 				appWindow.Title = ""{WindowTitle}"";
-			}}
-
-			static bool IsPackaged()
-			{{
-#if WINAPPSDK_PACKAGED // Defined in the Uno.Sdk for WinAppSDK Packaged apps.
-				return true;
-#else
-				return false;
-#endif
 			}}
 #endif
 		}}
