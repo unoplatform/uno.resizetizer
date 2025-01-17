@@ -9,7 +9,7 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-		<_UnoResizetizerTaskAssemblyName>$(MSBuildThisFileDirectory)netstandard2.0\Uno.Resizetizer_v0.dll</_UnoResizetizerTaskAssemblyName>	
+		<_UnoResizetizerTaskAssemblyName>$(MSBuildThisFileDirectory)netstandard2.0\Uno.Resizetizer_v0.dll</_UnoResizetizerTaskAssemblyName>
 	</PropertyGroup>
 
 	<UsingTask
@@ -47,10 +47,6 @@
 	<UsingTask
 			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
 			TaskName="Uno.Resizetizer.GenerateWasmSplashAssets_v0"/>
-
-	<UsingTask
-			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
-			TaskName="Uno.Resizetizer.WindowIconGeneratorTask_V0"/>
 
 	<UsingTask
 			AssemblyFile="$(_UnoResizetizerTaskAssemblyName)"
@@ -231,6 +227,8 @@
 			_ComputeAndroidResourcePaths;
 			$(UnoResizetizeCollectItemsAfterTargets);
 			UnoAssetsGeneration;
+			GenerateMSBuildEditorConfigFileShouldRun;
+			GenerateMSBuildEditorConfigFileCore;
 		</UnoResizetizeCollectItemsBeforeTargets>
 
 		<UnoResizetizeAfterTargets>
@@ -273,7 +271,8 @@
 
 
 	<Target Name="ValidateAvailableItems"
-			BeforeTargets="UnoResizetizeCollectItems">
+			BeforeTargets="UnoResizetizeCollectItems"
+			DependsOnTargets="_ResizetizerInitialize">
 
 		<Warning
 				Condition="'%(UnoIcon.Link)' != ''"
@@ -417,6 +416,7 @@
 				WriteOnlyWhenDifferent="true"/>
 
 		<ItemGroup>
+			<AdditionalFiles Include="$(_UnoResizetizerInputsFile)"/>
 			<FileWrites Include="$(_UnoResizetizerInputsFile)"/>
 			<FileWrites Include="$(_UnoSplashInputsFile)"/>
 		</ItemGroup>
@@ -512,7 +512,7 @@
 
 		<PropertyGroup>
 			<!-- If the PWA manifest is empty we can try to find it on disk -->
-			<_UnoResizetizerPwaManifest Condition="exists($(WasmPWAManifestFile))">$(_UnoIntermediateAppIcon)..\$([System.IO.Path]::GetFileName($(WasmPWAManifestFile)))</_UnoResizetizerPwaManifest>
+			<_UnoResizetizerPwaManifest>$(_UnoIntermediateAppIcon)..\$([System.IO.Path]::GetFileName($(WasmPWAManifestFile)))</_UnoResizetizerPwaManifest>
 			<UnoResizetizerPwaManifest Condition="
 				'$(UnoResizetizerPwaManifest)'=='' and
 				Exists('$(_UnoResizetizerPwaManifest)')">$(_UnoResizetizerPwaManifest)</UnoResizetizerPwaManifest>
@@ -588,25 +588,12 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="_GenerateWindowUnoIconExtension"
-			Condition="'$(_UnoResizetizerIsCompatibleApp)' == 'True'"
-			BeforeTargets="Build;CoreCompile;XamlPreCompile"
-			Inputs="@(UnoIcon)"
-			Outputs="@(_WindowIconExtension)">
-
-		<PropertyGroup>
-			<WindowTitle Condition="'$(WindowTitle)' == ''">$([MSBuild]::ValueOrDefault('$(ApplicationTitle)', '$(AssemblyName)'))</WindowTitle>
-		</PropertyGroup>
-
-		<WindowIconGeneratorTask_v0
-				IntermediateOutputDirectory="$(_UnoResizetizerIntermediateOutputRoot)"
-				WindowTitle="$(WindowTitle)"
-				UnoIcons="@(UnoIcon)">
-			<Output ItemName="GeneratedFile"
-					TaskParameter="GeneratedClass"/>
-			<Output ItemName="FilesWrite"
-					TaskParameter="GeneratedClass"/>
-		</WindowIconGeneratorTask_v0>
+	<Target Name="SetUnoImage"
+			BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;GenerateMSBuildEditorConfigFileCore;ResolveFrameworkReferencesDesignTime;ResolveProjectReferencesDesignTime2;CollectAnalyzersDesignTime;GetAndroidDependencies">
+		<CreateProperty Value="@(UnoIcon, ',')">
+			<Output TaskParameter="Value"
+					PropertyName="UnoResizetizerIcon" />
+		</CreateProperty>
 	</Target>
 
 	<Target Name="_AddResizetizerWindowIconExtensions"
@@ -616,6 +603,63 @@
 		<ItemGroup Condition="Exists('@(_WindowIconExtension->FullPath())')">
 			<Compile Include="@(_WindowIconExtension)"/>
 		</ItemGroup>
+	</Target>
+
+	<!--
+		This is used to get and copy the native runtime assets. This is a workaround as the assets aren't properly loading
+
+		Executed before UnoResizetizeImages for TargetFrameworks=='' and TargetFramework!=''
+		Executed before _SetBuildInnerTarget;_ComputeTargetFrameworkItems for TargetFrameworks!='' and TargetFramework==''		
+	-->
+	<Target Name="_ResizetizerInitialize"
+		BeforeTargets="UnoResizetizeImages;_SetBuildInnerTarget;_ComputeTargetFrameworkItems">
+		<PropertyGroup>
+			<_ResizetizerRuntimeIdentifier>$(NETCoreSdkPortableRuntimeIdentifier)</_ResizetizerRuntimeIdentifier>
+			<!-- NOTE: We may need to adjust this in the future if we end up with assets compiled for osx-arm64 and osx-x64 -->
+			<_ResizetizerRuntimeIdentifier Condition=" $(_ResizetizerRuntimeIdentifier.Contains('osx')) ">osx</_ResizetizerRuntimeIdentifier>
+			<_ResizetizerRuntimeIdentifierDirectory>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', 'netstandard2.0', 'runtimes', '$(_ResizetizerRuntimeIdentifier)'))</_ResizetizerRuntimeIdentifierDirectory>
+			<_ResizetizerRuntimeAssetsOutput>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', 'netstandard2.0'))</_ResizetizerRuntimeAssetsOutput>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<_ResiztizerRuntimeAssets Include="$(_ResizetizerRuntimeIdentifierDirectory)\**\*"
+				OutputDirectory="$(_ResizetizerRuntimeAssetsOutput)" />
+		</ItemGroup>
+
+		<Error Text="No Runtime was found."
+			Condition="$(_ResizetizerRuntimeIdentifier) == ''" />
+
+		<Error Text="The selected runtime directory does not exist"
+			Condition="!Exists('$(_ResizetizerRuntimeIdentifierDirectory)')" />
+		
+		<!-- 
+			Try to copy files with one retry, fail fast and ignore the error if this happens, then retry 
+			copying the files in a second time. This is present to avoid a race condition during 
+			cross-targeted builds when this current target is executed concurrently.
+			
+			When running, the Copy task may detect that files are not present for two 
+			threads/processes, then assume it's safe to copy, while only one of them can do 
+			so. Later on, the copied files may be locked by dotnet/msbuild and the other copy
+			instance never finishes sucessfully, regardless of SkipUnchangedFiles.
+		-->
+		<Copy SourceFiles="@(_ResiztizerRuntimeAssets)"
+			DestinationFiles="@(_ResiztizerRuntimeAssets->'%(OutputDirectory)\%(Filename)%(Extension)')"
+			SkipUnchangedFiles="true"
+			OverwriteReadOnlyFiles="true"
+			Condition="Exists('$(_ResizetizerRuntimeIdentifierDirectory)')"
+			UseHardlinksIfPossible="true"
+			ContinueOnError="true"
+			Retries="1"
+			UseSymboliclinksIfPossible="true" />
+
+		<Copy SourceFiles="@(_ResiztizerRuntimeAssets)"
+			DestinationFiles="@(_ResiztizerRuntimeAssets->'%(OutputDirectory)\%(Filename)%(Extension)')"
+			SkipUnchangedFiles="true"
+			OverwriteReadOnlyFiles="true"
+			Condition="Exists('$(_ResizetizerRuntimeIdentifierDirectory)')"
+			UseHardlinksIfPossible="true"
+			UseSymboliclinksIfPossible="true" />
+
 	</Target>
 
 </Project>
