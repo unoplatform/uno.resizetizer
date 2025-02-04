@@ -121,7 +121,7 @@ var extensionPropertiesProvider = optionsProvider.Combine(assemblyNameProvider).
                 w.AppendLine("// Retrieve the WindowId that corresponds to hWnd.");
                 w.AppendLine("global::Microsoft.UI.WindowId windowId = global::Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);");
                 w.NewLine();
-                w.AppendLine("// Lastly, retrieve the AppWindow for the current (XAML) WinUI 3 window....");
+                w.AppendLine("// Lastly, retrieve the AppWindow for the current (XAML) WinUI 3 window.");
                 w.AppendLine("global::Microsoft.UI.Windowing.AppWindow appWindow = global::Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);");
                 w.AppendLine($@"appWindow.SetIcon(""{iconName}.ico"");");
                 w.NewLine();
