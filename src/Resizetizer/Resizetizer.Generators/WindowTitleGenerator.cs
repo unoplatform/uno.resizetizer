@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,23 +22,20 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
         var assemblyNameProvider = context.CompilationProvider.Select((compilation, _) => compilation.Assembly.Name);
         var additionalTextsProvider = context.AdditionalTextsProvider;
 
-        var extensionPropertiesProvider = optionsProvider.Combine(assemblyNameProvider).Select((x, cancellationToken) =>
-        {
-            var (options, assemblyName) = x;
-            if (!GetProperty(options.GlobalOptions, IsUnoHead))
-            {
-                return null;
-            }
+var extensionPropertiesProvider = optionsProvider.Combine(assemblyNameProvider).Select((x, cancellationToken) =>
+{
+    var (options, assemblyName) = x;
 
-            var rootNamespace = GetPropertyValue(options.GlobalOptions, "RootNamespace");
-            var windowTitle = GetPropertyValue(options.GlobalOptions, "ApplicationTitle");
-            if (string.IsNullOrEmpty(windowTitle))
-            {
-                windowTitle = assemblyName;
-            }
+    var rootNamespace = GetPropertyValue(options.GlobalOptions, "RootNamespace");
+    var windowTitle = GetPropertyValue(options.GlobalOptions, "ApplicationTitle");
 
-            return string.IsNullOrEmpty(rootNamespace) || string.IsNullOrEmpty(windowTitle) ? null : new ExtensionPropertiesContext(rootNamespace, windowTitle); 
-        });
+    if (string.IsNullOrEmpty(windowTitle))
+    {
+        windowTitle = assemblyName;
+    }
+
+    return string.IsNullOrEmpty(rootNamespace) || string.IsNullOrEmpty(windowTitle) ? null : new ExtensionPropertiesContext(rootNamespace, windowTitle); 
+});
 
         // Combine optionsProvider and compilationProvider
         var iconNameProvider = additionalTextsProvider
@@ -123,7 +120,7 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
                 w.AppendLine("// Retrieve the WindowId that corresponds to hWnd.");
                 w.AppendLine("global::Microsoft.UI.WindowId windowId = global::Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);");
                 w.NewLine();
-                w.AppendLine("// Lastly, retrieve the AppWindow for the current (XAML) WinUI 3 window.");
+                w.AppendLine("// Lastly, retrieve the AppWindow for the current (XAML) WinUI 3 window....");
                 w.AppendLine("global::Microsoft.UI.Windowing.AppWindow appWindow = global::Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);");
                 w.AppendLine($@"appWindow.SetIcon(""{iconName}.ico"");");
                 w.NewLine();
