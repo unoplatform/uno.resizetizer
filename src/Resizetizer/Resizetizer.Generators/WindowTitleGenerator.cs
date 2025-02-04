@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -105,6 +105,7 @@ var extensionPropertiesProvider = optionsProvider.Combine(assemblyNameProvider).
         var builder = CodeBuilder.Create(rootNamespace)
             .AddClass("WindowExtensions")
             .MakeStaticClass()
+            .MakePublicClass()
             .WithSummary(@"Extension methods for the <see cref=""global::Microsoft.UI.Xaml.Window"" /> class.");
 
         builder.AddMethod("SetWindowIcon")
@@ -172,6 +173,7 @@ var extensionPropertiesProvider = optionsProvider.Combine(assemblyNameProvider).
         return CodeBuilder.Create("Uno.Resizetizer")
             .AddClass("__LegacyResizetizerSupport__")
             .WithSummary("This is added to ensure the Uno.Resizetizer namespace is present to avoid breaking any applications.")
+            .MakePublicClass()
             .MakeStaticClass();
     }
 
