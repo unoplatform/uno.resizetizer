@@ -64,7 +64,7 @@
 	<Target Name="UnoGeneratePackageAppxManifest"
 			Condition="('$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_UnoAppxManifest)' !='' Or @(_SkiaManifest) != '')"
 			DependsOnTargets="$(UnoGeneratePackageAppxManifestDependsOnTargets)"
-			BeforeTargets="$(UnoGeneratePackageAppxManifestBeforeTargets);_GenerateWindowUnoIconExtension">
+			BeforeTargets="$(UnoGeneratePackageAppxManifestBeforeTargets);SetUnoImage">
 
 		<GeneratePackageAppxManifest_v0
 				IntermediateOutputPath="$(_UnoIntermediateManifest)"
