@@ -598,7 +598,7 @@
 
 	<Target Name="_AddResizetizerWindowIconExtensions"
 			Condition="'$(_UnoResizetizerIsCompatibleApp)' == 'True' and '$(UnoResizetizerDisableWindowIconExtensions)'!='true'"
-			AfterTargets="_GenerateWindowUnoIconExtension"
+			AfterTargets="SetUnoImage"
 			BeforeTargets="Build;CoreCompile;XamlPreCompile">
 		<ItemGroup Condition="Exists('@(_WindowIconExtension->FullPath())')">
 			<Compile Include="@(_WindowIconExtension)"/>
