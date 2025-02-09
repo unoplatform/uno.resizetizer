@@ -1055,6 +1055,38 @@ namespace Uno.Resizetizer.Tests
 
 				AssertFileContains("not_working.scale-100.png", 0xFF71559B, 2, 6);
 			}
+
+			[Theory]
+			[InlineData("android")]
+			[InlineData("uwp")]
+			[InlineData("ios")]
+			[InlineData("wasm")]
+			[InlineData("wpf")]
+			public void GenerationSkippedOnIncrementalBuild(string platform)
+			{
+				var items = new[]
+				{
+					new TaskItem("images/dotnet_logo.svg", new Dictionary<string, string>
+					{
+						["IsAppIcon"] = bool.TrueString,
+						["ForegroundFile"] = $"images/dotnet_foreground.svg",
+						["Link"] = "appicon",
+						["BackgroundFile"] = $"images/dotnet_background.svg",
+					}),
+				};
+
+				var task = GetNewTask(platform, items);
+				var success = task.Execute();
+				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
+
+				LogErrorEvents.Clear();
+				LogMessageEvents.Clear();
+				task = GetNewTask(platform, items);
+				success = task.Execute();
+				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
+
+				Assert.True(LogMessageEvents.Any(x => x.Message.Contains("Skipping ", StringComparison.OrdinalIgnoreCase)), $"Image generation should have been skipped.");
+			}
 		}
 
 		public class ExecuteForAny : ExecuteForApp
