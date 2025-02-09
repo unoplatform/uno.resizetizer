@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text.RegularExpressions;
 using SkiaSharp;
 
@@ -66,10 +67,19 @@ namespace Uno.Resizetizer
 			string destination = Path.Combine(destinationFolder, $"{fileName}.ico");
 			Directory.CreateDirectory(destinationFolder);
 
+			var (sourceExists, sourceModified) = FileExists(info.Filename);
+			var (destinationExists, destinationModified) = FileExists(destination);
+
 			logger.Log($"Generating ICO: {destination}");
 
 			var tools = new SkiaSharpAppIconTools(info, logger);
 			var dpi = new DpiPath(fileName, 1.0m, size: new SKSize(64, 64));
+
+			if (destinationModified > sourceModified)
+			{
+				logger.Log($"Skipping `{info.Filename}` => `{destination}` file is up to date.");
+				return new ResizedImageInfo { Dpi = dpi, Filename = destination };
+			}
 
 			MemoryStream memoryStream = new MemoryStream();
 			tools.Resize(dpi, destination, () => memoryStream);
@@ -110,6 +120,13 @@ namespace Uno.Resizetizer
 			// Getting everything after '#ff'
 			result = result.Substring(3);
 			return "#" + result;
+		}
+
+		public static (bool Exists, DateTime Modified) FileExists(string path)
+		{
+			var exists = File.Exists(path);
+			var modified = exists ? File.GetLastWriteTimeUtc(path) : DateTime.MinValue;
+			return (exists, modified);
 		}
 	}
 }

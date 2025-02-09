@@ -51,7 +51,7 @@ namespace Uno.Resizetizer
 		void ProcessBackground(List<ResizedImageInfo> results, DirectoryInfo fullIntermediateOutputPath)
 		{
 			var backgroundFile = Info.Filename;
-			var backgroundExists = File.Exists(backgroundFile);
+			var (backgroundExists, backgroundModified) = Utils.FileExists(backgroundFile);
 			var backgroundDestFilename = AppIconName + "_background.png";
 
 			if (backgroundExists)
@@ -67,7 +67,15 @@ namespace Uno.Resizetizer
 			{
 				var dir = Path.Combine(fullIntermediateOutputPath.FullName, dpi.Path);
 				var destination = Path.Combine(dir, backgroundDestFilename);
+				var (destinationExists, destinationModified) = Utils.FileExists(destination);
 				Directory.CreateDirectory(dir);
+
+				if (destinationModified > backgroundModified)
+				{
+					Logger.Log($"Skipping `{backgroundFile}` => `{destination}` file is up to date.");
+					results.Add(new ResizedImageInfo { Dpi = dpi, Filename = destination });
+					continue;
+				}
 
 				Logger.Log($"App Icon Background Part: " + destination);
 
@@ -91,7 +99,7 @@ namespace Uno.Resizetizer
 		void ProcessForeground(List<ResizedImageInfo> results, DirectoryInfo fullIntermediateOutputPath)
 		{
 			var foregroundFile = Info.ForegroundFilename;
-			var foregroundExists = File.Exists(foregroundFile);
+			var (foregroundExists, foregroundModified) = Utils.FileExists(foregroundFile);
 			var foregroundDestFilename = AppIconName + "_foreground.png";
 
 			if (foregroundExists)
@@ -107,7 +115,15 @@ namespace Uno.Resizetizer
 			{
 				var dir = Path.Combine(fullIntermediateOutputPath.FullName, dpi.Path);
 				var destination = Path.Combine(dir, foregroundDestFilename);
+				var (destinationExists, destinationModified) = Utils.FileExists(destination);
 				Directory.CreateDirectory(dir);
+
+				if (destinationModified > foregroundModified)
+				{
+					Logger.Log($"Skipping `{foregroundFile}` => `{destination}` file is up to date.");
+					results.Add(new ResizedImageInfo { Dpi = dpi, Filename = destination });
+					continue;
+				}
 
 				Logger.Log($"App Icon Foreground Part: " + destination);
 
@@ -130,13 +146,20 @@ namespace Uno.Resizetizer
 
 		void ProcessAdaptiveIcon(List<ResizedImageInfo> results, DirectoryInfo fullIntermediateOutputPath)
 		{
-			var adaptiveIconXmlStr = AdaptiveIconDrawableXml
-				.Replace("{name}", AppIconName);
-
 			var dir = Path.Combine(fullIntermediateOutputPath.FullName, "mipmap-anydpi-v26");
 			var adaptiveIconDestination = Path.Combine(dir, AppIconName + ".xml");
 			var adaptiveIconRoundDestination = Path.Combine(dir, AppIconName + "_round.xml");
 			Directory.CreateDirectory(dir);
+
+			if (File.Exists(adaptiveIconDestination) && File.Exists(adaptiveIconRoundDestination))
+			{
+				results.Add(new ResizedImageInfo { Dpi = new DpiPath("mipmap-anydpi-v26", 1), Filename = adaptiveIconDestination });
+				results.Add(new ResizedImageInfo { Dpi = new DpiPath("mipmap-anydpi-v26", 1, "_round"), Filename = adaptiveIconRoundDestination });
+				return;
+			}
+
+			var adaptiveIconXmlStr = AdaptiveIconDrawableXml
+				.Replace("{name}", AppIconName);
 
 			// Write out the adaptive icon xml drawables
 			File.WriteAllText(adaptiveIconDestination, adaptiveIconXmlStr);
