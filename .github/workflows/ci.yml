@@ -13,7 +13,7 @@ on:
       - release/*/*
 
 env:
-  UnoCheck_Version: '1.27.1'
+  UnoCheck_Version: '1.28.3'
 
 jobs:
   build_tool:
@@ -67,8 +67,8 @@ jobs:
       run: |
         dotnet test src/Resizetizer/test/UnitTests/Resizetizer.UnitTests.csproj -c Release -p:PackageVersion=$adjustedPackageVersion -p:Version=${{ steps.gitversion.outputs.assemblySemVer }} --logger GitHubActions --blame-crash --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
-  validation_5_2_nix:
-    name: Validate 5.2
+  validation_5_6_nix:
+    name: Validate 5.6
     needs: build_tool
 
     strategy:
@@ -113,10 +113,10 @@ jobs:
       shell: pwsh
       name: Install .NET Workloads
 
-    - name: Restore 5.2 Sample App (${{ matrix.config }})
+    - name: Restore 5.6 Sample App (${{ matrix.config }})
       shell: pwsh
       run: |
-        cd samples/5.2/Uno52ResizetizerTests
+        cd samples/5.6/Uno52ResizetizerTests
         & dotnet restore
 
     - name: Delete nupkg files
@@ -131,7 +131,7 @@ jobs:
       if: runner.os != 'Windows'
       shell: pwsh
 
-    - name: Validate 5.2 Samples app (${{ matrix.config }})
+    - name: Validate 5.6 Samples app (${{ matrix.config }})
       shell: pwsh
 
       # Skip the macOS release build, the agent does not have 
@@ -139,9 +139,9 @@ jobs:
       if: matrix.os == 'macos-latest' && matrix.config != 'Release'
 
       run: |
-        & dotnet build -c ${{ matrix.config }} -p:RunAOTCompilation=false -p:WasmShellILLinkerEnabled=false /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None -bl:./logs/sample-5.2-${{ matrix.config }}.binlog samples/5.2/Uno52ResizetizerTests/Uno52ResizetizerTests.sln
+        & dotnet build -c ${{ matrix.config }} -p:RunAOTCompilation=false -p:WasmShellILLinkerEnabled=false /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None -bl:./logs/sample-5.6-${{ matrix.config }}.binlog samples/5.6/Uno52ResizetizerTests/Uno52ResizetizerTests.sln
   
-    - name: Validate 5.2 Samples app (${{ matrix.config }} Incremental)
+    - name: Validate 5.6 Samples app (${{ matrix.config }} Incremental)
   
       # Skip the macOS release build, the agent does not have 
       # enough disk space to handle it.
@@ -149,18 +149,18 @@ jobs:
 
       shell: pwsh
       run: |
-        & dotnet build -c ${{ matrix.config }} /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None /bl:.\logs\sample-5.2-${{ matrix.config }}-incremental.binlog samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
+        & dotnet build -c ${{ matrix.config }} /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None /bl:.\logs\sample-5.6-${{ matrix.config }}-incremental.binlog samples\5.6\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: logs_5_2_${{ matrix.config }}_${{ matrix.os }}
+        name: logs_5_6_${{ matrix.config }}_${{ matrix.os }}
         path: .\logs
 
 
-  validation_5_2_win:
-    name: Validate 5.2 Samples (msbuild)
+  validation_5_6_win:
+    name: Validate 5.6 Samples (msbuild)
     needs: build_tool   
     runs-on: windows-latest
     steps:
@@ -180,11 +180,11 @@ jobs:
         name: NuGet
         path: samples/packages
         
-    - name: Validate 5.2 Sample app (Debug - DesignTimeBuild)
+    - name: Validate 5.6 Sample app (Debug - DesignTimeBuild)
       run: |
         $installationPath = vswhere -latest -property installationPath
         $designTimeTarget = Join-Path $installationPath -ChildPath "\MSBuild\Microsoft\VisualStudio\Managed\Microsoft.CSharp.DesignTime.targets"
-        $sampleSolution = 'samples\5.2\Uno52ResizetizerTests\Uno52ResizetizerTests.sln'
+        $sampleSolution = 'samples\5.6\Uno52ResizetizerTests\Uno52ResizetizerTests.sln'
         $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
 
         dotnet restore $sampleSolution
@@ -200,7 +200,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: logs_5_2
+        name: logs_5_6
         path: .\logs
         
   # This step is only used to add a required check for the PR
@@ -209,8 +209,8 @@ jobs:
     runs-on: windows-latest
     needs:
       - build_tool
-      - validation_5_2_win
-      - validation_5_2_nix
+      - validation_5_6_win
+      - validation_5_6_nix
 
     steps:
       - name: Checkout
@@ -222,8 +222,8 @@ jobs:
     runs-on: windows-latest
     needs:
       - build_tool
-      - validation_5_2_win
-      - validation_5_2_nix
+      - validation_5_6_win
+      - validation_5_6_nix
     steps:
       - name: Checkout
         uses: actions/checkout@v4
