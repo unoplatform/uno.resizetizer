@@ -41,7 +41,7 @@
     </UnoFeatures>
   </PropertyGroup>
 
-  <Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'=='net8.0-windows10.0.19041'">
+  <Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041'">
     <Message Text="Validating local assets in '$(OutputPath)'" Importance="high" />
     <Error Condition="!Exists('$(OutputPath)\Assets\Icons\back.png')" Text="back.png file wasn't created." />
     <Error Condition="!Exists('$(OutputPath)\Assets\Icons\back.scale-100.png')" Text="back.scale-100.png file wasn't created." />
