@@ -247,42 +247,55 @@ jobs:
           name: NuGet-Signed
           path: .\artifacts
           
+ # Publish dev packages to uno feed and nuget.org
   publish_dev:
     name: Publish Dev
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-    environment: Development
-    runs-on: windows-latest
-    needs:
-      - sign
+    runs-on: ubuntu-latest
+    needs: sign
 
     steps:
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: NuGet-Signed
-          path: artifacts
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: "Uno Feed Publish"
+      uses: ./.github/actions/ci/nuget-uno-publish
+      with:
+        token: ${{ secrets.UNO_NUGET_FEED_API_KEY }}
+    - name: "nuget.org Publish"
+      uses: ./.github/actions/ci/nuget-org-publish
+      with:
+        token: ${{ secrets.NUGET_ORG_API_KEY }}
 
-      - name: NuGet Push
-        shell: pwsh
-        run: |
-          dotnet nuget push artifacts\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_ORG_API_KEY }}
-
-  publish_prod:
-    name: Publish Prod
+  # Publish release packages to uno feed
+  publish_release_uno:
+    name: Publish Production
     if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/') }}
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     environment: Stable
-    needs:
-      - sign
+    needs: sign
 
     steps:
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: NuGet-Signed
-          path: artifacts
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: "Uno Feed Publish"
+      uses: ./.github/actions/ci/nuget-uno-publish
+      with:
+        token: ${{ secrets.UNO_NUGET_FEED_API_KEY }}
 
-      - name: NuGet Push
-        shell: pwsh
-        run: |
-          dotnet nuget push artifacts\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_ORG_API_KEY }}
+  # Publish release packages to nuget.org
+  publish_release_nuget_org:
+    name: Publish Production
+    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/') }}
+    runs-on: ubuntu-latest
+    environment: Stable
+    needs: publish_release_uno
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: "Uno Feed Publish"
+      uses: ./.github/actions/ci/nuget-uno-publish
+      with:
+        token: ${{ secrets.NUGET_ORG_API_KEY }}
+    - name: "Tag Release"
+      uses: ./.github/actions/ci/tag-release
