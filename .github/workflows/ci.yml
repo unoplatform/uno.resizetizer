@@ -30,22 +30,16 @@ jobs:
       with:
         dotnet-version: '9.0.100'
 
-    - name: Setup GitVersion
-      uses: gittools/actions/gitversion/setup@v1.1.1
+    - uses: dotnet/nbgv@f088059084cb5d872e9d1a994433ca6440c2bf72 # v0.4.2
+      id: nbgv
       with:
-        versionSpec: '5.10.3'
-
-    - name: GitVersion
-      id: gitversion
-      uses: gittools/actions/gitversion/execute@v1.1.1
-      with:
-        useConfigFile: true
-        configFilePath: gitversion.yml
+        toolVersion: 3.6.139
+        setAllVars: true
 
     - name: Adjust msbuild task name
       run: |
         cd src
-        gci -r -File -Include *.cs,*.targets,*.props,*.csproj | foreach-object { $a = $_.fullname; ( get-content $a ) | foreach-object { $_ -replace "v0","${{steps.gitversion.outputs.sha}}" }  | set-content $a }
+        gci -r -File -Include *.cs,*.targets,*.props,*.csproj | foreach-object { $a = $_.fullname; ( get-content $a ) | foreach-object { $_ -replace "v0","${{ steps.nbgv.outputs.GitCommitId }}" }  | set-content $a }
 
     - run: |
         & dotnet tool update --global uno.check --version ${{ env.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
@@ -54,18 +48,25 @@ jobs:
 
     - name: Build - CI
       run: |
-        $adjustedPackageVersion="${{ steps.gitversion.outputs.semVer }}".ToLower();
-        dotnet pack -c Release -p:PackageVersion=$adjustedPackageVersion -p:Version=${{ steps.gitversion.outputs.assemblySemVer }} -o .\artifacts src/Resizetizer/src/Resizetizer.csproj
+        $adjustedPackageVersion="${{ steps.nbgv.outputs.SemVer2 }}".ToLower();
+        dotnet pack -c Release -p:PackageVersion=$adjustedPackageVersion -p:Version=${{ steps.nbgv.outputs.SimpleVersion }} -o .\artifacts src/Resizetizer/src/Resizetizer.csproj /bl:.\artifacts-logs\pack.binlog
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: NuGet
         path: .\artifacts
+
+    - name: Upload Logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: logs
+        path: .\artifacts-logs
     
     - name: Run UnitTests
       run: |
-        dotnet test src/Resizetizer/test/UnitTests/Resizetizer.UnitTests.csproj -c Release -p:PackageVersion=$adjustedPackageVersion -p:Version=${{ steps.gitversion.outputs.assemblySemVer }} --logger GitHubActions --blame-crash --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+        dotnet test src/Resizetizer/test/UnitTests/Resizetizer.UnitTests.csproj -c Release -p:PackageVersion=$adjustedPackageVersion -p:Version=${{ steps.nbgv.outputs.SimpleVersion }} --logger GitHubActions --blame-crash --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
   validation_5_6_nix:
     name: Validate 5.6
@@ -253,42 +254,55 @@ jobs:
           name: NuGet-Signed
           path: .\artifacts
           
+ # Publish dev packages to uno feed and nuget.org
   publish_dev:
     name: Publish Dev
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-    environment: Development
-    runs-on: windows-latest
-    needs:
-      - sign
+    runs-on: ubuntu-latest
+    needs: sign
 
     steps:
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: NuGet-Signed
-          path: artifacts
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: "Uno Feed Publish"
+      uses: ./.github/actions/ci/nuget-uno-publish
+      with:
+        token: ${{ secrets.UNO_NUGET_FEED_API_KEY }}
+    - name: "nuget.org Publish"
+      uses: ./.github/actions/ci/nuget-org-publish
+      with:
+        token: ${{ secrets.NUGET_ORG_API_KEY }}
 
-      - name: NuGet Push
-        shell: pwsh
-        run: |
-          dotnet nuget push artifacts\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_ORG_API_KEY }}
-
-  publish_prod:
-    name: Publish Prod
+  # Publish release packages to uno feed
+  publish_release_uno:
+    name: Publish Production
     if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/') }}
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     environment: Stable
-    needs:
-      - sign
+    needs: sign
 
     steps:
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: NuGet-Signed
-          path: artifacts
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: "Uno Feed Publish"
+      uses: ./.github/actions/ci/nuget-uno-publish
+      with:
+        token: ${{ secrets.UNO_NUGET_FEED_API_KEY }}
 
-      - name: NuGet Push
-        shell: pwsh
-        run: |
-          dotnet nuget push artifacts\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_ORG_API_KEY }}
+  # Publish release packages to nuget.org
+  publish_release_nuget_org:
+    name: Publish Production
+    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/') }}
+    runs-on: ubuntu-latest
+    environment: Stable
+    needs: publish_release_uno
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: "Uno Feed Publish"
+      uses: ./.github/actions/ci/nuget-uno-publish
+      with:
+        token: ${{ secrets.NUGET_ORG_API_KEY }}
+    - name: "Tag Release"
+      uses: ./.github/actions/ci/tag-release
