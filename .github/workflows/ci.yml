@@ -30,22 +30,16 @@ jobs:
       with:
         dotnet-version: '9.0.100'
 
-    - name: Setup GitVersion
-      uses: gittools/actions/gitversion/setup@v1.1.1
+    - uses: dotnet/nbgv@f088059084cb5d872e9d1a994433ca6440c2bf72 # v0.4.2
+      id: nbgv
       with:
-        versionSpec: '5.10.3'
-
-    - name: GitVersion
-      id: gitversion
-      uses: gittools/actions/gitversion/execute@v1.1.1
-      with:
-        useConfigFile: true
-        configFilePath: gitversion.yml
+        toolVersion: 3.6.139
+        setAllVars: true
 
     - name: Adjust msbuild task name
       run: |
         cd src
-        gci -r -File -Include *.cs,*.targets,*.props,*.csproj | foreach-object { $a = $_.fullname; ( get-content $a ) | foreach-object { $_ -replace "v0","${{steps.gitversion.outputs.sha}}" }  | set-content $a }
+        gci -r -File -Include *.cs,*.targets,*.props,*.csproj | foreach-object { $a = $_.fullname; ( get-content $a ) | foreach-object { $_ -replace "v0","${{ steps.nbgv.outputs.GitCommitId }}" }  | set-content $a }
 
     - run: |
         & dotnet tool update --global uno.check --version ${{ env.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
@@ -54,8 +48,8 @@ jobs:
 
     - name: Build - CI
       run: |
-        $adjustedPackageVersion="${{ steps.gitversion.outputs.semVer }}".ToLower();
-        dotnet pack -c Release -p:PackageVersion=$adjustedPackageVersion -p:Version=${{ steps.gitversion.outputs.assemblySemVer }} -o .\artifacts src/Resizetizer/src/Resizetizer.csproj
+        $adjustedPackageVersion="${{ steps.nbgv.outputs.SemVer2 }}".ToLower();
+        dotnet pack -c Release -p:PackageVersion=$adjustedPackageVersion -p:Version=${{ steps.nbgv.outputs.SimpleVersion }} -o .\artifacts src/Resizetizer/src/Resizetizer.csproj
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
@@ -65,7 +59,7 @@ jobs:
     
     - name: Run UnitTests
       run: |
-        dotnet test src/Resizetizer/test/UnitTests/Resizetizer.UnitTests.csproj -c Release -p:PackageVersion=$adjustedPackageVersion -p:Version=${{ steps.gitversion.outputs.assemblySemVer }} --logger GitHubActions --blame-crash --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+        dotnet test src/Resizetizer/test/UnitTests/Resizetizer.UnitTests.csproj -c Release -p:PackageVersion=$adjustedPackageVersion -p:Version=${{ steps.nbgv.outputs.SimpleVersion }} --logger GitHubActions --blame-crash --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
   validation_5_6_nix:
     name: Validate 5.6

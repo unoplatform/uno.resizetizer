@@ -22,7 +22,7 @@
 
 	<PropertyGroup>
 		<AssemblyName>Uno.Resizetizer_v0</AssemblyName>		
-		<RepositoryCommit>$(GITVERSION_SHA)</RepositoryCommit>
+		<RepositoryCommit>$(NBGV_GitCommitId)</RepositoryCommit>
 		<PackageId>Uno.Resizetizer</PackageId>
 		<Description>Uno Platform package support for images.</Description>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
