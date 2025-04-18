@@ -49,13 +49,20 @@ jobs:
     - name: Build - CI
       run: |
         $adjustedPackageVersion="${{ steps.nbgv.outputs.SemVer2 }}".ToLower();
-        dotnet pack -c Release -p:PackageVersion=$adjustedPackageVersion -p:Version=${{ steps.nbgv.outputs.SimpleVersion }} -o .\artifacts src/Resizetizer/src/Resizetizer.csproj
+        dotnet pack -c Release -p:PackageVersion=$adjustedPackageVersion -p:Version=${{ steps.nbgv.outputs.SimpleVersion }} -o .\artifacts src/Resizetizer/src/Resizetizer.csproj /bl:.\artifacts-logs\pack.binlog
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: NuGet
         path: .\artifacts
+
+    - name: Upload Logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: NuGet
+        path: .\artifacts-logs
     
     - name: Run UnitTests
       run: |
