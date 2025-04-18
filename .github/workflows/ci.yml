@@ -265,11 +265,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: "Uno Feed Publish"
-      uses: ./.github/actions/ci/nuget-uno-publish
+      uses: ./.github/actions/nuget-uno-publish
       with:
         token: ${{ secrets.UNO_NUGET_FEED_API_KEY }}
     - name: "nuget.org Publish"
-      uses: ./.github/actions/ci/nuget-org-publish
+      uses: ./.github/actions/nuget-org-publish
       with:
         token: ${{ secrets.NUGET_ORG_API_KEY }}
 
@@ -285,7 +285,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: "Uno Feed Publish"
-      uses: ./.github/actions/ci/nuget-uno-publish
+      uses: ./.github/actions/nuget-uno-publish
       with:
         token: ${{ secrets.UNO_NUGET_FEED_API_KEY }}
 
@@ -301,8 +301,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: "Uno Feed Publish"
-      uses: ./.github/actions/ci/nuget-uno-publish
+      uses: ./.github/actions/nuget-uno-publish
       with:
         token: ${{ secrets.NUGET_ORG_API_KEY }}
     - name: "Tag Release"
-      uses: ./.github/actions/ci/tag-release
+      uses: ./.github/actions/tag-release
