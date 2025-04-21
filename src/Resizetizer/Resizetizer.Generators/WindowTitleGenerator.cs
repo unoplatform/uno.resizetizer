@@ -43,7 +43,7 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
             .Select((additionalText, cancellationToken) =>
             {
                 var sourceText = additionalText.GetText(cancellationToken);
-                return ParseFile(sourceText.ToString());
+                return FindAppIconFile(sourceText.ToString());
             })
             .Where(x => !string.IsNullOrEmpty(x))
             .Select((x, _) => Path.GetFileNameWithoutExtension(x));
@@ -73,7 +73,7 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
 
     internal record ExtensionGenerationContext(string RootNamespace, string IconName, string WindowTitle);
 
-    private static string ParseFile(string content)
+    private static string FindAppIconFile(string content)
     {
         // Split the content into lines
         var lines = content.Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries);
