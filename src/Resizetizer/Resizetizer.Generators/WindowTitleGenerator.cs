@@ -49,14 +49,20 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
             .Select((x, _) => Path.GetFileNameWithoutExtension(x));
 
         // Define the source generator logic
-        var sourceCodeProvider = iconNameProvider.Combine(extensionPropertiesProvider).Select((x, _) =>
-        {
-            var (iconName, coreContext) = x;
-            if (string.IsNullOrEmpty(iconName) || string.IsNullOrEmpty(coreContext?.RootNamespace) || string.IsNullOrEmpty(coreContext?.WindowTitle))
-                return null;
+        var sourceCodeProvider = iconNameProvider
+            .Combine(extensionPropertiesProvider)
+            .Select((x, _) =>
+            {
+                var (iconName, coreContext) = x;
+                if (string.IsNullOrEmpty(iconName) || string.IsNullOrEmpty(coreContext?.RootNamespace) || 
+                string.IsNullOrEmpty(coreContext?.WindowTitle))
+                {
+                    return null;
+                }
 
-            return new ExtensionGenerationContext(coreContext.RootNamespace, iconName, coreContext.WindowTitle);
-        }).Where(result => result != null);
+                return new ExtensionGenerationContext(coreContext.RootNamespace, iconName, coreContext.WindowTitle);
+
+            }).Where(result => result != null);
 
         // Register the source generator logic to add the generated source code
         context.RegisterSourceOutput(sourceCodeProvider, (sourceContext, extensionContext) =>
