@@ -22,20 +22,20 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
         var assemblyNameProvider = context.CompilationProvider.Select((compilation, _) => compilation.Assembly.Name);
         var additionalTextsProvider = context.AdditionalTextsProvider;
 
-var extensionPropertiesProvider = optionsProvider.Combine(assemblyNameProvider).Select((x, cancellationToken) =>
-{
-    var (options, assemblyName) = x;
+        var extensionPropertiesProvider = optionsProvider.Combine(assemblyNameProvider).Select((x, cancellationToken) =>
+        {
+            var (options, assemblyName) = x;
 
-    var rootNamespace = GetPropertyValue(options.GlobalOptions, "RootNamespace");
-    var windowTitle = GetPropertyValue(options.GlobalOptions, "ApplicationTitle");
+            var rootNamespace = GetPropertyValue(options.GlobalOptions, "RootNamespace");
+            var windowTitle = GetPropertyValue(options.GlobalOptions, "ApplicationTitle");
 
-    if (string.IsNullOrEmpty(windowTitle))
-    {
-        windowTitle = assemblyName;
-    }
+            if (string.IsNullOrEmpty(windowTitle))
+            {
+                windowTitle = assemblyName;
+            }
 
-    return string.IsNullOrEmpty(rootNamespace) || string.IsNullOrEmpty(windowTitle) ? null : new ExtensionPropertiesContext(rootNamespace, windowTitle); 
-});
+            return string.IsNullOrEmpty(rootNamespace) || string.IsNullOrEmpty(windowTitle) ? null : new ExtensionPropertiesContext(rootNamespace, windowTitle);
+        });
 
         // Combine optionsProvider and compilationProvider
         var iconNameProvider = additionalTextsProvider
