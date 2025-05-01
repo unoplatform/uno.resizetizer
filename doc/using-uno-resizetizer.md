@@ -6,8 +6,6 @@ uid: Uno.Resizetizer.GettingStarted
 
 Uno.Resizetizer is a set of MSBuild tasks designed to manage an application's assets. With this package, there's no need to worry about creating and maintaining various image sizes or setting up a splash screen. Simply, provide an SVG file, and the tool will handle everything else.
 
-As of Uno Platform 4.8, the Uno.Resizetizer package is now included in the solution template by default. However, if you're working with an application created in a previous version of Uno Platform, you can still utilize the package by following the steps outlined below.
-
 > [!TIP]
 > To create an app, make sure to visit [our getting started tutorials](xref:Uno.GetStarted).
 
