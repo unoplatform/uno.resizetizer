@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
@@ -44,7 +44,7 @@
 		<PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="$(_SkiaSharpVersion)" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="$(_SkiaSharpVersion)" />
 		<PackageReference Include="SkiaSharp.HarfBuzz" Version="$(_SkiaSharpVersion)" />
-		<PackageReference Include="ExCSS" Version="4.2.3"  />
+		<PackageReference Include="ExCSS" Version="4.2.3" />
 		<PackageReference Include="Svg.Skia" Version="$(SvgSkiaPackageVersion)" />
 		<PackageReference Include="Svg.Custom" Version="$(SvgSkiaPackageVersion)" />
 		<PackageReference Include="Svg.Model" Version="$(SvgSkiaPackageVersion)" />
@@ -72,23 +72,23 @@
 		<None Include="$(UnoNuspecDirectory)Uno.Resizetizer.windows.skia.targets" LinkBase="build" Pack="true" PackagePath="build/$(PackageId).windows.skia.targets" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\Resizetizer.Generators\Resizetizer.Generators.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+		</ProjectReference>
+	</ItemGroup>
+
 	<Import Project="../Directory.UnoMetadata.targets" />
 
 	<!-- Gets the Runtime Assets that need to be copied to the NuGet -->
-	<Target Name="GatherRuntimeAssets"
-		BeforeTargets="PackNuGetLockFiles;CopyAssetsForSampleProject">
+	<Target Name="GatherRuntimeAssets" BeforeTargets="PackNuGetLockFiles;CopyAssetsForSampleProject">
 		<ItemGroup>
-			<_RuntimeAssets Include="@(RuntimeTargetsCopyLocalItems)"
-				DestinationSubDirectory="%(RuntimeTargetsCopyLocalItems.DestinationSubDirectory)"
-
-				OutputDirectory="$([System.Text.RegularExpressions.Regex]::Replace(%(RuntimeTargetsCopyLocalItems.RuntimeIdentifier), '^(linux|win)-', ''))"
-				Condition="%(RuntimeTargetsCopyLocalItems.RuntimeIdentifier) != 'win' AND %(RuntimeTargetsCopyLocalItems.RuntimeIdentifier) != 'unix'" />
+			<_RuntimeAssets Include="@(RuntimeTargetsCopyLocalItems)" DestinationSubDirectory="%(RuntimeTargetsCopyLocalItems.DestinationSubDirectory)" OutputDirectory="$([System.Text.RegularExpressions.Regex]::Replace(%(RuntimeTargetsCopyLocalItems.RuntimeIdentifier), '^(linux|win)-', ''))" Condition="%(RuntimeTargetsCopyLocalItems.RuntimeIdentifier) != 'win' AND %(RuntimeTargetsCopyLocalItems.RuntimeIdentifier) != 'unix'" />
 		</ItemGroup>
 	</Target>
 
 	<!-- Updates the NuGet assets with the output assemblies and Runtime assets -->
-	<Target Name="PackNuGetLockFiles"
-			BeforeTargets="DownloadAndSetPackageIcon;Pack;GenerateNuspec">
+	<Target Name="PackNuGetLockFiles" BeforeTargets="DownloadAndSetPackageIcon;Pack;GenerateNuspec">
 		<ItemGroup>
 			<None Include="@(ReferenceCopyLocalPaths)" Pack="true" PackagePath="$(BuildOutputTargetFolder)/$(TargetFramework)" />
 			<None Include="@(_RuntimeAssets)" Pack="true" PackagePath="$(BuildOutputTargetFolder)/$(TargetFramework)/%(_RuntimeAssets.DestinationSubDirectory)" />
@@ -96,14 +96,9 @@
 	</Target>
 
 	<!-- Copies the generated NuGet for use with the sample apps -->
-	<Target Name="ResizetizerIntegrationTests"
-		AfterTargets="Pack">
+	<Target Name="ResizetizerIntegrationTests" AfterTargets="Pack">
 		<RemoveDir Directories="$(SamplesPackageDirectory)" />
-		<Copy SourceFiles="@(NuGetPackOutput)"
-			DestinationFolder="$(SamplesPackageDirectory)"
-			SkipUnchangedFiles="false"
-			OverwriteReadOnlyFiles="true"
-			Condition="%(Extension) == '.nupkg'" />
+		<Copy SourceFiles="@(NuGetPackOutput)" DestinationFolder="$(SamplesPackageDirectory)" SkipUnchangedFiles="false" OverwriteReadOnlyFiles="true" Condition="%(Extension) == '.nupkg'" />
 	</Target>
 
 	<!-- Deletes the local cache files for the NuGet to assist in Dev/Testing -->
@@ -113,10 +108,14 @@
 			<ToDelete Include="$(LocalArtifactStagingDirectory)\$(PackageId).$(GitBaseVersionMajor).$(GitBaseVersionMinor).*" />
 		</ItemGroup>
 		<Delete Files="@(ToDelete)" />
-		<Exec Command="rd &quot;$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())&quot; /q /s"
-			Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') And '$(OS)' == 'Windows_NT'" />
-		<Exec Command="rm -rf &quot;$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())&quot;"
-			Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') And '$(OS)' != 'Windows_NT'" />
+		<Exec Command="rd &quot;$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())&quot; /q /s" Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') And '$(OS)' == 'Windows_NT'" />
+		<Exec Command="rm -rf &quot;$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())&quot;" Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') And '$(OS)' != 'Windows_NT'" />
+	</Target>
+
+	<Target Name="BundleGenerators" BeforeTargets="Pack;_LoadPackInputItems;_GetPackageFiles">
+		<ItemGroup>
+			<None Include="..\Resizetizer.Generators\bin\$(Configuration)\netstandard2.0\Uno.Resizetizer.Generators.dll" Pack="true" PackagePath="analyzers\dotnet\cs\Uno.Resizetizer.Generators.dll" Visible="false" />
+		</ItemGroup>
 	</Target>
 
 </Project>
