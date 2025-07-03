@@ -275,7 +275,7 @@ jobs:
 
   # Publish release packages to uno feed
   publish_release_uno:
-    name: Publish Production
+    name: Publish Internal Feed
     if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/') }}
     runs-on: ubuntu-latest
     environment: Stable
