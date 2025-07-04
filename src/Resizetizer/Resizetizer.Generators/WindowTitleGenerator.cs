@@ -17,10 +17,15 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+
         // Get the AnalyzerConfigOptionsProvider
         var optionsProvider = context.AnalyzerConfigOptionsProvider;
         var assemblyNameProvider = context.CompilationProvider.Select((compilation, _) => compilation.Assembly.Name);
         var additionalTextsProvider = context.AdditionalTextsProvider;
+
+        // To avoid breaking existing applications, we add a legacy namespace compat class.
+        // We make sure to add it for all compilation (including for HR compilations!) without any filter (other than assembly name to reduce load).
+        context.RegisterSourceOutput(assemblyNameProvider, (srcCtx, _) => AddSource(srcCtx, GenerateLegacyNamespaceCompat()));
 
         var extensionPropertiesProvider = optionsProvider.Combine(assemblyNameProvider).Select((x, cancellationToken) =>
         {
@@ -69,7 +74,6 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
         {
             if (!string.IsNullOrEmpty(extensionContext.WindowTitle))
             {
-                AddSource(sourceContext, GenerateLegacyNamespaceCompat());
                 AddSource(sourceContext, GenerateWindowTitleExtension(extensionContext.RootNamespace, extensionContext.IconName, extensionContext.WindowTitle));
             }
         });
