@@ -24,10 +24,11 @@
 			Name="GenerateUnoSplashWindowsSkia"
 			BeforeTargets="ProcessUnoSplashScreens"
 			Condition="'$(DesignTimeBuild)' != 'True' And '@(UnoSplashScreen)' != ''"
+			Inputs="@(UnoSplashScreen)"
 			Outputs="$(_UnoSplashStampFile)">
 
 		<CallTarget Targets="GenerateUnoSplashScreens" />
-		
+
 		<!-- UWP / WinUI -->
 		<ItemGroup
 				Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
@@ -38,6 +39,8 @@
 				IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
 				UnoSplashScreen="@(UnoWindowsSplash)"
 		/>
+
+		<CallTarget Targets="PostGenerateUnoSplashScreens" />
 	</Target>
 
 	<Target Name="ProcessUnoSplashScreens"
