@@ -1,4 +1,5 @@
-﻿using Microsoft.Build.Framework;
+﻿#nullable enable
+using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using System;
 using System.Collections.Concurrent;
