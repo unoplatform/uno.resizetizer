@@ -263,7 +263,7 @@ jobs:
         shell: pwsh
         run: >
           ./sign code azure-key-vault
-          artifacts\NuGet\*.nupkg
+          artifacts/**/*.nupkg
           --publisher-name "Uno.Resizetizer"
           --description "Uno.Resizetizer"
           --description-url "https://github.com/${{ env.GITHUB_REPOSITORY }}"
