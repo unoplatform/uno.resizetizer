@@ -62,6 +62,12 @@ namespace Uno.Resizetizer
 #endif
 			TargetPlatform = PlatformType;
 			_TargetFramework = TargetFramework;
+
+			if (PlatformType is null)
+			{
+				Log.LogWarning("PlatformType is null.");
+			}
+
 			var images = ResizeImageInfo.Parse(Images);
 
 			var dpis = DpiPath.GetDpis();
@@ -182,9 +188,13 @@ namespace Uno.Resizetizer
 
 				AndroidAppIcons = [.. androidAppIcons];
 			}
-			else if (PlatformType == "ios" || (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && TargetFramework.Equals("desktop", StringComparison.InvariantCultureIgnoreCase)))
+			else if (PlatformType == "ios" ||
+			         (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && "desktop".Equals(TargetFramework, StringComparison.InvariantCultureIgnoreCase)))
 			{
-				var logMessage = !TargetFramework.Equals("desktop", StringComparison.InvariantCultureIgnoreCase) ? "iOS Icon Assets Generator" : "MacOS Icon Assets Generator";
+				var logMessage = "desktop".Equals(TargetFramework, StringComparison.InvariantCultureIgnoreCase) ?
+					"MacOS Icon Assets Generator" :
+					"iOS Icon Assets Generator";
+
 				LogDebugMessage(logMessage);
 
 				var appleAssetGen = new AppleIconAssetsGenerator(img, appIconName, IntermediateOutputPath, appIconDpis, this);
