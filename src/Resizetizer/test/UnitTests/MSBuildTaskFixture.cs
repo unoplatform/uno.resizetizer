@@ -10,7 +10,7 @@ namespace Uno.Resizetizer.Tests
 	public abstract class MSBuildTaskTestFixture<TTask> : BaseTest, IBuildEngine
 		where TTask : Microsoft.Build.Framework.ITask, new()
 	{
-		private readonly ITestOutputHelper? _testOutputHelper;
+		private readonly ITestOutputHelper _testOutputHelper;
 
 		protected MSBuildTaskTestFixture() { }
 
