@@ -49,7 +49,8 @@ namespace Uno.Resizetizer
 			if (destinationModified > sourceModified)
 			{
 				Logger.Log($"Skipping `{Info.Filename}` => `{appIconSetContentsFile}` file is up to date.");
-				return new List<ResizedImageInfo> {
+				return new List<ResizedImageInfo>
+				{
 					new ResizedImageInfo { Dpi = new DpiPath("", 1), Filename = appIconSetContentsFile }
 				};
 			}
@@ -99,7 +100,8 @@ namespace Uno.Resizetizer
 			//File.WriteAllText(assetContentsFile, infoJsonProp.ToString());
 			File.WriteAllText(appIconSetContentsFile, appIconContentsJson.ToJsonString(options));
 
-			return new List<ResizedImageInfo> {
+			return new List<ResizedImageInfo>
+			{
 				//new ResizedImageInfo { Dpi = new DpiPath("", 1), Filename = assetContentsFile },
 				new ResizedImageInfo { Dpi = new DpiPath("", 1), Filename = appIconSetContentsFile }
 			};
