@@ -19,6 +19,7 @@ namespace Uno.Resizetizer
 		[Required]
 		public string IntermediateOutputPath { get; set; }
 
+		[Required]
 		public string IntermediateOutputIconPath { get; set; }
 
 		public string PWAManifestPath { get; set; } = string.Empty;
