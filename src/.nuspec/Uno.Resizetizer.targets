@@ -451,6 +451,14 @@
 	<!-- This target is meant to be called by platform specific splash screen targets -->
 	<Target Name="GenerateUnoSplashScreens"
 			Condition="'@(UnoSplashScreen)' != ''">
+		<!-- Resource used by (toolkit) ExtendedSplashScreen -->
+		<PropertyGroup>
+			<_UnoSplashDef>$(IntermediateOutputPath)UnoSplash.def</_UnoSplashDef>
+		</PropertyGroup>
+		<WriteLinesToFile File="$(_UnoSplashDef)" Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);ForegroundScale=%(ForegroundScale)')" Overwrite="true" WriteOnlyWhenDifferent="true" />
+		<ItemGroup>
+			<EmbeddedResource Include="$(_UnoSplashDef)" LogicalName="UnoSplash.def" />
+		</ItemGroup>
 
 		<!--If not Windows-->
 		<ItemGroup Condition="$(_UnoResizetizerIsWasmApp) == 'True' Or $(_UnoResizetizerIsSkiaApp) == 'True' or '$(_UnoResizetizerIsAndroidApp)' == 'True' or ('$(_UnoResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst')">
