@@ -1,4 +1,5 @@
-﻿using Microsoft.Build.Framework;
+﻿#nullable enable
+using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using System;
 using System.Collections.Concurrent;
@@ -15,36 +16,35 @@ namespace Uno.Resizetizer
 		[Required]
 		public string PlatformType { get; set; } = "android";
 
-		[Required]
-		public string IntermediateOutputPath { get; set; }
+		[Required] public string IntermediateOutputPath { get; set; } = string.Empty;
 
-		public string IntermediateOutputIconPath { get; set; }
+		[Required] public string IntermediateOutputIconPath { get; set; } = string.Empty;
 
 		public string PWAManifestPath { get; set; } = string.Empty;
 
-		public string[] InputsFile { get; set; }
+		public string[]? InputsFile { get; set; }
 
-		public string TargetFramework { get; set; }
+		public string? TargetFramework { get; set; }
 
-		internal static string _TargetFramework { get; set; }
+		internal static string? _TargetFramework { get; set; }
 
-		internal static string TargetPlatform { get; private set; }
+		internal static string? TargetPlatform { get; private set; }
 
-		public ITaskItem[] Images { get; set; }
-
-		[Output]
-		public ITaskItem[] CopiedResources { get; set; }
+		public ITaskItem[]? Images { get; set; }
 
 		[Output]
-		public ITaskItem GeneratedIconPath { get; set; }
+		public ITaskItem[]? CopiedResources { get; set; }
 
 		[Output]
-		public ITaskItem[] AndroidAppIcons { get; set; }
+		public ITaskItem? GeneratedIconPath { get; set; }
 
 		[Output]
-		public string PwaGeneratedManifestPath { get; set; }
+		public ITaskItem[]? AndroidAppIcons { get; set; }
 
-		public string IsMacEnabled { get; set; }
+		[Output]
+		public string? PwaGeneratedManifestPath { get; set; }
+
+		public string? IsMacEnabled { get; set; }
 
 		public ILogger Logger => this;
 
@@ -61,6 +61,12 @@ namespace Uno.Resizetizer
 #endif
 			TargetPlatform = PlatformType;
 			_TargetFramework = TargetFramework;
+
+			if (PlatformType is null)
+			{
+				Log.LogWarning("PlatformType is null.");
+			}
+
 			var images = ResizeImageInfo.Parse(Images);
 
 			var dpis = DpiPath.GetDpis();
@@ -155,7 +161,7 @@ namespace Uno.Resizetizer
 
 		void ProcessAppIcon(ResizeImageInfo img, ConcurrentBag<ResizedImageInfo> resizedImages)
 		{
-			var appIconName = img.OutputName;
+			string appIconName = img.OutputName;
 
 			// Generate the actual bitmap app icons themselves
 			var appIconDpis = DpiPath.GetAppIconDpis(PlatformType, appIconName);
@@ -181,16 +187,20 @@ namespace Uno.Resizetizer
 
 				AndroidAppIcons = [.. androidAppIcons];
 			}
-			else if (PlatformType == "ios" || (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && TargetFramework.Equals("desktop", StringComparison.InvariantCultureIgnoreCase)))
+			else if (PlatformType == "ios" ||
+			         (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && "desktop".Equals(TargetFramework, StringComparison.InvariantCultureIgnoreCase)))
 			{
-				var logMessage = !TargetFramework.Equals("desktop", StringComparison.InvariantCultureIgnoreCase) ? "iOS Icon Assets Generator" : "MacOS Icon Assets Generator";
+				var logMessage = "desktop".Equals(TargetFramework, StringComparison.InvariantCultureIgnoreCase) ?
+					"MacOS Icon Assets Generator" :
+					"iOS Icon Assets Generator";
+
 				LogDebugMessage(logMessage);
 
 				var appleAssetGen = new AppleIconAssetsGenerator(img, appIconName, IntermediateOutputPath, appIconDpis, this);
 
-				var assetsGenerated = appleAssetGen.Generate();
+				IEnumerable<ResizedImageInfo> assetsGenerated = appleAssetGen.Generate();
 
-				foreach (var assetGenerated in assetsGenerated)
+				foreach (ResizedImageInfo assetGenerated in assetsGenerated)
 				{
 					resizedImages.Add(assetGenerated);
 				}
@@ -233,8 +243,8 @@ namespace Uno.Resizetizer
 				var destination = Resizer.GetFileDestination(img, dpi, iconPath)
 					.Replace("{name}", appIconName);
 
-				var (sourceExists, sourceModified) = Utils.FileExists(img.Filename);
-				var (destinationExists, destinationModified) = Utils.FileExists(destination);
+				var (_, sourceModified) = Utils.FileExists(img.Filename);
+				var (_, destinationModified) = Utils.FileExists(destination);
 
 				LogDebugMessage($"App Icon Destination: " + destination);
 
@@ -288,8 +298,8 @@ namespace Uno.Resizetizer
 
 		string GetInputFile(bool isSplashScreen) => isSplashScreen switch
 		{
-			true => InputsFile[1],
-			_ => InputsFile[0]
+			true => InputsFile![1],
+			_ => InputsFile![0]
 		};
 	}
 }

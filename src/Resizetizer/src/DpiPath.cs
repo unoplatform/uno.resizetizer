@@ -1,3 +1,4 @@
+#nullable  enable
 using SkiaSharp;
 using System;
 using System.Diagnostics;
@@ -9,7 +10,7 @@ namespace Uno.Resizetizer
 	[DebuggerDisplay("Path: {Path}, Size: {Size}, Scale: {Scale}")]
 	internal class DpiPath
 	{
-		public DpiPath(string path, decimal scale, string nameSuffix = null, string scaleSuffix = null, SKSize? size = null, string[] idioms = null)
+		public DpiPath(string path, decimal scale, string? nameSuffix = null, string? scaleSuffix = null, SKSize? size = null, string[]? idioms = null)
 		{
 			Path = path;
 			Scale = scale;
@@ -26,17 +27,17 @@ namespace Uno.Resizetizer
 		public string FileSuffix =>
 			string.Concat(NameSuffix, ScaleSuffix);
 
-		public string NameSuffix { get; set; }
+		public string? NameSuffix { get; set; }
 
-		public string ScaleSuffix { get; set; }
+		public string? ScaleSuffix { get; set; }
 
 		public SKSize? Size { get; set; }
 
 		public bool Optimize { get; set; } = true;
 
-		public string[] Idioms { get; set; }
+		public string[]? Idioms { get; set; }
 
-		public static class Android
+		internal static class Android
 		{
 			public static DpiPath[] AppIcon =>
 				[
@@ -116,8 +117,8 @@ namespace Uno.Resizetizer
 
 		public static class Windows
 		{
-			public const string OutputPath = "";
-			public const string IconOutputPath = "";
+			private const string OutputPath = "";
+			private const string IconOutputPath = "";
 
 			public static DpiPath Original =>
 				new (OutputPath, 1.0m, null, ".scale-100");
@@ -256,12 +257,12 @@ namespace Uno.Resizetizer
 
 		public static DpiPath GetOriginal()
 		{
-			return DpiPath.Windows.Original;
+			return Windows.Original;
 		}
 
 		public static DpiPath[] GetDpis()
 		{
-			return DpiPath.Windows.Image;
+			return Windows.Image;
 		}
 
 		public static DpiPath[] GetAppIconDpis(string platform, string appIconName)
