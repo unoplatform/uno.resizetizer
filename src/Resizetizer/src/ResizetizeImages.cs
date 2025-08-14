@@ -16,11 +16,9 @@ namespace Uno.Resizetizer
 		[Required]
 		public string PlatformType { get; set; } = "android";
 
-		[Required]
-		public string IntermediateOutputPath { get; set; }
+		[Required] public string IntermediateOutputPath { get; set; } = string.Empty;
 
-		[Required]
-		public string IntermediateOutputIconPath { get; set; }
+		[Required] public string IntermediateOutputIconPath { get; set; } = string.Empty;
 
 		public string PWAManifestPath { get; set; } = string.Empty;
 
