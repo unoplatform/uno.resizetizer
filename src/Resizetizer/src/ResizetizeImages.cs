@@ -8,9 +8,11 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
 
 namespace Uno.Resizetizer
 {
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public class ResizetizeImages_v0 : UnoAsyncTask, ILogger
 	{
 		[Required]
@@ -188,7 +190,7 @@ namespace Uno.Resizetizer
 				AndroidAppIcons = [.. androidAppIcons];
 			}
 			else if (PlatformType == "ios" ||
-			         (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && "desktop".Equals(TargetFramework, StringComparison.InvariantCultureIgnoreCase)))
+					 (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && "desktop".Equals(TargetFramework, StringComparison.InvariantCultureIgnoreCase)))
 			{
 				var logMessage = "desktop".Equals(TargetFramework, StringComparison.InvariantCultureIgnoreCase) ?
 					"MacOS Icon Assets Generator" :
