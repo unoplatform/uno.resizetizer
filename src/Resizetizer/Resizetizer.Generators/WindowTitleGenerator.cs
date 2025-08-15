@@ -181,8 +181,10 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
     private static ClassBuilder GenerateLegacyNamespaceCompat()
     {
         return CodeBuilder.Create("Uno.Resizetizer")
+            .AddNamespaceImport("System.ComponentModel")
             .AddClass("__LegacyResizetizerSupport__")
             .WithSummary("This is added to ensure the Uno.Resizetizer namespace is present to avoid breaking any applications.")
+            .AddAttribute("[EditorBrowsable(EditorBrowsableState.Never)]")
             .MakePublicClass()
             .MakeStaticClass();
     }
