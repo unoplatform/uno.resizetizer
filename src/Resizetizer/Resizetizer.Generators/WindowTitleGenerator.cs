@@ -113,7 +113,9 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
     private static ClassBuilder GenerateWindowTitleExtension(string rootNamespace, string iconName, string windowTitle)
     {
         var builder = CodeBuilder.Create(rootNamespace)
+            .AddNamespaceImport("System.ComponentModel")
             .AddClass("WindowExtensions")
+            .AddAttribute("[EditorBrowsable(EditorBrowsableState.Never)]")
             .MakeStaticClass()
             .MakePublicClass()
             .WithSummary(@"Extension methods for the <see cref=""global::Microsoft.UI.Xaml.Window"" /> class.");
