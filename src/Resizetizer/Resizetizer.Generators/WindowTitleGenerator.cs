@@ -63,20 +63,23 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
 
         // Define the source generator logic
         var sourceCodeProvider = iconNameProvider
+            .Collect()
             .Combine(extensionPropertiesProvider)
             .Select((x, _) =>
             {
                 var (iconName, coreContext) = x;
-                if (string.IsNullOrEmpty(iconName) ||
+
+                var icon = iconName.FirstOrDefault() ?? string.Empty;
+
+                if (string.IsNullOrEmpty(icon) ||
                     string.IsNullOrEmpty(coreContext?.RootNamespace) || 
                     string.IsNullOrEmpty(coreContext?.WindowTitle))
                 {
                     return null;
                 }
 
-                return new ExtensionGenerationContext(coreContext!.RootNamespace, iconName, coreContext.WindowTitle);
-
-            }).Where(result => result != null);
+                return new ExtensionGenerationContext(coreContext!.RootNamespace, icon, coreContext.WindowTitle);
+            });
 
         // Register the source generator logic to add the generated source code
         context.RegisterSourceOutput(sourceCodeProvider, (sourceContext, extensionContext) =>
@@ -142,9 +145,15 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
                 w.AppendLine("// Retrieve the WindowId that corresponds to hWnd.");
                 w.AppendLine("global::Microsoft.UI.WindowId windowId = global::Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);");
                 w.NewLine();
+
                 w.AppendLine("// Lastly, retrieve the AppWindow for the current (XAML) WinUI 3 window.");
                 w.AppendLine("global::Microsoft.UI.Windowing.AppWindow appWindow = global::Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);");
-                w.AppendLine($@"appWindow.SetIcon(""{iconName}.ico"");");
+
+                if (!string.IsNullOrEmpty(iconName))
+                {
+                    w.AppendLine($@"appWindow.SetIcon(""{iconName}.ico"");");
+                }
+
                 w.NewLine();
                 w.AppendLine("// Set the Window Title Only if it has the Default WinUI Desktop value and we are running Unpackaged");
                 // We're no longer checking for IsPackaged as this seems to be needed when Packaged as well.
