@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -47,8 +48,12 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
             .Where(x => Path.GetFileName(x.Path).Equals("UnoImage.inputs", StringComparison.InvariantCultureIgnoreCase))
             .Select((additionalText, cancellationToken) =>
             {
-                var sourceText = additionalText.GetText(cancellationToken);
+                if (additionalText.GetText(cancellationToken) is { } sourceText)
+                {
                 return FindAppIconFile(sourceText.ToString());
+                }
+
+                return string.Empty;
             })
             .Where(x => !string.IsNullOrEmpty(x))
             .Select((x, _) => Path.GetFileNameWithoutExtension(x));
@@ -65,16 +70,16 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
                     return null;
                 }
 
-                return new ExtensionGenerationContext(coreContext.RootNamespace, iconName, coreContext.WindowTitle);
+                return new ExtensionGenerationContext(coreContext!.RootNamespace, iconName, coreContext.WindowTitle);
 
             }).Where(result => result != null);
 
         // Register the source generator logic to add the generated source code
         context.RegisterSourceOutput(sourceCodeProvider, (sourceContext, extensionContext) =>
         {
-            if (!string.IsNullOrEmpty(extensionContext.WindowTitle))
+            if (extensionContext is { } extContext && !string.IsNullOrEmpty(extContext.WindowTitle))
             {
-                AddSource(sourceContext, GenerateWindowTitleExtension(extensionContext.RootNamespace, extensionContext.IconName, extensionContext.WindowTitle));
+                AddSource(sourceContext, GenerateWindowTitleExtension(extContext.RootNamespace, extContext.IconName, extContext.WindowTitle));
             }
         });
     }
@@ -83,7 +88,7 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
 
     internal record ExtensionGenerationContext(string RootNamespace, string IconName, string WindowTitle);
 
-    private static string FindAppIconFile(string content)
+    private static string? FindAppIconFile(string content)
     {
         // Split the content into lines
         var lines = content.Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries);
