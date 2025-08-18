@@ -148,23 +148,6 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
                 w.AppendUnindentedLine("#endif");
             });
 
-        // NOTE: This method has been removed as it seems WinUI isn't setting the title when Packaged. Keeping in case we need this in the future.
-        //builder.AddMethod("IsPackaged")
-        //    .WithReturnType("bool")
-        //    .MakePrivateMethod()
-        //    .MakeStaticMethod()
-        //    .WithBody(w =>
-        //    {
-        //        using (w.Block("try"))
-        //        {
-        //            w.AppendLine("return global::Windows.ApplicationModel.Package.Current != null;");
-        //        }
-        //        using (w.Block("catch"))
-        //        {
-        //            w.AppendLine("return false;");
-        //        }
-        //    });
-
         return builder;
     }
 
