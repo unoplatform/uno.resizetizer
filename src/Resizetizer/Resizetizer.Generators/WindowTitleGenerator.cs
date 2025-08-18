@@ -28,29 +28,32 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
         // We make sure to add it for all compilation (including for HR compilations!) without any filter (other than assembly name to reduce load).
         context.RegisterSourceOutput(assemblyNameProvider, (srcCtx, _) => AddSource(srcCtx, GenerateLegacyNamespaceCompat()));
 
-        var extensionPropertiesProvider = optionsProvider.Combine(assemblyNameProvider).Select((x, cancellationToken) =>
-        {
-            var (options, assemblyName) = x;
-
-            var rootNamespace = GetPropertyValue(options.GlobalOptions, "RootNamespace");
-            var windowTitle = GetPropertyValue(options.GlobalOptions, "ApplicationTitle");
-
-            if (string.IsNullOrEmpty(windowTitle))
-            {
-                windowTitle = assemblyName;
-            }
-
-            return string.IsNullOrEmpty(rootNamespace) || string.IsNullOrEmpty(windowTitle) ? null : new ExtensionPropertiesContext(rootNamespace, windowTitle);
-        });
-
         // Combine optionsProvider and compilationProvider
+        var extensionPropertiesProvider = optionsProvider.Combine(assemblyNameProvider)
+            .Select((x, _) =>
+            {
+                var (options, assemblyName) = x;
+
+                var rootNamespace = GetPropertyValue(options.GlobalOptions, "RootNamespace");
+                var windowTitle = GetPropertyValue(options.GlobalOptions, "ApplicationTitle");
+
+                if (string.IsNullOrEmpty(windowTitle))
+                {
+                    windowTitle = assemblyName;
+                }
+
+                return string.IsNullOrEmpty(rootNamespace) || string.IsNullOrEmpty(windowTitle) ? 
+                    null :
+                    new ExtensionPropertiesContext(rootNamespace, windowTitle);
+            });
+        
         var iconNameProvider = additionalTextsProvider
             .Where(x => Path.GetFileName(x.Path).Equals("UnoImage.inputs", StringComparison.InvariantCultureIgnoreCase))
             .Select((additionalText, cancellationToken) =>
             {
                 if (additionalText.GetText(cancellationToken) is { } sourceText)
                 {
-                return FindAppIconFile(sourceText.ToString());
+                    return FindAppIconFile(sourceText.ToString());
                 }
 
                 return string.Empty;
@@ -64,8 +67,9 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
             .Select((x, _) =>
             {
                 var (iconName, coreContext) = x;
-                if (string.IsNullOrEmpty(iconName) || string.IsNullOrEmpty(coreContext?.RootNamespace) || 
-                string.IsNullOrEmpty(coreContext?.WindowTitle))
+                if (string.IsNullOrEmpty(iconName) ||
+                    string.IsNullOrEmpty(coreContext?.RootNamespace) || 
+                    string.IsNullOrEmpty(coreContext?.WindowTitle))
                 {
                     return null;
                 }
@@ -84,9 +88,9 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
         });
     }
 
-    internal record ExtensionPropertiesContext(string RootNamespace, string WindowTitle);
+    private record ExtensionPropertiesContext(string RootNamespace, string WindowTitle);
 
-    internal record ExtensionGenerationContext(string RootNamespace, string IconName, string WindowTitle);
+    private record ExtensionGenerationContext(string RootNamespace, string IconName, string WindowTitle);
 
     private static string? FindAppIconFile(string content)
     {
@@ -152,7 +156,7 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
                     .EndIf();
                 w.AppendUnindentedLine("#endif");
             });
-
+        
         return builder;
     }
 
