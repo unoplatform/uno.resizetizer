@@ -71,8 +71,7 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
 
                 var icon = iconName.FirstOrDefault() ?? string.Empty;
 
-                if (string.IsNullOrEmpty(icon) ||
-                    string.IsNullOrEmpty(coreContext?.RootNamespace) || 
+                if (string.IsNullOrEmpty(coreContext?.RootNamespace) ||
                     string.IsNullOrEmpty(coreContext?.WindowTitle))
                 {
                     return null;
