@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -27,63 +28,73 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
         // We make sure to add it for all compilation (including for HR compilations!) without any filter (other than assembly name to reduce load).
         context.RegisterSourceOutput(assemblyNameProvider, (srcCtx, _) => AddSource(srcCtx, GenerateLegacyNamespaceCompat()));
 
-        var extensionPropertiesProvider = optionsProvider.Combine(assemblyNameProvider).Select((x, cancellationToken) =>
-        {
-            var (options, assemblyName) = x;
-
-            var rootNamespace = GetPropertyValue(options.GlobalOptions, "RootNamespace");
-            var windowTitle = GetPropertyValue(options.GlobalOptions, "ApplicationTitle");
-
-            if (string.IsNullOrEmpty(windowTitle))
-            {
-                windowTitle = assemblyName;
-            }
-
-            return string.IsNullOrEmpty(rootNamespace) || string.IsNullOrEmpty(windowTitle) ? null : new ExtensionPropertiesContext(rootNamespace, windowTitle);
-        });
-
         // Combine optionsProvider and compilationProvider
+        var extensionPropertiesProvider = optionsProvider.Combine(assemblyNameProvider)
+            .Select((x, _) =>
+            {
+                var (options, assemblyName) = x;
+
+                var rootNamespace = GetPropertyValue(options.GlobalOptions, "RootNamespace");
+                var windowTitle = GetPropertyValue(options.GlobalOptions, "ApplicationTitle");
+
+                if (string.IsNullOrEmpty(windowTitle))
+                {
+                    windowTitle = assemblyName;
+                }
+
+                return string.IsNullOrEmpty(rootNamespace) || string.IsNullOrEmpty(windowTitle) ? 
+                    null :
+                    new ExtensionPropertiesContext(rootNamespace, windowTitle);
+            });
+        
         var iconNameProvider = additionalTextsProvider
             .Where(x => Path.GetFileName(x.Path).Equals("UnoImage.inputs", StringComparison.InvariantCultureIgnoreCase))
             .Select((additionalText, cancellationToken) =>
             {
-                var sourceText = additionalText.GetText(cancellationToken);
-                return FindAppIconFile(sourceText.ToString());
+                if (additionalText.GetText(cancellationToken) is { } sourceText)
+                {
+                    return FindAppIconFile(sourceText.ToString());
+                }
+
+                return string.Empty;
             })
             .Where(x => !string.IsNullOrEmpty(x))
             .Select((x, _) => Path.GetFileNameWithoutExtension(x));
 
         // Define the source generator logic
         var sourceCodeProvider = iconNameProvider
+            .Collect()
             .Combine(extensionPropertiesProvider)
             .Select((x, _) =>
             {
                 var (iconName, coreContext) = x;
-                if (string.IsNullOrEmpty(iconName) || string.IsNullOrEmpty(coreContext?.RootNamespace) || 
-                string.IsNullOrEmpty(coreContext?.WindowTitle))
+
+                var icon = iconName.FirstOrDefault() ?? string.Empty;
+
+                if (string.IsNullOrEmpty(coreContext?.RootNamespace) ||
+                    string.IsNullOrEmpty(coreContext?.WindowTitle))
                 {
                     return null;
                 }
 
-                return new ExtensionGenerationContext(coreContext.RootNamespace, iconName, coreContext.WindowTitle);
-
-            }).Where(result => result != null);
+                return new ExtensionGenerationContext(coreContext!.RootNamespace, icon, coreContext.WindowTitle);
+            });
 
         // Register the source generator logic to add the generated source code
         context.RegisterSourceOutput(sourceCodeProvider, (sourceContext, extensionContext) =>
         {
-            if (!string.IsNullOrEmpty(extensionContext.WindowTitle))
+            if (extensionContext is { } extContext && !string.IsNullOrEmpty(extContext.WindowTitle))
             {
-                AddSource(sourceContext, GenerateWindowTitleExtension(extensionContext.RootNamespace, extensionContext.IconName, extensionContext.WindowTitle));
+                AddSource(sourceContext, GenerateWindowTitleExtension(extContext.RootNamespace, extContext.IconName, extContext.WindowTitle));
             }
         });
     }
 
-    internal record ExtensionPropertiesContext(string RootNamespace, string WindowTitle);
+    private record ExtensionPropertiesContext(string RootNamespace, string WindowTitle);
 
-    internal record ExtensionGenerationContext(string RootNamespace, string IconName, string WindowTitle);
+    private record ExtensionGenerationContext(string RootNamespace, string IconName, string WindowTitle);
 
-    private static string FindAppIconFile(string content)
+    private static string? FindAppIconFile(string content)
     {
         // Split the content into lines
         var lines = content.Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries);
@@ -133,9 +144,15 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
                 w.AppendLine("// Retrieve the WindowId that corresponds to hWnd.");
                 w.AppendLine("global::Microsoft.UI.WindowId windowId = global::Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);");
                 w.NewLine();
+
                 w.AppendLine("// Lastly, retrieve the AppWindow for the current (XAML) WinUI 3 window.");
                 w.AppendLine("global::Microsoft.UI.Windowing.AppWindow appWindow = global::Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);");
-                w.AppendLine($@"appWindow.SetIcon(""{iconName}.ico"");");
+
+                if (!string.IsNullOrEmpty(iconName))
+                {
+                    w.AppendLine($@"appWindow.SetIcon(""{iconName}.ico"");");
+                }
+
                 w.NewLine();
                 w.AppendLine("// Set the Window Title Only if it has the Default WinUI Desktop value and we are running Unpackaged");
                 // We're no longer checking for IsPackaged as this seems to be needed when Packaged as well.
@@ -147,24 +164,7 @@ internal sealed class WindowTitleGenerator : IIncrementalGenerator
                     .EndIf();
                 w.AppendUnindentedLine("#endif");
             });
-
-        // NOTE: This method has been removed as it seems WinUI isn't setting the title when Packaged. Keeping in case we need this in the future.
-        //builder.AddMethod("IsPackaged")
-        //    .WithReturnType("bool")
-        //    .MakePrivateMethod()
-        //    .MakeStaticMethod()
-        //    .WithBody(w =>
-        //    {
-        //        using (w.Block("try"))
-        //        {
-        //            w.AppendLine("return global::Windows.ApplicationModel.Package.Current != null;");
-        //        }
-        //        using (w.Block("catch"))
-        //        {
-        //            w.AppendLine("return false;");
-        //        }
-        //    });
-
+        
         return builder;
     }
 
