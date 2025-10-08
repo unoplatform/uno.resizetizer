@@ -85,6 +85,7 @@
 		<_UnoResizetizerPlatformIsmacOS Condition="'$(_UnoResizetizerPlatformIdentifier)' == 'macos'">True</_UnoResizetizerPlatformIsmacOS>
 		<_UnoResizetizerPlatformIstvOS Condition="'$(_UnoResizetizerPlatformIdentifier)' == 'tvos'">True</_UnoResizetizerPlatformIstvOS>
 		<_UnoResizetizerPlatformIsWindows Condition="$(_UnoResizetizerPlatformIdentifier.Contains('windows')) == 'True'">True</_UnoResizetizerPlatformIsWindows>
+		<_UnoResizetizerSkiaRenderer Condition="$(UnoFeatures.Contains(';skiarenderer;'))">True</_UnoResizetizerSkiaRenderer>
 
 		<UnoResizetizerIncludeSelfProject Condition="'$(UnoResizetizerIncludeSelfProject)' == ''">False</UnoResizetizerIncludeSelfProject>
 
@@ -189,6 +190,11 @@
 			UnoAssetsGeneration;
 			_CollectBundleResources;
 			_BeforeCoreCompileImageAssets;
+		</UnoResizetizeBeforeTargets>
+		<!-- Allow resizetized Content to be re-targeted for native-ios -->
+		<UnoResizetizeBeforeTargets Condition="'$(_UnoResizetizerSkiaRenderer)' != 'True'">
+			$(UnoResizetizeBeforeTargets);
+			AssignTargetPaths;
 		</UnoResizetizeBeforeTargets>
 
 		<CollectBundleResourcesDependsOn>
