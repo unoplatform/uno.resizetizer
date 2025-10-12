@@ -22,7 +22,7 @@ As `svg` has the ability to scale without losing quality, we strongly encourage 
 
 ## Manual Installation
 
-Uno.Resizeter is delivered [through NuGet](https://www.nuget.org/packages/Uno.Resizetizer). In order to install it, you can either install it in your project using your IDE (this will be shown in the next steps) or added directly on your `.csproj` as shown in the [NuGet page](https://www.nuget.org/packages/Uno.Resizetizer/).
+Uno.Resizetizer is delivered [through NuGet](https://www.nuget.org/packages/Uno.Resizetizer). In order to install it, you can either install it in your project using your IDE (this will be shown in the next steps) or added directly on your `.csproj` as shown in the [NuGet page](https://www.nuget.org/packages/Uno.Resizetizer/).
 
 > [!NOTE]
 > If you're using the new template, you can skip this step because it is already included by default with Uno Platform 4.8 and later.
