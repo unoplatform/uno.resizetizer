@@ -618,4 +618,7 @@
 			<Compile Include="@(_WindowIconExtension)"/>
 		</ItemGroup>
 	</Target>
+
+		<Target Name="_ResizetizerInitialize" />
+
 </Project>
