@@ -99,7 +99,9 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.100'
+        dotnet-version: |
+          8.0.x
+          9.0.100
 
     - run: |
         ubuntu_release=`lsb_release -rs`
@@ -184,7 +186,9 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.100'
+        dotnet-version: |
+          8.0.x
+          9.0.100
 
     - name: Download Artifact
       uses: actions/download-artifact@v4
