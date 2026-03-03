@@ -190,12 +190,18 @@ jobs:
           8.0.x
           9.0.100
 
+    - run: |
+        & dotnet tool update --global uno.check --version ${{ env.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
+        & uno-check -v --ci --non-interactive --fix --skip xcode --skip androidemulator --skip gtk3 --skip vswin --skip vsmac
+      shell: pwsh
+      name: Install .NET Workloads
+
     - name: Download Artifact
       uses: actions/download-artifact@v4
       with:
         name: NuGet
         path: samples/packages
-        
+
     - name: Validate 5.6 Sample app (Debug - DesignTimeBuild)
       run: |
         $installationPath = vswhere -latest -property installationPath
