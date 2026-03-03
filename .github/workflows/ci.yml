@@ -15,6 +15,8 @@ on:
 env:
   UnoCheck_Version: '1.28.3'
   DOTNET_INSTALL_DIR: ${{ github.workspace }}/.dotnet
+  DOTNET_ROOT: ${{ github.workspace }}/.dotnet
+  DOTNET_MULTILEVEL_LOOKUP: '0'
 
 jobs:
   build_tool:
@@ -29,7 +31,9 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.100'
+        dotnet-version: |
+          8.0.x
+          9.0.100
 
     - uses: dotnet/nbgv@f088059084cb5d872e9d1a994433ca6440c2bf72 # v0.4.2
       id: nbgv
