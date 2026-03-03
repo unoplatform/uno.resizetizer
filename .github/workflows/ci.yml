@@ -142,6 +142,12 @@ jobs:
       run: |
         & dotnet build -c ${{ matrix.config }} -p:RunAOTCompilation=false -p:WasmShellILLinkerEnabled=false /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None -bl:./logs/sample-5.6-${{ matrix.config }}.binlog samples/5.6/Uno52ResizetizerTests/Uno52ResizetizerTests.sln
   
+    - name: Validate PWA disabled (WasmPWAManifestFile stays empty)
+      shell: pwsh
+      if: matrix.os != 'macos-latest' || matrix.config != 'Release'
+      run: |
+        & dotnet build -c ${{ matrix.config }} -p:TargetFramework=net9.0-browserwasm -p:WasmPWAManifestFile= -p:_ValidateNoPwa=true -p:RunAOTCompilation=false -p:WasmShellILLinkerEnabled=false -bl:./logs/sample-5.6-${{ matrix.config }}-pwa-disabled.binlog samples/5.6/Uno52ResizetizerTests/Uno52ResizetizerTests/Uno52ResizetizerTests.csproj
+
     - name: Validate 5.6 Samples app (${{ matrix.config }} Incremental)
   
       # Skip the macOS release build, the agent does not have 
