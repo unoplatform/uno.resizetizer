@@ -14,6 +14,9 @@ on:
 
 env:
   UnoCheck_Version: '1.28.3'
+  DOTNET_INSTALL_DIR: ${{ github.workspace }}/.dotnet
+  DOTNET_ROOT: ${{ github.workspace }}/.dotnet
+  DOTNET_MULTILEVEL_LOOKUP: '0'
 
 jobs:
   build_tool:
@@ -28,7 +31,9 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.100'
+        dotnet-version: |
+          8.0.x
+          9.0.100
 
     - uses: dotnet/nbgv@f088059084cb5d872e9d1a994433ca6440c2bf72 # v0.4.2
       id: nbgv
@@ -94,7 +99,9 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.100'
+        dotnet-version: |
+          8.0.x
+          9.0.100
 
     - run: |
         ubuntu_release=`lsb_release -rs`
@@ -142,6 +149,12 @@ jobs:
       run: |
         & dotnet build -c ${{ matrix.config }} -p:RunAOTCompilation=false -p:WasmShellILLinkerEnabled=false /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None -bl:./logs/sample-5.6-${{ matrix.config }}.binlog samples/5.6/Uno52ResizetizerTests/Uno52ResizetizerTests.sln
   
+    - name: Validate PWA disabled (WasmPWAManifestFile stays empty)
+      shell: pwsh
+      if: matrix.os != 'macos-latest' || matrix.config != 'Release'
+      run: |
+        & dotnet build -c ${{ matrix.config }} -p:TargetFramework=net9.0-browserwasm -p:WasmPWAManifestFile= -p:_ValidateNoPwa=true -p:RunAOTCompilation=false -p:WasmShellILLinkerEnabled=false -bl:./logs/sample-5.6-${{ matrix.config }}-pwa-disabled.binlog samples/5.6/Uno52ResizetizerTests/Uno52ResizetizerTests/Uno52ResizetizerTests.csproj
+
     - name: Validate 5.6 Samples app (${{ matrix.config }} Incremental)
   
       # Skip the macOS release build, the agent does not have 
@@ -173,14 +186,22 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.100'
+        dotnet-version: |
+          8.0.x
+          9.0.100
+
+    - run: |
+        & dotnet tool update --global uno.check --version ${{ env.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
+        & uno-check -v --ci --non-interactive --fix --skip xcode --skip androidemulator --skip gtk3 --skip vswin --skip vsmac
+      shell: pwsh
+      name: Install .NET Workloads
 
     - name: Download Artifact
       uses: actions/download-artifact@v4
       with:
         name: NuGet
         path: samples/packages
-        
+
     - name: Validate 5.6 Sample app (Debug - DesignTimeBuild)
       run: |
         $installationPath = vswhere -latest -property installationPath
