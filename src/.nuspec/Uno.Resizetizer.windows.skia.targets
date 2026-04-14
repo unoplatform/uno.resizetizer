@@ -54,6 +54,13 @@
 		</ItemGroup>
 	</Target>
 
+	<!-- Provide a MauiGeneratePackageAppxManifest target so that tools like
+	     Nerdbank.GitVersioning that hook via BeforeTargets="MauiGeneratePackageAppxManifest"
+	     can set ApplicationDisplayVersion before the Uno resizetizer reads it. -->
+	<Target Name="MauiGeneratePackageAppxManifest"
+			Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True'"
+			BeforeTargets="UnoGeneratePackageAppxManifest" />
+
 	<!-- This is required because the "CalculateAppxGenerateProjectPriEnabled" target explicitly
 	depends on "_ValidatePresenceOfAppxManifestItems" and we need to get in before then. -->
 	<Target Name="_UnoValidatePresenceOfAppxManifestItemsBeforeTarget"
