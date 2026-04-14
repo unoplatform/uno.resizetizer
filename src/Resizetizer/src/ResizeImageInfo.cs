@@ -46,7 +46,16 @@ namespace Uno.Resizetizer
 
 		public SKColor? Color { get; set; }
 
+		public SKColor? DarkColor { get; set; }
+
+		public string? DarkFilename { get; set; }
+
 		public bool IsVector => IsVectorFilename(Filename);
+
+		public bool DarkIsVector => IsVectorFilename(DarkFilename);
+
+		public bool HasDarkOverride => DarkFilename != null
+			|| (DarkColor.HasValue && Color.HasValue && DarkColor.Value != Color.Value);
 
 		public bool IsAppIcon { get; set; }
 
@@ -63,6 +72,29 @@ namespace Uno.Resizetizer
 
 		public static ResizeImageInfo Parse(ITaskItem image)
 			=> Parse(new[] { image })[0];
+
+		/// <summary>
+		/// Applies the splash-screen-specific light/dark background defaults (#F3F3F3 / #202020)
+		/// when no color has been declared (FR-011), and resolves DarkColor's per-attribute
+		/// fallback to the declared light color when only light was declared (FR-005).
+		/// Must be called by splash-screen generators after Parse, since Parse itself does not
+		/// receive the IsSplashScreen signal when the item is fed in directly from a splash task.
+		/// </summary>
+		public void ApplySplashScreenDefaults()
+		{
+			var lightWasDefaulted = false;
+			if (!Color.HasValue)
+			{
+				Color = new SKColor(0xF3, 0xF3, 0xF3);
+				lightWasDefaulted = true;
+			}
+			if (!DarkColor.HasValue)
+			{
+				DarkColor = lightWasDefaulted
+					? new SKColor(0x20, 0x20, 0x20)
+					: Color;
+			}
+		}
 
 		public static List<ResizeImageInfo> Parse(IEnumerable<ITaskItem>? images)
 		{
@@ -117,10 +149,49 @@ namespace Uno.Resizetizer
 				}
 
 				var color = image.GetMetadata(nameof(Color));
-				info.Color = Utils.ParseColorString(color);
-				if (info.Color is null && !string.IsNullOrEmpty(color))
+				var backgroundColor = image.GetMetadata("BackgroundColor");
+				if (!string.IsNullOrEmpty(color) && !string.IsNullOrEmpty(backgroundColor))
 				{
-					throw new InvalidDataException($"Unable to parse color value '{color}' for '{info.Filename}'.");
+					throw new InvalidDataException(
+						$"UnoSplashScreen item '{image.ItemSpec}' declares both Color and BackgroundColor; use only one (BackgroundColor is preferred).");
+				}
+				var effectiveColor = !string.IsNullOrEmpty(backgroundColor) ? backgroundColor : color;
+				var colorMetadataName = !string.IsNullOrEmpty(backgroundColor) ? "BackgroundColor" : nameof(Color);
+				info.Color = Utils.ParseColorString(effectiveColor);
+				if (info.Color is null && !string.IsNullOrEmpty(effectiveColor))
+				{
+					throw new InvalidDataException(
+						$"UnoSplashScreen item '{image.ItemSpec}' has an invalid {colorMetadataName}='{effectiveColor}'.");
+				}
+
+				var darkBackgroundColor = image.GetMetadata("DarkBackgroundColor");
+				info.DarkColor = Utils.ParseColorString(darkBackgroundColor);
+				if (info.DarkColor is null && !string.IsNullOrEmpty(darkBackgroundColor))
+				{
+					throw new InvalidDataException(
+						$"UnoSplashScreen item '{image.ItemSpec}' has an invalid DarkBackgroundColor='{darkBackgroundColor}'.");
+				}
+
+				var darkImage = image.GetMetadata("DarkImage");
+				if (!string.IsNullOrEmpty(darkImage))
+				{
+					var darkFileInfo = new FileInfo(darkImage);
+					if (!darkFileInfo.Exists)
+					{
+						// Try resolving relative to the defining project directory
+						var projectDir = image.GetMetadata("DefiningProjectDirectory");
+						if (!string.IsNullOrEmpty(projectDir))
+						{
+							darkFileInfo = new FileInfo(Path.Combine(projectDir, darkImage));
+						}
+					}
+					if (!darkFileInfo.Exists)
+					{
+						throw new FileNotFoundException(
+							$"UnoSplashScreen item '{image.ItemSpec}' declares DarkImage='{darkImage}' but the file does not exist.",
+							darkFileInfo.FullName);
+					}
+					info.DarkFilename = darkFileInfo.FullName;
 				}
 
 				if (bool.TryParse(image.GetMetadata(nameof(IsAppIcon)), out var iai))
