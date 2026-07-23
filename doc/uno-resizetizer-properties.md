@@ -56,4 +56,4 @@ Properties that can be used across all items
 | `IOSScale`     | Used to scale the image that will be used as SplashScreen on iOS platform.                                                  |
 | `WindowsScale` | Used to scale the image that will be used as SplashScreen on Windows platform.                                              |
 | `WasmScale`    | Used to scale the image that will be used as SplashScreen on Wasm.                                                          |
-| `SkiaScale`    | Used to scale the image that will be used as SplashScreen on Skia targets (Win32, X11, and macOS).                                    |
+| `SkiaScale`    | Used to scale the image that will be used as SplashScreen on Skia targets (Win32, X11, and macOS).                          |
