@@ -73,7 +73,17 @@ namespace Uno.Resizetizer
 			logger.Log($"Generating ICO: {destination}");
 
 			var tools = new SkiaSharpAppIconTools(info, logger);
-			var dpi = new DpiPath(fileName, 1.0m, size: new SKSize(64, 64));
+			var dpi = new DpiPath(fileName, 1.0m, size: new SKSize(256, 256));
+			var sizes = new[] { 16, 24, 32, 48, 64, 128, 256 };
+			var entries = new (int Size, byte[] Data)[sizes.Length];
+			for (var i = 0; i < sizes.Length; i++)
+			{
+				var size = sizes[i];
+				dpi = new DpiPath(fileName, 1.0m, size: new SKSize(size, size));
+				using var memoryStream = new MemoryStream();
+				tools.Resize(dpi, destination, () => memoryStream);
+				entries[i] = (size, memoryStream.ToArray());
+			}
 
 			if (destinationModified > sourceModified)
 			{
@@ -81,32 +91,34 @@ namespace Uno.Resizetizer
 				return new ResizedImageInfo { Dpi = dpi, Filename = destination };
 			}
 
-			MemoryStream memoryStream = new MemoryStream();
-			tools.Resize(dpi, destination, () => memoryStream);
-			memoryStream.Position = 0;
-
-			int numberOfImages = 1;
 			using BinaryWriter writer = new BinaryWriter(File.Create(destination));
 			writer.Write((short)0x0); // Reserved. Must always be 0.
 			writer.Write((short)0x1); // Specifies image type: 1 for icon (.ICO) image
-			writer.Write((short)numberOfImages); // Specifies number of images in the file.
+			writer.Write((short)entries.Length); // Specifies number of images in the file.
 
-			writer.Write((byte)dpi.Size.Value.Width);
-			writer.Write((byte)dpi.Size.Value.Height);
-			writer.Write((byte)0x0); // Specifies number of colors in the color palette
-			writer.Write((byte)0x0); // Reserved. Should be 0
-			writer.Write((short)0x1); // Specifies color planes. Should be 0 or 1
-			writer.Write((short)0x8); // Specifies bits per pixel.
-			writer.Write((int)memoryStream.Length); // Specifies the size of the image's data in bytes
+			var offset = 6 + (16 * entries.Length);
+			foreach (var (size, data) in entries)
+			{
+				var normalizedSize = size == 256 ? 0 : size;
+				writer.Write((byte)normalizedSize); // Width in pixels, 0 means 256
+				writer.Write((byte)normalizedSize); // Height in pixels, 0 means 256
+				writer.Write((byte)0x0); // Specifies number of colors in the color palette
+				writer.Write((byte)0x0); // Reserved. Should be 0
+				writer.Write((short)0x1); // Specifies color planes. Should be 0 or 1
+				writer.Write((short)0x20); // Specifies bits per pixel, 32 for PNG data
+				writer.Write(data.Length); // Specifies the size of the image's data in bytes
+				writer.Write(offset); // Specifies the offset of PNG data from the beginning of the ICO/CUR file
+				offset += data.Length;
+			}
 
-			int offset = 6 + (16 * numberOfImages); // + length of previous images
-			writer.Write(offset); // Specifies the offset of BMP or PNG data from the beginning of the ICO/CUR file
+			foreach (var (_, data) in entries)
+			{
+				writer.Write(data);
+			}
 
-			// write png data for each image
-			memoryStream.CopyTo(writer.BaseStream);
 			writer.Flush();
 
-			return new ResizedImageInfo { Dpi = dpi, Filename = destination };
+			return new ResizedImageInfo { Dpi = new DpiPath(fileName, 1.0m, size: new SKSize(256, 256)), Filename = destination };
 		}
 
 		public static string SkiaColorWithoutAlpha(SKColor? skColor)
