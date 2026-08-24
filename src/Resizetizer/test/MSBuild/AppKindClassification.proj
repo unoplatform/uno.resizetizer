@@ -1,0 +1,171 @@
+<Project>
+
+	<!--
+	Asserts how Uno.Resizetizer.targets classifies a head into an "app kind", which decides both the
+	platform targets file that gets imported and $(UnoResizetizerPlatformType). Exactly one kind may match:
+	two matching imports two platform targets files, and since several of them declare targets under the
+	same names (ProcessUnoSplashScreens) the last import silently replaces the other's.
+
+	Every target framework that has a packaging branch of its own is listed twice, with and without
+	$(UnoRuntimeIdentifier), expecting the same classification both times. That is the property this file
+	exists to hold: an app's renderer must not change how it is packaged. Uno Platform 5.x and 6.x heads
+	carry the runtime identifier only on desktop and browserwasm, while 7.0 heads render with Skia
+	everywhere and set it on android, ios and browserwasm too.
+
+	The remaining cases pin the other direction — the heads that have no packaging branch and so can only
+	be recognised by that same runtime identifier, which is why it cannot simply be ignored.
+
+	Run it with:  dotnet msbuild src/Resizetizer/test/MSBuild/AppKindClassification.proj -t:Validate
+	-->
+
+	<Target Name="Validate">
+		<ItemGroup>
+			<!-- Expected* left empty means "must not be set". -->
+			<Case Include="ios">
+				<Tfm>net9.0-ios</Tfm>
+				<ExpectedIOS>True</ExpectedIOS>
+				<ExpectedPlatformType>ios</ExpectedPlatformType>
+			</Case>
+			<Case Include="ios-skia-renderer">
+				<Tfm>net9.0-ios</Tfm>
+				<RuntimeIdentifier>Skia</RuntimeIdentifier>
+				<ExpectedIOS>True</ExpectedIOS>
+				<ExpectedPlatformType>ios</ExpectedPlatformType>
+			</Case>
+			<Case Include="maccatalyst">
+				<Tfm>net9.0-maccatalyst</Tfm>
+				<ExpectedIOS>True</ExpectedIOS>
+				<ExpectedPlatformType>ios</ExpectedPlatformType>
+			</Case>
+			<Case Include="maccatalyst-skia-renderer">
+				<Tfm>net9.0-maccatalyst</Tfm>
+				<RuntimeIdentifier>Skia</RuntimeIdentifier>
+				<ExpectedIOS>True</ExpectedIOS>
+				<ExpectedPlatformType>ios</ExpectedPlatformType>
+			</Case>
+			<Case Include="android">
+				<Tfm>net9.0-android</Tfm>
+				<AndroidApp>true</AndroidApp>
+				<ExpectedAndroid>True</ExpectedAndroid>
+				<ExpectedPlatformType>android</ExpectedPlatformType>
+			</Case>
+			<Case Include="android-skia-renderer">
+				<Tfm>net9.0-android</Tfm>
+				<RuntimeIdentifier>Skia</RuntimeIdentifier>
+				<AndroidApp>true</AndroidApp>
+				<ExpectedAndroid>True</ExpectedAndroid>
+				<ExpectedPlatformType>android</ExpectedPlatformType>
+			</Case>
+			<!-- 5.x and 6.x heads carry WebAssembly here, 7.0 heads carry Skia. -->
+			<Case Include="wasm-webassembly-renderer">
+				<Tfm>net9.0-browserwasm</Tfm>
+				<RuntimeIdentifier>WebAssembly</RuntimeIdentifier>
+				<ExpectedWasm>True</ExpectedWasm>
+				<ExpectedPlatformType>wasm</ExpectedPlatformType>
+			</Case>
+			<Case Include="wasm-skia-renderer">
+				<Tfm>net9.0-browserwasm</Tfm>
+				<RuntimeIdentifier>Skia</RuntimeIdentifier>
+				<ExpectedWasm>True</ExpectedWasm>
+				<ExpectedPlatformType>wasm</ExpectedPlatformType>
+			</Case>
+			<Case Include="windows-winappsdk">
+				<Tfm>net9.0-windows10.0.19041</Tfm>
+				<OutputKind>WinExe</OutputKind>
+				<WinUI>true</WinUI>
+				<ExpectedWindows>True</ExpectedWindows>
+				<ExpectedPlatformType>uwp</ExpectedPlatformType>
+			</Case>
+			<!-- The fallback kind, for heads none of the packaging branches above covers. -->
+			<Case Include="desktop">
+				<Tfm>net9.0-desktop</Tfm>
+				<ExpectedGeneric>True</ExpectedGeneric>
+				<ExpectedPlatformType>wpf</ExpectedPlatformType>
+			</Case>
+			<Case Include="desktop-skia-renderer">
+				<Tfm>net9.0-desktop</Tfm>
+				<RuntimeIdentifier>Skia</RuntimeIdentifier>
+				<ExpectedGeneric>True</ExpectedGeneric>
+				<ExpectedPlatformType>wpf</ExpectedPlatformType>
+			</Case>
+			<Case Include="tvos">
+				<Tfm>net9.0-tvos</Tfm>
+				<RuntimeIdentifier>Skia</RuntimeIdentifier>
+				<ExpectedGeneric>True</ExpectedGeneric>
+				<ExpectedPlatformType>wpf</ExpectedPlatformType>
+			</Case>
+			<Case Include="macos">
+				<Tfm>net9.0-macos</Tfm>
+				<RuntimeIdentifier>Skia</RuntimeIdentifier>
+				<ExpectedGeneric>True</ExpectedGeneric>
+				<ExpectedPlatformType>wpf</ExpectedPlatformType>
+			</Case>
+			<!--
+			Heads of a shared-project solution. Their target frameworks carry no usable platform, so the
+			runtime identifier is the only thing that identifies them - see Uno.Resizetizer.targets. The
+			netX.0 version is irrelevant here; the shape of the target framework is what is being asserted.
+			-->
+			<Case Include="sharedproject-wasm">
+				<Tfm>net9.0</Tfm>
+				<RuntimeIdentifier>WebAssembly</RuntimeIdentifier>
+				<ExpectedWasm>True</ExpectedWasm>
+				<ExpectedPlatformType>wasm</ExpectedPlatformType>
+			</Case>
+			<Case Include="sharedproject-skia-gtk">
+				<Tfm>net9.0</Tfm>
+				<RuntimeIdentifier>Skia</RuntimeIdentifier>
+				<ExpectedGeneric>True</ExpectedGeneric>
+				<ExpectedPlatformType>wpf</ExpectedPlatformType>
+			</Case>
+			<Case Include="sharedproject-skia-wpf">
+				<Tfm>net9.0-windows</Tfm>
+				<RuntimeIdentifier>Skia</RuntimeIdentifier>
+				<ExpectedGeneric>True</ExpectedGeneric>
+				<ExpectedPlatformType>wpf</ExpectedPlatformType>
+			</Case>
+			<!-- Not an app, and no renderer to go by: none of the kinds apply. -->
+			<Case Include="library">
+				<Tfm>net9.0</Tfm>
+				<OutputKind>Library</OutputKind>
+				<ExpectedPlatformType>netstandard</ExpectedPlatformType>
+			</Case>
+		</ItemGroup>
+		<ItemGroup>
+			<!-- A head is an Exe unless the case says otherwise. Needed explicitly: the values below become
+			     global properties, and an empty one would win over any default the project sets. -->
+			<Case Update="@(Case)" OutputKind="Exe" Condition="'%(Case.OutputKind)' == ''" />
+		</ItemGroup>
+
+		<Message Importance="high" Text="AppKindClassification: validating @(Case->Count()) cases." />
+
+		<!-- ErrorAndContinue so one bad case does not hide the rest; the build still fails. -->
+		<MSBuild Projects="$(MSBuildThisFileFullPath)"
+				 Targets="_AssertCase"
+				 ContinueOnError="ErrorAndContinue"
+				 Properties="_Case=%(Case.Identity);TargetFrameworkIdentifier=.NETCoreApp;TargetFramework=%(Case.Tfm);UnoRuntimeIdentifier=%(Case.RuntimeIdentifier);AndroidApplication=%(Case.AndroidApp);OutputType=%(Case.OutputKind);UseWinUITools=%(Case.WinUI);_ExpectedGeneric=%(Case.ExpectedGeneric);_ExpectedIOS=%(Case.ExpectedIOS);_ExpectedAndroid=%(Case.ExpectedAndroid);_ExpectedWasm=%(Case.ExpectedWasm);_ExpectedWindows=%(Case.ExpectedWindows);_ExpectedPlatformType=%(Case.ExpectedPlatformType)" />
+
+	</Target>
+
+	<PropertyGroup>
+		<IntermediateOutputPath Condition="'$(IntermediateOutputPath)' == ''">obj\</IntermediateOutputPath>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)..\..\..\.nuspec\Uno.Resizetizer.targets"
+			Condition="'$(_Case)' != ''" />
+
+	<Target Name="_AssertCase">
+		<Error Condition="'$(_UnoResizetizerIsGenericSkiaApp)' != '$(_ExpectedGeneric)'"
+			   Text="[$(_Case)] _UnoResizetizerIsGenericSkiaApp expected '$(_ExpectedGeneric)' but was '$(_UnoResizetizerIsGenericSkiaApp)'. An app's renderer must not decide how it is packaged: a head matching two app kinds imports two platform targets files, whose same-named targets overwrite each other." />
+		<Error Condition="'$(_UnoResizetizerIsiOSApp)' != '$(_ExpectedIOS)'"
+			   Text="[$(_Case)] _UnoResizetizerIsiOSApp expected '$(_ExpectedIOS)' but was '$(_UnoResizetizerIsiOSApp)'." />
+		<Error Condition="'$(_UnoResizetizerIsAndroidApp)' != '$(_ExpectedAndroid)'"
+			   Text="[$(_Case)] _UnoResizetizerIsAndroidApp expected '$(_ExpectedAndroid)' but was '$(_UnoResizetizerIsAndroidApp)'." />
+		<Error Condition="'$(_UnoResizetizerIsWasmApp)' != '$(_ExpectedWasm)'"
+			   Text="[$(_Case)] _UnoResizetizerIsWasmApp expected '$(_ExpectedWasm)' but was '$(_UnoResizetizerIsWasmApp)'." />
+		<Error Condition="'$(_UnoResizetizerIsWindowsAppSdk)' != '$(_ExpectedWindows)'"
+			   Text="[$(_Case)] _UnoResizetizerIsWindowsAppSdk expected '$(_ExpectedWindows)' but was '$(_UnoResizetizerIsWindowsAppSdk)'." />
+		<Error Condition="'$(UnoResizetizerPlatformType)' != '$(_ExpectedPlatformType)'"
+			   Text="[$(_Case)] UnoResizetizerPlatformType expected '$(_ExpectedPlatformType)' but was '$(UnoResizetizerPlatformType)'." />
+	</Target>
+
+</Project>
