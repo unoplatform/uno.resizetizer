@@ -96,22 +96,49 @@
 		<_WasmPwaManifestPath Condition="'$(_WasmHasPWAManifest)' == 'True'">$(MSBuildProjectDirectory)\$(WasmPWAManifestFile)</_WasmPwaManifestPath>
 	</PropertyGroup>
 
+	<!--
+	The app kind decides which platform targets file is imported and what $(UnoResizetizerPlatformType)
+	becomes, so exactly one of these may match.
+	-->
 	<PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
 		<_UnoResizetizerIsNetCore>True</_UnoResizetizerIsNetCore>
-		<_UnoResizetizerIsSkiaApp Condition="'$(UnoRuntimeIdentifier)' == 'Skia' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">True</_UnoResizetizerIsSkiaApp>
 		<_UnoResizetizerIsAndroidApp Condition=" '$(_UnoResizetizerPlatformIsAndroid)' == 'True' And '$(AndroidApplication)' == 'True'">True</_UnoResizetizerIsAndroidApp>
 		<_UnoResizetizerIsiOSApp Condition="( '$(_UnoResizetizerPlatformIsiOS)' == 'True' OR '$(_UnoResizetizerPlatformIsMacCatalyst)' == 'True' ) And ('$(OutputType)' == 'Exe' Or '$(IsAppExtension)' == 'True')">True</_UnoResizetizerIsiOSApp>
 		<_UnoResizetizerIsWindowsAppSdk Condition="('$(ProjectReunionWinUI)'=='True' Or '$(WindowsAppSDKWinUI)'=='true' or '$(UseWinUITools)'=='true') And '$(_UnoResizetizerPlatformIsWindows)' == 'True' And ('$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe')">True</_UnoResizetizerIsWindowsAppSdk>
-		<_UnoResizetizerIsWasmApp Condition="'$(UnoRuntimeIdentifier)' == 'WebAssembly' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">True</_UnoResizetizerIsWasmApp>
+		<!-- The WebAssembly runtime identifier is how the head of a shared-project solution is recognised:
+		     its target framework is a plain netX.0 and carries no platform to key off. -->
+		<_UnoResizetizerIsWasmApp Condition="'$(UnoRuntimeIdentifier)' == 'WebAssembly' Or '$(_UnoResizetizerPlatformIdentifier)' == 'browserwasm'">True</_UnoResizetizerIsWasmApp>
+
+		<!--
+		The fallback kind: a Skia-rendered head that none of the packaging branches above covers. That is
+		the desktop target framework, tvOS and macOS heads, and the Skia.Gtk / Skia.WPF /
+		Skia.Linux.FrameBuffer heads of a shared-project solution, whose target frameworks are a plain
+		netX.0 (or netX.0-windows) and so can only be recognised by $(UnoRuntimeIdentifier).
+
+		It has to be evaluated last and subtract the kinds above, because that property describes the
+		renderer, not the packaging. From Uno Platform 7.0 on, android, ios and browserwasm heads render
+		with Skia as well, and matching here on top of their own kind imported
+		Uno.Resizetizer.windows.skia.targets alongside the platform targets file. Both declare a
+		ProcessUnoSplashScreens target, so the last import silently replaced the platform's — on iOS
+		dropping the partial Info.plist that repoints UILaunchStoryboardName at the generated storyboard,
+		which aborts the app at launch. The property groups below, evaluated last, also overwrote
+		$(UnoResizetizerPlatformType) with 'wpf' on those heads.
+		-->
+		<_UnoResizetizerIsGenericSkiaApp
+			Condition="('$(UnoRuntimeIdentifier)' == 'Skia' Or '$(_UnoResizetizerPlatformIdentifier)' == 'desktop')
+					And '$(_UnoResizetizerIsAndroidApp)' != 'True'
+					And '$(_UnoResizetizerIsiOSApp)' != 'True'
+					And '$(_UnoResizetizerIsWasmApp)' != 'True'
+					And '$(_UnoResizetizerIsWindowsAppSdk)' != 'True'">True</_UnoResizetizerIsGenericSkiaApp>
 	</PropertyGroup>
 
 	<Import Project="Uno.Resizetizer.android.targets" Condition="'$(_UnoResizetizerIsAndroidApp)' == 'True'"/>
 	<Import Project="Uno.Resizetizer.wasm.targets" Condition="'$(_UnoResizetizerIsWasmApp)' == 'True'"/>
 	<Import Project="Uno.Resizetizer.apple.targets" Condition="'$(_UnoResizetizerIsiOSApp)' == 'True' Or '$(_UnoResizetizerPlatformIsMacCatalyst)' == 'True'"/>
-	<Import Project="Uno.Resizetizer.windows.skia.targets" Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True'"/>
+	<Import Project="Uno.Resizetizer.windows.skia.targets" Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsGenericSkiaApp)' == 'True'"/>
 
 
-	<PropertyGroup Condition="'$(_UnoResizetizerIsAndroidApp)' == 'True' Or '$(_UnoResizetizerIsiOSApp)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsWasmApp)' == 'True'">
+	<PropertyGroup Condition="'$(_UnoResizetizerIsAndroidApp)' == 'True' Or '$(_UnoResizetizerIsiOSApp)' == 'True' Or '$(_UnoResizetizerIsGenericSkiaApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsWasmApp)' == 'True'">
 		<_UnoResizetizerIsCompatibleApp>True</_UnoResizetizerIsCompatibleApp>
 
 		<UnoResizetizeDependsOnTargets>
@@ -139,7 +166,7 @@
 	</PropertyGroup>
 
 	<!-- Skia -->
-	<PropertyGroup Condition="'$(_UnoResizetizerIsSkiaApp)' == 'True'">
+	<PropertyGroup Condition="'$(_UnoResizetizerIsGenericSkiaApp)' == 'True'">
 		<UnoResizetizerIncludeSelfProject>false</UnoResizetizerIncludeSelfProject>
 
 		<UnoResizetizeBeforeTargets>
@@ -261,7 +288,7 @@
 	</PropertyGroup>
 
 	<!-- WPF/ SKIA -->
-	<PropertyGroup Condition="'$(_UnoResizetizerIsSkiaApp)' == 'True'">
+	<PropertyGroup Condition="'$(_UnoResizetizerIsGenericSkiaApp)' == 'True'">
 		<UnoResizetizerPlatformType>wpf</UnoResizetizerPlatformType>
 
 		<UnoResizetizeBeforeTargets>
@@ -426,7 +453,13 @@
 			<FileWrites Include="$(_UnoResizetizerInputsFile)"/>
 			<FileWrites Include="$(_UnoSplashInputsFile)"/>
 		</ItemGroup>
-		<ItemGroup>
+		<!--
+		Hand an embedded app manifest over to UnoGeneratePackageAppxManifest, which adds the generated one
+		back as an EmbeddedResource. Only where that target actually runs: on the platform app kinds it is
+		never imported, so the manifest would be removed here and never put back, leaving Package.Current
+		empty at runtime.
+		-->
+		<ItemGroup Condition="'$(_UnoResizetizerIsGenericSkiaApp)' == 'True' Or '$(_UnoResizetizerIsWindowsAppSdk)' == 'True'">
 			<_SkiaManifest Include="@(EmbeddedResource)"
 						   Condition="%(Extension) == '.appxmanifest'"/>
 
@@ -467,7 +500,7 @@
 		</ItemGroup>
 
 		<!--If not Windows-->
-		<ItemGroup Condition="$(_UnoResizetizerIsWasmApp) == 'True' Or $(_UnoResizetizerIsSkiaApp) == 'True' or '$(_UnoResizetizerIsAndroidApp)' == 'True' or ('$(_UnoResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst')">
+		<ItemGroup Condition="$(_UnoResizetizerIsWasmApp) == 'True' Or $(_UnoResizetizerIsGenericSkiaApp) == 'True' or '$(_UnoResizetizerIsAndroidApp)' == 'True' or ('$(_UnoResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst')">
 			<UnoImage Include="@(UnoSplashScreen)" IsSplashScreen="True" Link=""/>
 		</ItemGroup>
 
