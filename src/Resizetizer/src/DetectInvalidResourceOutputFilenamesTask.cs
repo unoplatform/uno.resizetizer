@@ -22,15 +22,27 @@ namespace Uno.Resizetizer
 		public override bool Execute()
 		{
 			var invalidFilenames = new List<string>();
+			var invalidNames = new List<string>();
 			try
 			{
 				if (Items != null)
 				{
 					foreach (var item in Items)
 					{
-						if (!Utils.IsValidResourceFilename(item.ItemSpec))
+						// The generators derive the output name from %(Link) when it is set
+						// (see ResizeImageInfo.OutputName), so validating the ItemSpec alone lets
+						// a non-conforming Link through unchecked.
+						var outputName = item.GetMetadata("Link");
+
+						if (string.IsNullOrWhiteSpace(outputName))
+						{
+							outputName = item.ItemSpec;
+						}
+
+						if (!Utils.IsValidResourceFilename(outputName))
 						{
 							invalidFilenames.Add(item.ItemSpec);
+							invalidNames.Add(Path.GetFileNameWithoutExtension(outputName));
 						}
 					}
 				}
@@ -45,23 +57,26 @@ namespace Uno.Resizetizer
 				{
 					InvalidItems = invalidFilenames.ToArray();
 
-					if (ThrowsError)
+					var builder = new StringBuilder();
+					builder.Append(ErrorMessage);
+
+					for (var i = 0; i < invalidNames.Count; i++)
 					{
-						var builder = new StringBuilder();
-						builder.Append(ErrorMessage);
-
-						for (var i = 0; i < invalidFilenames.Count; i++)
+						if (i > 0)
 						{
-							if (i > 0)
-							{
-								builder.Append(", ");
-							}
-
-							var file = invalidFilenames[i];
-							builder.Append(Path.GetFileNameWithoutExtension(file));
+							builder.Append(", ");
 						}
 
+						builder.Append(invalidNames[i]);
+					}
+
+					if (ThrowsError)
+					{
 						Log.LogError(builder.ToString());
+					}
+					else
+					{
+						Log.LogMessage(MessageImportance.High, builder.ToString());
 					}
 				}
 			}

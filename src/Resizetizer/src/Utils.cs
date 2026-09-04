@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using SkiaSharp;
@@ -9,11 +10,49 @@ namespace Uno.Resizetizer
 {
 	internal class Utils
 	{
+		// Mirrors the identifier rules of the Android resource compiler, which is the only
+		// consumer that turns the file name into a symbol (R.<type>.<name>). Uppercase, a
+		// leading or trailing underscore and single-character names are all accepted by aapt2.
 		static readonly Regex rxResourceFilenameValidation
-			= new Regex(@"^[a-z]+[a-z0-9_]{0,}[^_]$", RegexOptions.Singleline | RegexOptions.Compiled);
+			= new Regex(@"^(?=.*[a-zA-Z0-9])[a-zA-Z_][a-zA-Z0-9_]*$", RegexOptions.Singleline | RegexOptions.Compiled);
+
+		// Names that are legal on disk but unusable downstream: Java keywords collide with the
+		// generated R field (aapt2 fails with "invalid symbol name"), and the Win32 device stems
+		// cannot be opened as files on Windows.
+		static readonly HashSet<string> reservedResourceNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+		{
+			"con", "prn", "aux", "nul",
+			"com1", "com2", "com3", "com4", "com5", "com6", "com7", "com8", "com9",
+			"lpt1", "lpt2", "lpt3", "lpt4", "lpt5", "lpt6", "lpt7", "lpt8", "lpt9",
+
+			"abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", "class",
+			"const", "continue", "default", "do", "double", "else", "enum", "extends", "false",
+			"final", "finally", "float", "for", "goto", "if", "implements", "import", "instanceof",
+			"int", "interface", "long", "native", "new", "null", "package", "private", "protected",
+			"public", "return", "short", "static", "strictfp", "super", "switch", "synchronized",
+			"this", "throw", "throws", "transient", "true", "try", "void", "volatile", "while",
+		};
 
 		public static bool IsValidResourceFilename(string filename)
-			=> rxResourceFilenameValidation.IsMatch(Path.GetFileNameWithoutExtension(filename));
+		{
+			var name = Path.GetFileNameWithoutExtension(filename);
+
+			return !string.IsNullOrEmpty(name)
+				&& rxResourceFilenameValidation.IsMatch(name)
+				&& !reservedResourceNames.Contains(name);
+		}
+
+		/// <summary>
+		/// Lowercases a name that will be referenced as an Android resource id.
+		/// </summary>
+		/// <remarks>
+		/// Assets that reach aapt2 through @(AndroidResource) are lowercased by the .NET Android
+		/// SDK (AndroidComputeResPaths, LowercaseFilenames="True"), so anything Resizetizer writes
+		/// that references them - or that reaches aapt2 verbatim through @(LibraryResourceDirectories)
+		/// - has to be lowercased the same way or the two spellings become distinct resources.
+		/// </remarks>
+		public static string ToAndroidResourceName(string outputName)
+			=> outputName?.ToLowerInvariant();
 
 		public static SKColor? ParseColorString(string tint)
 		{

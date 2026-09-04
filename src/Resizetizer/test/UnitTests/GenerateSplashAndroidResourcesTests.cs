@@ -88,7 +88,9 @@ namespace Uno.Resizetizer.Tests
 
 		[Theory]
 		[InlineData(null, "appiconfg")]
-		[InlineData("images/CustomAlias.svg", "CustomAlias")]
+		// Assets reaching aapt2 through @(AndroidResource) are lowercased by the Android SDK,
+		// so the generated @drawable reference has to be lowercased to match.
+		[InlineData("images/CustomAlias.svg", "customalias")]
 		public void SplashScreenResectsAlias(string alias, string outputImage)
 		{
 			var splash = new TaskItem("images/appiconfg.svg", new Dictionary<string, string>
