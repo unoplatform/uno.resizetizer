@@ -40,6 +40,10 @@ namespace Uno.Resizetizer.Tests
 		[InlineData("t_w_o2.png")]
 		[InlineData("t_3_hree.png")]
 		[InlineData("f4_our5.png")]
+		[InlineData("O1.png")]
+		[InlineData("_t3_hree.png")]
+		[InlineData("_1one.png")]
+		[InlineData("o1_.png")]
 		public void ValidFilenames(string filename)
 			=> Assert.True(IsValidFilename(filename));
 
@@ -58,35 +62,73 @@ namespace Uno.Resizetizer.Tests
 		[InlineData("/some/two2.png")]
 		[InlineData("/some/t3hree.png")]
 		[InlineData("/some/f4our5.png")]
+		[InlineData("/some/path_.png")]
+		[InlineData("/some/f4oUr5.png")]
 		public void ValidFilenames_Unix(string filename)
 			=> Assert.True(IsValidFilename(filename));
 
 		[Theory]
 		[InlineData("1one.png")]
-		[InlineData("O1.png")]
 		[InlineData("t-wo2.png")]
-		[InlineData("_t3_hree.png")]
 		[InlineData("f4our 5.png")]
-		[InlineData("_1one.png")]
-		[InlineData("o1_.png")]
 		public void InvalidFilenames(string filename)
 			=> Assert.False(IsValidFilename(filename));
 
 		[WindowsTheory]
 		[InlineData("C:\\some\\path\\on-e.png")]
 		[InlineData("C:\\some\\path\\2o1.png")]
-		[InlineData("C:\\some\\path\\tWo2.png")]
 		[InlineData("C:\\some\\path\\t3+hree.png")]
 		[InlineData("C:\\some\\path\\f4o ur5.png")]
 		public void InvalidFilenames_Windows(string filename)
 			=> Assert.False(IsValidFilename(filename));
 
 		[UnixTheory]
-		[InlineData("/some/path_.png")]
 		[InlineData("/some/3two2.png")]
 		[InlineData("/some/t-3hree.png")]
-		[InlineData("/some/f4oUr5.png")]
 		public void InvalidFilenames_Unix(string filename)
+			=> Assert.False(IsValidFilename(filename));
+
+		[Theory]
+		[InlineData("a.png")]
+		[InlineData("MyIcon.png")]
+		[InlineData("_icon.png")]
+		[InlineData("icon_.png")]
+		[InlineData("_a_.png")]
+		[InlineData("Square44x44Logo.png")]
+		public void ValidFilenames_LoosenedRules(string filename)
+			=> Assert.True(IsValidFilename(filename));
+
+		// The previous pattern ended in `[^_]`, so every character except an underscore was
+		// accepted in the last position regardless of the rest of the rule.
+		[Theory]
+		[InlineData("logo-.png")]
+		[InlineData("logo .png")]
+		[InlineData("logo..png")]
+		[InlineData("logo&.png")]
+		[InlineData("café.png")]
+		public void InvalidFilenames_TrailingCharacter(string filename)
+			=> Assert.False(IsValidFilename(filename));
+
+		[Theory]
+		[InlineData("logo.dark.png")]
+		[InlineData("my-icon.png")]
+		[InlineData("my icon.png")]
+		[InlineData("1icon.png")]
+		[InlineData("_.png")]
+		[InlineData("__.png")]
+		public void InvalidFilenames_UnsupportedCharacters(string filename)
+			=> Assert.False(IsValidFilename(filename));
+
+		// Java keywords collide with the generated R field ("invalid symbol name" from aapt2);
+		// the Win32 device stems cannot be opened as files on Windows.
+		[Theory]
+		[InlineData("class.png")]
+		[InlineData("new.png")]
+		[InlineData("Class.png")]
+		[InlineData("aux.png")]
+		[InlineData("nul.png")]
+		[InlineData("com1.png")]
+		public void InvalidFilenames_ReservedNames(string filename)
 			=> Assert.False(IsValidFilename(filename));
 
 		bool IsValidFilename(string filename)

@@ -89,7 +89,9 @@
 
 		<UnoResizetizerIncludeSelfProject Condition="'$(UnoResizetizerIncludeSelfProject)' == ''">False</UnoResizetizerIncludeSelfProject>
 
-		<_UnoResizetizerDefaultInvalidFilenamesErrorMessage>One or more invalid file names were detected. File names must be lowercase, start and end with a letter character, and contain only alphanumeric characters or underscores:</_UnoResizetizerDefaultInvalidFilenamesErrorMessage>
+		<_UnoResizetizerDefaultInvalidFilenamesErrorMessage>One or more invalid file names were detected. File names must start with a letter or an underscore, contain only letters, digits and underscores, and must not be a reserved name. Set UnoResizetizerErrorOnInvalidFilename to false to downgrade this error to a message:</_UnoResizetizerDefaultInvalidFilenamesErrorMessage>
+
+		<UnoResizetizerErrorOnInvalidFilename Condition="'$(UnoResizetizerErrorOnInvalidFilename)' == ''">true</UnoResizetizerErrorOnInvalidFilename>
 
 		<_WasmHasPWAManifest>False</_WasmHasPWAManifest>
 		<_WasmHasPWAManifest Condition="'$(WasmPWAManifestFile)' != ''">True</_WasmHasPWAManifest>
@@ -492,6 +494,7 @@
 
 		<DetectInvalidResourceOutputFilenamesTask_v0
 				Items="@(UnoImage->Distinct())"
+				ThrowsError="$(UnoResizetizerErrorOnInvalidFilename)"
 				ErrorMessage="$(_UnoResizetizerDefaultInvalidFilenamesErrorMessage)">
 		</DetectInvalidResourceOutputFilenamesTask_v0>
 

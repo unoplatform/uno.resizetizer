@@ -46,8 +46,13 @@ Uno.Resizetizer can handle:
 The next sections will show how to use it for each use case.
 
 > [!WARNING]
-> All the assets used by Uno.Resizetizer should be lower case and don't have special characters. You can use `_` to separate words.
-> This is because the assets are used on different platforms and some of them have limitations on the characters that can be used.
+> Asset file names must start with a letter or an underscore and contain only letters, digits and underscores. Use `_` to separate words.
+> Hyphens, spaces, additional dots and non-ASCII characters are rejected, because the name becomes an Android resource identifier (`R.drawable.<name>`).
+> A name that is a Java keyword (such as `class`) or a Windows device name (such as `aux`) is rejected for the same reason.
+>
+> Uppercase letters are allowed. On Android the generated resource is always lowercased, so an icon named `MyIcon.svg` is referenced as `@mipmap/myicon`.
+>
+> Set `UnoResizetizerErrorOnInvalidFilename` to `false` to downgrade the validation error to a build message.
 
 ### UnoImage
 
