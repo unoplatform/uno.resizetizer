@@ -26,16 +26,17 @@ Properties that can be used across all items
 
 ## UnoIcon
 
-| Property Name            | Description                                                                                                                           |
-|--------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| `Include`                | Used to insert the path of the Background image.                                                                                      |
-| `ForegroundFile`         | Used to insert the path of the Foreground image                                                                                       |
-| `ForegroundScale`        | Used to rescale the Foreground image, in order to fit on the app icon, it's a percentage value so `0.33` will be translated as 33%.   |
-| `AndroidForegroundScale` | The same as ForegroundScale, but the value will be applied just for Android.                                                          |
-| `WasmForegroundScale`    | The same as ForegroundScale, but the value will be applied just for Wasm                                                              |
-| `WindowsForegroundScale` | The same as ForegroundScale, but the value will be applied just for Windows                                                           |
-| `IOSForegroundScale`     | The same as ForegroundScale, but the value will be applied just for iOS                                                               |
-| `SkiaForegroundScale`    | The same as ForegroundScale, but the value will be applied just for Skia targets                                                      |
+| Property Name            | Description                                                                                                                                 |
+|--------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| `Include`                | Used to insert the path of the Background image.                                                                                            |
+| `ForegroundFile`         | Used to insert the path of the Foreground image                                                                                             |
+| `ForegroundScale`        | Used to rescale the Foreground image, in order to fit on the app icon, it's a percentage value so `0.33` will be translated as 33%.         |
+| `UseBackgroundFile`      | If set to `false`, only the foreground image will be used with a transparent background. Defaults to `true` on desktop, `false` elsewhere.  |
+| `AndroidForegroundScale` | The same as ForegroundScale, but the value will be applied just for Android.                                                                |
+| `WasmForegroundScale`    | The same as ForegroundScale, but the value will be applied just for Wasm                                                                    |
+| `WindowsForegroundScale` | The same as ForegroundScale, but the value will be applied just for Windows                                                                 |
+| `IOSForegroundScale`     | The same as ForegroundScale, but the value will be applied just for iOS                                                                     |
+| `SkiaForegroundScale`    | The same as ForegroundScale, but the value will be applied just for Skia targets                                                            |
 
 > [!NOTE]
 > The `<PLATFORM>ForegroundScale` (`AndroidForegroundScale`, `WasmForegroundScale`, etc) will override the global `ForegroundScale` value.
