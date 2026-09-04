@@ -38,7 +38,7 @@ public class GenerateWasmSplashAssets_v0 : Task
 #endif
 		if (UnoSplashScreen is null || UnoSplashScreen.Length is 0 )
 		{
-			Log.LogWarning("Didn't find UnoSplashScreen.");
+			Log.LogMessage(MessageImportance.Low, "No UnoSplashScreen item is configured; skipping WebAssembly splash screen generation.");
 			return true;
 		}
 
@@ -56,7 +56,9 @@ public class GenerateWasmSplashAssets_v0 : Task
 
 		if (UserAppManifest is null)
 		{
-			Log.LogWarning("Didn't find AppManifest.js file.");
+			// Log an error, not a warning: this method returns false, and MSBuild treats "task returned
+			// false without logging an error" as the opaque MSB4181. A clear message tells the user how to fix it.
+			Log.LogError("A WebAssembly splash screen is configured (a UnoSplashScreen item is present), but the required AppManifest.js embedded resource was not found. To generate the splash screen, add an AppManifest.js at Platforms/WebAssembly/WasmScripts/AppManifest.js (see https://platform.uno/docs/articles/wasm-appmanifest.html for its expected contents). If a WebAssembly splash screen is not needed, remove the UnoSplashScreen item instead.");
 			return false;
 		}
 
