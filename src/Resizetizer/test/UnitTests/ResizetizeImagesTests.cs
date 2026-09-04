@@ -161,6 +161,36 @@ namespace Uno.Resizetizer.Tests
 				AssertFileMatches($"mipmap-xhdpi/{outputName}_foreground.png", new object[] { name, alias, "xh", "f" });
 			}
 
+			// The adaptive icon xml and the mipmap bitmaps have to resolve to one resource:
+			// the xml used to be lowercased while the bitmaps kept the author's casing.
+			[Theory]
+			[InlineData("MixedCase.png", "mixedcase")]
+			[InlineData("UPPER.png", "upper")]
+			public void AppIconNameIsLowercasedConsistently(string alias, string outputName)
+			{
+				var items = new[]
+				{
+					new TaskItem("images/camera.png", new Dictionary<string, string>
+					{
+						["IsAppIcon"] = bool.TrueString,
+						["Link"] = alias,
+					}),
+				};
+
+				var task = GetNewTask(items);
+				var success = task.Execute();
+				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
+
+				AssertFileExists($"mipmap-mdpi/{outputName}.png");
+				AssertFileExists($"mipmap-mdpi/{outputName}_background.png");
+				AssertFileExists($"mipmap-mdpi/{outputName}_foreground.png");
+				AssertFileExists($"mipmap-anydpi-v26/{outputName}.xml");
+
+				AssertFileContains($"mipmap-anydpi-v26/{outputName}.xml",
+					$"<foreground android:drawable=\"@mipmap/{outputName}_foreground\"/>",
+					$"<background android:drawable=\"@mipmap/{outputName}_background\"/>");
+			}
+
 			//[Theory(Skip = "App icon for android is in WIP mode")]
 			[Theory]
 			[InlineData("appicon", null, "appicon")]

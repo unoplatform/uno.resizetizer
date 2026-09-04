@@ -105,6 +105,54 @@ namespace Uno.Resizetizer.Tests
 				Assert.Equal("Invalid Filenames: appiconfg-red-512", LogErrorEvents[0].Message);
 			}
 
+			// The generators build the output name from %(Link), so it has to be the string
+			// that gets validated.
+			[Fact]
+			public void InvalidLinkOnValidItemSpecFails()
+			{
+				var i = new TaskItem("images/camera.png", new Dictionary<string, string>
+				{
+					["Link"] = "Assets/bad-name.png",
+				});
+				var task = GetNewTask(i);
+
+				var success = task.Execute();
+
+				AssertInvalidFilename(task, i);
+				Assert.False(success);
+				Assert.Equal("Invalid Filenames: bad-name", LogErrorEvents[0].Message);
+			}
+
+			[Fact]
+			public void ValidLinkOnInvalidItemSpecSucceeds()
+			{
+				var i = new TaskItem("images/appiconfg-red-512.svg", new Dictionary<string, string>
+				{
+					["Link"] = "Assets/good_name.svg",
+				});
+				var task = GetNewTask(i);
+
+				var success = task.Execute();
+
+				AssertValidFilename(task, i);
+				Assert.True(success);
+			}
+
+			[Fact]
+			public void InvalidFileLogsMessageWhenNotThrowing()
+			{
+				var i = new TaskItem("images/appiconfg-red-512.svg");
+				var task = GetNewTask(i);
+				task.ThrowsError = false;
+
+				var success = task.Execute();
+
+				Assert.True(success);
+				AssertInvalidFilename(task, i);
+				Assert.Empty(LogErrorEvents);
+				Assert.Contains(LogMessageEvents, m => m.Message == "Invalid Filenames: appiconfg-red-512");
+			}
+
 			[Fact]
 			public void MultipleInvalidFileFailsWithCorrectErrorMessage()
 			{
