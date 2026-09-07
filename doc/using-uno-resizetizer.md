@@ -261,13 +261,15 @@ The Uno Platform SDK exposes several properties that simplify the customization 
 * `UnoSplashScreenFile`: Specifies the image file for the splash screen.
 * `UnoSplashScreenBaseSize`: Sets the base size for the splash screen image.
 * `UnoSplashScreenColor`: Determines the background color of the splash screen.
+* `UnoSplashScreenScale`: Adjusts the scaling of the splash screen image. This property will be overridden by any platform-specific scale set directly on the `UnoSplashScreen` item.
 
-To facilitate easier customization, such as adjusting the base size or color of the splash screen, you can leverage SDK properties:
+To facilitate easier customization, such as adjusting the base size, color, or scale of the splash screen, you can leverage SDK properties:
 ```xml
 <PropertyGroup>
     <UnoSplashScreenFile>Assets\SplashScreen\custom_splash_screen.svg</UnoSplashScreenFile>
     <UnoSplashScreenBaseSize>128,128</UnoSplashScreenBaseSize>
     <UnoSplashScreenColor>#512BD4</UnoSplashScreenColor>
+    <UnoSplashScreenScale>0.5</UnoSplashScreenScale>
 </PropertyGroup>
 ```
 
