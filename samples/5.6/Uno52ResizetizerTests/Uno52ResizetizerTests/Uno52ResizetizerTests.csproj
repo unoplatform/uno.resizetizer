@@ -47,4 +47,12 @@
     <Error Condition="!Exists('$(OutputPath)\Assets\Icons\back.scale-100.png')" Text="back.scale-100.png file wasn't created." />
   </Target>
 
+  <!-- Validates that WasmPWAManifestFile stays empty when PWA is disabled (no manifest file present).
+       Triggered by passing /p:_ValidateNoPwa=true to the build. -->
+  <Target Name="ValidatePwaDisabled" AfterTargets="ProcessResizedImagesWasm" Condition="'$(_ValidateNoPwa)' == 'true'">
+    <Error Condition="'$(WasmPWAManifestFile)' != ''"
+           Text="WasmPWAManifestFile should be empty when PWA is disabled, but was '$(WasmPWAManifestFile)'" />
+    <Message Text="ValidatePwaDisabled: WasmPWAManifestFile is correctly empty." Importance="high" />
+  </Target>
+
 </Project>
