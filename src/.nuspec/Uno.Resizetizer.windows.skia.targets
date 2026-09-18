@@ -45,7 +45,7 @@
 			DependsOnTargets="GenerateUnoSplashWindowsSkia"
 			Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
 
-		<ItemGroup Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True'">
+		<ItemGroup Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsGenericSkiaApp)' == 'True'">
 			<_UnoSplashAssets Include="$(_UnoIntermediateSplashScreen)**\*"/>
 			<ContentWithTargetPath Include="@(_UnoSplashAssets)">
 				<TargetPath>%(_UnoSplashAssets.Filename)%(_UnoSplashAssets.Extension)</TargetPath>
@@ -59,10 +59,10 @@
 	<Target Name="_UnoValidatePresenceOfAppxManifestItemsBeforeTarget"
 			BeforeTargets="_ValidatePresenceOfAppxManifestItems"
 			DependsOnTargets="UnoGeneratePackageAppxManifest"
-			Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True'"/>
+			Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsGenericSkiaApp)' == 'True'"/>
 
 	<Target Name="UnoGeneratePackageAppxManifest"
-			Condition="('$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsSkiaApp)' == 'True') And ('@(AppxManifest)@(_UnoAppxManifest)' !='' Or @(_SkiaManifest) != '')"
+			Condition="('$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsGenericSkiaApp)' == 'True') And ('@(AppxManifest)@(_UnoAppxManifest)' !='' Or @(_SkiaManifest) != '')"
 			DependsOnTargets="$(UnoGeneratePackageAppxManifestDependsOnTargets)"
 			BeforeTargets="$(UnoGeneratePackageAppxManifestBeforeTargets);SetUnoImage">
 
