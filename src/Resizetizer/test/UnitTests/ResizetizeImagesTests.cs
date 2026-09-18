@@ -771,6 +771,56 @@ namespace Uno.Resizetizer.Tests
 			}
 
 			[Fact]
+			public void AppIconGeneratesIcoFile()
+			{
+				var items = new[]
+				{
+					new TaskItem("images/camera.png", new Dictionary<string, string>
+					{
+						["IsAppIcon"] = bool.TrueString,
+					}),
+				};
+
+				var task = GetNewTask(items);
+				var success = task.Execute();
+				Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
+
+				Assert.NotNull(task.GeneratedIconPath);
+				var generatedIcon = task.GeneratedIconPath.ItemSpec;
+				Assert.EndsWith(".ico", generatedIcon, StringComparison.OrdinalIgnoreCase);
+				Assert.True(File.Exists(generatedIcon), $"Expected generated icon to exist: {generatedIcon}");
+
+				var expectedSizes = new[] { 16, 24, 32, 48, 64, 128, 256 };
+				var actualSizes = new HashSet<int>();
+
+				using var stream = File.OpenRead(generatedIcon);
+				using var reader = new BinaryReader(stream);
+				Assert.Equal((short)0x0000, reader.ReadInt16());
+				Assert.Equal((short)0x0001, reader.ReadInt16());
+
+				var imageCount = reader.ReadInt16();
+				Assert.Equal(expectedSizes.Length, imageCount);
+
+				for (var i = 0; i < imageCount; i++)
+				{
+					var width = reader.ReadByte();
+					var height = reader.ReadByte();
+					reader.ReadByte(); // color palette size
+					reader.ReadByte(); // reserved
+					reader.ReadInt16(); // color planes
+					reader.ReadInt16(); // bits per pixel
+					reader.ReadInt32(); // data size
+					reader.ReadInt32(); // offset
+
+					var normalizedSize = width == 0 ? 256 : width;
+					Assert.Equal(normalizedSize, height == 0 ? 256 : height);
+					actualSizes.Add(normalizedSize);
+				}
+
+				Assert.Equal(expectedSizes.OrderBy(size => size), actualSizes.OrderBy(size => size));
+			}
+
+			[Fact]
 			public void SingleImageWithOnlyPathSucceeds()
 			{
 				var items = new[]
