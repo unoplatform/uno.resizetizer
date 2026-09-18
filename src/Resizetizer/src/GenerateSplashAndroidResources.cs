@@ -79,7 +79,7 @@ namespace Uno.Resizetizer
 			writer.WriteStartElement("item");
 			writer.WriteStartElement("bitmap");
 			writer.WriteAttributeString("android", "gravity", Namespace, "center");
-			writer.WriteAttributeString("android", "src", Namespace, "@drawable/" + splash.OutputName);
+			writer.WriteAttributeString("android", "src", Namespace, "@drawable/" + Utils.ToAndroidResourceName(splash.OutputName));
 			writer.WriteAttributeString("android", "tileMode", Namespace, "disabled");
 			writer.WriteAttributeString("android", "mipMap", Namespace, "true");
 			writer.WriteEndDocument();
@@ -111,7 +111,7 @@ namespace Uno.Resizetizer
 
 			writer.WriteStartElement("bitmap");
 			writer.WriteAttributeString("android", "gravity", Namespace, "fill");
-			writer.WriteAttributeString("android", "src", Namespace, "@drawable/" + splash.OutputName);
+			writer.WriteAttributeString("android", "src", Namespace, "@drawable/" + Utils.ToAndroidResourceName(splash.OutputName));
 			writer.WriteAttributeString("android", "mipMap", Namespace, "true");
 			writer.WriteAttributeString("android", "tileMode", Namespace, "disabled");
 
