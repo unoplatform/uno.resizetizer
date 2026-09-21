@@ -481,7 +481,7 @@
 
 	<!-- UnoResizetizeImages must run at design time to avoid interactions with the `.R` generation on Android -->
 	<Target Name="UnoResizetizeImages"
-			Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoResizetizerInputsFile);@(UnoImage);$(_UnoSplashInputsFile)"
+			Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoResizetizerInputsFile);@(UnoImage);$(_UnoSplashInputsFile);$(_WasmPwaManifestPath)"
 			Outputs="$(_UnoResizetizerStampFile)"
 			AfterTargets="$(UnoResizetizeAfterTargets)"
 			BeforeTargets="$(UnoResizetizeBeforeTargets)"
