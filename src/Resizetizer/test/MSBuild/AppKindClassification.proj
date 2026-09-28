@@ -6,14 +6,10 @@
 	two matching imports two platform targets files, and since several of them declare targets under the
 	same names (ProcessUnoSplashScreens) the last import silently replaces the other's.
 
-	Every target framework that has a packaging branch of its own is listed twice, with and without
-	$(UnoRuntimeIdentifier), expecting the same classification both times. That is the property this file
-	exists to hold: an app's renderer must not change how it is packaged. Uno Platform 5.x and 6.x heads
-	carry the runtime identifier only on desktop and browserwasm, while 7.0 heads render with Skia
-	everywhere and set it on android, ios and browserwasm too.
-
-	The remaining cases pin the other direction — the heads that have no packaging branch and so can only
-	be recognised by that same runtime identifier, which is why it cannot simply be ignored.
+	Heads are classified by their target framework, plus $(UnoHasRuntimeHost) for the ones whose target
+	framework has no packaging branch. $(UnoRuntimeIdentifier) is ignored: the *-skia-renderer cases set it
+	and must classify exactly like their plain counterparts, and the shared-project heads it used to
+	recognise are no longer supported.
 
 	Run it with:  dotnet msbuild src/Resizetizer/test/MSBuild/AppKindClassification.proj -t:Validate
 	-->
@@ -90,38 +86,26 @@
 			</Case>
 			<Case Include="tvos">
 				<Tfm>net9.0-tvos</Tfm>
-				<RuntimeIdentifier>Skia</RuntimeIdentifier>
+				<RuntimeHost>true</RuntimeHost>
 				<ExpectedGeneric>True</ExpectedGeneric>
 				<ExpectedPlatformType>wpf</ExpectedPlatformType>
 			</Case>
 			<Case Include="macos">
 				<Tfm>net9.0-macos</Tfm>
-				<RuntimeIdentifier>Skia</RuntimeIdentifier>
+				<RuntimeHost>true</RuntimeHost>
 				<ExpectedGeneric>True</ExpectedGeneric>
 				<ExpectedPlatformType>wpf</ExpectedPlatformType>
 			</Case>
-			<!--
-			Heads of a shared-project solution. Their target frameworks carry no usable platform, so the
-			runtime identifier is the only thing that identifies them - see Uno.Resizetizer.targets. The
-			netX.0 version is irrelevant here; the shape of the target framework is what is being asserted.
-			-->
+			<!-- Shared-project heads (Uno Platform 5.x and earlier) are recognised by nothing but UnoRuntimeIdentifier, which is no longer read. -->
 			<Case Include="sharedproject-wasm">
 				<Tfm>net9.0</Tfm>
 				<RuntimeIdentifier>WebAssembly</RuntimeIdentifier>
-				<ExpectedWasm>True</ExpectedWasm>
-				<ExpectedPlatformType>wasm</ExpectedPlatformType>
+				<ExpectedPlatformType>netstandard</ExpectedPlatformType>
 			</Case>
 			<Case Include="sharedproject-skia-gtk">
 				<Tfm>net9.0</Tfm>
 				<RuntimeIdentifier>Skia</RuntimeIdentifier>
-				<ExpectedGeneric>True</ExpectedGeneric>
-				<ExpectedPlatformType>wpf</ExpectedPlatformType>
-			</Case>
-			<Case Include="sharedproject-skia-wpf">
-				<Tfm>net9.0-windows</Tfm>
-				<RuntimeIdentifier>Skia</RuntimeIdentifier>
-				<ExpectedGeneric>True</ExpectedGeneric>
-				<ExpectedPlatformType>wpf</ExpectedPlatformType>
+				<ExpectedPlatformType>netstandard</ExpectedPlatformType>
 			</Case>
 			<!--
 			Uno Platform 7.0 heads: no runtime identifier, but the runtime packages set UnoHasRuntimeHost.
