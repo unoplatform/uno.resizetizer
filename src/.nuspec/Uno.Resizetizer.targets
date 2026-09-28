@@ -105,32 +105,21 @@
 		<_UnoResizetizerIsAndroidApp Condition=" '$(_UnoResizetizerPlatformIsAndroid)' == 'True' And '$(AndroidApplication)' == 'True'">True</_UnoResizetizerIsAndroidApp>
 		<_UnoResizetizerIsiOSApp Condition="( '$(_UnoResizetizerPlatformIsiOS)' == 'True' OR '$(_UnoResizetizerPlatformIsMacCatalyst)' == 'True' ) And ('$(OutputType)' == 'Exe' Or '$(IsAppExtension)' == 'True')">True</_UnoResizetizerIsiOSApp>
 		<_UnoResizetizerIsWindowsAppSdk Condition="('$(ProjectReunionWinUI)'=='True' Or '$(WindowsAppSDKWinUI)'=='true' or '$(UseWinUITools)'=='true') And '$(_UnoResizetizerPlatformIsWindows)' == 'True' And ('$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe')">True</_UnoResizetizerIsWindowsAppSdk>
-		<!-- The WebAssembly runtime identifier is how the head of a shared-project solution is recognised:
-		     its target framework is a plain netX.0 and carries no platform to key off. -->
-		<_UnoResizetizerIsWasmApp Condition="'$(UnoRuntimeIdentifier)' == 'WebAssembly' Or '$(_UnoResizetizerPlatformIdentifier)' == 'browserwasm'">True</_UnoResizetizerIsWasmApp>
+		<_UnoResizetizerIsWasmApp Condition="'$(_UnoResizetizerPlatformIdentifier)' == 'browserwasm'">True</_UnoResizetizerIsWasmApp>
 
 		<!--
-		The fallback kind: a Skia-rendered head that none of the packaging branches above covers. That is
-		the desktop target framework, tvOS and macOS heads, and the Skia.Gtk / Skia.WPF /
-		Skia.Linux.FrameBuffer heads of a shared-project solution, whose target frameworks are a plain
-		netX.0 (or netX.0-windows) and so can only be recognised by $(UnoRuntimeIdentifier). From Uno
-		Platform 7.0 on, a plain netX.0 head is recognised by $(UnoHasRuntimeHost) instead, which the Uno
-		runtime packages set and which no longer comes with $(UnoRuntimeIdentifier). Some of those packages
-		flow it transitively, hence the OutputType check.
+		The fallback kind: a Skia-rendered head that none of the packaging branches above covers - the
+		desktop target framework, tvOS, and a plain netX.0 head. The Uno runtime packages mark a head with
+		$(UnoHasRuntimeHost); some of them flow it transitively, hence the OutputType check.
 
-		It has to be evaluated last and subtract the kinds above, because that property describes the
-		renderer, not the packaging. From Uno Platform 7.0 on, android, ios and browserwasm heads render
-		with Skia as well, and matching here on top of their own kind imported
-		Uno.Resizetizer.windows.skia.targets alongside the platform targets file. Both declare a
-		ProcessUnoSplashScreens target, so the last import silently replaced the platform's — on iOS
-		dropping the partial Info.plist that repoints UILaunchStoryboardName at the generated storyboard,
-		which aborts the app at launch. The property groups below, evaluated last, also overwrote
-		$(UnoResizetizerPlatformType) with 'wpf' on those heads.
+		It has to be evaluated last and subtract the kinds above, because android, ios and browserwasm heads
+		carry $(UnoHasRuntimeHost) too. Matching here on top of their own kind would import
+		Uno.Resizetizer.windows.skia.targets alongside the platform targets file, whose same-named
+		ProcessUnoSplashScreens target then silently replaces the platform's.
 		-->
 		<_UnoResizetizerIsGenericSkiaApp
-			Condition="('$(UnoRuntimeIdentifier)' == 'Skia'
-					Or ('$(UnoHasRuntimeHost)' == 'true' And ('$(OutputType)' == 'Exe' Or '$(OutputType)' == 'WinExe'))
-					Or'$(_UnoResizetizerPlatformIdentifier)' == 'desktop')
+			Condition="(('$(UnoHasRuntimeHost)' == 'true' And ('$(OutputType)' == 'Exe' Or '$(OutputType)' == 'WinExe'))
+					Or '$(_UnoResizetizerPlatformIdentifier)' == 'desktop')
 					And '$(_UnoResizetizerIsAndroidApp)' != 'True'
 					And '$(_UnoResizetizerIsiOSApp)' != 'True'
 					And '$(_UnoResizetizerIsWasmApp)' != 'True'
