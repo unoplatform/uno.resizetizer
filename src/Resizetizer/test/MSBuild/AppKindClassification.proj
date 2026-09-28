@@ -123,6 +123,48 @@
 				<ExpectedGeneric>True</ExpectedGeneric>
 				<ExpectedPlatformType>wpf</ExpectedPlatformType>
 			</Case>
+			<!--
+			Uno Platform 7.0 heads: no runtime identifier, but the runtime packages set UnoHasRuntimeHost.
+			It must only reach the fallback kind on a head whose target framework has no platform branch.
+			-->
+			<Case Include="android-runtime-host">
+				<Tfm>net9.0-android</Tfm>
+				<RuntimeHost>true</RuntimeHost>
+				<AndroidApp>true</AndroidApp>
+				<ExpectedAndroid>True</ExpectedAndroid>
+				<ExpectedPlatformType>android</ExpectedPlatformType>
+			</Case>
+			<Case Include="ios-runtime-host">
+				<Tfm>net9.0-ios</Tfm>
+				<RuntimeHost>true</RuntimeHost>
+				<ExpectedIOS>True</ExpectedIOS>
+				<ExpectedPlatformType>ios</ExpectedPlatformType>
+			</Case>
+			<Case Include="wasm-runtime-host">
+				<Tfm>net9.0-browserwasm</Tfm>
+				<RuntimeHost>true</RuntimeHost>
+				<ExpectedWasm>True</ExpectedWasm>
+				<ExpectedPlatformType>wasm</ExpectedPlatformType>
+			</Case>
+			<Case Include="desktop-runtime-host">
+				<Tfm>net9.0-desktop</Tfm>
+				<RuntimeHost>true</RuntimeHost>
+				<ExpectedGeneric>True</ExpectedGeneric>
+				<ExpectedPlatformType>wpf</ExpectedPlatformType>
+			</Case>
+			<Case Include="plain-netx-runtime-host">
+				<Tfm>net9.0</Tfm>
+				<RuntimeHost>true</RuntimeHost>
+				<ExpectedGeneric>True</ExpectedGeneric>
+				<ExpectedPlatformType>wpf</ExpectedPlatformType>
+			</Case>
+			<!-- Some runtime packages flow UnoHasRuntimeHost transitively; a library still is not an app. -->
+			<Case Include="library-runtime-host">
+				<Tfm>net9.0</Tfm>
+				<RuntimeHost>true</RuntimeHost>
+				<OutputKind>Library</OutputKind>
+				<ExpectedPlatformType>netstandard</ExpectedPlatformType>
+			</Case>
 			<!-- Not an app, and no renderer to go by: none of the kinds apply. -->
 			<Case Include="library">
 				<Tfm>net9.0</Tfm>
@@ -142,7 +184,7 @@
 		<MSBuild Projects="$(MSBuildThisFileFullPath)"
 				 Targets="_AssertCase"
 				 ContinueOnError="ErrorAndContinue"
-				 Properties="_Case=%(Case.Identity);TargetFrameworkIdentifier=.NETCoreApp;TargetFramework=%(Case.Tfm);UnoRuntimeIdentifier=%(Case.RuntimeIdentifier);AndroidApplication=%(Case.AndroidApp);OutputType=%(Case.OutputKind);UseWinUITools=%(Case.WinUI);_ExpectedGeneric=%(Case.ExpectedGeneric);_ExpectedIOS=%(Case.ExpectedIOS);_ExpectedAndroid=%(Case.ExpectedAndroid);_ExpectedWasm=%(Case.ExpectedWasm);_ExpectedWindows=%(Case.ExpectedWindows);_ExpectedPlatformType=%(Case.ExpectedPlatformType)" />
+				 Properties="_Case=%(Case.Identity);TargetFrameworkIdentifier=.NETCoreApp;TargetFramework=%(Case.Tfm);UnoRuntimeIdentifier=%(Case.RuntimeIdentifier);UnoHasRuntimeHost=%(Case.RuntimeHost);AndroidApplication=%(Case.AndroidApp);OutputType=%(Case.OutputKind);UseWinUITools=%(Case.WinUI);_ExpectedGeneric=%(Case.ExpectedGeneric);_ExpectedIOS=%(Case.ExpectedIOS);_ExpectedAndroid=%(Case.ExpectedAndroid);_ExpectedWasm=%(Case.ExpectedWasm);_ExpectedWindows=%(Case.ExpectedWindows);_ExpectedPlatformType=%(Case.ExpectedPlatformType)" />
 
 	</Target>
 
