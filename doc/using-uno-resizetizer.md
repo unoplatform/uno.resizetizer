@@ -46,7 +46,7 @@ Uno.Resizetizer can handle:
 The next sections will show how to use it for each use case.
 
 > [!WARNING]
-> Asset file names must start with a letter or an underscore and contain only letters, digits and underscores. Use `_` to separate words.
+> Asset file names must start with a letter or an underscore, contain only letters, digits and underscores, and include at least one letter or digit (so `_.png` is rejected). Use `_` to separate words.
 > Hyphens, spaces, additional dots and non-ASCII characters are rejected, because the name becomes an Android resource identifier (`R.drawable.<name>`).
 > A name that is a Java keyword (such as `class`) or a Windows device name (such as `aux`) is rejected for the same reason.
 >

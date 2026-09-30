@@ -89,7 +89,7 @@
 
 		<UnoResizetizerIncludeSelfProject Condition="'$(UnoResizetizerIncludeSelfProject)' == ''">False</UnoResizetizerIncludeSelfProject>
 
-		<_UnoResizetizerDefaultInvalidFilenamesErrorMessage>One or more invalid file names were detected. File names must start with a letter or an underscore, contain only letters, digits and underscores, and must not be a reserved name. Set UnoResizetizerErrorOnInvalidFilename to false to downgrade this error to a message:</_UnoResizetizerDefaultInvalidFilenamesErrorMessage>
+		<_UnoResizetizerDefaultInvalidFilenamesErrorMessage>One or more invalid file names were detected. File names must start with a letter or an underscore, contain only letters, digits and underscores, include at least one letter or digit, and must not be a reserved name. Set UnoResizetizerErrorOnInvalidFilename to false to downgrade this error to a message:</_UnoResizetizerDefaultInvalidFilenamesErrorMessage>
 
 		<UnoResizetizerErrorOnInvalidFilename Condition="'$(UnoResizetizerErrorOnInvalidFilename)' == ''">true</UnoResizetizerErrorOnInvalidFilename>
 
