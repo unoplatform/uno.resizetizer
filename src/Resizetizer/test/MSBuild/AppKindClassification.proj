@@ -142,6 +142,55 @@
 				<ExpectedGeneric>True</ExpectedGeneric>
 				<ExpectedPlatformType>wpf</ExpectedPlatformType>
 			</Case>
+			<Case Include="plain-netx-winexe-runtime-host">
+				<Tfm>net9.0</Tfm>
+				<RuntimeHost>true</RuntimeHost>
+				<OutputKind>WinExe</OutputKind>
+				<ExpectedGeneric>True</ExpectedGeneric>
+				<ExpectedPlatformType>wpf</ExpectedPlatformType>
+			</Case>
+			<!-- A Skia head on a windows target framework (Win32 host, no WinUI) is not a WinAppSDK app. -->
+			<Case Include="windows-skia-runtime-host">
+				<Tfm>net9.0-windows10.0.19041</Tfm>
+				<RuntimeHost>true</RuntimeHost>
+				<OutputKind>WinExe</OutputKind>
+				<ExpectedGeneric>True</ExpectedGeneric>
+				<ExpectedPlatformType>wpf</ExpectedPlatformType>
+			</Case>
+			<!-- Microsoft.NET.Sdk.WebAssembly with a plain target framework: only the browser runtime host marks it. -->
+			<Case Include="plain-netx-wasm-runtime-host">
+				<Tfm>net9.0</Tfm>
+				<RuntimeHost>true</RuntimeHost>
+				<WasmSdk>true</WasmSdk>
+				<ExpectedWasm>True</ExpectedWasm>
+				<ExpectedPlatformType>wasm</ExpectedPlatformType>
+			</Case>
+			<Case Include="plain-netx-wasm-library-runtime-host">
+				<Tfm>net9.0</Tfm>
+				<RuntimeHost>true</RuntimeHost>
+				<WasmSdk>true</WasmSdk>
+				<OutputKind>Library</OutputKind>
+				<ExpectedPlatformType>netstandard</ExpectedPlatformType>
+			</Case>
+			<!-- Platform libraries referencing a runtime host are not apps either. -->
+			<Case Include="android-library-runtime-host">
+				<Tfm>net9.0-android</Tfm>
+				<RuntimeHost>true</RuntimeHost>
+				<OutputKind>Library</OutputKind>
+				<ExpectedPlatformType>netstandard</ExpectedPlatformType>
+			</Case>
+			<Case Include="ios-library-runtime-host">
+				<Tfm>net9.0-ios</Tfm>
+				<RuntimeHost>true</RuntimeHost>
+				<OutputKind>Library</OutputKind>
+				<ExpectedPlatformType>netstandard</ExpectedPlatformType>
+			</Case>
+			<Case Include="tvos-library-runtime-host">
+				<Tfm>net9.0-tvos</Tfm>
+				<RuntimeHost>true</RuntimeHost>
+				<OutputKind>Library</OutputKind>
+				<ExpectedPlatformType>netstandard</ExpectedPlatformType>
+			</Case>
 			<!-- Some runtime packages flow UnoHasRuntimeHost transitively; a library still is not an app. -->
 			<Case Include="library-runtime-host">
 				<Tfm>net9.0</Tfm>
@@ -168,7 +217,7 @@
 		<MSBuild Projects="$(MSBuildThisFileFullPath)"
 				 Targets="_AssertCase"
 				 ContinueOnError="ErrorAndContinue"
-				 Properties="_Case=%(Case.Identity);TargetFrameworkIdentifier=.NETCoreApp;TargetFramework=%(Case.Tfm);UnoRuntimeIdentifier=%(Case.RuntimeIdentifier);UnoHasRuntimeHost=%(Case.RuntimeHost);AndroidApplication=%(Case.AndroidApp);OutputType=%(Case.OutputKind);UseWinUITools=%(Case.WinUI);_ExpectedGeneric=%(Case.ExpectedGeneric);_ExpectedIOS=%(Case.ExpectedIOS);_ExpectedAndroid=%(Case.ExpectedAndroid);_ExpectedWasm=%(Case.ExpectedWasm);_ExpectedWindows=%(Case.ExpectedWindows);_ExpectedPlatformType=%(Case.ExpectedPlatformType)" />
+				 Properties="_Case=%(Case.Identity);TargetFrameworkIdentifier=.NETCoreApp;TargetFramework=%(Case.Tfm);UnoRuntimeIdentifier=%(Case.RuntimeIdentifier);UnoHasRuntimeHost=%(Case.RuntimeHost);UsingMicrosoftNETSdkWebAssembly=%(Case.WasmSdk);AndroidApplication=%(Case.AndroidApp);OutputType=%(Case.OutputKind);UseWinUITools=%(Case.WinUI);_ExpectedGeneric=%(Case.ExpectedGeneric);_ExpectedIOS=%(Case.ExpectedIOS);_ExpectedAndroid=%(Case.ExpectedAndroid);_ExpectedWasm=%(Case.ExpectedWasm);_ExpectedWindows=%(Case.ExpectedWindows);_ExpectedPlatformType=%(Case.ExpectedPlatformType)" />
 
 	</Target>
 
