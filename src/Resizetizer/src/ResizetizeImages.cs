@@ -242,7 +242,7 @@ namespace Uno.Resizetizer
 			{
 				LogDebugMessage($"App Icon: " + dpi);
 
-				var destination = Resizer.GetFileDestination(img, dpi, iconPath)
+				var destination = Resizer.GetFileDestination(img, dpi, iconPath, appIconName)
 					.Replace("{name}", appIconName);
 
 				var (_, sourceModified) = Utils.FileExists(img.Filename);

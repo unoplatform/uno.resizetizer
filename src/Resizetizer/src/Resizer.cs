@@ -23,7 +23,7 @@ namespace Uno.Resizetizer
 		public string GetFileDestination(DpiPath dpi)
 			=> GetFileDestination(Info, dpi, IntermediateOutputPath);
 
-		public static string GetFileDestination(ResizeImageInfo info, DpiPath dpi, string intermediateOutputPath)
+		public static string GetFileDestination(ResizeImageInfo info, DpiPath dpi, string intermediateOutputPath, string outputName = null)
 		{
 			var fullIntermediateOutputPath = new DirectoryInfo(intermediateOutputPath);
 
@@ -44,7 +44,7 @@ namespace Uno.Resizetizer
 				path = Path.IsPathRooted(path) ? string.Empty : path;
 			}
 
-			var destination = Path.Combine(fullIntermediateOutputPath.FullName, dpi.Path, path, info.OutputName + dpi.FileSuffix + info.OutputExtension);
+			var destination = Path.Combine(fullIntermediateOutputPath.FullName, dpi.Path, path, (outputName ?? info.OutputName) + dpi.FileSuffix + info.OutputExtension);
 
 			var fileInfo = new FileInfo(destination);
 			if (!fileInfo.Directory.Exists)
