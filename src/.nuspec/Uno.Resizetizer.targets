@@ -106,6 +106,8 @@
 		<_UnoResizetizerIsiOSApp Condition="( '$(_UnoResizetizerPlatformIsiOS)' == 'True' OR '$(_UnoResizetizerPlatformIsMacCatalyst)' == 'True' ) And ('$(OutputType)' == 'Exe' Or '$(IsAppExtension)' == 'True')">True</_UnoResizetizerIsiOSApp>
 		<_UnoResizetizerIsWindowsAppSdk Condition="('$(ProjectReunionWinUI)'=='True' Or '$(WindowsAppSDKWinUI)'=='true' or '$(UseWinUITools)'=='true') And '$(_UnoResizetizerPlatformIsWindows)' == 'True' And ('$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe')">True</_UnoResizetizerIsWindowsAppSdk>
 		<_UnoResizetizerIsWasmApp Condition="'$(_UnoResizetizerPlatformIdentifier)' == 'browserwasm'">True</_UnoResizetizerIsWasmApp>
+		<!-- A plain netX.0 head on Microsoft.NET.Sdk.WebAssembly: the browser runtime host marks it, the target framework cannot. -->
+		<_UnoResizetizerIsWasmApp Condition="'$(UsingMicrosoftNETSdkWebAssembly)' == 'true' And '$(UnoHasRuntimeHost)' == 'true' And '$(OutputType)' == 'Exe'">True</_UnoResizetizerIsWasmApp>
 
 		<!--
 		The fallback kind: a Skia-rendered head that none of the packaging branches above covers - the
