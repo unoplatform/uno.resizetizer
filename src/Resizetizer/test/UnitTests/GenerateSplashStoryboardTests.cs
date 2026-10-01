@@ -71,5 +71,31 @@ namespace Uno.Resizetizer.Tests
 
 			AssertFile(_storyboard, outputImage, "1", "1", "1", "1");
 		}
+
+		[Fact]
+		public void ImageIsCenteredWithAutoLayout()
+		{
+			// A fixed-frame, full-screen image view centers the image on half points (e.g. 393pt wide screens),
+			// which resamples it. Auto Layout snaps the frame to device pixels.
+			var splash = new TaskItem("images/appiconfg.svg");
+
+			var task = GetNewTask(splash);
+			var success = task.Execute();
+			Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
+
+			var view = XElement.Load(_storyboard).Descendants("view").Single(v => (string)v.Attribute("key") == "view");
+			var imageView = view.Descendants("imageView").Single();
+			var imageViewId = (string)imageView.Attribute("id");
+
+			Assert.Null(imageView.Attribute("fixedFrame"));
+			Assert.Equal("NO", (string)imageView.Attribute("translatesAutoresizingMaskIntoConstraints"));
+
+			var centering = view.Element("constraints").Elements("constraint")
+				.Where(c => (string)c.Attribute("firstItem") == imageViewId && (string)c.Attribute("secondItem") == (string)view.Attribute("id"))
+				.Select(c => (string)c.Attribute("firstAttribute"))
+				.OrderBy(a => a);
+
+			Assert.Equal(new[] { "centerX", "centerY" }, centering);
+		}
 	}
 }
