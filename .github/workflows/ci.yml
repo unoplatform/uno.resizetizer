@@ -58,6 +58,9 @@ jobs:
     - name: Validate app kind classification
       run: dotnet msbuild src/Resizetizer/test/MSBuild/AppKindClassification.proj -t:Validate
 
+    - name: Validate iOS splash launch images
+      run: dotnet msbuild src/Resizetizer/test/MSBuild/SplashLaunchImages.proj -t:Validate
+
     - run: |
         & dotnet tool update --global uno.check --version ${{ env.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
         & uno-check -v --ci --non-interactive --fix --skip xcode --skip androidemulator --skip gtk3 --skip vswin --skip vsmac

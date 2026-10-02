@@ -26,13 +26,13 @@ namespace Uno.Resizetizer.Tests
 				BuildEngine = this,
 			};
 
-		void AssertFile(string actualPath, string image, string r, string g, string b, string a)
+		void AssertFile(string actualPath, string r, string g, string b, string a)
 		{
 			using var actualStream = File.OpenRead(actualPath);
 			var actual = XElement.Load(actualStream);
 
 			using var expectedBuilder = new StringWriter();
-			GenerateSplashStoryboard_v0.SubstituteStoryboard(expectedBuilder, image, r, g, b, a);
+			GenerateSplashStoryboard_v0.SubstituteStoryboard(expectedBuilder, GenerateSplashStoryboard_v0.LaunchImage, r, g, b, a);
 			var expected = XElement.Parse(expectedBuilder.ToString());
 
 			Assert.True(XNode.DeepEquals(actual, expected), $"{actualPath} did not match:\n{actual}");
@@ -52,14 +52,15 @@ namespace Uno.Resizetizer.Tests
 			var success = task.Execute();
 			Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
 
-			AssertFile(_storyboard, "appiconfg.png", r, g, b, a);
+			AssertFile(_storyboard, r, g, b, a);
 		}
 
 		[Theory]
-		[InlineData(null, "appiconfg.png")]
-		[InlineData("images/CustomAlias.svg", "CustomAlias.png")]
-		public void SplashScreenResectsAlias(string alias, string outputImage)
+		[InlineData(null)]
+		[InlineData("images/CustomAlias.svg")]
+		public void LaunchImageDoesNotDependOnAlias(string alias)
 		{
+			// The launch images are bundled under a fixed name, whatever the splash file is called
 			var splash = new TaskItem("images/appiconfg.svg", new Dictionary<string, string>
 			{
 				["Link"] = alias,
@@ -69,7 +70,34 @@ namespace Uno.Resizetizer.Tests
 			var success = task.Execute();
 			Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
 
-			AssertFile(_storyboard, outputImage, "1", "1", "1", "1");
+			var image = XElement.Load(_storyboard).Descendants("imageView").Single().Attribute("image")!.Value;
+			Assert.Equal("uno_splash_launch.png", image);
+		}
+
+		[Fact]
+		public void ImageIsCenteredWithAutoLayout()
+		{
+			// A fixed-frame, full-screen image view centers the image on half points (e.g. 393pt wide screens),
+			// which resamples it. Auto Layout snaps the frame to device pixels.
+			var splash = new TaskItem("images/appiconfg.svg");
+
+			var task = GetNewTask(splash);
+			var success = task.Execute();
+			Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
+
+			var view = XElement.Load(_storyboard).Descendants("view").Single(v => (string)v.Attribute("key") == "view");
+			var imageView = view.Descendants("imageView").Single();
+			var imageViewId = (string)imageView.Attribute("id");
+
+			Assert.Null(imageView.Attribute("fixedFrame"));
+			Assert.Equal("NO", (string)imageView.Attribute("translatesAutoresizingMaskIntoConstraints"));
+
+			var centering = view.Element("constraints").Elements("constraint")
+				.Where(c => (string)c.Attribute("firstItem") == imageViewId && (string)c.Attribute("secondItem") == (string)view.Attribute("id"))
+				.Select(c => (string)c.Attribute("firstAttribute"))
+				.OrderBy(a => a);
+
+			Assert.Equal(new[] { "centerX", "centerY" }, centering);
 		}
 	}
 }

@@ -50,8 +50,8 @@ namespace Uno.Resizetizer.Tests
 		}
 
 		[Theory]
-		[InlineData("tall_image.png", "20", "108")]
-		[InlineData("wide_image.png", "108", "20")]
+		[InlineData("tall_image.png", "36", "192")]
+		[InlineData("wide_image.png", "192", "36")]
 		public void XmlIsValidForNonSquare(string image, string width, string height)
 		{
 			var splash = new TaskItem("images/" + image, new Dictionary<string, string>
@@ -117,7 +117,22 @@ namespace Uno.Resizetizer.Tests
 			Assert.True(XNode.DeepEquals(actual, expected), $"{_colors} did not match:\n{actual}");
 		}
 
-		void AssertImageFile(string expectedFilename, string actualFilename, string image, string width = "108", string height = "108")
+		[Fact]
+		public void SplashIconIsAnimatableOnAndroid12()
+		{
+			// Non-Animatable icons are pre-rendered at 108dp and upscaled by the system, making them blurry
+			var splash = new TaskItem("images/appiconfg.svg");
+
+			var task = GetNewTask(splash);
+			var success = task.Execute();
+			Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
+
+			var root = XElement.Load(_drawable_v31);
+			Assert.Equal("animation-list", root.Name.LocalName);
+			Assert.Single(root.Elements("item"));
+		}
+
+		void AssertImageFile(string expectedFilename, string actualFilename, string image, string width = "192", string height = "192")
 		{
 			var expectedXml = File.ReadAllText($"testdata/androidsplash/" + expectedFilename)
 				.Replace("{drawable}", image, StringComparison.OrdinalIgnoreCase)
