@@ -17,6 +17,9 @@ namespace Uno.Resizetizer
 		[Required]
 		public ITaskItem[] UnoSplashScreen { get; set; }
 
+		// Bundled as @2x/@3x by Uno.Resizetizer.apple.targets, independently of the app's renderer
+		internal const string LaunchImage = "uno_splash_launch.png";
+
 		public override bool Execute()
 		{
 #if DEBUG_RESIZETIZER
@@ -25,9 +28,6 @@ namespace Uno.Resizetizer
 			var splash = UnoSplashScreen[0];
 
 			var info = ResizeImageInfo.Parse(splash);
-
-			var outputFileName = info.OutputName;
-			var image = outputFileName + ".png";
 
 			var color = info.Color ?? SKColors.White;
 			float r = color.Red / (float)byte.MaxValue;
@@ -46,7 +46,7 @@ namespace Uno.Resizetizer
 			FileHelper.WriteFileIfChanged(
 				OutputFile,
 				Log,
-				writer => SubstituteStoryboard(writer, image, rStr, gStr, bStr, aStr));
+				writer => SubstituteStoryboard(writer, LaunchImage, rStr, gStr, bStr, aStr));
 
 			return !Log.HasLoggedErrors;
 		}
