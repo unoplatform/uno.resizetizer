@@ -1,0 +1,69 @@
+<Project>
+
+	<!--
+	Asserts that an iOS head bundles @2x/@3x launch screen images regardless of the renderer.
+	UIKit's launch storyboard only resolves @2x/@3x names, and Uno only retargets scale-200/scale-300
+	assets to those for the native renderer. Without them a Skia head's launch screen upscales the 1x image.
+
+	Run it with:  dotnet msbuild src/Resizetizer/test/MSBuild/SplashLaunchImages.proj -t:Validate
+	-->
+
+	<Target Name="Validate">
+		<ItemGroup>
+			<Case Include="ios">
+				<Tfm>net9.0-ios</Tfm>
+				<Tpi>ios</Tpi>
+				<Expected>uno_splash_launch@2x.png;uno_splash_launch@3x.png</Expected>
+			</Case>
+			<Case Include="maccatalyst">
+				<Tfm>net9.0-maccatalyst</Tfm>
+				<Tpi>maccatalyst</Tpi>
+			</Case>
+		</ItemGroup>
+
+		<Message Importance="high" Text="SplashLaunchImages: validating @(Case->Count()) cases." />
+
+		<MSBuild Projects="$(MSBuildThisFileFullPath)"
+				 Targets="_AssertCase"
+				 ContinueOnError="ErrorAndContinue"
+				 Properties="_Case=%(Case.Identity);TargetFrameworkIdentifier=.NETCoreApp;TargetFramework=%(Case.Tfm);TargetPlatformIdentifier=%(Case.Tpi);OutputType=Exe;IntermediateOutputPath=$(MSBuildThisFileDirectory)obj\%(Case.Identity)\;_Expected=%(Case.Expected)" />
+	</Target>
+
+	<Import Project="$(MSBuildThisFileDirectory)..\..\..\.nuspec\Uno.Resizetizer.targets"
+			Condition="'$(_Case)' != ''" />
+
+	<ItemGroup Condition="'$(_Case)' != ''">
+		<UnoSplashScreen Include="Assets\Splash\splash_screen.svg" />
+	</ItemGroup>
+
+	<Target Name="_AssertCase">
+		<!-- Stand-ins for the images UnoResizetizeImages generates. -->
+		<WriteLinesToFile File="$(_UnoIntermediateImages)splash_screen.scale-200.png" Lines="2x" Overwrite="true" />
+		<WriteLinesToFile File="$(_UnoIntermediateImages)splash_screen.scale-300.png" Lines="3x" Overwrite="true" />
+
+		<CallTarget Targets="_UnoAddSplashLaunchImages" />
+		<CallTarget Targets="_CheckLaunchImages" />
+
+		<RemoveDir Directories="$(IntermediateOutputPath)" />
+	</Target>
+
+	<Target Name="_CheckLaunchImages">
+		<ItemGroup>
+			<_Launch Include="@(BundleResource)" Condition="$([System.String]::Copy('%(BundleResource.LogicalName)').StartsWith('uno_splash_launch'))" />
+			<_ExpectedName Include="$(_Expected)" />
+		</ItemGroup>
+
+		<PropertyGroup>
+			<_Actual>@(_Launch->'%(LogicalName)')</_Actual>
+		</PropertyGroup>
+
+		<Error Condition="'$(_Actual)' != '$(_Expected)'"
+			   Text="[$(_Case)] launch images expected '$(_Expected)' but were '$(_Actual)'." />
+		<!-- The iOS SDK keeps a single bundle name per source file (MT7158), so these must be copies. -->
+		<Error Condition="'@(_Launch)' != '' And $([System.String]::Copy('%(_Launch.Identity)').Contains('.scale-'))"
+			   Text="[$(_Case)] '%(_Launch.LogicalName)' is bundled from the generated image itself instead of a copy." />
+		<Error Condition="'@(_Launch)' != '' And !Exists('%(_Launch.Identity)')"
+			   Text="[$(_Case)] '%(_Launch.Identity)' was not copied." />
+	</Target>
+
+</Project>
