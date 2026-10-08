@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -53,9 +53,9 @@ namespace Uno.Resizetizer.Tests
 		}
 
 		[Fact]
-		public void DarkColorAddsThemeBackgrounds()
+		public void DarkBackgroundColorAddsThemeBackgrounds()
 		{
-			var result = Run(new() { ["Color"] = "#FFFFFF", ["DarkColor"] = "#101010" });
+			var result = Run(new() { ["Color"] = "#FFFFFF", ["DarkBackgroundColor"] = "#101010" });
 
 			Assert.Equal(
 				Manifest(
@@ -68,28 +68,28 @@ namespace Uno.Resizetizer.Tests
 		}
 
 		[Fact]
-		public void DarkColorWithoutColorOnlyWritesDarkBackground()
+		public void DarkBackgroundColorWithoutColorOnlyWritesDarkBackground()
 		{
-			var result = Run(new() { ["DarkColor"] = "#101010" });
+			var result = Run(new() { ["DarkBackgroundColor"] = "#101010" }, "var UnoAppManifest = {\n    displayName: \"MyApp\",\n}");
 
 			Assert.DoesNotContain("lightThemeBackgroundColor", result);
 			Assert.Contains("darkThemeBackgroundColor: \"#101010\"", result);
-			Assert.Contains("splashScreenColor: \"transparent\"", result);
+			Assert.DoesNotContain("splashScreenColor", result);
 		}
 
 		[Fact]
-		public void DarkColorAlphaIsStripped()
+		public void DarkBackgroundColorAlphaIsStripped()
 		{
-			var result = Run(new() { ["Color"] = "#80FFFFFF", ["DarkColor"] = "#80101010" });
+			var result = Run(new() { ["Color"] = "#80FFFFFF", ["DarkBackgroundColor"] = "#80101010" });
 
 			Assert.Contains("lightThemeBackgroundColor: \"#ffffff\"", result);
 			Assert.Contains("darkThemeBackgroundColor: \"#101010\"", result);
 		}
 
 		[Fact]
-		public void DarkImageAddsDarkSplashImage()
+		public void DarkFileAddsDarkSplashImage()
 		{
-			var result = Run(new() { ["Color"] = "#FFFFFF", ["DarkImage"] = "images/appiconfg.svg" });
+			var result = Run(new() { ["Color"] = "#FFFFFF", ["DarkFile"] = "images/appiconfg.svg" });
 
 			Assert.Equal(
 				Manifest(
@@ -101,13 +101,13 @@ namespace Uno.Resizetizer.Tests
 		}
 
 		[Fact]
-		public void DarkImageAndColorWriteAllKeys()
+		public void DarkFileAndColorWriteAllKeys()
 		{
 			var result = Run(new()
 			{
 				["Color"] = "#FFFFFF",
-				["DarkColor"] = "#101010",
-				["DarkImage"] = "images/appiconfg.svg",
+				["DarkBackgroundColor"] = "#101010",
+				["DarkFile"] = "images/appiconfg.svg",
 			});
 
 			Assert.Equal(
@@ -125,7 +125,7 @@ namespace Uno.Resizetizer.Tests
 		public void UserProvidedKeysArePreserved()
 		{
 			var result = Run(
-				new() { ["Color"] = "#FFFFFF", ["DarkColor"] = "#101010" },
+				new() { ["Color"] = "#FFFFFF", ["DarkBackgroundColor"] = "#101010" },
 				"var UnoAppManifest = {\n    displayName: \"MyApp\",\n    lightThemeBackgroundColor: \"#ABCDEF\",\n    custom: \"x\",\n}");
 
 			Assert.Contains("displayName: \"MyApp\"", result);
@@ -133,12 +133,96 @@ namespace Uno.Resizetizer.Tests
 		}
 
 		[Fact]
-		public void InvalidDarkColorThrows() =>
-			Assert.Throws<InvalidDataException>(() => Run(new() { ["DarkColor"] = "not-a-color" }));
+		public void BackgroundColorBehavesLikeColor()
+		{
+			var color = Run(new() { ["Color"] = "#512BD4" });
+			var background = Run(new() { ["BackgroundColor"] = "#512BD4" });
+
+			Assert.Equal(color, background);
+		}
 
 		[Fact]
-		public void MissingDarkImageThrows() =>
-			Assert.Throws<FileNotFoundException>(() => Run(new() { ["DarkImage"] = "images/nope.svg" }));
+		public void BackgroundColorWinsOverColor()
+		{
+			var result = Run(new() { ["Color"] = "#111111", ["BackgroundColor"] = "#512BD4" });
+
+			Assert.Contains("splashScreenColor: \"#512bd4\"", result);
+			Assert.DoesNotContain("#111111", result);
+		}
+
+		[Theory]
+		[InlineData(null)]
+		[InlineData("")]
+		[InlineData("transparent")]
+		[InlineData("Transparent")]
+		[InlineData("#00000000")]
+		[InlineData("#00FFFFFF")]
+		public void UnsetBackgroundWritesNoColorKeys(string? background)
+		{
+			var metadata = new Dictionary<string, string>();
+			if (background is not null)
+			{
+				metadata["BackgroundColor"] = background;
+			}
+
+			var result = Run(metadata, "var UnoAppManifest = {\n    displayName: \"MyApp\",\n}");
+
+			Assert.Equal(
+				Manifest(
+					"displayName: \"MyApp\"",
+					"splashScreenImage: \"dotnet_logo.scale-200.png\""),
+				result);
+		}
+
+		[Fact]
+		public void TransparentDarkBackgroundIsTreatedAsUnset()
+		{
+			var result = Run(new() { ["BackgroundColor"] = "#FFFFFF", ["DarkBackgroundColor"] = "#00000000" });
+
+			Assert.DoesNotContain("darkThemeBackgroundColor", result);
+			Assert.DoesNotContain("lightThemeBackgroundColor", result);
+			Assert.Contains("splashScreenColor: \"#ffffff\"", result);
+		}
+
+		[Fact]
+		public void DarkBackgroundWithUnsetBackgroundOnlyWritesDarkKey()
+		{
+			var result = Run(new() { ["DarkBackgroundColor"] = "#101010" }, "var UnoAppManifest = {\n    displayName: \"MyApp\",\n}");
+
+			Assert.Equal(
+				Manifest(
+					"displayName: \"MyApp\"",
+					"splashScreenImage: \"dotnet_logo.scale-200.png\"",
+					"darkThemeBackgroundColor: \"#101010\""),
+				result);
+		}
+
+		[Fact]
+		public void DarkBackgroundWithBackgroundColorWritesBothThemes()
+		{
+			var result = Run(new() { ["BackgroundColor"] = "#FFFFFF", ["DarkBackgroundColor"] = "#101010" });
+
+			Assert.Contains("splashScreenColor: \"#ffffff\"", result);
+			Assert.Contains("lightThemeBackgroundColor: \"#ffffff\"", result);
+			Assert.Contains("darkThemeBackgroundColor: \"#101010\"", result);
+		}
+
+		[Fact]
+		public void InvalidDarkBackgroundColorThrows() =>
+			Assert.Throws<InvalidDataException>(() => Run(new() { ["DarkBackgroundColor"] = "not-a-color" }));
+
+		[Fact]
+		public void BackgroundColorOnItemParsesIntoColor()
+		{
+			var item = new TaskItem("images/dotnet_logo.svg", new Dictionary<string, string> { ["BackgroundColor"] = "#512BD4" });
+			var info = ResizeImageInfo.Parse(item);
+
+			Assert.Equal(SKColor.Parse("#512BD4"), info.Color);
+		}
+
+		[Fact]
+		public void MissingDarkFileThrows() =>
+			Assert.Throws<FileNotFoundException>(() => Run(new() { ["DarkFile"] = "images/nope.svg" }));
 
 		[Theory]
 		[InlineData("dotnet_logo", "appiconfg")]
