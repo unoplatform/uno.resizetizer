@@ -45,8 +45,8 @@ namespace Uno.Resizetizer.Tests
 			Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
 
 			AssertColorsFile("uno_colors.xml", outputColor);
-			AssertImageFile("uno_splash_image.xml", _drawable, "@drawable/appiconfg");
-			AssertImageFile("uno_splash_image_v31.xml", _drawable_v31, "@drawable/appiconfg");
+			AssertImageFile("uno_splash_image.xml", _drawable, "@drawable/appiconfg_png");
+			AssertImageFile("uno_splash_image_v31.xml", _drawable_v31, "@drawable/appiconfg_png");
 		}
 
 		[Theory]
@@ -64,8 +64,8 @@ namespace Uno.Resizetizer.Tests
 			var success = task.Execute();
 			Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
 
-			AssertImageFile("uno_splash_image.xml", _drawable, "@drawable/splash_image_drawable", width, height);
-			AssertImageFile("uno_splash_image_v31.xml", _drawable_v31, "@drawable/splash_image_drawable", width, height);
+			AssertImageFile("uno_splash_image.xml", _drawable, "@drawable/splash_image_drawable_png", width, height);
+			AssertImageFile("uno_splash_image_v31.xml", _drawable_v31, "@drawable/splash_image_drawable_png", width, height);
 		}
 
 		[Fact]
@@ -87,10 +87,13 @@ namespace Uno.Resizetizer.Tests
 		}
 
 		[Theory]
-		[InlineData(null, "appiconfg")]
+		[InlineData(null, "appiconfg_png")]
 		// Assets reaching aapt2 through @(AndroidResource) are lowercased by the Android SDK,
 		// so the generated @drawable reference has to be lowercased to match.
-		[InlineData("images/CustomAlias.svg", "customalias")]
+		[InlineData("images/CustomAlias.svg", "customalias_png")]
+		// Uno retargets the splash image to a drawable named the way its AndroidResourceNameEncoder encodes it
+		[InlineData("images/splash-screen.svg", "splash_screen_png")]
+		[InlineData("images/1splash.svg", "__1splash_png")]
 		public void SplashScreenResectsAlias(string alias, string outputImage)
 		{
 			var splash = new TaskItem("images/appiconfg.svg", new Dictionary<string, string>
