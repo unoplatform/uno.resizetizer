@@ -46,6 +46,13 @@ namespace Uno.Resizetizer
 
 		public SKColor? Color { get; set; }
 
+		public SKColor? DarkColor { get; set; }
+
+		public string? DarkImage { get; set; }
+
+		public string? DarkImageOutputName =>
+			string.IsNullOrWhiteSpace(DarkImage) ? null : Path.GetFileNameWithoutExtension(DarkImage);
+
 		public bool IsVector => IsVectorFilename(Filename);
 
 		public bool IsAppIcon { get; set; }
@@ -121,6 +128,25 @@ namespace Uno.Resizetizer
 				if (info.Color is null && !string.IsNullOrEmpty(color))
 				{
 					throw new InvalidDataException($"Unable to parse color value '{color}' for '{info.Filename}'.");
+				}
+
+				var darkColor = image.GetMetadata(nameof(DarkColor));
+				info.DarkColor = Utils.ParseColorString(darkColor);
+				if (info.DarkColor is null && !string.IsNullOrEmpty(darkColor))
+				{
+					throw new InvalidDataException($"Unable to parse color value '{darkColor}' for '{info.Filename}'.");
+				}
+
+				var darkImage = image.GetMetadata(nameof(DarkImage));
+				if (!string.IsNullOrEmpty(darkImage))
+				{
+					var darkImageInfo = new FileInfo(darkImage);
+					if (!darkImageInfo.Exists)
+					{
+						throw new FileNotFoundException("Unable to find dark image file: " + darkImageInfo.FullName, darkImageInfo.FullName);
+					}
+
+					info.DarkImage = darkImageInfo.FullName;
 				}
 
 				if (bool.TryParse(image.GetMetadata(nameof(IsAppIcon)), out var iai))

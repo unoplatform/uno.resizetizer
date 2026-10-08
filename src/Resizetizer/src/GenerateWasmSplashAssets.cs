@@ -1,5 +1,6 @@
 ﻿using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -82,6 +83,21 @@ public class GenerateWasmSplashAssets_v0 : Task
 		dic["splashScreenImage"] = $"\"{info.OutputName}.scale-200.png\"";
 		dic["splashScreenColor"] = ProcessSplashScreenColor(info);
 
+		if (info.DarkColor is not null)
+		{
+			if (info.Color is not null)
+			{
+				dic["lightThemeBackgroundColor"] = ProcessSplashScreenColor(info);
+			}
+
+			dic["darkThemeBackgroundColor"] = ProcessSplashScreenColor(info.DarkColor);
+		}
+
+		if (info.DarkImageOutputName is { } darkName)
+		{
+			dic["splashScreenImageDark"] = $"\"{darkName}.scale-200.png\"";
+		}
+
 		WriteToFile(dic, writer);
 	}
 
@@ -117,8 +133,11 @@ public class GenerateWasmSplashAssets_v0 : Task
 	}
 
 	static string ProcessSplashScreenColor(ResizeImageInfo info)
+		=> ProcessSplashScreenColor(info.Color);
+
+	static string ProcessSplashScreenColor(SKColor? skColor)
 	{
-		var color = Utils.SkiaColorWithoutAlpha(info.Color);
+		var color = Utils.SkiaColorWithoutAlpha(skColor);
 		return $"\"{color}\"";
 	}
 }
