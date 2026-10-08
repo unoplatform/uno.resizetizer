@@ -46,12 +46,12 @@ namespace Uno.Resizetizer
 
 		public SKColor? Color { get; set; }
 
-		public SKColor? DarkColor { get; set; }
+		public SKColor? DarkBackgroundColor { get; set; }
 
-		public string? DarkImage { get; set; }
+		public string? DarkFile { get; set; }
 
-		public string? DarkImageOutputName =>
-			string.IsNullOrWhiteSpace(DarkImage) ? null : Path.GetFileNameWithoutExtension(DarkImage);
+		public string? DarkFileOutputName =>
+			string.IsNullOrWhiteSpace(DarkFile) ? null : Path.GetFileNameWithoutExtension(DarkFile);
 
 		public bool IsVector => IsVectorFilename(Filename);
 
@@ -123,21 +123,26 @@ namespace Uno.Resizetizer
 					throw new InvalidDataException($"Unable to parse color value '{tintColor}' for '{info.Filename}'.");
 				}
 
-				var color = image.GetMetadata(nameof(Color));
+				var color = image.GetMetadata("BackgroundColor");
+				if (string.IsNullOrEmpty(color))
+				{
+					color = image.GetMetadata(nameof(Color));
+				}
+
 				info.Color = Utils.ParseColorString(color);
 				if (info.Color is null && !string.IsNullOrEmpty(color))
 				{
 					throw new InvalidDataException($"Unable to parse color value '{color}' for '{info.Filename}'.");
 				}
 
-				var darkColor = image.GetMetadata(nameof(DarkColor));
-				info.DarkColor = Utils.ParseColorString(darkColor);
-				if (info.DarkColor is null && !string.IsNullOrEmpty(darkColor))
+				var darkColor = image.GetMetadata(nameof(DarkBackgroundColor));
+				info.DarkBackgroundColor = Utils.ParseColorString(darkColor);
+				if (info.DarkBackgroundColor is null && !string.IsNullOrEmpty(darkColor))
 				{
 					throw new InvalidDataException($"Unable to parse color value '{darkColor}' for '{info.Filename}'.");
 				}
 
-				var darkImage = image.GetMetadata(nameof(DarkImage));
+				var darkImage = image.GetMetadata(nameof(DarkFile));
 				if (!string.IsNullOrEmpty(darkImage))
 				{
 					var darkImageInfo = new FileInfo(darkImage);
@@ -146,7 +151,7 @@ namespace Uno.Resizetizer
 						throw new FileNotFoundException("Unable to find dark image file: " + darkImageInfo.FullName, darkImageInfo.FullName);
 					}
 
-					info.DarkImage = darkImageInfo.FullName;
+					info.DarkFile = darkImageInfo.FullName;
 				}
 
 				if (bool.TryParse(image.GetMetadata(nameof(IsAppIcon)), out var iai))

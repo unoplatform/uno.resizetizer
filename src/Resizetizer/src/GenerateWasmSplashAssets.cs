@@ -1,4 +1,4 @@
-﻿using Microsoft.Build.Framework;
+﻿﻿using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using SkiaSharp;
 using System;
@@ -81,19 +81,26 @@ public class GenerateWasmSplashAssets_v0 : Task
 		var dic = FindWhatINeed(fileToProcess);
 
 		dic["splashScreenImage"] = $"\"{info.OutputName}.scale-200.png\"";
-		dic["splashScreenColor"] = ProcessSplashScreenColor(info);
 
-		if (info.DarkColor is not null)
+		var background = SplashColorOrNull(info.Color);
+		var darkBackground = SplashColorOrNull(info.DarkBackgroundColor);
+
+		if (background is not null)
 		{
-			if (info.Color is not null)
-			{
-				dic["lightThemeBackgroundColor"] = ProcessSplashScreenColor(info);
-			}
-
-			dic["darkThemeBackgroundColor"] = ProcessSplashScreenColor(info.DarkColor);
+			dic["splashScreenColor"] = background;
 		}
 
-		if (info.DarkImageOutputName is { } darkName)
+		if (darkBackground is not null)
+		{
+			if (background is not null)
+			{
+				dic["lightThemeBackgroundColor"] = background;
+			}
+
+			dic["darkThemeBackgroundColor"] = darkBackground;
+		}
+
+		if (info.DarkFileOutputName is { } darkName)
 		{
 			dic["splashScreenImageDark"] = $"\"{darkName}.scale-200.png\"";
 		}
@@ -132,12 +139,14 @@ public class GenerateWasmSplashAssets_v0 : Task
 		return dictionary;
 	}
 
-	static string ProcessSplashScreenColor(ResizeImageInfo info)
-		=> ProcessSplashScreenColor(info.Color);
-
-	static string ProcessSplashScreenColor(SKColor? skColor)
+	// Unset (missing or fully transparent) colors are omitted so the bootstrapper's theme defaults apply
+	static string? SplashColorOrNull(SKColor? skColor)
 	{
-		var color = Utils.SkiaColorWithoutAlpha(skColor);
-		return $"\"{color}\"";
+		if (skColor is not { Alpha: > 0 } color)
+		{
+			return null;
+		}
+
+		return $"\"{Utils.SkiaColorWithoutAlpha(color)}\"";
 	}
 }

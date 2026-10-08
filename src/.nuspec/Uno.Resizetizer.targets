@@ -322,8 +322,8 @@
 				Text="The UnoSplashScreen.Link property will be ignored."/>
 
 		<Error
-				Condition="'%(UnoSplashScreen.DarkImage)' != '' And '$([System.IO.Path]::GetFileNameWithoutExtension(`%(UnoSplashScreen.DarkImage)`))' == '%(UnoSplashScreen.Filename)'"
-				Text="The UnoSplashScreen and its DarkImage must have different file names, otherwise their generated assets would overwrite each other."/>
+				Condition="'%(UnoSplashScreen.DarkFile)' != '' And '$([System.IO.Path]::GetFileNameWithoutExtension(`%(UnoSplashScreen.DarkFile)`))' == '%(UnoSplashScreen.Filename)'"
+				Text="The UnoSplashScreen and its DarkFile must have different file names, otherwise their generated assets would overwrite each other."/>
 
 		<Error
 				Condition="'@(UnoSplashScreen)' != '' And '@(UnoSplashScreen)' == '@(UnoIcon)'"
@@ -342,8 +342,8 @@
 			<UnoItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoImage.ForegroundFile)'))" ProjectDirectory="$(MSBuildProjectDirectory)"/>
 			<UnoItem Include="@(UnoIcon)" ItemGroupName="UnoIcon" Condition="'%(UnoIcon.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoIcon.ForegroundFile)'))"/>
 			<UnoItem Include="@(UnoAsset)" ItemGroupName="UnoAsset" ProjectDirectory="$(MSBuildProjectDirectory)"/>
-			<UnoItem Include="@(UnoSplashScreen)" ItemGroupName="UnoSplashScreen" Condition="'%(UnoSplashScreen.DarkImage)' == ''"/>
-			<UnoItem Include="@(UnoSplashScreen)" ItemGroupName="UnoSplashScreen" Condition="'%(UnoSplashScreen.DarkImage)' != ''" DarkImage="$([System.IO.Path]::GetFullPath('%(UnoSplashScreen.DarkImage)'))"/>
+			<UnoItem Include="@(UnoSplashScreen)" ItemGroupName="UnoSplashScreen" Condition="'%(UnoSplashScreen.DarkFile)' == ''"/>
+			<UnoItem Include="@(UnoSplashScreen)" ItemGroupName="UnoSplashScreen" Condition="'%(UnoSplashScreen.DarkFile)' != ''" DarkFile="$([System.IO.Path]::GetFullPath('%(UnoSplashScreen.DarkFile)'))"/>
 		</ItemGroup>
 
 		<ConvertToAbsolutePath Paths="@(UnoItem)">
@@ -437,6 +437,12 @@
 			<UnoImage Include="@(UnoIcon)" IsAppIcon="True" Link="%(UnoIcon.Link)" />
 		</ItemGroup>
 
+		<!-- BackgroundColor is the preferred name of Color and wins when both are set -->
+		<ItemGroup>
+			<UnoImage Update="@(UnoImage)" Color="%(UnoImage.BackgroundColor)" Condition="'%(UnoImage.BackgroundColor)' != ''"/>
+			<UnoSplashScreen Update="@(UnoSplashScreen)" Color="%(UnoSplashScreen.BackgroundColor)" Condition="'%(UnoSplashScreen.BackgroundColor)' != ''"/>
+		</ItemGroup>
+
 		<!-- Write out item spec and metadata to a file we can use as an inputs for the resize target -->
 		<!-- This allows us to invalidate the build based on not just input image files changing but project item metadata as well -->
 		<WriteLinesToFile
@@ -447,7 +453,7 @@
 
 		<WriteLinesToFile
 				File="$(_UnoSplashInputsFile)"
-				Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);ForegroundScale=%(ForegroundScale);DarkColor=%(DarkColor);DarkImage=%(DarkImage)')"
+				Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);ForegroundScale=%(ForegroundScale);DarkBackgroundColor=%(DarkBackgroundColor);DarkFile=%(DarkFile)')"
 				Overwrite="true"
 				WriteOnlyWhenDifferent="true"/>
 
@@ -493,6 +499,10 @@
 	<!-- This target is meant to be called by platform specific splash screen targets -->
 	<Target Name="GenerateUnoSplashScreens"
 			Condition="'@(UnoSplashScreen)' != ''">
+		<ItemGroup>
+			<UnoSplashScreen Update="@(UnoSplashScreen)" Color="%(UnoSplashScreen.BackgroundColor)" Condition="'%(UnoSplashScreen.BackgroundColor)' != ''"/>
+		</ItemGroup>
+
 		<!-- Resource used by (toolkit) ExtendedSplashScreen -->
 		<PropertyGroup>
 			<_UnoSplashDef>$(IntermediateOutputPath)UnoSplash.def</_UnoSplashDef>
@@ -507,19 +517,19 @@
 			<UnoImage Include="@(UnoSplashScreen)" IsSplashScreen="True" Link=""/>
 		</ItemGroup>
 
-		<!-- The dark theme image goes through the same pipeline as the splash image, with DarkColor (or Color) as its background -->
+		<!-- The dark theme image goes through the same pipeline as the splash image, with DarkBackgroundColor (or Color) as its background -->
 		<ItemGroup Condition="$(_UnoResizetizerIsWasmApp) == 'True'">
-			<_UnoDarkSplashScreen Include="%(UnoSplashScreen.DarkImage)"
-								  Condition="'%(UnoSplashScreen.DarkImage)' != '' And '%(UnoSplashScreen.DarkColor)' != ''"
+			<_UnoDarkSplashScreen Include="%(UnoSplashScreen.DarkFile)"
+								  Condition="'%(UnoSplashScreen.DarkFile)' != '' And '%(UnoSplashScreen.DarkBackgroundColor)' != ''"
 								  BaseSize="%(UnoSplashScreen.BaseSize)"
 								  Resize="%(UnoSplashScreen.Resize)"
 								  TintColor="%(UnoSplashScreen.TintColor)"
-								  Color="%(UnoSplashScreen.DarkColor)"
+								  Color="%(UnoSplashScreen.DarkBackgroundColor)"
 								  ForegroundScale="%(UnoSplashScreen.ForegroundScale)"
 								  Scale="%(UnoSplashScreen.Scale)"
 								  WasmScale="%(UnoSplashScreen.WasmScale)"/>
-			<_UnoDarkSplashScreen Include="%(UnoSplashScreen.DarkImage)"
-								  Condition="'%(UnoSplashScreen.DarkImage)' != '' And '%(UnoSplashScreen.DarkColor)' == ''"
+			<_UnoDarkSplashScreen Include="%(UnoSplashScreen.DarkFile)"
+								  Condition="'%(UnoSplashScreen.DarkFile)' != '' And '%(UnoSplashScreen.DarkBackgroundColor)' == ''"
 								  BaseSize="%(UnoSplashScreen.BaseSize)"
 								  Resize="%(UnoSplashScreen.Resize)"
 								  TintColor="%(UnoSplashScreen.TintColor)"
