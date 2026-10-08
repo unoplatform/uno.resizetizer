@@ -45,7 +45,7 @@ public class GenerateWasmSplashAssets_v0 : Task
 
 		var splash = UnoSplashScreen[0];
 
-		var info = ResizeImageInfo.Parse(splash);
+		var info = ResizeImageInfo.ParseSplashScreen(splash);
 
 		UserAppManifest = EmbeddedResources.FirstOrDefault(x =>
 		{

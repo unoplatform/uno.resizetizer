@@ -118,7 +118,7 @@ namespace Uno.Resizetizer
 		void UpdateManifest(XDocument appx)
 		{
 			var appIconInfo = AppIcon?.Length > 0 ? ResizeImageInfo.Parse(AppIcon[0]) : null;
-			var splashInfo = SplashScreen?.Length > 0 ? ResizeImageInfo.Parse(SplashScreen[0]) : null;
+			var splashInfo = SplashScreen?.Length > 0 ? ResizeImageInfo.ParseSplashScreen(SplashScreen[0]) : null;
 
 			var xmlnsUap = appx.Root.Attributes()
 				.Where(a => a.IsNamespaceDeclaration && a.Value == UapNamespace)

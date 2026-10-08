@@ -71,7 +71,14 @@ namespace Uno.Resizetizer
 		public static ResizeImageInfo Parse(ITaskItem image)
 			=> Parse(new[] { image })[0];
 
+		// UnoSplashScreen items use BackgroundColor only; Color is not supported on them
+		public static ResizeImageInfo ParseSplashScreen(ITaskItem image)
+			=> Parse(new[] { image }, isSplashScreenItem: true)[0];
+
 		public static List<ResizeImageInfo> Parse(IEnumerable<ITaskItem>? images)
+			=> Parse(images, isSplashScreenItem: false);
+
+		static List<ResizeImageInfo> Parse(IEnumerable<ITaskItem>? images, bool isSplashScreenItem)
 		{
 			var r = new List<ResizeImageInfo>();
 
@@ -123,12 +130,8 @@ namespace Uno.Resizetizer
 					throw new InvalidDataException($"Unable to parse color value '{tintColor}' for '{info.Filename}'.");
 				}
 
-				var color = image.GetMetadata("BackgroundColor");
-				if (string.IsNullOrEmpty(color))
-				{
-					color = image.GetMetadata(nameof(Color));
-				}
-
+				var isSplash = isSplashScreenItem || bool.TryParse(image.GetMetadata(nameof(IsSplashScreen)), out var splashFlag) && splashFlag;
+				var color = image.GetMetadata(isSplash ? "BackgroundColor" : nameof(Color));
 				info.Color = Utils.ParseColorString(color);
 				if (info.Color is null && !string.IsNullOrEmpty(color))
 				{

@@ -318,6 +318,11 @@
 				Text="More than one 'UnoSplashScreen' is defined; only the first will be used." />
 
 		<Warning
+				Code="Uno.Resizetizer0001"
+				Condition="'%(UnoSplashScreen.Color)' != ''"
+				Text="The 'Color' metadata is no longer supported on UnoSplashScreen and is ignored. Use 'BackgroundColor' instead."/>
+
+		<Warning
 				Condition="'%(UnoSplashScreen.Link)' != ''"
 				Text="The UnoSplashScreen.Link property will be ignored."/>
 
@@ -437,12 +442,6 @@
 			<UnoImage Include="@(UnoIcon)" IsAppIcon="True" Link="%(UnoIcon.Link)" />
 		</ItemGroup>
 
-		<!-- BackgroundColor is the preferred name of Color and wins when both are set -->
-		<ItemGroup>
-			<UnoImage Update="@(UnoImage)" Color="%(UnoImage.BackgroundColor)" Condition="'%(UnoImage.BackgroundColor)' != ''"/>
-			<UnoSplashScreen Update="@(UnoSplashScreen)" Color="%(UnoSplashScreen.BackgroundColor)" Condition="'%(UnoSplashScreen.BackgroundColor)' != ''"/>
-		</ItemGroup>
-
 		<!-- Write out item spec and metadata to a file we can use as an inputs for the resize target -->
 		<!-- This allows us to invalidate the build based on not just input image files changing but project item metadata as well -->
 		<WriteLinesToFile
@@ -453,7 +452,7 @@
 
 		<WriteLinesToFile
 				File="$(_UnoSplashInputsFile)"
-				Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);ForegroundScale=%(ForegroundScale);DarkBackgroundColor=%(DarkBackgroundColor);DarkFile=%(DarkFile)')"
+				Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(BackgroundColor);ForegroundScale=%(ForegroundScale);DarkBackgroundColor=%(DarkBackgroundColor);DarkFile=%(DarkFile)')"
 				Overwrite="true"
 				WriteOnlyWhenDifferent="true"/>
 
@@ -499,15 +498,11 @@
 	<!-- This target is meant to be called by platform specific splash screen targets -->
 	<Target Name="GenerateUnoSplashScreens"
 			Condition="'@(UnoSplashScreen)' != ''">
-		<ItemGroup>
-			<UnoSplashScreen Update="@(UnoSplashScreen)" Color="%(UnoSplashScreen.BackgroundColor)" Condition="'%(UnoSplashScreen.BackgroundColor)' != ''"/>
-		</ItemGroup>
-
 		<!-- Resource used by (toolkit) ExtendedSplashScreen -->
 		<PropertyGroup>
 			<_UnoSplashDef>$(IntermediateOutputPath)UnoSplash.def</_UnoSplashDef>
 		</PropertyGroup>
-		<WriteLinesToFile File="$(_UnoSplashDef)" Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);ForegroundScale=%(ForegroundScale)')" Overwrite="true" WriteOnlyWhenDifferent="true" />
+		<WriteLinesToFile File="$(_UnoSplashDef)" Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(BackgroundColor);ForegroundScale=%(ForegroundScale)')" Overwrite="true" WriteOnlyWhenDifferent="true" />
 		<ItemGroup>
 			<EmbeddedResource Include="$(_UnoSplashDef)" LogicalName="UnoSplash.def" />
 		</ItemGroup>
@@ -517,14 +512,14 @@
 			<UnoImage Include="@(UnoSplashScreen)" IsSplashScreen="True" Link=""/>
 		</ItemGroup>
 
-		<!-- The dark theme image goes through the same pipeline as the splash image, with DarkBackgroundColor (or Color) as its background -->
+		<!-- The dark theme image goes through the same pipeline as the splash image, with DarkBackgroundColor (or BackgroundColor) as its background -->
 		<ItemGroup Condition="$(_UnoResizetizerIsWasmApp) == 'True'">
 			<_UnoDarkSplashScreen Include="%(UnoSplashScreen.DarkFile)"
 								  Condition="'%(UnoSplashScreen.DarkFile)' != '' And '%(UnoSplashScreen.DarkBackgroundColor)' != ''"
 								  BaseSize="%(UnoSplashScreen.BaseSize)"
 								  Resize="%(UnoSplashScreen.Resize)"
 								  TintColor="%(UnoSplashScreen.TintColor)"
-								  Color="%(UnoSplashScreen.DarkBackgroundColor)"
+								  BackgroundColor="%(UnoSplashScreen.DarkBackgroundColor)"
 								  ForegroundScale="%(UnoSplashScreen.ForegroundScale)"
 								  Scale="%(UnoSplashScreen.Scale)"
 								  WasmScale="%(UnoSplashScreen.WasmScale)"/>
@@ -533,7 +528,7 @@
 								  BaseSize="%(UnoSplashScreen.BaseSize)"
 								  Resize="%(UnoSplashScreen.Resize)"
 								  TintColor="%(UnoSplashScreen.TintColor)"
-								  Color="%(UnoSplashScreen.Color)"
+								  BackgroundColor="%(UnoSplashScreen.BackgroundColor)"
 								  ForegroundScale="%(UnoSplashScreen.ForegroundScale)"
 								  Scale="%(UnoSplashScreen.Scale)"
 								  WasmScale="%(UnoSplashScreen.WasmScale)"/>

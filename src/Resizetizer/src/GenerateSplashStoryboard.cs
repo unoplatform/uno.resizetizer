@@ -24,7 +24,7 @@ namespace Uno.Resizetizer
 #endif
 			var splash = UnoSplashScreen[0];
 
-			var info = ResizeImageInfo.Parse(splash);
+			var info = ResizeImageInfo.ParseSplashScreen(splash);
 
 			var outputFileName = info.OutputName;
 			var image = outputFileName + ".png";
