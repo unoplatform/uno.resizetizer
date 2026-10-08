@@ -174,13 +174,13 @@ jobs:
       if: matrix.os != 'macos-26' || matrix.config != 'Release'
 
       run: |
-        & dotnet build -c ${{ matrix.config }} -p:RunAOTCompilation=false -p:WasmShellILLinkerEnabled=false /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None -bl:./logs/sample-7.0-${{ matrix.config }}.binlog samples/7.0/Uno52ResizetizerTests/Uno52ResizetizerTests.sln
+        & dotnet build -c ${{ matrix.config }} -p:ValidateXcodeVersion=false -p:RunAOTCompilation=false -p:WasmShellILLinkerEnabled=false /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None -bl:./logs/sample-7.0-${{ matrix.config }}.binlog samples/7.0/Uno52ResizetizerTests/Uno52ResizetizerTests.sln
   
     - name: Validate PWA disabled (WasmPWAManifestFile stays empty)
       shell: pwsh
       if: matrix.os != 'macos-26' || matrix.config != 'Release'
       run: |
-        & dotnet build -c ${{ matrix.config }} -p:TargetFramework=net10.0-browserwasm -p:WasmPWAManifestFile= -p:_ValidateNoPwa=true -p:RunAOTCompilation=false -p:WasmShellILLinkerEnabled=false -bl:./logs/sample-7.0-${{ matrix.config }}-pwa-disabled.binlog samples/7.0/Uno52ResizetizerTests/Uno52ResizetizerTests/Uno52ResizetizerTests.csproj
+        & dotnet build -c ${{ matrix.config }} -p:ValidateXcodeVersion=false -p:TargetFramework=net10.0-browserwasm -p:WasmPWAManifestFile= -p:_ValidateNoPwa=true -p:RunAOTCompilation=false -p:WasmShellILLinkerEnabled=false -bl:./logs/sample-7.0-${{ matrix.config }}-pwa-disabled.binlog samples/7.0/Uno52ResizetizerTests/Uno52ResizetizerTests/Uno52ResizetizerTests.csproj
 
     - name: Validate 7.0 Samples app (${{ matrix.config }} Incremental)
   
@@ -190,7 +190,7 @@ jobs:
 
       shell: pwsh
       run: |
-        & dotnet build -c ${{ matrix.config }} /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None /bl:.\logs\sample-7.0-${{ matrix.config }}-incremental.binlog samples\7.0\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
+        & dotnet build -c ${{ matrix.config }} -p:ValidateXcodeVersion=false /p:RunAOTCompilation=false /p:WasmShellILLinkerEnabled=false /p:WindowsAppSDKSelfContained=false /p:WindowsPackageType=None /bl:.\logs\sample-7.0-${{ matrix.config }}-incremental.binlog samples\7.0\Uno52ResizetizerTests\Uno52ResizetizerTests.sln
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
