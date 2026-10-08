@@ -54,6 +54,25 @@ namespace Uno.Resizetizer
 		public static string ToAndroidResourceName(string outputName)
 			=> outputName?.ToLowerInvariant();
 
+		/// <summary>
+		/// Gets the drawable name Uno retargets a generated PNG under on Android.
+		/// </summary>
+		/// <remarks>
+		/// Mirrors Uno's AndroidResourceNameEncoder, which folds the extension into the name
+		/// since Uno 7 (<c>splash_screen.png</c> becomes <c>@drawable/splash_screen_png</c>).
+		/// </remarks>
+		public static string ToAndroidDrawableName(string outputName)
+		{
+			var name = Regex.Replace(outputName + "_png", "[^a-zA-Z0-9_]", "_");
+
+			if (char.IsDigit(name[0]))
+			{
+				name = "__" + name;
+			}
+
+			return ToAndroidResourceName(name);
+		}
+
 		public static SKColor? ParseColorString(string tint)
 		{
 			if (string.IsNullOrEmpty(tint))
