@@ -212,6 +212,134 @@ namespace Uno.Resizetizer.Tests
 			Assert.Throws<InvalidDataException>(() => Run(new() { ["DarkBackgroundColor"] = "not-a-color" }));
 
 		[Fact]
+		public void AccentColorWritesAccentKey()
+		{
+			var result = Run(new() { ["BackgroundColor"] = "#512BD4", ["AccentColor"] = "#FF4500" });
+
+			Assert.Equal(
+				Manifest(
+					"splashScreenImage: \"dotnet_logo.scale-200.png\"",
+					"splashScreenColor: \"#512bd4\"",
+					"displayName: \"MyApp\"",
+					"accentColor: \"#ff4500\""),
+				result);
+		}
+
+		[Fact]
+		public void DarkAccentColorWritesDarkAccentKey()
+		{
+			var result = Run(new() { ["BackgroundColor"] = "#512BD4", ["DarkAccentColor"] = "#FFB347" });
+
+			Assert.Equal(
+				Manifest(
+					"splashScreenImage: \"dotnet_logo.scale-200.png\"",
+					"splashScreenColor: \"#512bd4\"",
+					"displayName: \"MyApp\"",
+					"darkThemeAccentColor: \"#ffb347\""),
+				result);
+		}
+
+		[Fact]
+		public void AccentColorsCombineWithBackgroundsAndDarkFile()
+		{
+			var result = Run(new()
+			{
+				["BackgroundColor"] = "#FFFFFF",
+				["DarkBackgroundColor"] = "#101010",
+				["AccentColor"] = "#FF4500",
+				["DarkAccentColor"] = "#FFB347",
+				["DarkFile"] = "images/appiconfg.svg",
+			});
+
+			Assert.Equal(
+				Manifest(
+					"splashScreenImage: \"dotnet_logo.scale-200.png\"",
+					"splashScreenColor: \"#ffffff\"",
+					"displayName: \"MyApp\"",
+					"lightThemeBackgroundColor: \"#ffffff\"",
+					"darkThemeBackgroundColor: \"#101010\"",
+					"accentColor: \"#ff4500\"",
+					"darkThemeAccentColor: \"#ffb347\"",
+					"splashScreenImageDark: \"appiconfg.scale-200.png\""),
+				result);
+		}
+
+		[Fact]
+		public void AccentColorAlphaIsStripped()
+		{
+			var result = Run(new() { ["AccentColor"] = "#80FF4500" });
+
+			Assert.Contains("accentColor: \"#ff4500\"", result);
+		}
+
+		[Theory]
+		[InlineData(null)]
+		[InlineData("")]
+		[InlineData("transparent")]
+		[InlineData("Transparent")]
+		[InlineData("#00000000")]
+		[InlineData("#00FFFFFF")]
+		public void UnsetAccentColorsWriteNoAccentKeys(string? accent)
+		{
+			var metadata = new Dictionary<string, string> { ["BackgroundColor"] = "#512BD4" };
+			if (accent is not null)
+			{
+				metadata["AccentColor"] = accent;
+				metadata["DarkAccentColor"] = accent;
+			}
+
+			var result = Run(metadata);
+
+			Assert.Equal(
+				Manifest(
+					"splashScreenImage: \"dotnet_logo.scale-200.png\"",
+					"splashScreenColor: \"#512bd4\"",
+					"displayName: \"MyApp\""),
+				result);
+		}
+
+		[Fact]
+		public void UnsetAccentColorKeepsUserAccentKeys()
+		{
+			var result = Run(
+				new() { ["AccentColor"] = "transparent" },
+				"var UnoAppManifest = {\n    accentColor: \"#ABCDEF\",\n    darkThemeAccentColor: \"#123456\",\n}");
+
+			Assert.Contains("accentColor: \"#ABCDEF\"", result);
+			Assert.Contains("darkThemeAccentColor: \"#123456\"", result);
+		}
+
+		[Fact]
+		public void AccentColorsReplaceUserAccentKeysAndKeepOthers()
+		{
+			var result = Run(
+				new() { ["AccentColor"] = "#FF4500", ["DarkAccentColor"] = "#FFB347" },
+				"var UnoAppManifest = {\n    accentColor: \"#ABCDEF\",\n    darkThemeAccentColor: \"#123456\",\n    custom: \"x\",\n}");
+
+			Assert.Contains("accentColor: \"#ff4500\"", result);
+			Assert.Contains("darkThemeAccentColor: \"#ffb347\"", result);
+			Assert.Contains("custom: \"x\"", result);
+			Assert.DoesNotContain("#ABCDEF", result);
+			Assert.DoesNotContain("#123456", result);
+		}
+
+		[Theory]
+		[InlineData("AccentColor")]
+		[InlineData("DarkAccentColor")]
+		public void InvalidAccentColorThrows(string key) =>
+			Assert.Throws<InvalidDataException>(() => Run(new() { [key] = "not-a-color" }));
+
+		[Fact]
+		public void SplashScreenItemParsesAccentColors()
+		{
+			var item = new TaskItem("images/dotnet_logo.svg", new Dictionary<string, string> { ["AccentColor"] = "#FF4500", ["DarkAccentColor"] = "#FFB347" });
+			var info = ResizeImageInfo.ParseSplashScreen(item);
+
+			Assert.Equal(SKColor.Parse("#FF4500"), info.AccentColor);
+			Assert.Equal(SKColor.Parse("#FFB347"), info.DarkAccentColor);
+		}
+
+		[Fact]
 		public void SplashScreenItemParsesBackgroundColorIntoColor()
 		{
 			var item = new TaskItem("images/dotnet_logo.svg", new Dictionary<string, string> { ["BackgroundColor"] = "#512BD4", ["Color"] = "#111111" });
