@@ -100,6 +100,16 @@ public class GenerateWasmSplashAssets_v0 : Task
 			dic["darkThemeBackgroundColor"] = darkBackground;
 		}
 
+		if (SplashColorOrNull(info.AccentColor) is { } accent)
+		{
+			dic["accentColor"] = accent;
+		}
+
+		if (SplashColorOrNull(info.DarkAccentColor) is { } darkAccent)
+		{
+			dic["darkThemeAccentColor"] = darkAccent;
+		}
+
 		if (info.DarkFileOutputName is { } darkName)
 		{
 			dic["splashScreenImageDark"] = $"\"{darkName}.scale-200.png\"";

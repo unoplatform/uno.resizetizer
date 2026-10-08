@@ -48,6 +48,10 @@ namespace Uno.Resizetizer
 
 		public SKColor? DarkBackgroundColor { get; set; }
 
+		public SKColor? AccentColor { get; set; }
+
+		public SKColor? DarkAccentColor { get; set; }
+
 		public string? DarkFile { get; set; }
 
 		public string? DarkFileOutputName =>
@@ -143,6 +147,20 @@ namespace Uno.Resizetizer
 				if (info.DarkBackgroundColor is null && !string.IsNullOrEmpty(darkColor))
 				{
 					throw new InvalidDataException($"Unable to parse color value '{darkColor}' for '{info.Filename}'.");
+				}
+
+				var accentColor = image.GetMetadata(nameof(AccentColor));
+				info.AccentColor = Utils.ParseColorString(accentColor);
+				if (info.AccentColor is null && !string.IsNullOrEmpty(accentColor))
+				{
+					throw new InvalidDataException($"Unable to parse color value '{accentColor}' for '{info.Filename}'.");
+				}
+
+				var darkAccentColor = image.GetMetadata(nameof(DarkAccentColor));
+				info.DarkAccentColor = Utils.ParseColorString(darkAccentColor);
+				if (info.DarkAccentColor is null && !string.IsNullOrEmpty(darkAccentColor))
+				{
+					throw new InvalidDataException($"Unable to parse color value '{darkAccentColor}' for '{info.Filename}'.");
 				}
 
 				var darkImage = image.GetMetadata(nameof(DarkFile));
