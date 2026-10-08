@@ -57,8 +57,10 @@ Properties that can be used across all items
 | `WindowsScale` | Used to scale the image that will be used as SplashScreen on Windows platform.                                              |
 | `WasmScale`    | Used to scale the image that will be used as SplashScreen on Wasm.                                                          |
 | `SkiaScale`    | Used to scale the image that will be used as SplashScreen on Skia targets (GTK and WPF).                                    |
-| `DarkColor`    | Background color of the splash screen in dark theme. Currently used on WebAssembly only. See the dark theme section in the usage guide.                         |
-| `DarkImage`    | Path of the image used as splash screen logo in dark theme. Processed like the main image. Currently used on WebAssembly only. |
+| `BackgroundColor` | Background color of the splash screen, used for all themes unless `DarkBackgroundColor` overrides it. `Color` still works as an alias; when both are set, `BackgroundColor` wins. |
+| `DarkBackgroundColor` | Background color of the splash screen in dark theme. Currently used on WebAssembly only. See the dark theme section in the usage guide. |
+| `DarkFile`     | Path of the image used as splash screen logo in dark theme (the `Include` file is the default one). Processed like the main image. Currently used on WebAssembly only. |
 
 > [!NOTE]
-> `DarkColor` and `DarkImage` are optional. When neither is set, the generated output is unchanged. `DarkImage` must have a different file name than the main splash image.
+> `DarkBackgroundColor` and `DarkFile` are optional. When neither is set, the generated output is unchanged. `DarkFile` must have a different file name than the main splash image.
+> On WebAssembly, a background color that is missing, empty, `transparent` or fully transparent (alpha 0) is treated as unset and no color is written to the manifest, so the bootstrapper uses its theme defaults.

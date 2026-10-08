@@ -251,23 +251,25 @@ Next, some adjustments are needed on `Android`, `Windows (WinUI)`, `WebAssembly`
 
 * `BaseSize`: It's the size that will be used to perform the scaling of the image. The default value is the size of the asset. So, if you feel that your SplashScreen doesn't look right, you can tweak this value.
 
-* `Color`: It's the background color that will be used to fill the empty space on the final SplashScreen asset. The default value is `#FFFFFF` (white).
+* `BackgroundColor`: It's the background color that will be used to fill the empty space on the final SplashScreen asset, for all themes unless `DarkBackgroundColor` is set. The default value is `#FFFFFF` (white). `Color` is the former name and still works; when both are set, `BackgroundColor` wins.
+
+On WebAssembly, a background color that is missing, empty, `transparent` or fully transparent (alpha 0, such as `#00000000`) is treated as unset: no color is written to the generated `AppManifest.js` and the bootstrapper loader uses its WinUI-like theme defaults (`#F3F3F3` light, `#202020` dark).
 
 #### Dark theme splash screen (WebAssembly)
 
 `UnoSplashScreen` also accepts two optional properties for a theme-aware splash screen:
 
-* `DarkColor`: the background color used when the browser prefers a dark theme. `Color` is used for the light theme.
-* `DarkImage`: the image used as the logo when the browser prefers a dark theme. It is processed exactly like the main splash image (same `BaseSize`, `TintColor` and scale), and falls back to the main image when not set.
+* `DarkBackgroundColor`: the background color used when the browser prefers a dark theme. `BackgroundColor` is used for the light theme.
+* `DarkFile`: the image used as the logo when the browser prefers a dark theme. The `Include` file is the default (light) one. It is processed exactly like the main splash image (same `BaseSize`, `TintColor` and scale), and falls back to the main image when not set. It must have a different file name than the main image.
 
 ```xml
 <UnoSplashScreen Include="Assets\SplashScreen\splash_screen.svg"
-                 Color="#FFFFFF"
-                 DarkColor="#202020"
-                 DarkImage="Assets\SplashScreen\splash_screen_dark.svg" />
+                 BackgroundColor="#FFFFFF"
+                 DarkBackgroundColor="#202020"
+                 DarkFile="Assets\SplashScreen\splash_screen_dark.svg" />
 ```
 
-On WebAssembly this adds `lightThemeBackgroundColor`, `darkThemeBackgroundColor` and `splashScreenImageDark` to the generated `AppManifest.js`. `splashScreenColor` is still written for older bootstrappers. Without these properties the generated manifest is unchanged.
+On WebAssembly this adds `darkThemeBackgroundColor`, `splashScreenImageDark` and, when `BackgroundColor` is set, `lightThemeBackgroundColor` to the generated `AppManifest.js`. `splashScreenColor` is still written (from `BackgroundColor`) for older bootstrappers. Without these properties the generated manifest is unchanged.
 
 > [!NOTE]
 > Reacting to the dark theme requires a version of `Uno.Wasm.Bootstrap` with the theme-aware loader ([Uno.Wasm.Bootstrap#1097](https://github.com/unoplatform/Uno.Wasm.Bootstrap/pull/1097)). For the hand-off from the loader to the app, the Uno Toolkit `ExtendedSplashScreen` needs the matching support ([uno.toolkit.ui#1667](https://github.com/unoplatform/uno.toolkit.ui/pull/1667)). Other platforms ignore these properties for now.
@@ -284,7 +286,11 @@ The Uno Platform SDK exposes several properties that simplify the customization 
 
 * `UnoSplashScreenFile`: Specifies the image file for the splash screen.
 * `UnoSplashScreenBaseSize`: Sets the base size for the splash screen image.
-* `UnoSplashScreenColor`: Determines the background color of the splash screen.
+* `UnoSplashScreenBackgroundColor`: Determines the background color of the splash screen (falls back to `UnoSplashScreenColor`).
+* `UnoSplashScreenDarkBackgroundColor`: Determines the background color of the splash screen in dark theme (WebAssembly).
+* `UnoSplashScreenDarkFile`: Specifies the image file for the splash screen in dark theme (WebAssembly).
+
+The dark theme and `BackgroundColor` SDK properties require an Uno.Sdk version that maps them.
 
 To facilitate easier customization, such as adjusting the base size or color of the splash screen, you can leverage SDK properties:
 ```xml
