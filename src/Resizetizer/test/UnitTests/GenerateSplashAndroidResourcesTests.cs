@@ -69,6 +69,26 @@ namespace Uno.Resizetizer.Tests
 		}
 
 		[Fact]
+		public void SdkDefaultWhiteBackgroundIsWritten()
+		{
+			var splash = new TaskItem("images/appiconfg.svg", new Dictionary<string, string> { ["BackgroundColor"] = "#FFFFFF" });
+
+			Assert.True(GetNewTask(splash).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+			AssertColorsFile("uno_colors.xml", "#ffffffff");
+		}
+
+		[Fact]
+		public void ColorIsIgnored()
+		{
+			var splash = new TaskItem("images/appiconfg.svg", new Dictionary<string, string> { ["Color"] = "#FF0000" });
+
+			Assert.True(GetNewTask(splash).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+			Assert.Contains(File.ReadAllLines(_colors), x => x.Contains("#00000000"));
+		}
+
+		[Fact]
 		public void SplashWithoutColor()
 		{
 			var splash = new TaskItem("images/" + "tall_image.png", new Dictionary<string, string>
