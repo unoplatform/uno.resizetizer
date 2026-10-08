@@ -1,6 +1,6 @@
 <Project Sdk="Uno.Sdk.Private">
   <PropertyGroup>
-    <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-browserwasm;net10.0-desktop;net10.0-windows10.0.19041</TargetFrameworks>
+    <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-windows10.0.26100;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
 
     <OutputType>Exe</OutputType>
     <UnoSingleProject>true</UnoSingleProject>
@@ -16,9 +16,18 @@
     <ApplicationPublisher>Uno52ResizetizerTests</ApplicationPublisher>
     <!-- Package Description -->
     <Description>Uno52ResizetizerTests powered by Uno Platform.</Description>
+    <!--
+      If you encounter this error message:
 
+        error NETSDK1148: A referenced assembly was compiled using a newer version of Microsoft.Windows.SDK.NET.dll.
+        Please update to a newer .NET SDK in order to reference this assembly.
+
+      This means that the two packages below must be aligned with the "build" version number of
+      the "Microsoft.Windows.SDK.BuildTools" package above, and the "revision" version number
+      must be the highest found in https://www.nuget.org/packages/Microsoft.Windows.SDK.NET.Ref.
+    -->
     <!-- Uno.UI.Extras needs WinRT.Runtime 2.3.1, which the default Windows SDK projection predates -->
-    <WindowsSdkPackageVersion>10.0.19041.87</WindowsSdkPackageVersion>
+    <WindowsSdkPackageVersion>10.0.26100.87</WindowsSdkPackageVersion>
 
     <!--
       UnoFeatures are used to quickly add and manage features enabled for your app.
@@ -29,7 +38,7 @@
     </UnoFeatures>
   </PropertyGroup>
 
-  <Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041'">
+  <Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'=='net10.0-windows10.0.26100'">
     <Message Text="Validating local assets in '$(OutputPath)'" Importance="high" />
     <Error Condition="!Exists('$(OutputPath)\Assets\Icons\back.png')" Text="back.png file wasn't created." />
     <Error Condition="!Exists('$(OutputPath)\Assets\Icons\back.scale-100.png')" Text="back.scale-100.png file wasn't created." />
