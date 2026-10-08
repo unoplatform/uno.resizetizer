@@ -57,3 +57,8 @@ Properties that can be used across all items
 | `WindowsScale` | Used to scale the image that will be used as SplashScreen on Windows platform.                                              |
 | `WasmScale`    | Used to scale the image that will be used as SplashScreen on Wasm.                                                          |
 | `SkiaScale`    | Used to scale the image that will be used as SplashScreen on Skia targets (GTK and WPF).                                    |
+| `DarkColor`    | Background color of the splash screen in dark theme. Currently used on WebAssembly only. See the dark theme section in the usage guide.                         |
+| `DarkImage`    | Path of the image used as splash screen logo in dark theme. Processed like the main image. Currently used on WebAssembly only. |
+
+> [!NOTE]
+> `DarkColor` and `DarkImage` are optional. When neither is set, the generated output is unchanged. `DarkImage` must have a different file name than the main splash image.

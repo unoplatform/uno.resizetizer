@@ -253,6 +253,25 @@ Next, some adjustments are needed on `Android`, `Windows (WinUI)`, `WebAssembly`
 
 * `Color`: It's the background color that will be used to fill the empty space on the final SplashScreen asset. The default value is `#FFFFFF` (white).
 
+#### Dark theme splash screen (WebAssembly)
+
+`UnoSplashScreen` also accepts two optional properties for a theme-aware splash screen:
+
+* `DarkColor`: the background color used when the browser prefers a dark theme. `Color` is used for the light theme.
+* `DarkImage`: the image used as the logo when the browser prefers a dark theme. It is processed exactly like the main splash image (same `BaseSize`, `TintColor` and scale), and falls back to the main image when not set.
+
+```xml
+<UnoSplashScreen Include="Assets\SplashScreen\splash_screen.svg"
+                 Color="#FFFFFF"
+                 DarkColor="#202020"
+                 DarkImage="Assets\SplashScreen\splash_screen_dark.svg" />
+```
+
+On WebAssembly this adds `lightThemeBackgroundColor`, `darkThemeBackgroundColor` and `splashScreenImageDark` to the generated `AppManifest.js`. `splashScreenColor` is still written for older bootstrappers. Without these properties the generated manifest is unchanged.
+
+> [!NOTE]
+> Reacting to the dark theme requires a version of `Uno.Wasm.Bootstrap` with the theme-aware loader ([Uno.Wasm.Bootstrap#1097](https://github.com/unoplatform/Uno.Wasm.Bootstrap/pull/1097)). For the hand-off from the loader to the app, the Uno Toolkit `ExtendedSplashScreen` needs the matching support ([uno.toolkit.ui#1667](https://github.com/unoplatform/uno.toolkit.ui/pull/1667)). Other platforms ignore these properties for now.
+
 ### 5. Configuring the project to use generated splash screen
 # [**Single Project Based Solution**](#tab/singleproject)
 * When you create a new Uno Platform application, a `Splash` folder is automatically generated under the `Assets` directory. This folder contains `splash_screen.svg` file.
