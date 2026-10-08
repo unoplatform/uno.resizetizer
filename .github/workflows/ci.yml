@@ -124,7 +124,7 @@ jobs:
       with:
         dotnet-version: |
           8.0.x
-          10.0.x
+          9.0.100
 
     - run: |
         ubuntu_release=`lsb_release -rs`
@@ -215,7 +215,7 @@ jobs:
       with:
         dotnet-version: |
           8.0.x
-          10.0.x
+          9.0.100
 
     - run: |
         & dotnet tool update --global uno.check --version ${{ env.UnoCheck_Validation_Version }} --add-source https://api.nuget.org/v3/index.json
