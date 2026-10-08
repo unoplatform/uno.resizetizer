@@ -257,19 +257,23 @@ On WebAssembly, a background color that is missing, empty, `transparent` or full
 
 #### Dark theme splash screen (WebAssembly)
 
-`UnoSplashScreen` also accepts two optional properties for a theme-aware splash screen:
+`UnoSplashScreen` also accepts optional properties for a theme-aware splash screen:
 
 * `DarkBackgroundColor`: the background color used when the browser prefers a dark theme. `BackgroundColor` is used for the light theme.
 * `DarkFile`: the image used as the logo when the browser prefers a dark theme. The `Include` file is the default (light) one. It is processed exactly like the main splash image (same `BaseSize`, `TintColor` and scale), and falls back to the main image when not set. It must have a different file name than the main image.
+* `AccentColor`: the accent color of the loader progress bar on WebAssembly, in both themes unless `DarkAccentColor` is set. When not set, the loader follows the WinUI default accents (`#0067C0` in light theme, `#60CDFF` in dark theme).
+* `DarkAccentColor`: the accent color of the loader progress bar when the browser prefers a dark theme.
 
 ```xml
 <UnoSplashScreen Include="Assets\SplashScreen\splash_screen.svg"
                  BackgroundColor="#FFFFFF"
                  DarkBackgroundColor="#202020"
-                 DarkFile="Assets\SplashScreen\splash_screen_dark.svg" />
+                 DarkFile="Assets\SplashScreen\splash_screen_dark.svg"
+                 AccentColor="#FF4500"
+                 DarkAccentColor="#FFB347" />
 ```
 
-On WebAssembly this adds `darkThemeBackgroundColor`, `splashScreenImageDark` and, when `BackgroundColor` is set, `lightThemeBackgroundColor` to the generated `AppManifest.js`. `splashScreenColor` is still written (from `BackgroundColor`) for older bootstrappers. Without these properties the generated manifest is unchanged.
+On WebAssembly this adds `darkThemeBackgroundColor`, `splashScreenImageDark` and, when `BackgroundColor` is set, `lightThemeBackgroundColor` to the generated `AppManifest.js`. `splashScreenColor` is still written (from `BackgroundColor`) for older bootstrappers. `AccentColor` and `DarkAccentColor` add `accentColor` and `darkThemeAccentColor`. A color that is missing, empty, `transparent` or fully transparent is treated as unset and its key is not written. Without these properties the generated manifest is unchanged.
 
 > [!NOTE]
 > Reacting to the dark theme requires a version of `Uno.Wasm.Bootstrap` with the theme-aware loader ([Uno.Wasm.Bootstrap#1097](https://github.com/unoplatform/Uno.Wasm.Bootstrap/pull/1097)). For the hand-off from the loader to the app, the Uno Toolkit `ExtendedSplashScreen` needs the matching support ([uno.toolkit.ui#1667](https://github.com/unoplatform/uno.toolkit.ui/pull/1667)). Other platforms ignore these properties for now.
@@ -300,6 +304,8 @@ The Uno Platform SDK exposes several properties that simplify the customization 
 * `UnoSplashScreenBackgroundColor`: Determines the background color of the splash screen.
 * `UnoSplashScreenDarkBackgroundColor`: Determines the background color of the splash screen in dark theme (WebAssembly).
 * `UnoSplashScreenDarkFile`: Specifies the image file for the splash screen in dark theme (WebAssembly).
+* `UnoSplashScreenAccentColor`: Determines the accent color of the loader progress bar (WebAssembly).
+* `UnoSplashScreenDarkAccentColor`: Determines the accent color of the loader progress bar in dark theme (WebAssembly).
 
 These properties require an Uno.Sdk version that maps them (Uno Platform 7.0 and later). `UnoSplashScreenColor` is no longer supported; use `UnoSplashScreenBackgroundColor`.
 
