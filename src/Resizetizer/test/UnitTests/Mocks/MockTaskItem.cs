@@ -70,7 +70,7 @@ internal class MockTaskItem(string itemSpec, Dictionary<string, string> metadata
     {
         return new MockTaskItem(itemSpec, new Dictionary<string, string>
         {
-            { "Color", color }
+            { "BackgroundColor", color }
         }, useLink);
     }
 }

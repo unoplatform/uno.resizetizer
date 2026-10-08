@@ -45,7 +45,7 @@ namespace Uno.Resizetizer.Tests
 		{
 			var splash = new TaskItem("images/appiconfg.svg", new Dictionary<string, string>
 			{
-				["Color"] = inputColor,
+				["BackgroundColor"] = inputColor,
 			});
 
 			var task = GetNewTask(splash);

@@ -42,7 +42,7 @@ namespace Uno.Resizetizer.Tests
 		[Fact]
 		public void ManifestIsUnchangedWithoutDarkMetadata()
 		{
-			var result = Run(new() { ["Color"] = "#512BD4" });
+			var result = Run(new() { ["BackgroundColor"] = "#512BD4" });
 
 			Assert.Equal(
 				Manifest(
@@ -55,7 +55,7 @@ namespace Uno.Resizetizer.Tests
 		[Fact]
 		public void DarkBackgroundColorAddsThemeBackgrounds()
 		{
-			var result = Run(new() { ["Color"] = "#FFFFFF", ["DarkBackgroundColor"] = "#101010" });
+			var result = Run(new() { ["BackgroundColor"] = "#FFFFFF", ["DarkBackgroundColor"] = "#101010" });
 
 			Assert.Equal(
 				Manifest(
@@ -80,7 +80,7 @@ namespace Uno.Resizetizer.Tests
 		[Fact]
 		public void DarkBackgroundColorAlphaIsStripped()
 		{
-			var result = Run(new() { ["Color"] = "#80FFFFFF", ["DarkBackgroundColor"] = "#80101010" });
+			var result = Run(new() { ["BackgroundColor"] = "#80FFFFFF", ["DarkBackgroundColor"] = "#80101010" });
 
 			Assert.Contains("lightThemeBackgroundColor: \"#ffffff\"", result);
 			Assert.Contains("darkThemeBackgroundColor: \"#101010\"", result);
@@ -89,7 +89,7 @@ namespace Uno.Resizetizer.Tests
 		[Fact]
 		public void DarkFileAddsDarkSplashImage()
 		{
-			var result = Run(new() { ["Color"] = "#FFFFFF", ["DarkFile"] = "images/appiconfg.svg" });
+			var result = Run(new() { ["BackgroundColor"] = "#FFFFFF", ["DarkFile"] = "images/appiconfg.svg" });
 
 			Assert.Equal(
 				Manifest(
@@ -105,7 +105,7 @@ namespace Uno.Resizetizer.Tests
 		{
 			var result = Run(new()
 			{
-				["Color"] = "#FFFFFF",
+				["BackgroundColor"] = "#FFFFFF",
 				["DarkBackgroundColor"] = "#101010",
 				["DarkFile"] = "images/appiconfg.svg",
 			});
@@ -125,7 +125,7 @@ namespace Uno.Resizetizer.Tests
 		public void UserProvidedKeysArePreserved()
 		{
 			var result = Run(
-				new() { ["Color"] = "#FFFFFF", ["DarkBackgroundColor"] = "#101010" },
+				new() { ["BackgroundColor"] = "#FFFFFF", ["DarkBackgroundColor"] = "#101010" },
 				"var UnoAppManifest = {\n    displayName: \"MyApp\",\n    lightThemeBackgroundColor: \"#ABCDEF\",\n    custom: \"x\",\n}");
 
 			Assert.Contains("displayName: \"MyApp\"", result);
@@ -133,16 +133,16 @@ namespace Uno.Resizetizer.Tests
 		}
 
 		[Fact]
-		public void BackgroundColorBehavesLikeColor()
+		public void ColorIsIgnoredOnSplashScreen()
 		{
-			var color = Run(new() { ["Color"] = "#512BD4" });
-			var background = Run(new() { ["BackgroundColor"] = "#512BD4" });
+			var result = Run(new() { ["Color"] = "#111111" }, "var UnoAppManifest = {\n    displayName: \"MyApp\",\n}");
 
-			Assert.Equal(color, background);
+			Assert.DoesNotContain("splashScreenColor", result);
+			Assert.DoesNotContain("#111111", result);
 		}
 
 		[Fact]
-		public void BackgroundColorWinsOverColor()
+		public void ColorDoesNotOverrideBackgroundColor()
 		{
 			var result = Run(new() { ["Color"] = "#111111", ["BackgroundColor"] = "#512BD4" });
 
@@ -212,12 +212,41 @@ namespace Uno.Resizetizer.Tests
 			Assert.Throws<InvalidDataException>(() => Run(new() { ["DarkBackgroundColor"] = "not-a-color" }));
 
 		[Fact]
-		public void BackgroundColorOnItemParsesIntoColor()
+		public void SplashScreenItemParsesBackgroundColorIntoColor()
 		{
-			var item = new TaskItem("images/dotnet_logo.svg", new Dictionary<string, string> { ["BackgroundColor"] = "#512BD4" });
-			var info = ResizeImageInfo.Parse(item);
+			var item = new TaskItem("images/dotnet_logo.svg", new Dictionary<string, string> { ["BackgroundColor"] = "#512BD4", ["Color"] = "#111111" });
+			var info = ResizeImageInfo.ParseSplashScreen(item);
 
 			Assert.Equal(SKColor.Parse("#512BD4"), info.Color);
+		}
+
+		[Fact]
+		public void SplashScreenItemIgnoresColor()
+		{
+			var item = new TaskItem("images/dotnet_logo.svg", new Dictionary<string, string> { ["Color"] = "#111111" });
+
+			Assert.Null(ResizeImageInfo.ParseSplashScreen(item).Color);
+		}
+
+		[Fact]
+		public void ResizedSplashImageUsesBackgroundColor()
+		{
+			var item = new TaskItem("images/dotnet_logo.svg", new Dictionary<string, string>
+			{
+				["IsSplashScreen"] = "true",
+				["BackgroundColor"] = "#512BD4",
+				["Color"] = "#111111",
+			});
+
+			Assert.Equal(SKColor.Parse("#512BD4"), ResizeImageInfo.Parse(item).Color);
+		}
+
+		[Fact]
+		public void IconKeepsColor()
+		{
+			var item = new TaskItem("images/dotnet_logo.svg", new Dictionary<string, string> { ["Color"] = "#512BD4", ["BackgroundColor"] = "#111111" });
+
+			Assert.Equal(SKColor.Parse("#512BD4"), ResizeImageInfo.Parse(item).Color);
 		}
 
 		[Fact]
