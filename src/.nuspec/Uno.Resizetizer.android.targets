@@ -3,6 +3,7 @@
 			Name="GenerateUnoSplashAndroid"
 			BeforeTargets="ProcessUnoSplashScreens"
 			Condition=" '@(UnoSplashScreen)' != '' "
+			Inputs="@(UnoSplashScreen)"
 			Outputs="$(_UnoSplashStampFile)">
 
 		<CallTarget Targets="GenerateUnoSplashScreens" />
@@ -12,6 +13,8 @@
 				IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
 				UnoSplashScreen="@(UnoSplashScreen)"
 		/>
+
+		<CallTarget Targets="PostGenerateUnoSplashScreens" />
 	</Target>
 
 	<!-- ProcessUnoSplashScreens must run at design time to avoid interactions with the `.R` generation on Android -->
