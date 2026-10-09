@@ -31,22 +31,27 @@ Package Version(s):
 
 Affected platform(s):
 
-- [ ] iOS
-- [ ] Android
+- [ ] All platforms
 - [ ] WebAssembly
-- [ ] WebAssembly renders for Xamarin.Forms
-- [ ] Windows
+- [ ] Android
+- [ ] iOS
+- [ ] tvOS
+- [ ] Desktop (Windows)
+- [ ] Desktop (macOS)
+- [ ] Desktop (X11)
+- [ ] Desktop (Linux Framebuffer)
+- [ ] Windows App SDK
 - [ ] Build tasks
 
-Visual Studio:
+IDE:
 
-- [ ] 2017 (version: )
-- [ ] 2019 (version: )
-- [ ] for Mac (version: )
+- [ ] Visual Studio 2022
+- [ ] Visual Studio Code
+- [ ] Rider Windows
+- [ ] Rider macOS
+- [ ] Rider Linux
 
-Relevant plugins:
-
-- [ ] Resharper (version: )
+IDE version:
 
 ## Anything else we need to know?
 
