@@ -25,7 +25,7 @@ namespace Uno.Resizetizer
 #endif
 			var splash = UnoSplashScreen[0];
 
-			var info = ResizeImageInfo.Parse(splash);
+			var info = ResizeImageInfo.ParseSplashScreen(splash);
 
 			var tools = SkiaSharpTools.Create(info.IsVector, info.Filename, info.BaseSize, info.Color, info.TintColor, this);
 

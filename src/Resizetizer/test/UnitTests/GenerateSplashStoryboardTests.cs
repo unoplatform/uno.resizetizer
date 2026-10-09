@@ -45,7 +45,7 @@ namespace Uno.Resizetizer.Tests
 		{
 			var splash = new TaskItem("images/appiconfg.svg", new Dictionary<string, string>
 			{
-				["Color"] = inputColor,
+				["BackgroundColor"] = inputColor,
 			});
 
 			var task = GetNewTask(splash);
@@ -53,6 +53,26 @@ namespace Uno.Resizetizer.Tests
 			Assert.True(success, LogErrorEvents.FirstOrDefault()?.Message);
 
 			AssertFile(_storyboard, "appiconfg.png", r, g, b, a);
+		}
+
+		[Fact]
+		public void SdkDefaultWhiteBackgroundIsWritten()
+		{
+			var splash = new TaskItem("images/appiconfg.svg", new Dictionary<string, string> { ["BackgroundColor"] = "#FFFFFF" });
+
+			Assert.True(GetNewTask(splash).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+			AssertFile(_storyboard, "appiconfg.png", "1", "1", "1", "1");
+		}
+
+		[Fact]
+		public void UnsetAndLegacyColorFallBackToWhite()
+		{
+			var splash = new TaskItem("images/appiconfg.svg", new Dictionary<string, string> { ["Color"] = "#FF0000" });
+
+			Assert.True(GetNewTask(splash).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+			AssertFile(_storyboard, "appiconfg.png", "1", "1", "1", "1");
 		}
 
 		[Theory]

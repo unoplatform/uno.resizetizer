@@ -23,7 +23,7 @@ namespace Uno.Resizetizer
 #endif
 			var splash = UnoSplashScreen[0];
 
-			var img = ResizeImageInfo.Parse(splash);
+			var img = ResizeImageInfo.ParseSplashScreen(splash);
 
 			Directory.CreateDirectory(IntermediateOutputPath);
 

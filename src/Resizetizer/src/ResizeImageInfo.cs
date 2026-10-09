@@ -46,6 +46,17 @@ namespace Uno.Resizetizer
 
 		public SKColor? Color { get; set; }
 
+		public SKColor? DarkBackgroundColor { get; set; }
+
+		public SKColor? AccentColor { get; set; }
+
+		public SKColor? DarkAccentColor { get; set; }
+
+		public string? DarkFile { get; set; }
+
+		public string? DarkFileOutputName =>
+			string.IsNullOrWhiteSpace(DarkFile) ? null : Path.GetFileNameWithoutExtension(DarkFile);
+
 		public bool IsVector => IsVectorFilename(Filename);
 
 		public bool IsAppIcon { get; set; }
@@ -64,7 +75,14 @@ namespace Uno.Resizetizer
 		public static ResizeImageInfo Parse(ITaskItem image)
 			=> Parse(new[] { image })[0];
 
+		// UnoSplashScreen items use BackgroundColor only; Color is not supported on them
+		public static ResizeImageInfo ParseSplashScreen(ITaskItem image)
+			=> Parse(new[] { image }, isSplashScreenItem: true)[0];
+
 		public static List<ResizeImageInfo> Parse(IEnumerable<ITaskItem>? images)
+			=> Parse(images, isSplashScreenItem: false);
+
+		static List<ResizeImageInfo> Parse(IEnumerable<ITaskItem>? images, bool isSplashScreenItem)
 		{
 			var r = new List<ResizeImageInfo>();
 
@@ -116,11 +134,45 @@ namespace Uno.Resizetizer
 					throw new InvalidDataException($"Unable to parse color value '{tintColor}' for '{info.Filename}'.");
 				}
 
-				var color = image.GetMetadata(nameof(Color));
+				var isSplash = isSplashScreenItem || bool.TryParse(image.GetMetadata(nameof(IsSplashScreen)), out var splashFlag) && splashFlag;
+				var color = image.GetMetadata(isSplash ? "BackgroundColor" : nameof(Color));
 				info.Color = Utils.ParseColorString(color);
 				if (info.Color is null && !string.IsNullOrEmpty(color))
 				{
 					throw new InvalidDataException($"Unable to parse color value '{color}' for '{info.Filename}'.");
+				}
+
+				var darkColor = image.GetMetadata(nameof(DarkBackgroundColor));
+				info.DarkBackgroundColor = Utils.ParseColorString(darkColor);
+				if (info.DarkBackgroundColor is null && !string.IsNullOrEmpty(darkColor))
+				{
+					throw new InvalidDataException($"Unable to parse color value '{darkColor}' for '{info.Filename}'.");
+				}
+
+				var accentColor = image.GetMetadata(nameof(AccentColor));
+				info.AccentColor = Utils.ParseColorString(accentColor);
+				if (info.AccentColor is null && !string.IsNullOrEmpty(accentColor))
+				{
+					throw new InvalidDataException($"Unable to parse color value '{accentColor}' for '{info.Filename}'.");
+				}
+
+				var darkAccentColor = image.GetMetadata(nameof(DarkAccentColor));
+				info.DarkAccentColor = Utils.ParseColorString(darkAccentColor);
+				if (info.DarkAccentColor is null && !string.IsNullOrEmpty(darkAccentColor))
+				{
+					throw new InvalidDataException($"Unable to parse color value '{darkAccentColor}' for '{info.Filename}'.");
+				}
+
+				var darkImage = image.GetMetadata(nameof(DarkFile));
+				if (!string.IsNullOrEmpty(darkImage))
+				{
+					var darkImageInfo = new FileInfo(darkImage);
+					if (!darkImageInfo.Exists)
+					{
+						throw new FileNotFoundException("Unable to find dark image file: " + darkImageInfo.FullName, darkImageInfo.FullName);
+					}
+
+					info.DarkFile = darkImageInfo.FullName;
 				}
 
 				if (bool.TryParse(image.GetMetadata(nameof(IsAppIcon)), out var iai))

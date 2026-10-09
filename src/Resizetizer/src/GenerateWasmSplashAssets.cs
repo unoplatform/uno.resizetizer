@@ -1,5 +1,6 @@
-﻿using Microsoft.Build.Framework;
+﻿﻿using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -44,7 +45,7 @@ public class GenerateWasmSplashAssets_v0 : Task
 
 		var splash = UnoSplashScreen[0];
 
-		var info = ResizeImageInfo.Parse(splash);
+		var info = ResizeImageInfo.ParseSplashScreen(splash);
 
 		UserAppManifest = EmbeddedResources.FirstOrDefault(x =>
 		{
@@ -80,7 +81,39 @@ public class GenerateWasmSplashAssets_v0 : Task
 		var dic = FindWhatINeed(fileToProcess);
 
 		dic["splashScreenImage"] = $"\"{info.OutputName}.scale-200.png\"";
-		dic["splashScreenColor"] = ProcessSplashScreenColor(info);
+
+		var background = SplashColorOrNull(info.Color);
+		var darkBackground = SplashColorOrNull(info.DarkBackgroundColor);
+
+		if (background is not null)
+		{
+			dic["splashScreenColor"] = background;
+		}
+
+		if (darkBackground is not null)
+		{
+			if (background is not null)
+			{
+				dic["lightThemeBackgroundColor"] = background;
+			}
+
+			dic["darkThemeBackgroundColor"] = darkBackground;
+		}
+
+		if (SplashColorOrNull(info.AccentColor) is { } accent)
+		{
+			dic["accentColor"] = accent;
+		}
+
+		if (SplashColorOrNull(info.DarkAccentColor) is { } darkAccent)
+		{
+			dic["darkThemeAccentColor"] = darkAccent;
+		}
+
+		if (info.DarkFileOutputName is { } darkName)
+		{
+			dic["splashScreenImageDark"] = $"\"{darkName}.scale-200.png\"";
+		}
 
 		WriteToFile(dic, writer);
 	}
@@ -116,9 +149,14 @@ public class GenerateWasmSplashAssets_v0 : Task
 		return dictionary;
 	}
 
-	static string ProcessSplashScreenColor(ResizeImageInfo info)
+	// Unset (missing or fully transparent) colors are omitted so the bootstrapper's theme defaults apply
+	static string? SplashColorOrNull(SKColor? skColor)
 	{
-		var color = Utils.SkiaColorWithoutAlpha(info.Color);
-		return $"\"{color}\"";
+		if (skColor is not { Alpha: > 0 } color)
+		{
+			return null;
+		}
+
+		return $"\"{Utils.SkiaColorWithoutAlpha(color)}\"";
 	}
 }

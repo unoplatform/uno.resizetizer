@@ -32,9 +32,9 @@ internal class MockTaskItem(string itemSpec, Dictionary<string, string> metadata
 
     public string GetMetadata(string metadataName)
     {
-        if (_metadata.ContainsKey(metadataName))
+        if (_metadata.TryGetValue(metadataName, out var value))
         {
-            return _metadata[metadataName];
+            return value;
         }
 
         return metadataName switch
@@ -70,7 +70,7 @@ internal class MockTaskItem(string itemSpec, Dictionary<string, string> metadata
     {
         return new MockTaskItem(itemSpec, new Dictionary<string, string>
         {
-            { "Color", color }
+            { "BackgroundColor", color }
         }, useLink);
     }
 }

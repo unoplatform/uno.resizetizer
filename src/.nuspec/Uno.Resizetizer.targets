@@ -318,8 +318,17 @@
 				Text="More than one 'UnoSplashScreen' is defined; only the first will be used." />
 
 		<Warning
+				Code="Uno.Resizetizer0001"
+				Condition="'%(UnoSplashScreen.Color)' != ''"
+				Text="The 'Color' metadata is no longer supported on UnoSplashScreen and is ignored. Use 'BackgroundColor' instead."/>
+
+		<Warning
 				Condition="'%(UnoSplashScreen.Link)' != ''"
 				Text="The UnoSplashScreen.Link property will be ignored."/>
+
+		<Error
+				Condition="'%(UnoSplashScreen.DarkFile)' != '' And '$([System.IO.Path]::GetFileNameWithoutExtension(`%(UnoSplashScreen.DarkFile)`))' == '%(UnoSplashScreen.Filename)'"
+				Text="The UnoSplashScreen and its DarkFile must have different file names, otherwise their generated assets would overwrite each other."/>
 
 		<Error
 				Condition="'@(UnoSplashScreen)' != '' And '@(UnoSplashScreen)' == '@(UnoIcon)'"
@@ -338,7 +347,8 @@
 			<UnoItem Include="@(UnoImage)" ItemGroupName="UnoImage" Condition="'%(UnoImage.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoImage.ForegroundFile)'))" ProjectDirectory="$(MSBuildProjectDirectory)"/>
 			<UnoItem Include="@(UnoIcon)" ItemGroupName="UnoIcon" Condition="'%(UnoIcon.ForegroundFile)' != ''" ForegroundFile="$([System.IO.Path]::GetFullPath('%(UnoIcon.ForegroundFile)'))"/>
 			<UnoItem Include="@(UnoAsset)" ItemGroupName="UnoAsset" ProjectDirectory="$(MSBuildProjectDirectory)"/>
-			<UnoItem Include="@(UnoSplashScreen)" ItemGroupName="UnoSplashScreen"/>
+			<UnoItem Include="@(UnoSplashScreen)" ItemGroupName="UnoSplashScreen" Condition="'%(UnoSplashScreen.DarkFile)' == ''"/>
+			<UnoItem Include="@(UnoSplashScreen)" ItemGroupName="UnoSplashScreen" Condition="'%(UnoSplashScreen.DarkFile)' != ''" DarkFile="$([System.IO.Path]::GetFullPath('%(UnoSplashScreen.DarkFile)'))"/>
 		</ItemGroup>
 
 		<ConvertToAbsolutePath Paths="@(UnoItem)">
@@ -442,7 +452,7 @@
 
 		<WriteLinesToFile
 				File="$(_UnoSplashInputsFile)"
-				Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);ForegroundScale=%(ForegroundScale)')"
+				Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(BackgroundColor);ForegroundScale=%(ForegroundScale);DarkBackgroundColor=%(DarkBackgroundColor);DarkFile=%(DarkFile);AccentColor=%(AccentColor);DarkAccentColor=%(DarkAccentColor)')"
 				Overwrite="true"
 				WriteOnlyWhenDifferent="true"/>
 
@@ -492,7 +502,7 @@
 		<PropertyGroup>
 			<_UnoSplashDef>$(IntermediateOutputPath)UnoSplash.def</_UnoSplashDef>
 		</PropertyGroup>
-		<WriteLinesToFile File="$(_UnoSplashDef)" Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);ForegroundScale=%(ForegroundScale)')" Overwrite="true" WriteOnlyWhenDifferent="true" />
+		<WriteLinesToFile File="$(_UnoSplashDef)" Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(BackgroundColor);ForegroundScale=%(ForegroundScale)')" Overwrite="true" WriteOnlyWhenDifferent="true" />
 		<ItemGroup>
 			<EmbeddedResource Include="$(_UnoSplashDef)" LogicalName="UnoSplash.def" />
 		</ItemGroup>
@@ -500,6 +510,29 @@
 		<!--If not Windows-->
 		<ItemGroup Condition="$(_UnoResizetizerIsWasmApp) == 'True' Or $(_UnoResizetizerIsGenericSkiaApp) == 'True' or '$(_UnoResizetizerIsAndroidApp)' == 'True' or ('$(_UnoResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst')">
 			<UnoImage Include="@(UnoSplashScreen)" IsSplashScreen="True" Link=""/>
+		</ItemGroup>
+
+		<!-- The dark theme image goes through the same pipeline as the splash image, with DarkBackgroundColor (or BackgroundColor) as its background -->
+		<ItemGroup Condition="$(_UnoResizetizerIsWasmApp) == 'True'">
+			<_UnoDarkSplashScreen Include="%(UnoSplashScreen.DarkFile)"
+								  Condition="'%(UnoSplashScreen.DarkFile)' != '' And '%(UnoSplashScreen.DarkBackgroundColor)' != ''"
+								  BaseSize="%(UnoSplashScreen.BaseSize)"
+								  Resize="%(UnoSplashScreen.Resize)"
+								  TintColor="%(UnoSplashScreen.TintColor)"
+								  BackgroundColor="%(UnoSplashScreen.DarkBackgroundColor)"
+								  ForegroundScale="%(UnoSplashScreen.ForegroundScale)"
+								  Scale="%(UnoSplashScreen.Scale)"
+								  WasmScale="%(UnoSplashScreen.WasmScale)"/>
+			<_UnoDarkSplashScreen Include="%(UnoSplashScreen.DarkFile)"
+								  Condition="'%(UnoSplashScreen.DarkFile)' != '' And '%(UnoSplashScreen.DarkBackgroundColor)' == ''"
+								  BaseSize="%(UnoSplashScreen.BaseSize)"
+								  Resize="%(UnoSplashScreen.Resize)"
+								  TintColor="%(UnoSplashScreen.TintColor)"
+								  BackgroundColor="%(UnoSplashScreen.BackgroundColor)"
+								  ForegroundScale="%(UnoSplashScreen.ForegroundScale)"
+								  Scale="%(UnoSplashScreen.Scale)"
+								  WasmScale="%(UnoSplashScreen.WasmScale)"/>
+			<UnoImage Include="@(_UnoDarkSplashScreen)" IsSplashScreen="True" Link=""/>
 		</ItemGroup>
 
 		<MakeDir Directories="$(IntermediateOutputPath)"/>

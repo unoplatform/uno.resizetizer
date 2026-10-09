@@ -57,3 +57,12 @@ Properties that can be used across all items
 | `WindowsScale` | Used to scale the image that will be used as SplashScreen on Windows platform.                                              |
 | `WasmScale`    | Used to scale the image that will be used as SplashScreen on Wasm.                                                          |
 | `SkiaScale`    | Used to scale the image that will be used as SplashScreen on Skia targets (GTK and WPF).                                    |
+| `BackgroundColor` | Background color of the splash screen, used for all themes unless `DarkBackgroundColor` overrides it. Replaces `Color`, which is no longer supported on `UnoSplashScreen` (see the usage guide). |
+| `DarkBackgroundColor` | Background color of the splash screen in dark theme. Currently used on WebAssembly only. See the dark theme section in the usage guide. |
+| `DarkFile`     | Path of the image used as splash screen logo in dark theme (the `Include` file is the default one). Processed like the main image. Currently used on WebAssembly only. |
+| `AccentColor`  | Accent color of the loader progress bar on WebAssembly, in both themes unless `DarkAccentColor` is set. When not set, the loader uses the WinUI default accent (`#0067C0` light, `#60CDFF` dark). Ignored on other platforms. |
+| `DarkAccentColor` | Accent color of the loader progress bar in dark theme on WebAssembly. Ignored on other platforms. |
+
+> [!NOTE]
+> `DarkBackgroundColor`, `DarkFile`, `AccentColor` and `DarkAccentColor` are optional. When neither is set, the generated output is unchanged. `DarkFile` must have a different file name than the main splash image.
+> On WebAssembly, a background color that is missing, empty, `transparent` or fully transparent (alpha 0) is treated as unset and no color is written to the manifest, so the bootstrapper uses its theme defaults. The same applies to `AccentColor` and `DarkAccentColor`.

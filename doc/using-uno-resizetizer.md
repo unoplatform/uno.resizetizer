@@ -251,7 +251,43 @@ Next, some adjustments are needed on `Android`, `Windows (WinUI)`, `WebAssembly`
 
 * `BaseSize`: It's the size that will be used to perform the scaling of the image. The default value is the size of the asset. So, if you feel that your SplashScreen doesn't look right, you can tweak this value.
 
-* `Color`: It's the background color that will be used to fill the empty space on the final SplashScreen asset. The default value is `#FFFFFF` (white).
+* `BackgroundColor`: It's the background color that will be used to fill the empty space on the final SplashScreen asset, for all themes unless `DarkBackgroundColor` is set. The default value is `#FFFFFF` (white). On `UnoSplashScreen`, `BackgroundColor` is the only background color property; see [Migrating from 6.x](#migrating-from-6x).
+
+On WebAssembly, a background color that is missing, empty, `transparent` or fully transparent (alpha 0, such as `#00000000`) is treated as unset: no color is written to the generated `AppManifest.js` and the bootstrapper loader uses its WinUI-like theme defaults (`#F3F3F3` light, `#202020` dark).
+
+#### Dark theme splash screen (WebAssembly)
+
+`UnoSplashScreen` also accepts optional properties for a theme-aware splash screen:
+
+* `DarkBackgroundColor`: the background color used when the browser prefers a dark theme. `BackgroundColor` is used for the light theme.
+* `DarkFile`: the image used as the logo when the browser prefers a dark theme. The `Include` file is the default (light) one. It is processed exactly like the main splash image (same `BaseSize`, `TintColor` and scale), and falls back to the main image when not set. It must have a different file name than the main image.
+* `AccentColor`: the accent color of the loader progress bar on WebAssembly, in both themes unless `DarkAccentColor` is set. When not set, the loader follows the WinUI default accents (`#0067C0` in light theme, `#60CDFF` in dark theme).
+* `DarkAccentColor`: the accent color of the loader progress bar when the browser prefers a dark theme.
+
+```xml
+<UnoSplashScreen Include="Assets\SplashScreen\splash_screen.svg"
+                 BackgroundColor="#FFFFFF"
+                 DarkBackgroundColor="#202020"
+                 DarkFile="Assets\SplashScreen\splash_screen_dark.svg"
+                 AccentColor="#FF4500"
+                 DarkAccentColor="#FFB347" />
+```
+
+On WebAssembly this adds `darkThemeBackgroundColor`, `splashScreenImageDark` and, when `BackgroundColor` is set, `lightThemeBackgroundColor` to the generated `AppManifest.js`. `splashScreenColor` is still written (from `BackgroundColor`) for older bootstrappers. `AccentColor` and `DarkAccentColor` add `accentColor` and `darkThemeAccentColor`. A color that is missing, empty, `transparent` or fully transparent is treated as unset and its key is not written. Without these properties the generated manifest is unchanged.
+
+> [!NOTE]
+> Reacting to the dark theme requires a version of `Uno.Wasm.Bootstrap` with the theme-aware loader ([Uno.Wasm.Bootstrap#1097](https://github.com/unoplatform/Uno.Wasm.Bootstrap/pull/1097)). For the hand-off from the loader to the app, the Uno Toolkit `ExtendedSplashScreen` needs the matching support ([uno.toolkit.ui#1667](https://github.com/unoplatform/uno.toolkit.ui/pull/1667)). Other platforms ignore these properties for now.
+
+#### Migrating from 6.x
+
+Starting with Uno Platform 7.0 (a breaking change), the splash screen background color is `BackgroundColor` only:
+
+| 6.x | 7.0 |
+|-----|-----|
+| `<UnoSplashScreen Color="#512BD4" />` | `<UnoSplashScreen BackgroundColor="#512BD4" />` |
+| `<UnoSplashScreenColor>` (SDK property) | `<UnoSplashScreenBackgroundColor>` |
+
+A `Color` metadata still set on an `UnoSplashScreen` is ignored and the build reports warning `Uno.Resizetizer0001`: `Color` is no longer supported on `UnoSplashScreen`, use `BackgroundColor`. `UnoIcon` and `UnoImage` are not affected and keep using `Color`.
 
 ### 5. Configuring the project to use generated splash screen
 # [**Single Project Based Solution**](#tab/singleproject)
@@ -265,14 +301,20 @@ The Uno Platform SDK exposes several properties that simplify the customization 
 
 * `UnoSplashScreenFile`: Specifies the image file for the splash screen.
 * `UnoSplashScreenBaseSize`: Sets the base size for the splash screen image.
-* `UnoSplashScreenColor`: Determines the background color of the splash screen.
+* `UnoSplashScreenBackgroundColor`: Determines the background color of the splash screen.
+* `UnoSplashScreenDarkBackgroundColor`: Determines the background color of the splash screen in dark theme (WebAssembly).
+* `UnoSplashScreenDarkFile`: Specifies the image file for the splash screen in dark theme (WebAssembly).
+* `UnoSplashScreenAccentColor`: Determines the accent color of the loader progress bar (WebAssembly).
+* `UnoSplashScreenDarkAccentColor`: Determines the accent color of the loader progress bar in dark theme (WebAssembly).
+
+These properties require an Uno.Sdk version that maps them (Uno Platform 7.0 and later). `UnoSplashScreenColor` is no longer supported; use `UnoSplashScreenBackgroundColor`.
 
 To facilitate easier customization, such as adjusting the base size or color of the splash screen, you can leverage SDK properties:
 ```xml
 <PropertyGroup>
     <UnoSplashScreenFile>Assets\SplashScreen\custom_splash_screen.svg</UnoSplashScreenFile>
     <UnoSplashScreenBaseSize>128,128</UnoSplashScreenBaseSize>
-    <UnoSplashScreenColor>#512BD4</UnoSplashScreenColor>
+    <UnoSplashScreenBackgroundColor>#512BD4</UnoSplashScreenBackgroundColor>
 </PropertyGroup>
 ```
 
@@ -287,7 +329,7 @@ This setup ensures that the splash screen settings are centralized, simplifying 
     <UnoSplashScreen
              Include="$(MSBuildThisFileDirectory)SplashScreen\splash_screen.svg"
              BaseSize="128,128"
-             Color="#512BD4" />
+             BackgroundColor="#512BD4" />
     ```
 
 We recommend adding the `UnoSplashScreen` on `base.props` because this file is imported by all head projects, that way, you don't need to add the same configuration on each head project.
@@ -303,7 +345,7 @@ If you want, you can see our sample project in [Uno.Resizetizer GitHub repositor
     <UnoSplashScreen
              Include="..\MyApp.Shared\SplashScreen\splash_screen.svg"
              BaseSize="128,128"
-             Color="#512BD4" />
+             BackgroundColor="#512BD4" />
     ```
 
 You can also make specific files to be `UnoSplashScreen` using Visual Studio, by right-clicking on the file, selecting `Properties`, then `Build Action`, and selecting `UnoSplashScreen`. The image below shows what it looks like:

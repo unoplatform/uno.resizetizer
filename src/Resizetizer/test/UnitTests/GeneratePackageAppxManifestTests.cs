@@ -342,6 +342,38 @@ namespace Uno.Resizetizer.Tests
 
 		}
 
+		[Fact]
+		public void SplashBackgroundColorIsWrittenToManifest()
+		{
+			var splashScreen = MockTaskItem.CreateSplashScreen("images/dotnet_bot.svg", "#512BD4");
+			var task = GetNewTask("testdata/appxmanifest/correctGenerationWithOutBackgroundColor.input.appxmanifest",
+				applicationId: "com.contoso.myapp",
+				applicationDisplayVersion: "1.0.0",
+				applicationVersion: "1",
+				applicationTitle: "Sample App",
+				appIcon: MockTaskItem.CreateAppIcon("images/appicon.svg", "images/appiconfg.svg"),
+				splashScreen: splashScreen);
+
+			Assert.True(task.Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+			Assert.Contains("#512bd4", File.ReadAllText(task.GeneratedAppxManifest!.ItemSpec), System.StringComparison.OrdinalIgnoreCase);
+		}
+
+		[Fact]
+		public void LegacySplashColorIsIgnoredInManifest()
+		{
+			var splashScreen = new MockTaskItem("images/dotnet_bot.svg", new System.Collections.Generic.Dictionary<string, string> { ["Color"] = "#512BD4" }, true);
+			var task = GetNewTask("testdata/appxmanifest/correctGenerationWithOutBackgroundColor.input.appxmanifest",
+				applicationId: "com.contoso.myapp",
+				applicationDisplayVersion: "1.0.0",
+				applicationVersion: "1",
+				applicationTitle: "Sample App",
+				appIcon: MockTaskItem.CreateAppIcon("images/appicon.svg", "images/appiconfg.svg"),
+				splashScreen: splashScreen);
+
+			Assert.True(task.Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+			Assert.DoesNotContain("#512bd4", File.ReadAllText(task.GeneratedAppxManifest!.ItemSpec), System.StringComparison.OrdinalIgnoreCase);
+		}
+
 		static void AssertExpectedManifest(GeneratePackageAppxManifest_v0 task, string inputManifest) =>
 			AssertExpectedManifest(task, new TaskItem(inputManifest));
 

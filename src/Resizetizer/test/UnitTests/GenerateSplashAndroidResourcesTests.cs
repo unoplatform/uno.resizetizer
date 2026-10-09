@@ -37,7 +37,7 @@ namespace Uno.Resizetizer.Tests
 		{
 			var splash = new TaskItem("images/appiconfg.svg", new Dictionary<string, string>
 			{
-				["Color"] = inputColor,
+				["BackgroundColor"] = inputColor,
 			});
 
 			var task = GetNewTask(splash);
@@ -49,6 +49,26 @@ namespace Uno.Resizetizer.Tests
 			AssertImageFile("uno_splash_image_v31.xml", _drawable_v31, "@drawable/appiconfg_png");
 		}
 
+		[Fact]
+		public void AccentColorsDoNotChangeOutput()
+		{
+			var plain = new TaskItem("images/appiconfg.svg", new Dictionary<string, string> { ["BackgroundColor"] = "#abcdef" });
+			Assert.True(GetNewTask(plain).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+			var expectedColors = File.ReadAllText(_colors);
+			var expectedDrawable = File.ReadAllText(_drawable);
+
+			var accented = new TaskItem("images/appiconfg.svg", new Dictionary<string, string>
+			{
+				["BackgroundColor"] = "#abcdef",
+				["AccentColor"] = "#FF4500",
+				["DarkAccentColor"] = "#FFB347",
+			});
+			Assert.True(GetNewTask(accented).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+			Assert.Equal(expectedColors, File.ReadAllText(_colors));
+			Assert.Equal(expectedDrawable, File.ReadAllText(_drawable));
+		}
+
 		[Theory]
 		[InlineData("tall_image.png", "20", "108")]
 		[InlineData("wide_image.png", "108", "20")]
@@ -56,7 +76,7 @@ namespace Uno.Resizetizer.Tests
 		{
 			var splash = new TaskItem("images/" + image, new Dictionary<string, string>
 			{
-				["Color"] = "Red",
+				["BackgroundColor"] = "Red",
 				["Link"] = "splash_image_drawable",
 			});
 
@@ -66,6 +86,26 @@ namespace Uno.Resizetizer.Tests
 
 			AssertImageFile("uno_splash_image.xml", _drawable, "@drawable/splash_image_drawable_png", width, height);
 			AssertImageFile("uno_splash_image_v31.xml", _drawable_v31, "@drawable/splash_image_drawable_png", width, height);
+		}
+
+		[Fact]
+		public void SdkDefaultWhiteBackgroundIsWritten()
+		{
+			var splash = new TaskItem("images/appiconfg.svg", new Dictionary<string, string> { ["BackgroundColor"] = "#FFFFFF" });
+
+			Assert.True(GetNewTask(splash).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+			AssertColorsFile("uno_colors.xml", "#ffffffff");
+		}
+
+		[Fact]
+		public void ColorIsIgnored()
+		{
+			var splash = new TaskItem("images/appiconfg.svg", new Dictionary<string, string> { ["Color"] = "#FF0000" });
+
+			Assert.True(GetNewTask(splash).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+			Assert.Contains(File.ReadAllLines(_colors), x => x.Contains("#00000000"));
 		}
 
 		[Fact]
