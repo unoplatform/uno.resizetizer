@@ -165,6 +165,21 @@ namespace Uno.Resizetizer
 		{
 			string appIconName = img.OutputName;
 
+			// tvOS icons are layered brand assets rather than a set of flat bitmaps
+			if (PlatformType == "tvos")
+			{
+				LogDebugMessage($"tvOS Brand Assets Generator");
+
+				var brandAssetsGen = new TvOSBrandAssetsGenerator(img, appIconName, IntermediateOutputPath, this);
+
+				foreach (var assetGenerated in brandAssetsGen.Generate())
+				{
+					resizedImages.Add(assetGenerated);
+				}
+
+				return;
+			}
+
 			// Generate the actual bitmap app icons themselves
 			var appIconDpis = DpiPath.GetAppIconDpis(PlatformType, appIconName);
 

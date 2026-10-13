@@ -243,6 +243,14 @@ Next, some adjustments are needed on `Android`, `Windows (WinUI)`, `WebAssembly`
 > [!TIP]
 > You can delete the old assets related to the app icon from the project.
 
+# [**tvOS**](#tab/tvOS)
+
+* tvOS app icons are layered, so Uno.Resizetizer generates an `Assets.xcassets/iconapp.brandassets` with a two-layer app icon (the background image or `Color` at the back, the foreground at the front), the App Store icon and both Top Shelf images.
+* Open the `Info.plist` file of the tvOS head, find the `XSAppIconAssets` key, and change its value to `Assets.xcassets/iconapp.brandassets`.
+
+> [!NOTE]
+> If your app icon has a another name than `iconapp`, use it instead. The back layer has to be opaque, so when there is no background image and no `Color`, it is filled with white.
+
 -----
 
 ## UnoSplashScreen
