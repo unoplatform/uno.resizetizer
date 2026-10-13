@@ -39,6 +39,18 @@
 				<ExpectedIOS>True</ExpectedIOS>
 				<ExpectedPlatformType>ios</ExpectedPlatformType>
 			</Case>
+			<!-- tvOS is a UIKit head too, packaged like iOS but with its own icon and launch screen flavour. -->
+			<Case Include="tvos">
+				<Tfm>net9.0-tvos</Tfm>
+				<ExpectedIOS>True</ExpectedIOS>
+				<ExpectedPlatformType>tvos</ExpectedPlatformType>
+			</Case>
+			<Case Include="tvos-runtime-host">
+				<Tfm>net9.0-tvos</Tfm>
+				<RuntimeHost>true</RuntimeHost>
+				<ExpectedIOS>True</ExpectedIOS>
+				<ExpectedPlatformType>tvos</ExpectedPlatformType>
+			</Case>
 			<Case Include="android">
 				<Tfm>net9.0-android</Tfm>
 				<AndroidApp>true</AndroidApp>
@@ -81,12 +93,6 @@
 			<Case Include="desktop-skia-renderer">
 				<Tfm>net9.0-desktop</Tfm>
 				<RuntimeIdentifier>Skia</RuntimeIdentifier>
-				<ExpectedGeneric>True</ExpectedGeneric>
-				<ExpectedPlatformType>wpf</ExpectedPlatformType>
-			</Case>
-			<Case Include="tvos">
-				<Tfm>net9.0-tvos</Tfm>
-				<RuntimeHost>true</RuntimeHost>
 				<ExpectedGeneric>True</ExpectedGeneric>
 				<ExpectedPlatformType>wpf</ExpectedPlatformType>
 			</Case>
