@@ -35,6 +35,7 @@ Properties that can be used across all items
 | `WasmForegroundScale`    | The same as ForegroundScale, but the value will be applied just for Wasm                                                              |
 | `WindowsForegroundScale` | The same as ForegroundScale, but the value will be applied just for Windows                                                           |
 | `IOSForegroundScale`     | The same as ForegroundScale, but the value will be applied just for iOS                                                               |
+| `TvOSForegroundScale`    | The same as ForegroundScale, but the value will be applied just for tvOS                                                              |
 | `SkiaForegroundScale`    | The same as ForegroundScale, but the value will be applied just for Skia targets                                                      |
 
 > [!NOTE]
@@ -54,6 +55,7 @@ Properties that can be used across all items
 | `Scale`        | Used to scale the image that will be used as SplashScreen. This property will be overridden by any platform-specific scale. |
 | `AndroidScale` | Used to scale the image that will be used as SplashScreen on Android platform.                                              |
 | `IOSScale`     | Used to scale the image that will be used as SplashScreen on iOS platform.                                                  |
+| `TvOSScale`    | Used to scale the image that will be used as SplashScreen on tvOS platform.                                                 |
 | `WindowsScale` | Used to scale the image that will be used as SplashScreen on Windows platform.                                              |
 | `WasmScale`    | Used to scale the image that will be used as SplashScreen on Wasm.                                                          |
 | `SkiaScale`    | Used to scale the image that will be used as SplashScreen on Skia targets (GTK and WPF).                                    |

@@ -105,7 +105,8 @@
 	<PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
 		<_UnoResizetizerIsNetCore>True</_UnoResizetizerIsNetCore>
 		<_UnoResizetizerIsAndroidApp Condition=" '$(_UnoResizetizerPlatformIsAndroid)' == 'True' And '$(AndroidApplication)' == 'True'">True</_UnoResizetizerIsAndroidApp>
-		<_UnoResizetizerIsiOSApp Condition="( '$(_UnoResizetizerPlatformIsiOS)' == 'True' OR '$(_UnoResizetizerPlatformIsMacCatalyst)' == 'True' ) And ('$(OutputType)' == 'Exe' Or '$(IsAppExtension)' == 'True')">True</_UnoResizetizerIsiOSApp>
+		<!-- Any UIKit app: iOS, Mac Catalyst and tvOS share the Apple packaging pipeline -->
+		<_UnoResizetizerIsiOSApp Condition="( '$(_UnoResizetizerPlatformIsiOS)' == 'True' OR '$(_UnoResizetizerPlatformIsMacCatalyst)' == 'True' OR '$(_UnoResizetizerPlatformIstvOS)' == 'True' ) And ('$(OutputType)' == 'Exe' Or '$(IsAppExtension)' == 'True')">True</_UnoResizetizerIsiOSApp>
 		<_UnoResizetizerIsWindowsAppSdk Condition="('$(ProjectReunionWinUI)'=='True' Or '$(WindowsAppSDKWinUI)'=='true' or '$(UseWinUITools)'=='true') And '$(_UnoResizetizerPlatformIsWindows)' == 'True' And ('$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe')">True</_UnoResizetizerIsWindowsAppSdk>
 		<_UnoResizetizerIsWasmApp Condition="'$(_UnoResizetizerPlatformIdentifier)' == 'browserwasm'">True</_UnoResizetizerIsWasmApp>
 		<!-- A plain netX.0 head on Microsoft.NET.Sdk.WebAssembly: the browser runtime host marks it, the target framework cannot. -->
@@ -113,10 +114,10 @@
 
 		<!--
 		The fallback kind: a Skia-rendered head that none of the packaging branches above covers - the
-		desktop target framework, tvOS, and a plain netX.0 head. The Uno runtime packages mark a head with
+		desktop target framework, macOS, and a plain netX.0 head. The Uno runtime packages mark a head with
 		$(UnoHasRuntimeHost); some of them flow it transitively, hence the OutputType check.
 
-		It has to be evaluated last and subtract the kinds above, because android, ios and browserwasm heads
+		It has to be evaluated last and subtract the kinds above, because android, ios, tvos and browserwasm heads
 		carry $(UnoHasRuntimeHost) too. Matching here on top of their own kind would import
 		Uno.Resizetizer.windows.skia.targets alongside the platform targets file, whose same-named
 		ProcessUnoSplashScreens target then silently replaces the platform's.
@@ -207,6 +208,7 @@
 	<!-- iOS -->
 	<PropertyGroup Condition="'$(_UnoResizetizerIsiOSApp)' == 'True'">
 		<UnoResizetizerPlatformType>ios</UnoResizetizerPlatformType>
+		<UnoResizetizerPlatformType Condition="'$(_UnoResizetizerPlatformIstvOS)' == 'True'">tvos</UnoResizetizerPlatformType>
 
 		<!-- We don't want to resizetize anything for an inner build when building a universal app, it's enough to only do it in the outer build -->
 		<DisableUnoResizetizer Condition="'$(_IsMultiRidBuild)' == 'true'">true</DisableUnoResizetizer>
