@@ -447,13 +447,13 @@
 		<!-- This allows us to invalidate the build based on not just input image files changing but project item metadata as well -->
 		<WriteLinesToFile
 				File="$(_UnoResizetizerInputsFile)"
-				Lines="@(UnoImage->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);IsAppIcon=%(IsAppIcon);ForegroundScale=%(ForegroundScale);ForegroundFile=%(ForegroundFile)')"
+				Lines="@(UnoImage->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);IsAppIcon=%(IsAppIcon);ForegroundScale=%(ForegroundScale);TvOSForegroundScale=%(TvOSForegroundScale);ForegroundFile=%(ForegroundFile)')"
 				Overwrite="true"
 				WriteOnlyWhenDifferent="true"/>
 
 		<WriteLinesToFile
 				File="$(_UnoSplashInputsFile)"
-				Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(BackgroundColor);ForegroundScale=%(ForegroundScale);DarkBackgroundColor=%(DarkBackgroundColor);DarkFile=%(DarkFile);AccentColor=%(AccentColor);DarkAccentColor=%(DarkAccentColor)')"
+				Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(BackgroundColor);ForegroundScale=%(ForegroundScale);TvOSScale=%(TvOSScale);DarkBackgroundColor=%(DarkBackgroundColor);DarkFile=%(DarkFile);AccentColor=%(AccentColor);DarkAccentColor=%(DarkAccentColor)')"
 				Overwrite="true"
 				WriteOnlyWhenDifferent="true"/>
 
