@@ -91,5 +91,29 @@ namespace Uno.Resizetizer.Tests
 
 			AssertFile(_storyboard, outputImage, "1", "1", "1", "1");
 		}
+
+		[Theory]
+		[InlineData("tvos", "AppleTV", "com.apple.InterfaceBuilder.AppleTV.Storyboard")]
+		[InlineData("ios", "iOS.CocoaTouch", "com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB")]
+		[InlineData(null, "iOS.CocoaTouch", "com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB")]
+		public void StoryboardTargetsThePlatformRuntime(string targetPlatform, string targetRuntime, string documentType)
+		{
+			var splash = new TaskItem("images/appiconfg.svg", new Dictionary<string, string> { ["BackgroundColor"] = "#FF0000" });
+
+			var task = GetNewTask(splash);
+			task.TargetPlatform = targetPlatform;
+			Assert.True(task.Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+			var document = XElement.Load(_storyboard);
+			Assert.Equal(targetRuntime, document.Attribute("targetRuntime")?.Value);
+			Assert.Equal(documentType, document.Attribute("type")?.Value);
+
+			var imageView = document.Descendants("imageView").Single();
+			Assert.Equal("appiconfg.png", imageView.Attribute("image")?.Value);
+
+			var background = document.Descendants("color").Single(c => c.Attribute("key")?.Value == "backgroundColor");
+			Assert.Equal("1", background.Attribute("red")?.Value);
+			Assert.Equal("0", background.Attribute("green")?.Value);
+		}
 	}
 }

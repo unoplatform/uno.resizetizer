@@ -81,7 +81,6 @@
 		<_UnoResizetizerNoTargetPlatform Condition="'$(_UnoResizetizerPlatformIdentifier)' == ''">True</_UnoResizetizerNoTargetPlatform>
 		<_UnoResizetizerPlatformIsAndroid Condition="'$(_UnoResizetizerPlatformIdentifier)' == 'android'">True</_UnoResizetizerPlatformIsAndroid>
 		<_UnoResizetizerPlatformIsiOS Condition="'$(_UnoResizetizerPlatformIdentifier)' == 'ios'">True</_UnoResizetizerPlatformIsiOS>
-		<_UnoResizetizerPlatformIsMacCatalyst Condition="'$(_UnoResizetizerPlatformIdentifier)' == 'maccatalyst'">True</_UnoResizetizerPlatformIsMacCatalyst>
 		<_UnoResizetizerPlatformIsmacOS Condition="'$(_UnoResizetizerPlatformIdentifier)' == 'macos'">True</_UnoResizetizerPlatformIsmacOS>
 		<_UnoResizetizerPlatformIstvOS Condition="'$(_UnoResizetizerPlatformIdentifier)' == 'tvos'">True</_UnoResizetizerPlatformIstvOS>
 		<_UnoResizetizerPlatformIsWindows Condition="$(_UnoResizetizerPlatformIdentifier.Contains('windows')) == 'True'">True</_UnoResizetizerPlatformIsWindows>
@@ -105,7 +104,8 @@
 	<PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
 		<_UnoResizetizerIsNetCore>True</_UnoResizetizerIsNetCore>
 		<_UnoResizetizerIsAndroidApp Condition=" '$(_UnoResizetizerPlatformIsAndroid)' == 'True' And '$(AndroidApplication)' == 'True'">True</_UnoResizetizerIsAndroidApp>
-		<_UnoResizetizerIsiOSApp Condition="( '$(_UnoResizetizerPlatformIsiOS)' == 'True' OR '$(_UnoResizetizerPlatformIsMacCatalyst)' == 'True' ) And ('$(OutputType)' == 'Exe' Or '$(IsAppExtension)' == 'True')">True</_UnoResizetizerIsiOSApp>
+		<!-- Any UIKit app: iOS and tvOS share the Apple packaging pipeline -->
+		<_UnoResizetizerIsiOSApp Condition="( '$(_UnoResizetizerPlatformIsiOS)' == 'True' OR '$(_UnoResizetizerPlatformIstvOS)' == 'True' ) And ('$(OutputType)' == 'Exe' Or '$(IsAppExtension)' == 'True')">True</_UnoResizetizerIsiOSApp>
 		<_UnoResizetizerIsWindowsAppSdk Condition="('$(ProjectReunionWinUI)'=='True' Or '$(WindowsAppSDKWinUI)'=='true' or '$(UseWinUITools)'=='true') And '$(_UnoResizetizerPlatformIsWindows)' == 'True' And ('$(OutputType)' == 'WinExe' Or '$(OutputType)' == 'Exe')">True</_UnoResizetizerIsWindowsAppSdk>
 		<_UnoResizetizerIsWasmApp Condition="'$(_UnoResizetizerPlatformIdentifier)' == 'browserwasm'">True</_UnoResizetizerIsWasmApp>
 		<!-- A plain netX.0 head on Microsoft.NET.Sdk.WebAssembly: the browser runtime host marks it, the target framework cannot. -->
@@ -113,10 +113,10 @@
 
 		<!--
 		The fallback kind: a Skia-rendered head that none of the packaging branches above covers - the
-		desktop target framework, tvOS, and a plain netX.0 head. The Uno runtime packages mark a head with
+		desktop target framework, macOS, and a plain netX.0 head. The Uno runtime packages mark a head with
 		$(UnoHasRuntimeHost); some of them flow it transitively, hence the OutputType check.
 
-		It has to be evaluated last and subtract the kinds above, because android, ios and browserwasm heads
+		It has to be evaluated last and subtract the kinds above, because android, ios, tvos and browserwasm heads
 		carry $(UnoHasRuntimeHost) too. Matching here on top of their own kind would import
 		Uno.Resizetizer.windows.skia.targets alongside the platform targets file, whose same-named
 		ProcessUnoSplashScreens target then silently replaces the platform's.
@@ -132,7 +132,7 @@
 
 	<Import Project="Uno.Resizetizer.android.targets" Condition="'$(_UnoResizetizerIsAndroidApp)' == 'True'"/>
 	<Import Project="Uno.Resizetizer.wasm.targets" Condition="'$(_UnoResizetizerIsWasmApp)' == 'True'"/>
-	<Import Project="Uno.Resizetizer.apple.targets" Condition="'$(_UnoResizetizerIsiOSApp)' == 'True' Or '$(_UnoResizetizerPlatformIsMacCatalyst)' == 'True'"/>
+	<Import Project="Uno.Resizetizer.apple.targets" Condition="'$(_UnoResizetizerIsiOSApp)' == 'True'"/>
 	<Import Project="Uno.Resizetizer.windows.skia.targets" Condition="'$(_UnoResizetizerIsWindowsAppSdk)' == 'True' Or '$(_UnoResizetizerIsGenericSkiaApp)' == 'True'"/>
 
 
@@ -207,6 +207,7 @@
 	<!-- iOS -->
 	<PropertyGroup Condition="'$(_UnoResizetizerIsiOSApp)' == 'True'">
 		<UnoResizetizerPlatformType>ios</UnoResizetizerPlatformType>
+		<UnoResizetizerPlatformType Condition="'$(_UnoResizetizerPlatformIstvOS)' == 'True'">tvos</UnoResizetizerPlatformType>
 
 		<!-- We don't want to resizetize anything for an inner build when building a universal app, it's enough to only do it in the outer build -->
 		<DisableUnoResizetizer Condition="'$(_IsMultiRidBuild)' == 'true'">true</DisableUnoResizetizer>
@@ -446,13 +447,13 @@
 		<!-- This allows us to invalidate the build based on not just input image files changing but project item metadata as well -->
 		<WriteLinesToFile
 				File="$(_UnoResizetizerInputsFile)"
-				Lines="@(UnoImage->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);IsAppIcon=%(IsAppIcon);ForegroundScale=%(ForegroundScale);ForegroundFile=%(ForegroundFile)')"
+				Lines="@(UnoImage->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);IsAppIcon=%(IsAppIcon);ForegroundScale=%(ForegroundScale);TvOSForegroundScale=%(TvOSForegroundScale);ForegroundFile=%(ForegroundFile)')"
 				Overwrite="true"
 				WriteOnlyWhenDifferent="true"/>
 
 		<WriteLinesToFile
 				File="$(_UnoSplashInputsFile)"
-				Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(BackgroundColor);ForegroundScale=%(ForegroundScale);DarkBackgroundColor=%(DarkBackgroundColor);DarkFile=%(DarkFile);AccentColor=%(AccentColor);DarkAccentColor=%(DarkAccentColor)')"
+				Lines="@(UnoSplashScreen->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(BackgroundColor);ForegroundScale=%(ForegroundScale);TvOSScale=%(TvOSScale);DarkBackgroundColor=%(DarkBackgroundColor);DarkFile=%(DarkFile);AccentColor=%(AccentColor);DarkAccentColor=%(DarkAccentColor)')"
 				Overwrite="true"
 				WriteOnlyWhenDifferent="true"/>
 
@@ -508,7 +509,7 @@
 		</ItemGroup>
 
 		<!--If not Windows-->
-		<ItemGroup Condition="$(_UnoResizetizerIsWasmApp) == 'True' Or $(_UnoResizetizerIsGenericSkiaApp) == 'True' or '$(_UnoResizetizerIsAndroidApp)' == 'True' or ('$(_UnoResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst')">
+		<ItemGroup Condition="$(_UnoResizetizerIsWasmApp) == 'True' Or $(_UnoResizetizerIsGenericSkiaApp) == 'True' or '$(_UnoResizetizerIsAndroidApp)' == 'True' or '$(_UnoResizetizerIsiOSApp)' == 'True'">
 			<UnoImage Include="@(UnoSplashScreen)" IsSplashScreen="True" Link=""/>
 		</ItemGroup>
 

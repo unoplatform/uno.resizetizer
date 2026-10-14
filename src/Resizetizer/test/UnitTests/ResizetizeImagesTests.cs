@@ -745,6 +745,167 @@ namespace Uno.Resizetizer.Tests
 			}
 		}
 
+		public class ExecuteFortvOS : ExecuteForApp
+		{
+			const string BrandAssets = "Assets.xcassets/appicon.brandassets";
+
+			ResizetizeImages_v0 GetNewTask(params ITaskItem[] items) =>
+				GetNewTask("tvos", items);
+
+			static ITaskItem AppIcon(Dictionary<string, string> metadata = null)
+			{
+				metadata ??= new();
+				metadata["IsAppIcon"] = bool.TrueString;
+				metadata["ForegroundFile"] = "images/appiconfg.svg";
+
+				return new TaskItem("images/appicon.svg", metadata);
+			}
+
+			[Fact]
+			public void AppIconGeneratesLayeredBrandAssets()
+			{
+				var task = GetNewTask(AppIcon());
+				Assert.True(task.Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+				foreach (var layer in new[] { "Front", "Back" })
+				{
+					AssertFileSize($"{BrandAssets}/App Icon.imagestack/{layer}.imagestacklayer/Content.imageset/appicon{layer}@1x.png", 400, 240);
+					AssertFileSize($"{BrandAssets}/App Icon.imagestack/{layer}.imagestacklayer/Content.imageset/appicon{layer}@2x.png", 800, 480);
+					AssertFileSize($"{BrandAssets}/App Icon - App Store.imagestack/{layer}.imagestacklayer/Content.imageset/appicon{layer}@1x.png", 1280, 768);
+					AssertFileExists($"{BrandAssets}/App Icon.imagestack/{layer}.imagestacklayer/Contents.json");
+				}
+
+				AssertFileSize($"{BrandAssets}/Top Shelf Image.imageset/appiconTopShelf@1x.png", 1920, 720);
+				AssertFileSize($"{BrandAssets}/Top Shelf Image.imageset/appiconTopShelf@2x.png", 3840, 1440);
+				AssertFileSize($"{BrandAssets}/Top Shelf Image Wide.imageset/appiconTopShelf@1x.png", 2320, 720);
+				AssertFileSize($"{BrandAssets}/Top Shelf Image Wide.imageset/appiconTopShelf@2x.png", 4640, 1440);
+
+				AssertFileContains($"{BrandAssets}/App Icon.imagestack/Contents.json",
+					"\"filename\": \"Front.imagestacklayer\"",
+					"\"filename\": \"Back.imagestacklayer\"");
+				AssertFileContains($"{BrandAssets}/App Icon.imagestack/Front.imagestacklayer/Content.imageset/Contents.json",
+					"\"idiom\": \"tv\"",
+					"\"filename\": \"appiconFront@2x.png\"",
+					"\"scale\": \"2x\"");
+			}
+
+			[Fact]
+			public void BrandAssetsContentsListsIconsAndTopShelf()
+			{
+				var task = GetNewTask(AppIcon());
+				Assert.True(task.Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+				var contents = System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(Path.Combine(DestinationDirectory, BrandAssets, "Contents.json")));
+				var assets = contents["assets"].AsArray()
+					.Select(a => (Filename: (string)a["filename"], Role: (string)a["role"], Size: (string)a["size"], Idiom: (string)a["idiom"]))
+					.ToArray();
+
+				Assert.Equal(
+					new[]
+					{
+						("App Icon - App Store.imagestack", "primary-app-icon", "1280x768", "tv"),
+						("App Icon.imagestack", "primary-app-icon", "400x240", "tv"),
+						("Top Shelf Image Wide.imageset", "top-shelf-image-wide", "2320x720", "tv"),
+						("Top Shelf Image.imageset", "top-shelf-image", "1920x720", "tv"),
+					},
+					assets);
+			}
+
+			[Fact]
+			public void EveryGeneratedFileIsReported()
+			{
+				var task = GetNewTask(AppIcon());
+				Assert.True(task.Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+				var reported = task.CopiedResources.Select(r => Path.GetFullPath(r.ItemSpec)).ToHashSet();
+				var generated = Directory.GetFiles(Path.Combine(DestinationDirectory, BrandAssets), "*", SearchOption.AllDirectories)
+					.Select(Path.GetFullPath);
+
+				Assert.All(generated, file => Assert.Contains(file, reported));
+			}
+
+			[Fact]
+			public void BackLayerIsOpaqueAndFrontLayerIsTransparentAroundTheForeground()
+			{
+				var task = GetNewTask(AppIcon(new() { ["Color"] = "#FF0000" }));
+				Assert.True(task.Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+				using var back = SKBitmap.Decode(Path.Combine(DestinationDirectory, BrandAssets, "App Icon.imagestack/Back.imagestacklayer/Content.imageset/appiconBack@1x.png"));
+				Assert.All(new[] { back.GetPixel(0, 0), back.GetPixel(399, 239), back.GetPixel(200, 120) }, p => Assert.Equal(255, p.Alpha));
+
+				// The foreground is fitted into the centered 240x240 square, so the far left and right stay empty
+				using var front = SKBitmap.Decode(Path.Combine(DestinationDirectory, BrandAssets, "App Icon.imagestack/Front.imagestacklayer/Content.imageset/appiconFront@1x.png"));
+				Assert.Equal(0, front.GetPixel(10, 120).Alpha);
+				Assert.Equal(0, front.GetPixel(389, 120).Alpha);
+			}
+
+			[Fact]
+			public void ForegroundOnlyIconFallsBackToSolidBackLayer()
+			{
+				var items = new[]
+				{
+					new TaskItem("images/appiconfg.svg", new Dictionary<string, string>
+					{
+						["IsAppIcon"] = bool.TrueString,
+						["Color"] = "#0000FF",
+					}),
+				};
+
+				var task = GetNewTask(items);
+				Assert.True(task.Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+				using var back = SKBitmap.Decode(Path.Combine(DestinationDirectory, "Assets.xcassets/appiconfg.brandassets/App Icon.imagestack/Back.imagestacklayer/Content.imageset/appiconfgBack@1x.png"));
+				Assert.Equal(SKColors.Blue, back.GetPixel(0, 0));
+				Assert.Equal(SKColors.Blue, back.GetPixel(200, 120));
+			}
+
+			[Fact]
+			public void TvOSForegroundScaleShrinksTheForeground()
+			{
+				SKRectI ForegroundBounds(string scale)
+				{
+					var metadata = new Dictionary<string, string>();
+					if (scale is not null)
+					{
+						metadata["TvOSForegroundScale"] = scale;
+					}
+
+					var task = GetNewTask(AppIcon(metadata));
+					Assert.True(task.Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+					using var front = SKBitmap.Decode(Path.Combine(DestinationDirectory, BrandAssets, "App Icon.imagestack/Front.imagestacklayer/Content.imageset/appiconFront@1x.png"));
+					return OpaqueBounds(front);
+				}
+
+				var full = ForegroundBounds(null);
+				var half = ForegroundBounds("0.5");
+
+				Assert.True(half.Width < full.Width * 0.6, $"Expected {half} to be about half of {full}");
+				Assert.True(half.Height < full.Height * 0.6, $"Expected {half} to be about half of {full}");
+			}
+
+			static SKRectI OpaqueBounds(SKBitmap bitmap)
+			{
+				int left = bitmap.Width, top = bitmap.Height, right = -1, bottom = -1;
+
+				for (var y = 0; y < bitmap.Height; y++)
+				{
+					for (var x = 0; x < bitmap.Width; x++)
+					{
+						if (bitmap.GetPixel(x, y).Alpha > 0)
+						{
+							left = Math.Min(left, x);
+							top = Math.Min(top, y);
+							right = Math.Max(right, x);
+							bottom = Math.Max(bottom, y);
+						}
+					}
+				}
+
+				return new SKRectI(left, top, right + 1, bottom + 1);
+			}
+		}
+
 		public class ExecuteForWindows : ExecuteForApp
 		{
 			ResizetizeImages_v0 GetNewTask(params ITaskItem[] items) =>

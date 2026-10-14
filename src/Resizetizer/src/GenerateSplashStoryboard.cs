@@ -17,6 +17,11 @@ namespace Uno.Resizetizer
 		[Required]
 		public ITaskItem[] UnoSplashScreen { get; set; }
 
+		/// <summary>
+		/// The target platform identifier (e.g. ios, tvos), which decides the storyboard's target runtime.
+		/// </summary>
+		public string TargetPlatform { get; set; }
+
 		public override bool Execute()
 		{
 #if DEBUG_RESIZETIZER
@@ -46,14 +51,18 @@ namespace Uno.Resizetizer
 			FileHelper.WriteFileIfChanged(
 				OutputFile,
 				Log,
-				writer => SubstituteStoryboard(writer, image, rStr, gStr, bStr, aStr));
+				writer => SubstituteStoryboard(writer, image, rStr, gStr, bStr, aStr, TargetPlatform));
 
 			return !Log.HasLoggedErrors;
 		}
 
-		internal static void SubstituteStoryboard(TextWriter writer, string image, string r, string g, string b, string a)
+		internal static void SubstituteStoryboard(TextWriter writer, string image, string r, string g, string b, string a, string targetPlatform = null)
 		{
-			using var resourceStream = typeof(GenerateSplashStoryboard_v0).Assembly.GetManifestResourceStream("UnoSplash.storyboard");
+			var resourceName = string.Equals(targetPlatform, "tvos", System.StringComparison.OrdinalIgnoreCase)
+				? "UnoSplash.tvOS.storyboard"
+				: "UnoSplash.storyboard";
+
+			using var resourceStream = typeof(GenerateSplashStoryboard_v0).Assembly.GetManifestResourceStream(resourceName);
 			using var reader = new StreamReader(resourceStream);
 
 			while (!reader.EndOfStream)

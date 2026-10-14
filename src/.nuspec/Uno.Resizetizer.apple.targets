@@ -7,23 +7,21 @@
 			
 		<CallTarget Targets="GenerateUnoSplashScreens" />
 
-		<!-- iOS, but not Catalyst -->
 		<GenerateSplashStoryboard_v0
-				Condition="'$(TargetPlatformIdentifier)' != 'maccatalyst'"
 				OutputFile="$(_UnoIntermediateStoryboard)"
 				UnoSplashScreen="@(UnoSplashScreen)"
+				TargetPlatform="$(TargetPlatformIdentifier)"
 		/>
-		<PropertyGroup Condition="'$(TargetPlatformIdentifier)' != 'maccatalyst'">
+		<PropertyGroup>
 			<_UnoIntermediateSplashScreenFile>$(_UnoIntermediateStoryboard)</_UnoIntermediateSplashScreenFile>
 		</PropertyGroup>
-		<ItemGroup Condition="'$(_UnoResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'">
+		<ItemGroup>
 			<InterfaceDefinition Include="$(_UnoIntermediateStoryboard)" Link="$([System.IO.Path]::GetFileName($(_UnoIntermediateStoryboard)))"/>
 			<FileWrites Include="$(_UnoIntermediateStoryboard)"/>
 		</ItemGroup>
 
 		<!-- Create a partial info.plist for iOS -->
 		<CreatePartialInfoPlistTask_v0
-				Condition="'$(_UnoResizetizerIsiOSApp)' == 'True' And '$(_UnoIntermediateSplashScreenFile)' != ''"
 				IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
 				PlistName="UnoInfo.plist"
 				Storyboard="$(_UnoIntermediateSplashScreenFile)"/>
@@ -34,7 +32,6 @@
 			DependsOnTargets="GenerateUnoSplashApple"
 			Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
 
-		<!-- iOS, but not Catalyst -->
 		<ItemGroup>
 			<_UnoSplashPListFiles Include="$(_UnoIntermediateSplashScreen)UnoInfo.plist" Condition="Exists('$(_UnoIntermediateSplashScreen)UnoInfo.plist')"/>
 			<PartialAppManifest Include="@(_UnoSplashPListFiles)" Condition="'@(_UnoSplashPListFiles)' != ''"/>
@@ -57,6 +54,10 @@
 			AfterTargets="ProcessResizedImages"
 			DependsOnTargets="ProcessResizedImages"
 			Condition="'$(DesignTimeBuild)' != 'true'">
+		<PropertyGroup>
+			<_UnoIntermediateImagesFullPath>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '$(_UnoIntermediateImages)'))</_UnoIntermediateImagesFullPath>
+		</PropertyGroup>
+
 		<ItemGroup>
 			<_UnoResizetizerCollectedBundleResourceImages Include="@(_UnoResizetizerCollectedImages->'%(FullPath)')">
 				<LogicalName>%(_UnoResizetizerCollectedImages.Filename)%(_UnoResizetizerCollectedImages.Extension)</LogicalName>
@@ -70,6 +71,18 @@
 				<TargetPath>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_UnoResizetizerCollectedBundleResourceImages.Identity)))))\%(_UnoResizetizerCollectedBundleResourceImages.Filename)%(_UnoResizetizerCollectedBundleResourceImages.Extension)</TargetPath>
 				<Link>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_UnoResizetizerCollectedBundleResourceImages.Identity)))))\%(_UnoResizetizerCollectedBundleResourceImages.Filename)%(_UnoResizetizerCollectedBundleResourceImages.Extension)</Link>
 			</ImageAsset>
+
+			<!-- tvOS brand assets nest several folders deep, so keep their whole path inside the catalog -->
+			<ImageAsset Update="@(ImageAsset)"
+					Condition="'$(TargetPlatformIdentifier)' == 'tvos' And $([System.String]::new('%(ImageAsset.FullPath)').StartsWith('$(_UnoIntermediateImagesFullPath)'))">
+				<LogicalName>$([MSBuild]::MakeRelative('$(_UnoIntermediateImagesFullPath)', '%(ImageAsset.FullPath)'))</LogicalName>
+				<TargetPath>$([MSBuild]::MakeRelative('$(_UnoIntermediateImagesFullPath)', '%(ImageAsset.FullPath)'))</TargetPath>
+				<Link>$([MSBuild]::MakeRelative('$(_UnoIntermediateImagesFullPath)', '%(ImageAsset.FullPath)'))</Link>
+			</ImageAsset>
+
+			<!-- The catalog is compiled by actool; its files must not also be bundled loose, where their names collide -->
+			<Content Remove="@(Content)"
+					Condition="'$(TargetPlatformIdentifier)' == 'tvos' And $([System.String]::new('%(Content.FullPath)').StartsWith('$(_UnoIntermediateImagesFullPath)Assets.xcassets'))"/>
 		</ItemGroup>
 
 		<!-- iOS Only -->
