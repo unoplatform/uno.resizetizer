@@ -52,6 +52,36 @@
 				Files="@(_UnoAssetsToCopyToBuildServer)"/>
 	</Target>
 
+	<!--
+		The launch storyboard only resolves @2x/@3x file names. Uno retargets scale-200/scale-300 assets to those
+		names for the native renderer only, so bundle copies of the generated splash images under a dedicated name.
+		Copies, because the iOS SDK keeps a single bundle name per source file (MT7158).
+		Must match GenerateSplashStoryboard_v0.LaunchImage.
+	-->
+	<Target Name="_UnoAddSplashLaunchImages"
+			AfterTargets="UnoResizetizeImages"
+			Condition="'$(_UnoResizetizerIsiOSApp)' == 'True' And '$(TargetPlatformIdentifier)' != 'maccatalyst' And '@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
+		<ItemGroup>
+			<_UnoSplashLaunchImage Include="@(UnoSplashScreen->'$(_UnoIntermediateImages)%(Filename).scale-200.png')" Destination="$(_UnoIntermediateSplashScreen)uno_splash_launch@2x.png" />
+			<_UnoSplashLaunchImage Include="@(UnoSplashScreen->'$(_UnoIntermediateImages)%(Filename).scale-300.png')" Destination="$(_UnoIntermediateSplashScreen)uno_splash_launch@3x.png" />
+		</ItemGroup>
+
+		<Warning Condition="!Exists('%(_UnoSplashLaunchImage.Identity)')"
+				 Text="Uno.Resizetizer: '%(_UnoSplashLaunchImage.Identity)' was not generated, so the iOS launch screen may show no image." />
+
+		<Copy SourceFiles="@(_UnoSplashLaunchImage)"
+			  DestinationFiles="@(_UnoSplashLaunchImage->'%(Destination)')"
+			  SkipUnchangedFiles="true"
+			  Condition="Exists('%(_UnoSplashLaunchImage.Identity)')" />
+
+		<ItemGroup>
+			<BundleResource Include="@(_UnoSplashLaunchImage->'%(Destination)')" Condition="Exists('%(_UnoSplashLaunchImage.Destination)')">
+				<LogicalName>$([System.IO.Path]::GetFileName('%(_UnoSplashLaunchImage.Destination)'))</LogicalName>
+			</BundleResource>
+			<FileWrites Include="@(_UnoSplashLaunchImage->'%(Destination)')" />
+		</ItemGroup>
+	</Target>
+
 	<Target
 			Name="ProcessResizedImagesApple_v0"
 			AfterTargets="ProcessResizedImages"
