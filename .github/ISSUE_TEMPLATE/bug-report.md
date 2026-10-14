@@ -6,7 +6,7 @@ labels: kind/bug, triage/untriaged
 
 <!-- Please use this template while reporting a bug and provide as much info as possible. Not doing so may result in your bug not being addressed in a timely manner. Thanks!
 
-If the matter is security related, please disclose it privately via https://github.com/nventive/Uno/security/
+If the matter is security related, please disclose it privately via https://github.com/unoplatform/uno/security
 -->
 
 ## Current behavior
@@ -25,28 +25,35 @@ If the matter is security related, please disclose it privately via https://gith
 
 <!-- For bug reports Check one or more of the following options with "x" -->
 
-Nuget Package:
+Uno.Sdk version (found in `global.json`):
 
-Package Version(s):
+`Uno{Component}Version` overrides, if any (e.g. `UnoResizetizerVersion` set in your `.csproj` or `Directory.Build.props`):
+
+NuGet package(s) and version(s), if referenced directly:
 
 Affected platform(s):
 
-- [ ] iOS
-- [ ] Android
+- [ ] All platforms
 - [ ] WebAssembly
-- [ ] WebAssembly renders for Xamarin.Forms
-- [ ] Windows
+- [ ] Android
+- [ ] iOS
+- [ ] tvOS
+- [ ] Desktop (Windows)
+- [ ] Desktop (macOS)
+- [ ] Desktop (X11)
+- [ ] Desktop (Linux Framebuffer)
+- [ ] Windows App SDK
 - [ ] Build tasks
 
-Visual Studio:
+IDE:
 
-- [ ] 2017 (version: )
-- [ ] 2019 (version: )
-- [ ] for Mac (version: )
+- [ ] Visual Studio 2022
+- [ ] Visual Studio Code
+- [ ] Rider Windows
+- [ ] Rider macOS
+- [ ] Rider Linux
 
-Relevant plugins:
-
-- [ ] Resharper (version: )
+IDE version:
 
 ## Anything else we need to know?
 
