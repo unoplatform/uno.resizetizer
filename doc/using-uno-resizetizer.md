@@ -238,7 +238,7 @@ Next, some adjustments are needed on `Android`, `Windows (WinUI)`, `WebAssembly`
 * For `iOS`, open the [`info.plist` file](https://github.com/unoplatform/uno.resizetizer/blob/7ad1199ea1a256e171d88e694486e9a8c341c8a2/samples/NewTemplate/Resizetizer.Extensions.Sample.Mobile/iOS/Info.plist), find the `XSAppIconAsset` key, and change its value to `Assets.xcassets/iconapp.appiconset`.
 
 > [!NOTE]
-> If your app icon has a another name than `iconapp`, use it instead.
+> If your app icon has another name than `iconapp`, use it instead.
 >
 > [!TIP]
 > You can delete the old assets related to the app icon from the project.
@@ -249,7 +249,7 @@ Next, some adjustments are needed on `Android`, `Windows (WinUI)`, `WebAssembly`
 * Open the `Info.plist` file of the tvOS head, find the `XSAppIconAssets` key, and change its value to `Assets.xcassets/iconapp.brandassets`.
 
 > [!NOTE]
-> If your app icon has a another name than `iconapp`, use it instead. The back layer has to be opaque, so when there is no background image and no `Color`, it is filled with white.
+> If your app icon has another name than `iconapp`, use it instead. The back layer has to be opaque, so when there is no background image and no `Color`, it is filled with white.
 
 -----
 
