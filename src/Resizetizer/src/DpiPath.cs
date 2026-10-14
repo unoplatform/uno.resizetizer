@@ -302,7 +302,7 @@ namespace Uno.Resizetizer
 		{
 			var result = platform.ToLowerInvariant() switch
 			{
-				"ios" or "maccatalyst" => Ios.AppIcon,
+				"ios" => Ios.AppIcon,
 				"android" => Android.AppIcon,
 				"wpf" when RuntimeInformation.IsOSPlatform(OSPlatform.OSX) => MacOS.AppIcon,
 				"uwp" or "windows" or "wpf" => Windows.AppIcon,

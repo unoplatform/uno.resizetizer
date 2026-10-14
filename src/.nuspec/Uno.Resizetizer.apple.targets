@@ -7,24 +7,21 @@
 			
 		<CallTarget Targets="GenerateUnoSplashScreens" />
 
-		<!-- iOS, but not Catalyst -->
 		<GenerateSplashStoryboard_v0
-				Condition="'$(TargetPlatformIdentifier)' != 'maccatalyst'"
 				OutputFile="$(_UnoIntermediateStoryboard)"
 				UnoSplashScreen="@(UnoSplashScreen)"
 				TargetPlatform="$(TargetPlatformIdentifier)"
 		/>
-		<PropertyGroup Condition="'$(TargetPlatformIdentifier)' != 'maccatalyst'">
+		<PropertyGroup>
 			<_UnoIntermediateSplashScreenFile>$(_UnoIntermediateStoryboard)</_UnoIntermediateSplashScreenFile>
 		</PropertyGroup>
-		<ItemGroup Condition="'$(_UnoResizetizerIsiOSApp)' == 'True' and '$(TargetPlatformIdentifier)' != 'maccatalyst'">
+		<ItemGroup>
 			<InterfaceDefinition Include="$(_UnoIntermediateStoryboard)" Link="$([System.IO.Path]::GetFileName($(_UnoIntermediateStoryboard)))"/>
 			<FileWrites Include="$(_UnoIntermediateStoryboard)"/>
 		</ItemGroup>
 
 		<!-- Create a partial info.plist for iOS -->
 		<CreatePartialInfoPlistTask_v0
-				Condition="'$(_UnoResizetizerIsiOSApp)' == 'True' And '$(_UnoIntermediateSplashScreenFile)' != ''"
 				IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
 				PlistName="UnoInfo.plist"
 				Storyboard="$(_UnoIntermediateSplashScreenFile)"/>
@@ -35,7 +32,6 @@
 			DependsOnTargets="GenerateUnoSplashApple"
 			Condition="'@(UnoSplashScreen)' != '' And '$(DesignTimeBuild)' != 'true'">
 
-		<!-- iOS, but not Catalyst -->
 		<ItemGroup>
 			<_UnoSplashPListFiles Include="$(_UnoIntermediateSplashScreen)UnoInfo.plist" Condition="Exists('$(_UnoIntermediateSplashScreen)UnoInfo.plist')"/>
 			<PartialAppManifest Include="@(_UnoSplashPListFiles)" Condition="'@(_UnoSplashPListFiles)' != ''"/>

@@ -162,7 +162,7 @@ You can also make specific files to be `UnoIcon` using Visual Studio, by right-c
 
 -----
 
-Next, some adjustments are needed on `Android`, `Windows (WinUI)`, `WebAssembly`, `mac-catalyst`, and `iOS`.
+Next, some adjustments are needed on `Android`, `Windows (WinUI)`, `WebAssembly`, `iOS`, and `tvOS`.
 
 # [**Android**](#tab/Android)
 
@@ -235,7 +235,7 @@ Next, some adjustments are needed on `Android`, `Windows (WinUI)`, `WebAssembly`
 
 # [**iOS**](#tab/iOS)
 
-* For `mac-catalyst` and `iOS`, open the [`info.plist` file](https://github.com/unoplatform/uno.resizetizer/blob/7ad1199ea1a256e171d88e694486e9a8c341c8a2/samples/NewTemplate/Resizetizer.Extensions.Sample.Mobile/iOS/Info.plist), find the `XSAppIconAsset` key, and change its value to `Assets.xcassets/iconapp.appiconset`.
+* For `iOS`, open the [`info.plist` file](https://github.com/unoplatform/uno.resizetizer/blob/7ad1199ea1a256e171d88e694486e9a8c341c8a2/samples/NewTemplate/Resizetizer.Extensions.Sample.Mobile/iOS/Info.plist), find the `XSAppIconAsset` key, and change its value to `Assets.xcassets/iconapp.appiconset`.
 
 > [!NOTE]
 > If your app icon has a another name than `iconapp`, use it instead.
