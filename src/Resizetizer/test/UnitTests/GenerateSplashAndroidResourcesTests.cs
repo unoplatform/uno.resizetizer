@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -147,6 +149,88 @@ namespace Uno.Resizetizer.Tests
 
 			AssertImageFile("uno_splash_image.xml", _drawable, $"@drawable/{outputImage}");
 			AssertImageFile("uno_splash_image_v31.xml", _drawable_v31, $"@drawable/{outputImage}");
+		}
+
+		// https://github.com/unoplatform/uno.resizetizer/issues/293
+		// The task runs on every build, so it must not touch outputs whose content is unchanged:
+		// aapt2 would recompile them and the APK would be repackaged and reinstalled each time.
+		[Fact]
+		public void UnchangedOutputsAreNotRewritten()
+		{
+			var splash = new TaskItem("images/appiconfg.svg", new Dictionary<string, string> { ["BackgroundColor"] = "#abcdef" });
+			Assert.True(GetNewTask(splash).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+			var past = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+			foreach (var file in new[] { _colors, _drawable, _drawable_v31 })
+			{
+				File.SetLastWriteTimeUtc(file, past);
+			}
+
+			Assert.True(GetNewTask(splash).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+			Assert.Equal(past, File.GetLastWriteTimeUtc(_colors));
+			Assert.Equal(past, File.GetLastWriteTimeUtc(_drawable));
+			Assert.Equal(past, File.GetLastWriteTimeUtc(_drawable_v31));
+		}
+
+		// The Android SDK's _ConvertResourcesCases rewrites these files in place in its own format
+		[Fact]
+		public void OutputsReformattedByAndroidAreNotRewritten()
+		{
+			var splash = new TaskItem("images/appiconfg.svg", new Dictionary<string, string> { ["BackgroundColor"] = "#abcdef" });
+			Assert.True(GetNewTask(splash).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+			var past = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+			var androidFormat = new XmlWriterSettings { OmitXmlDeclaration = true, Indent = false, Encoding = new UTF8Encoding(false) };
+			foreach (var file in new[] { _colors, _drawable, _drawable_v31 })
+			{
+				var document = XDocument.Load(file);
+				using (var writer = XmlWriter.Create(file, androidFormat))
+				{
+					document.Save(writer);
+				}
+				File.SetLastWriteTimeUtc(file, past);
+			}
+
+			Assert.True(GetNewTask(splash).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+			Assert.Equal(past, File.GetLastWriteTimeUtc(_colors));
+			Assert.Equal(past, File.GetLastWriteTimeUtc(_drawable));
+			Assert.Equal(past, File.GetLastWriteTimeUtc(_drawable_v31));
+		}
+
+		[Fact]
+		public void CorruptOutputsAreRewritten()
+		{
+			var splash = new TaskItem("images/appiconfg.svg", new Dictionary<string, string> { ["BackgroundColor"] = "#abcdef" });
+			Assert.True(GetNewTask(splash).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+			File.WriteAllText(_colors, "<resources>");
+
+			Assert.True(GetNewTask(splash).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+			AssertColorsFile("uno_colors.xml", "#ffabcdef");
+		}
+
+		[Fact]
+		public void ChangedOutputsAreRewritten()
+		{
+			var splash = new TaskItem("images/appiconfg.svg", new Dictionary<string, string> { ["BackgroundColor"] = "#abcdef" });
+			Assert.True(GetNewTask(splash).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+			var past = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+			foreach (var file in new[] { _colors, _drawable, _drawable_v31 })
+			{
+				File.SetLastWriteTimeUtc(file, past);
+			}
+
+			var recolored = new TaskItem("images/appiconfg.svg", new Dictionary<string, string> { ["BackgroundColor"] = "Red" });
+			Assert.True(GetNewTask(recolored).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+			AssertColorsFile("uno_colors.xml", "#ffff0000");
+			Assert.NotEqual(past, File.GetLastWriteTimeUtc(_colors));
+			Assert.Equal(past, File.GetLastWriteTimeUtc(_drawable));
+			Assert.Equal(past, File.GetLastWriteTimeUtc(_drawable_v31));
 		}
 
 		void AssertColorsFile(string expectedFilename, string color)

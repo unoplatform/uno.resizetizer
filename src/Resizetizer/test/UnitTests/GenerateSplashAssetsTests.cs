@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Build.Framework;
@@ -46,6 +47,31 @@ namespace Uno.Resizetizer.Tests
 			AssertFile($"{image}.scale-100.png", 620, 300);
 			AssertFile($"{image}.scale-125.png", 775, 375);
 			AssertFile($"{image}.scale-200.png", 1240, 600);
+		}
+
+		// https://github.com/unoplatform/uno.resizetizer/issues/293
+		[Fact]
+		public void UnchangedFilesAreNotRewritten()
+		{
+			var splash = new TaskItem("images/appiconfg.svg", new Dictionary<string, string> { ["BackgroundColor"] = "#0000FF" });
+			Assert.True(GetNewTask(splash).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+			var files = Directory.GetFiles(DestinationDirectory, "*.png");
+			Assert.NotEmpty(files);
+			var past = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+			foreach (var file in files)
+			{
+				File.SetLastWriteTimeUtc(file, past);
+			}
+
+			Assert.True(GetNewTask(splash).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+			Assert.All(files, file => Assert.Equal(past, File.GetLastWriteTimeUtc(file)));
+
+			var recolored = new TaskItem("images/appiconfg.svg", new Dictionary<string, string> { ["BackgroundColor"] = "#FF0000" });
+			Assert.True(GetNewTask(recolored).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+			Assert.All(files, file => Assert.NotEqual(past, File.GetLastWriteTimeUtc(file)));
 		}
 
 		[Theory(Skip = "We don't worked on SplashScreen")]
