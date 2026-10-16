@@ -9,6 +9,16 @@ namespace Uno.Resizetizer
 {
     internal class FileHelper
     {
+        public static void WriteBytesIfChanged(string fileName, byte[] content)
+        {
+            if (File.Exists(fileName) && File.ReadAllBytes(fileName).AsSpan().SequenceEqual(content))
+            {
+                return;
+            }
+
+            File.WriteAllBytes(fileName, content);
+        }
+
         public static void WriteFileIfChanged(string fileName, TaskLoggingHelper log, Action<StreamWriter> action)
         {
             var tempFile = Path.GetTempFileName();

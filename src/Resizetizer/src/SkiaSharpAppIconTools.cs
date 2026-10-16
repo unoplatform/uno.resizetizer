@@ -79,8 +79,10 @@ namespace Uno.Resizetizer
 				var dir = Path.GetDirectoryName(destination);
 				Directory.CreateDirectory(dir);
 
-				using var wrapper = File.Create(destination);
-				tempBitmap.Encode(wrapper, SKEncodedImageFormat.Png, 100);
+				// Windows splash screens are regenerated on every build, keep the timestamp of unchanged ones
+				using var content = new MemoryStream();
+				tempBitmap.Encode(content, SKEncodedImageFormat.Png, 100);
+				FileHelper.WriteBytesIfChanged(destination, content.ToArray());
 			}
 		}
 
