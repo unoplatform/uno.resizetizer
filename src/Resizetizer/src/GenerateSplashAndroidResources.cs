@@ -31,9 +31,9 @@ namespace Uno.Resizetizer
 
 			var tools = SkiaSharpTools.Create(info.IsVector, info.Filename, info.BaseSize, info.Color, info.TintColor, this);
 
-			WriteXmlIfChanged(Path.Combine(IntermediateOutputPath, "values", "uno_colors.xml"), writer => WriteColors(writer, info));
-			WriteXmlIfChanged(Path.Combine(IntermediateOutputPath, "drawable", "uno_splash_image.xml"), writer => WriteDrawable(writer, info));
-			WriteXmlIfChanged(Path.Combine(IntermediateOutputPath, "drawable-v31", "uno_splash_image.xml"), writer => WriteDrawable_v31(writer, info, tools));
+			WriteXmlIfChanged("values", "uno_colors.xml", writer => WriteColors(writer, info));
+			WriteXmlIfChanged("drawable", "uno_splash_image.xml", writer => WriteDrawable(writer, info));
+			WriteXmlIfChanged("drawable-v31", "uno_splash_image.xml", writer => WriteDrawable_v31(writer, info, tools));
 
 			return !Log.HasLoggedErrors;
 		}
@@ -47,8 +47,11 @@ namespace Uno.Resizetizer
 		// which makes aapt2 recompile them and the APK get repackaged and fully reinstalled on every build.
 		// The XML is compared rather than the text, because the Android SDK's _ConvertResourcesCases rewrites
 		// them in place without the declaration and the indentation.
-		void WriteXmlIfChanged(string file, Action<XmlWriter> write)
+		void WriteXmlIfChanged(string resourceDirectory, string fileName, Action<XmlWriter> write)
 		{
+			var directory = Path.Combine(IntermediateOutputPath, resourceDirectory);
+			var file = Path.Combine(directory, fileName);
+
 			using var content = new MemoryStream();
 			using (var writer = XmlWriter.Create(content, Settings))
 			{
@@ -65,7 +68,7 @@ namespace Uno.Resizetizer
 				}
 			}
 
-			Directory.CreateDirectory(Path.GetDirectoryName(file));
+			Directory.CreateDirectory(directory);
 			File.WriteAllBytes(file, content.ToArray());
 		}
 

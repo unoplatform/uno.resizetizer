@@ -79,11 +79,14 @@ $failures = @(Compare-Snapshot $generatedBefore (Get-Snapshot 'obj' $generated))
 $apkChanges = @(Compare-Snapshot $apksBefore (Get-Snapshot 'bin' $apks))
 
 # UnoSplash.def sits next to the app assembly in the intermediate directory that compiles it
+$checkedAssemblies = 0
 foreach ($definition in Get-ChildItem -Path (Join-Path $AppDirectory 'obj') -Recurse -File -Filter 'UnoSplash.def') {
 	$assembly = Join-Path $definition.DirectoryName "$appName.dll"
 	if (-not (Test-Path $assembly)) {
 		continue
 	}
+
+	$checkedAssemblies++
 
 	# Manifest resource names are stored as UTF-8 in the metadata string heap
 	$content = [System.Text.Encoding]::UTF8.GetString([System.IO.File]::ReadAllBytes($assembly))
@@ -93,6 +96,12 @@ foreach ($definition in Get-ChildItem -Path (Join-Path $AppDirectory 'obj') -Rec
 	else {
 		$failures += "Missing UnoSplash.def resource: $assembly"
 	}
+}
+
+# An $(AssemblyName) that differs from the folder name, or a changed intermediate layout, would otherwise
+# leave this check silently passing over nothing
+if ($checkedAssemblies -eq 0) {
+	$failures += "No app assembly named '$appName.dll' was found next to a UnoSplash.def, so its embedding was not checked"
 }
 
 if ($apkChanges.Count -gt 0) {

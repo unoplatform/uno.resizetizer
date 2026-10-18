@@ -79,7 +79,8 @@ namespace Uno.Resizetizer
 				var dir = Path.GetDirectoryName(destination);
 				Directory.CreateDirectory(dir);
 
-				// Windows splash screens are regenerated on every build, keep the timestamp of unchanged ones
+				// Splash screens and app icons can be regenerated with the same content (the Windows splash screen on every build),
+				// keep the timestamp of unchanged files so that downstream steps don't treat them as changed
 				using var content = new MemoryStream();
 				tempBitmap.Encode(content, SKEncodedImageFormat.Png, 100);
 				FileHelper.WriteBytesIfChanged(destination, content.ToArray());

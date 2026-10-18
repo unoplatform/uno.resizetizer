@@ -191,6 +191,43 @@ namespace Uno.Resizetizer.Tests
 					$"<background android:drawable=\"@mipmap/{outputName}_background\"/>");
 			}
 
+			// https://github.com/unoplatform/uno.resizetizer/issues/293
+			// A vector app icon is rasterized again on every run (https://github.com/unoplatform/uno.resizetizer/issues/409),
+			// so the PNGs it produces must not be rewritten when they come out the same
+			[Fact]
+			public void UnchangedAppIconsAreNotRewritten()
+			{
+				ITaskItem[] GetItems(string tintColor) => new[]
+				{
+					new TaskItem("images/appiconfg.svg", new Dictionary<string, string>
+					{
+						["IsAppIcon"] = bool.TrueString,
+						["TintColor"] = tintColor,
+					}),
+				};
+
+				Assert.True(GetNewTask(GetItems("#0000FF")).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+				var icons = Directory.GetFiles(DestinationDirectory, "*.png", SearchOption.AllDirectories);
+				Assert.NotEmpty(icons);
+				var past = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+				foreach (var icon in icons)
+				{
+					File.SetLastWriteTimeUtc(icon, past);
+				}
+
+				Assert.True(GetNewTask(GetItems("#0000FF")).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+				Assert.All(icons, icon => Assert.Equal(past, File.GetLastWriteTimeUtc(icon)));
+
+				Assert.True(GetNewTask(GetItems("#FF0000")).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+				// TintColor recolors the foreground layer
+				var foreground = icons.Where(icon => icon.EndsWith("_foreground.png", StringComparison.Ordinal)).ToArray();
+				Assert.NotEmpty(foreground);
+				Assert.All(foreground, icon => Assert.NotEqual(past, File.GetLastWriteTimeUtc(icon)));
+			}
+
 			//[Theory(Skip = "App icon for android is in WIP mode")]
 			[Theory]
 			[InlineData("appicon", null, "appicon")]
