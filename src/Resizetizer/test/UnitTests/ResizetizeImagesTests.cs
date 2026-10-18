@@ -37,6 +37,92 @@ namespace Uno.Resizetizer.Tests
 			ResizetizeImages_v0 GetNewTask(params ITaskItem[] items) =>
 				GetNewTask("android", items);
 
+			// https://github.com/unoplatform/uno.resizetizer/issues/409
+			// The up-to-date check used to look for the output under the source's extension, a file a vector
+			// icon never produces, so every size was rasterized again on every run
+			[Theory]
+			[InlineData("appiconfg.svg")]
+			[InlineData("camera.png")]
+			public void UpToDateAppIconsAreSkipped(string icon)
+			{
+				var inputsFile = WriteInputsFile();
+				ITaskItem[] GetItems() => new[]
+				{
+					new TaskItem($"images/{icon}", new Dictionary<string, string>
+					{
+						["IsAppIcon"] = bool.TrueString,
+					}),
+				};
+
+				var first = GetNewTask(GetItems());
+				first.InputsFile = inputsFile;
+				Assert.True(first.Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+				Assert.Contains(LogMessageEvents, m => m.Message.StartsWith(AppIconRendered, StringComparison.Ordinal));
+
+				LogMessageEvents.Clear();
+
+				var second = GetNewTask(GetItems());
+				second.InputsFile = inputsFile;
+				Assert.True(second.Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+				Assert.DoesNotContain(LogMessageEvents, m => m.Message.StartsWith(AppIconRendered, StringComparison.Ordinal));
+			}
+
+			[Theory]
+			// The icon is drawn from the background, the foreground and the metadata in the inputs file
+			[InlineData("background")]
+			[InlineData("foreground")]
+			[InlineData("inputs")]
+			public void ChangedAppIconInputsAreRegenerated(string changed)
+			{
+				var inputsFile = WriteInputsFile();
+				var background = Path.Combine(DestinationDirectory, "icon.png");
+				var foreground = Path.Combine(DestinationDirectory, "icon_foreground.png");
+				File.Copy("images/camera.png", background);
+				File.Copy("images/camera.png", foreground);
+
+				ITaskItem[] GetItems() => new[]
+				{
+					new TaskItem(background, new Dictionary<string, string>
+					{
+						["IsAppIcon"] = bool.TrueString,
+						["ForegroundFile"] = foreground,
+					}),
+				};
+
+				var first = GetNewTask(GetItems());
+				first.InputsFile = inputsFile;
+				Assert.True(first.Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+				LogMessageEvents.Clear();
+
+				var touched = changed switch
+				{
+					"background" => background,
+					"foreground" => foreground,
+					_ => inputsFile[0],
+				};
+				File.SetLastWriteTimeUtc(touched, DateTime.UtcNow.AddMinutes(1));
+
+				var second = GetNewTask(GetItems());
+				second.InputsFile = inputsFile;
+				Assert.True(second.Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+				Assert.Contains(LogMessageEvents, m => m.Message.StartsWith(AppIconRendered, StringComparison.Ordinal));
+			}
+
+			// Logged by SkiaSharpAppIconTools for each size it rasterizes, so its absence means the size was skipped
+			const string AppIconRendered = "Save app icon took";
+
+			string[] WriteInputsFile()
+			{
+				Directory.CreateDirectory(DestinationDirectory);
+
+				var inputsFile = Path.Combine(DestinationDirectory, "unoimage.inputs");
+				File.WriteAllText(inputsFile, string.Empty);
+				return new[] { inputsFile, inputsFile };
+			}
+
 			[Fact]
 			public void NoItemsSucceed()
 			{
