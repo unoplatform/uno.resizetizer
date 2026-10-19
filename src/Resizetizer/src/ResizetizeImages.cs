@@ -242,22 +242,56 @@ namespace Uno.Resizetizer
 			{
 				LogDebugMessage($"App Icon: " + dpi);
 
-				var destination = Resizer.GetFileDestination(img, dpi, iconPath, appIconName)
-					.Replace("{name}", appIconName);
-
-				var (_, sourceModified) = Utils.FileExists(img.Filename);
-				var (_, destinationModified) = Utils.FileExists(destination);
+				// GetFileDestination names the output after the source's extension, but a vector icon is
+				// always rasterized, so the file that actually gets written is the .png one
+				var destination = Path.ChangeExtension(
+					Resizer.GetFileDestination(img, dpi, iconPath, appIconName).Replace("{name}", appIconName),
+					".png");
 
 				LogDebugMessage($"App Icon Destination: " + destination);
 
-				if (destinationModified > sourceModified)
+				if (IsAppIconUpToDate(img, destination))
 				{
 					Logger.Log($"Skipping `{img.Filename}` => `{destination}` file is up to date.");
 					continue;
 				}
 
-				appTool.Resize(dpi, Path.ChangeExtension(destination, ".png"));
+				appTool.Resize(dpi, destination);
 			}
+		}
+
+		// The icon is drawn from the background and the foreground file, and from the metadata recorded in
+		// the inputs file (ForegroundScale, TintColor, Color), so it is stale when any of them is newer.
+		// The foreground is checked on its own because the inputs file only records its path, see #398.
+		bool IsAppIconUpToDate(ResizeImageInfo img, string destination)
+		{
+			var (destinationExists, destinationModified) = Utils.FileExists(destination);
+			if (!destinationExists)
+			{
+				return false;
+			}
+
+			// An icon given as a single image is used as the foreground, and its background is manufactured
+			// from Color, so Filename is null. Only the files the icon actually has are inputs.
+			var sources = new[] { img.Filename, img.ForegroundFilename };
+			foreach (var source in sources)
+			{
+				if (string.IsNullOrEmpty(source))
+				{
+					continue;
+				}
+
+				var (sourceExists, sourceModified) = Utils.FileExists(source);
+				if (!sourceExists || sourceModified > destinationModified)
+				{
+					return false;
+				}
+			}
+
+			// As Resizer.IsUpToDate does, a missing inputs file means the metadata cannot be compared
+			var (inputsExists, inputsModified) = Utils.FileExists(GetInputFile(isSplashScreen: false));
+
+			return inputsExists && inputsModified <= destinationModified;
 		}
 
 		string GetIconPath(string platformType) => platformType switch
