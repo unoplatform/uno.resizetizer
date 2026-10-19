@@ -140,8 +140,11 @@ internal abstract partial class SkiaSharpTools
 
     void Save(string destination, SKBitmap tempBitmap)
     {
-        using var stream = File.Create(destination);
-        tempBitmap.Encode(stream, SKEncodedImageFormat.Png, 100);
+        // Images can be regenerated with the same content (the adaptive icon layers on every build),
+        // keep the timestamp of unchanged files so that downstream steps don't treat them as changed
+        using var content = new MemoryStream();
+        tempBitmap.Encode(content, SKEncodedImageFormat.Png, 100);
+        FileHelper.WriteBytesIfChanged(destination, content.ToArray());
     }
 
     public abstract SKSize GetOriginalSize();
