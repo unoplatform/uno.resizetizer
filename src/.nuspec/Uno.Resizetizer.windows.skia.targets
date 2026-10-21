@@ -38,6 +38,8 @@
 				IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
 				UnoSplashScreen="@(UnoWindowsSplash)"
 		/>
+
+		<CallTarget Targets="PostGenerateUnoSplashScreens" />
 	</Target>
 
 	<Target Name="ProcessUnoSplashScreens"

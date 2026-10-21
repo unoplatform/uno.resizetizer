@@ -495,7 +495,12 @@
 		</GetUnoAssetPath_v0>
 	</Target>
 
-	<!-- This target is meant to be called by platform specific splash screen targets -->
+	<!--
+	Declares the items the splash screen pipeline needs, and must run on every build, including the ones
+	where the platform target is skipped as up to date: a platform target that declares Inputs/Outputs
+	takes this as a DependsOnTargets, which MSBuild runs before deciding whether to skip it.
+	Everything here is cheap and writes nothing unless it changed.
+	-->
 	<Target Name="GenerateUnoSplashScreens"
 			Condition="'@(UnoSplashScreen)' != ''">
 		<!-- Resource used by (toolkit) ExtendedSplashScreen -->
@@ -534,6 +539,17 @@
 								  WasmScale="%(UnoSplashScreen.WasmScale)"/>
 			<UnoImage Include="@(_UnoDarkSplashScreen)" IsSplashScreen="True" Link=""/>
 		</ItemGroup>
+
+		<MakeDir Directories="$(IntermediateOutputPath)"/>
+	</Target>
+
+	<!--
+	Stamps the Outputs of the platform splash screen targets, which call this once they have generated
+	their files. It is deliberately not part of GenerateUnoSplashScreens: that one runs on every build,
+	and stamping there would make the stamp newer than the inputs even when nothing was generated.
+	-->
+	<Target Name="PostGenerateUnoSplashScreens"
+			Condition="'@(UnoSplashScreen)' != ''">
 
 		<MakeDir Directories="$(IntermediateOutputPath)"/>
 		<!-- Stamp file for Outputs -->
