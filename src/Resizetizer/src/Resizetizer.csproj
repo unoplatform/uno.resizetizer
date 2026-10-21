@@ -30,6 +30,7 @@
 
 	<ItemGroup>
 		<EmbeddedResource Include="Resources\UnoSplash.storyboard" LogicalName="UnoSplash.storyboard" />
+		<EmbeddedResource Include="Resources\UnoSplash.tvOS.storyboard" LogicalName="UnoSplash.tvOS.storyboard" />
 	</ItemGroup>
 
 	<ItemGroup>

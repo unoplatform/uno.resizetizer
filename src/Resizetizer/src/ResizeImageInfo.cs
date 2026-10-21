@@ -249,6 +249,9 @@ namespace Uno.Resizetizer
 				case "ios":
 					SetPlatformForegroundScale(image, "IOSForegroundScale", info);
 					break;
+				case "tvos":
+					SetPlatformForegroundScale(image, "TvOSForegroundScale", info);
+					break;
 				case "uwp":
 					SetPlatformForegroundScale(image, "WindowsForegroundScale", info);
 					break;
@@ -272,6 +275,9 @@ namespace Uno.Resizetizer
 					break;
 				case "ios":
 					SetPlatformForegroundScale(image, "IOSScale", info);
+					break;
+				case "tvos":
+					SetPlatformForegroundScale(image, "TvOSScale", info);
 					break;
 				case "uwp":
 					SetPlatformForegroundScale(image, "WindowsScale", info);
