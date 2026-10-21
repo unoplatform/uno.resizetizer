@@ -1,5 +1,23 @@
 <Project>
 	<!--
+	Runs on every build, as a dependency of the target below. The stamp alone cannot tell that one of the
+	generated resources was removed from obj while it survived, and a skipped target would then leave aapt2
+	to fail with "file not found". Dropping the stamp makes the target regenerate them instead.
+	-->
+	<Target Name="_UnoVerifyAndroidSplashOutputs"
+			Condition="'@(UnoSplashScreen)' != '' And Exists('$(_UnoSplashStampFile)')">
+
+		<ItemGroup>
+			<_UnoAndroidSplashOutput Include="$(_UnoIntermediateSplashScreen)values\uno_colors.xml"/>
+			<_UnoAndroidSplashOutput Include="$(_UnoIntermediateSplashScreen)drawable\uno_splash_image.xml"/>
+			<_UnoAndroidSplashOutput Include="$(_UnoIntermediateSplashScreen)drawable-v31\uno_splash_image.xml"/>
+			<_UnoMissingAndroidSplashOutput Include="@(_UnoAndroidSplashOutput)" Condition="!Exists('%(Identity)')"/>
+		</ItemGroup>
+
+		<Delete Files="$(_UnoSplashStampFile)" Condition="'@(_UnoMissingAndroidSplashOutput)' != ''"/>
+	</Target>
+
+	<!--
 	GenerateUnoSplashScreens is a DependsOnTargets rather than a CallTarget: MSBuild runs it before the
 	up-to-date check, so the UnoSplash.def EmbeddedResource and the splash UnoImage item it declares are
 	there even on the builds where this target itself is skipped.
@@ -10,7 +28,7 @@
 	<Target
 			Name="GenerateUnoSplashAndroid"
 			BeforeTargets="ProcessUnoSplashScreens"
-			DependsOnTargets="GenerateUnoSplashScreens"
+			DependsOnTargets="_UnoVerifyAndroidSplashOutputs;GenerateUnoSplashScreens"
 			Condition=" '@(UnoSplashScreen)' != '' "
 			Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoSplashInputsFile);@(UnoSplashScreen)"
 			Outputs="$(_UnoSplashStampFile)">
