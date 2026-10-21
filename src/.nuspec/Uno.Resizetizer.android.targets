@@ -1,17 +1,27 @@
 <Project>
+	<!--
+	GenerateUnoSplashScreens is a DependsOnTargets rather than a CallTarget: MSBuild runs it before the
+	up-to-date check, so the UnoSplash.def EmbeddedResource and the splash UnoImage item it declares are
+	there even on the builds where this target itself is skipped.
+
+	Unosplash.inputs is an input because it records the item metadata (BackgroundColor, BaseSize, ...),
+	which @(UnoSplashScreen) alone does not capture.
+	-->
 	<Target
 			Name="GenerateUnoSplashAndroid"
 			BeforeTargets="ProcessUnoSplashScreens"
+			DependsOnTargets="GenerateUnoSplashScreens"
 			Condition=" '@(UnoSplashScreen)' != '' "
+			Inputs="$(MSBuildThisFileFullPath);$(_UnoResizetizerTaskAssemblyName);$(_UnoSplashInputsFile);@(UnoSplashScreen)"
 			Outputs="$(_UnoSplashStampFile)">
-
-		<CallTarget Targets="GenerateUnoSplashScreens" />
 
 		<!-- Android -->
 		<GenerateSplashAndroidResources_v0
 				IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
 				UnoSplashScreen="@(UnoSplashScreen)"
 		/>
+
+		<CallTarget Targets="PostGenerateUnoSplashScreens" />
 	</Target>
 
 	<!-- ProcessUnoSplashScreens must run at design time to avoid interactions with the `.R` generation on Android -->

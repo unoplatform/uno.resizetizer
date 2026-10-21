@@ -27,6 +27,8 @@
 				IntermediateOutputPath="$(_UnoIntermediateSplashScreen)"
 				PlistName="UnoInfo.plist"
 				Storyboard="$(_UnoIntermediateSplashScreenFile)"/>
+
+		<CallTarget Targets="PostGenerateUnoSplashScreens" />
 	</Target>
 
 	<Target Name="ProcessUnoSplashScreens"

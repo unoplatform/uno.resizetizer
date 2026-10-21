@@ -37,6 +37,8 @@
 			<EmbeddedResource Include="$(_UnoIntermediateAppManifestWasm)"
 							  Link="$(UserAppManifest)"/>
 		</ItemGroup>
+
+		<CallTarget Targets="PostGenerateUnoSplashScreens" />
 	</Target>
 
 	<Target Name="ProcessUnoSplashScreens"/>
