@@ -94,7 +94,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-15]
+        # Pinned: ubuntu-latest is moving to Ubuntu 26.04, where packages.microsoft.com has no
+        # msopenjdk-11 yet, so the 'Install OpenJDK 11' step would fail.
+        os: [ubuntu-24.04, windows-latest, macos-15]
         config: [Debug, Release]
 
     runs-on: ${{ matrix.os }}
