@@ -94,7 +94,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-15]
+        # Pinned: ubuntu-latest is moving to Ubuntu 26.04, where packages.microsoft.com has no
+        # msopenjdk-11 yet, so the 'Install OpenJDK 11' step would fail.
+        os: [ubuntu-24.04, windows-latest, macos-15]
         config: [Debug, Release]
 
     runs-on: ${{ matrix.os }}
@@ -225,7 +227,9 @@ jobs:
         $installationPath = vswhere -latest -property installationPath
         $designTimeTarget = Join-Path $installationPath -ChildPath "\MSBuild\Microsoft\VisualStudio\Managed\Microsoft.CSharp.DesignTime.targets"
         $sampleSolution = 'samples\5.6\Uno52ResizetizerTests\Uno52ResizetizerTests.sln'
-        $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+        # 64-bit MSBuild, like Visual Studio itself: since VS 18.11, the 32-bit MSBuild.exe rejects paths over
+        # 260 characters, which the WebAssembly head's static web assets exceed (actions/runner-images#15141).
+        $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\amd64\MSBuild.exe
 
         dotnet restore $sampleSolution
         & $msbuild $sampleSolution /p:TargetFramework=net9.0-android /p:AfterMicrosoftNETSdkTargets=$designTimeTarget /p:Configuration=Debug /p:DesignTimeBuild=true /p:DefineExplicitDefaults=true /p:ProvideCommandLineArgs=true /p:ResolveAssemblyReferencesSilent=false /p:SkipCompilerExecution=true /p:ContinueOnError=ErrorAndContinue /p:DesignTimeSilentResolution=false /t:ResolveFrameworkReferencesDesignTime /t:ResolveProjectReferencesDesignTime2 /t:CollectResolvedSDKReferencesDesignTime /t:CollectPackageReferences /t:ResolveComReferencesDesignTime /t:BuiltProjectOutputGroup /t:CollectFrameworkReferences /t:CollectUpToDateCheckBuiltDesignTime /t:CollectPackageDownloads /t:CollectBuildAccelerationIncompatiblePackageDesignTime /t:ResolveAssemblyReferencesDesignTime /t:GenerateSupportedTargetFrameworkAlias /t:CollectAnalyzersDesignTime /t:CollectUpToDateCheckInputDesignTime /t:CollectUpToDateCheckOutputDesignTime /t:ResolvePackageDependenciesDesignTime /t:CollectCentralPackageVersions /t:CollectCopyToOutputDirectoryItemDesignTime /t:CollectResolvedCompilationReferencesDesignTime
