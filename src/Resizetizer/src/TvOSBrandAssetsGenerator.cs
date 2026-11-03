@@ -25,9 +25,11 @@ namespace Uno.Resizetizer
 
 		readonly SkiaSharpTools? _backgroundTools;
 		readonly SkiaSharpTools? _foregroundTools;
+		readonly Func<string, bool> _isUpToDate;
 
-		public TvOSBrandAssetsGenerator(ResizeImageInfo info, string appIconName, string intermediateOutputPath, ILogger logger)
+		public TvOSBrandAssetsGenerator(ResizeImageInfo info, string appIconName, string intermediateOutputPath, ILogger logger, Func<string, bool>? isUpToDate = null)
 		{
+			_isUpToDate = isUpToDate ?? (_ => false);
 			Info = info;
 			AppIconName = appIconName;
 			IntermediateOutputPath = intermediateOutputPath;
@@ -51,6 +53,8 @@ namespace Uno.Resizetizer
 		{
 			Logger.Log("tvOS Brand Assets Directory: " + BrandAssetsDirectory);
 
+			RemoveStaleBrandAssets();
+
 			var files = new List<string>();
 
 			files.AddRange(GenerateImageStack(DpiPath.TvOS.AppIcon));
@@ -71,6 +75,26 @@ namespace Uno.Resizetizer
 			files.Add(contentsFile);
 
 			return files.Select(f => new ResizedImageInfo { Dpi = new DpiPath("", 1), Filename = f }).ToList();
+		}
+
+		// A renamed icon leaves its old brand assets behind, and a second primary app icon breaks the catalog
+		void RemoveStaleBrandAssets()
+		{
+			var catalog = Path.GetDirectoryName(BrandAssetsDirectory)!;
+			if (!Directory.Exists(catalog))
+			{
+				return;
+			}
+
+			var current = Path.GetFullPath(BrandAssetsDirectory);
+			foreach (var directory in Directory.GetDirectories(catalog, "*.brandassets"))
+			{
+				if (!string.Equals(Path.GetFullPath(directory), current, StringComparison.OrdinalIgnoreCase))
+				{
+					Logger.Log("Removing stale tvOS brand assets: " + directory);
+					Directory.Delete(directory, recursive: true);
+				}
+			}
 		}
 
 		IEnumerable<string> GenerateImageStack(DpiPath[] dpis)
@@ -139,6 +163,24 @@ namespace Uno.Resizetizer
 				var fileName = AppIconName + imageName + dpi.FileSuffix + ".png";
 				var destination = Path.Combine(imageSetDirectory, fileName);
 
+				files.Add(destination);
+
+				foreach (var idiom in dpi.Idioms ?? [])
+				{
+					images.Add(new JsonObject
+					{
+						["idiom"] = idiom,
+						["filename"] = fileName,
+						["scale"] = dpi.Scale.ToString("0", CultureInfo.InvariantCulture) + "x",
+					});
+				}
+
+				if (_isUpToDate(destination))
+				{
+					Logger.Log($"Skipping `{destination}`, it is up to date.");
+					continue;
+				}
+
 				var (canvasSize, _) = SkiaSharpTools.GetCanvasSize(dpi);
 
 				using (var bitmap = new SKBitmap(canvasSize.Width, canvasSize.Height))
@@ -151,18 +193,6 @@ namespace Uno.Resizetizer
 
 					using var stream = File.Create(destination);
 					bitmap.Encode(stream, SKEncodedImageFormat.Png, 100);
-				}
-
-				files.Add(destination);
-
-				foreach (var idiom in dpi.Idioms ?? [])
-				{
-					images.Add(new JsonObject
-					{
-						["idiom"] = idiom,
-						["filename"] = fileName,
-						["scale"] = dpi.Scale.ToString("0", CultureInfo.InvariantCulture) + "x",
-					});
 				}
 			}
 
@@ -241,7 +271,13 @@ namespace Uno.Resizetizer
 		static void WriteJson(string path, JsonObject json)
 		{
 			Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-			File.WriteAllText(path, json.ToJsonString(JsonOptions));
+
+			// Rewriting an unchanged Contents.json would make actool recompile the catalog
+			var content = json.ToJsonString(JsonOptions);
+			if (!File.Exists(path) || File.ReadAllText(path) != content)
+			{
+				File.WriteAllText(path, content);
+			}
 		}
 	}
 }

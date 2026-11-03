@@ -170,7 +170,7 @@ namespace Uno.Resizetizer
 			{
 				LogDebugMessage($"tvOS Brand Assets Generator");
 
-				var brandAssetsGen = new TvOSBrandAssetsGenerator(img, appIconName, IntermediateOutputPath, this);
+				var brandAssetsGen = new TvOSBrandAssetsGenerator(img, appIconName, IntermediateOutputPath, this, destination => IsAppIconUpToDate(img, destination));
 
 				foreach (var assetGenerated in brandAssetsGen.Generate())
 				{
