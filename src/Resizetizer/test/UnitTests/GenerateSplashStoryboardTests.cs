@@ -9,6 +9,7 @@ using Xunit;
 
 namespace Uno.Resizetizer.Tests
 {
+	[Collection(TargetPlatformCollection.Name)]
 	public class GenerateSplashStoryboardTests : MSBuildTaskTestFixture<GenerateSplashStoryboard_v0>
 	{
 		readonly string _storyboard;

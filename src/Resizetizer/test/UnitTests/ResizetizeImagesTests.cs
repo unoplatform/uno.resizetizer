@@ -32,6 +32,7 @@ namespace Uno.Resizetizer.Tests
 				task.CopiedResources.Single(c => c.ItemSpec.Replace('\\', '/').EndsWith(path, StringComparison.Ordinal));
 		}
 
+		[Collection(TargetPlatformCollection.Name)]
 		public class ExecuteForAndroid : ExecuteForApp
 		{
 			ResizetizeImages_v0 GetNewTask(params ITaskItem[] items) =>
@@ -712,6 +713,7 @@ namespace Uno.Resizetizer.Tests
 			#endregion
 		}
 
+		[Collection(TargetPlatformCollection.Name)]
 		public class ExecuteForiOS : ExecuteForApp
 		{
 			ResizetizeImages_v0 GetNewTask(params ITaskItem[] items) =>
@@ -868,6 +870,7 @@ namespace Uno.Resizetizer.Tests
 			}
 		}
 
+		[Collection(TargetPlatformCollection.Name)]
 		public class ExecuteFortvOS : ExecuteForApp
 		{
 			const string BrandAssets = "Assets.xcassets/appicon.brandassets";
@@ -1029,6 +1032,7 @@ namespace Uno.Resizetizer.Tests
 			}
 		}
 
+		[Collection(TargetPlatformCollection.Name)]
 		public class ExecuteForWindows : ExecuteForApp
 		{
 			ResizetizeImages_v0 GetNewTask(params ITaskItem[] items) =>
@@ -1403,6 +1407,7 @@ namespace Uno.Resizetizer.Tests
 			}
 		}
 
+		[Collection(TargetPlatformCollection.Name)]
 		public class ExecuteForAny : ExecuteForApp
 		{
 			[Theory]

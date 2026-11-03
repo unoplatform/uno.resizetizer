@@ -9,6 +9,7 @@ using Xunit;
 
 namespace Uno.Resizetizer.Tests
 {
+	[Collection(TargetPlatformCollection.Name)]
 	public class GenerateWasmSplashAssetsTests : MSBuildTaskTestFixture<GenerateWasmSplashAssets_v0>
 	{
 		const string UserManifest = "var UnoAppManifest = {\n    splashScreenImage: \"old.png\",\n    splashScreenColor: \"#123456\",\n    displayName: \"MyApp\",\n}";

@@ -11,6 +11,7 @@ using Xunit;
 
 namespace Uno.Resizetizer.Tests
 {
+	[Collection(TargetPlatformCollection.Name)]
 	public class GenerateSplashAndroidResourcesTests : MSBuildTaskTestFixture<GenerateSplashAndroidResources_v0>
 	{
 		readonly string _colors;
