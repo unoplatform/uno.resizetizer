@@ -33,6 +33,12 @@
 				<Tfm>net9.0-maccatalyst</Tfm>
 				<ExpectedPlatformType>netstandard</ExpectedPlatformType>
 			</Case>
+			<!-- A runtime host must not pull Mac Catalyst into the generic Skia kind either. -->
+			<Case Include="maccatalyst-runtime-host">
+				<Tfm>net9.0-maccatalyst</Tfm>
+				<RuntimeHost>true</RuntimeHost>
+				<ExpectedPlatformType>netstandard</ExpectedPlatformType>
+			</Case>
 			<!-- tvOS is a UIKit head too, packaged like iOS but with its own icon and launch screen flavour. -->
 			<Case Include="tvos">
 				<Tfm>net9.0-tvos</Tfm>
