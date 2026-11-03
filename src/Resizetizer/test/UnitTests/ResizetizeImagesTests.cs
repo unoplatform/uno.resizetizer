@@ -985,6 +985,43 @@ namespace Uno.Resizetizer.Tests
 				Assert.Equal(SKColors.Blue, back.GetPixel(200, 120));
 			}
 
+			[Fact]
+			public void UpToDateBrandAssetsAreNotRedrawn()
+			{
+				Directory.CreateDirectory(DestinationDirectory);
+				var inputsFile = Path.Combine(DestinationDirectory, "unoimage.inputs");
+				File.WriteAllText(inputsFile, string.Empty);
+
+				var first = GetNewTask(AppIcon());
+				first.InputsFile = new[] { inputsFile, inputsFile };
+				Assert.True(first.Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+				var topShelf = Path.Combine(DestinationDirectory, BrandAssets, "Top Shelf Image Wide.imageset/appiconTopShelf@2x.png");
+				var written = File.GetLastWriteTimeUtc(topShelf);
+				LogMessageEvents.Clear();
+
+				var second = GetNewTask(AppIcon());
+				second.InputsFile = new[] { inputsFile, inputsFile };
+				Assert.True(second.Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+				Assert.Equal(written, File.GetLastWriteTimeUtc(topShelf));
+				Assert.Contains(LogMessageEvents, m => m.Message.StartsWith("Skipping `", StringComparison.Ordinal) && m.Message.Contains("appiconTopShelf@2x.png"));
+				Assert.Contains(second.CopiedResources, r => Path.GetFullPath(r.ItemSpec) == Path.GetFullPath(topShelf));
+			}
+
+			[Fact]
+			public void RenamedIconRemovesTheOldBrandAssets()
+			{
+				Assert.True(GetNewTask(AppIcon()).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+				Assert.True(Directory.Exists(Path.Combine(DestinationDirectory, BrandAssets)));
+
+				var renamed = new TaskItem("images/appiconfg.svg", new Dictionary<string, string> { ["IsAppIcon"] = bool.TrueString });
+				Assert.True(GetNewTask(renamed).Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+				Assert.False(Directory.Exists(Path.Combine(DestinationDirectory, BrandAssets)));
+				Assert.True(Directory.Exists(Path.Combine(DestinationDirectory, "Assets.xcassets/appiconfg.brandassets")));
+			}
+
 			[Theory]
 			[InlineData("Transparent")]
 			[InlineData("#80FF0000")]
