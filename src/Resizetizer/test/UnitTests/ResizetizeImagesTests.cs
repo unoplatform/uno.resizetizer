@@ -985,6 +985,32 @@ namespace Uno.Resizetizer.Tests
 				Assert.Equal(SKColors.Blue, back.GetPixel(200, 120));
 			}
 
+			[Theory]
+			[InlineData("Transparent")]
+			[InlineData("#80FF0000")]
+			public void TranslucentColorStillGivesOpaqueBackLayerAndTopShelf(string color)
+			{
+				var items = new[]
+				{
+					new TaskItem("images/appiconfg.svg", new Dictionary<string, string>
+					{
+						["IsAppIcon"] = bool.TrueString,
+						["Color"] = color,
+					}),
+				};
+
+				var task = GetNewTask(items);
+				Assert.True(task.Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+				const string brandAssets = "Assets.xcassets/appiconfg.brandassets";
+				using var back = SKBitmap.Decode(Path.Combine(DestinationDirectory, brandAssets, "App Icon.imagestack/Back.imagestacklayer/Content.imageset/appiconfgBack@1x.png"));
+				using var topShelf = SKBitmap.Decode(Path.Combine(DestinationDirectory, brandAssets, "Top Shelf Image.imageset/appiconfgTopShelf@1x.png"));
+
+				Assert.Equal(255, back.GetPixel(0, 0).Alpha);
+				Assert.Equal(255, back.GetPixel(200, 120).Alpha);
+				Assert.Equal(255, topShelf.GetPixel(0, 0).Alpha);
+			}
+
 			[Fact]
 			public void TvOSForegroundScaleShrinksTheForeground()
 			{
