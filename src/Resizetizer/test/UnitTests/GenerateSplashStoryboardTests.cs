@@ -112,6 +112,9 @@ namespace Uno.Resizetizer.Tests
 			var imageView = document.Descendants("imageView").Single();
 			Assert.Equal("appiconfg.png", imageView.Attribute("image")?.Value);
 
+			var resource = document.Descendants("resources").Single().Elements("image").Single();
+			Assert.Equal("appiconfg.png", resource.Attribute("name")?.Value);
+
 			var background = document.Descendants("color").Single(c => c.Attribute("key")?.Value == "backgroundColor");
 			Assert.Equal("1", background.Attribute("red")?.Value);
 			Assert.Equal("0", background.Attribute("green")?.Value);
