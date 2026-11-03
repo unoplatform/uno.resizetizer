@@ -192,10 +192,14 @@ namespace Uno.Resizetizer
 			return files;
 		}
 
-		// Layers that sit at the back of a tvOS icon must be opaque, so fall back to white when there is no color
+		// The back layer of a tvOS icon must be opaque, so a translucent color or image is composited over white
 		void DrawBackground(SKCanvas canvas, SKSizeI canvasSize)
 		{
-			canvas.Clear(Info.Color ?? SKColors.White);
+			canvas.Clear(SKColors.White);
+			if (Info.Color is { } color)
+			{
+				canvas.DrawColor(color, SKBlendMode.SrcOver);
+			}
 
 			if (_backgroundTools is null)
 			{
