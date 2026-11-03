@@ -83,6 +83,7 @@
 		<_UnoResizetizerPlatformIsiOS Condition="'$(_UnoResizetizerPlatformIdentifier)' == 'ios'">True</_UnoResizetizerPlatformIsiOS>
 		<_UnoResizetizerPlatformIsmacOS Condition="'$(_UnoResizetizerPlatformIdentifier)' == 'macos'">True</_UnoResizetizerPlatformIsmacOS>
 		<_UnoResizetizerPlatformIstvOS Condition="'$(_UnoResizetizerPlatformIdentifier)' == 'tvos'">True</_UnoResizetizerPlatformIstvOS>
+		<_UnoResizetizerPlatformIsMacCatalyst Condition="'$(_UnoResizetizerPlatformIdentifier)' == 'maccatalyst'">True</_UnoResizetizerPlatformIsMacCatalyst>
 		<_UnoResizetizerPlatformIsWindows Condition="$(_UnoResizetizerPlatformIdentifier.Contains('windows')) == 'True'">True</_UnoResizetizerPlatformIsWindows>
 		<_UnoResizetizerSkiaRenderer Condition="$(UnoFeatures.Contains(';skiarenderer;'))">True</_UnoResizetizerSkiaRenderer>
 
@@ -119,7 +120,8 @@
 		It has to be evaluated last and subtract the kinds above, because android, ios, tvos and browserwasm heads
 		carry $(UnoHasRuntimeHost) too. Matching here on top of their own kind would import
 		Uno.Resizetizer.windows.skia.targets alongside the platform targets file, whose same-named
-		ProcessUnoSplashScreens target then silently replaces the platform's.
+		ProcessUnoSplashScreens target then silently replaces the platform's. Mac Catalyst, unsupported since
+		Uno Platform 7.0, is excluded too, so it matches no kind even with a runtime host.
 		-->
 		<_UnoResizetizerIsGenericSkiaApp
 			Condition="(('$(UnoHasRuntimeHost)' == 'true' And ('$(OutputType)' == 'Exe' Or '$(OutputType)' == 'WinExe'))
@@ -127,7 +129,8 @@
 					And '$(_UnoResizetizerIsAndroidApp)' != 'True'
 					And '$(_UnoResizetizerIsiOSApp)' != 'True'
 					And '$(_UnoResizetizerIsWasmApp)' != 'True'
-					And '$(_UnoResizetizerIsWindowsAppSdk)' != 'True'">True</_UnoResizetizerIsGenericSkiaApp>
+					And '$(_UnoResizetizerIsWindowsAppSdk)' != 'True'
+					And '$(_UnoResizetizerPlatformIsMacCatalyst)' != 'True'">True</_UnoResizetizerIsGenericSkiaApp>
 	</PropertyGroup>
 
 	<Import Project="Uno.Resizetizer.android.targets" Condition="'$(_UnoResizetizerIsAndroidApp)' == 'True'"/>
