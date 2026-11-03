@@ -30,6 +30,14 @@ namespace Uno.Resizetizer
 		public string IntermediateOutputPath { get; private set; }
 		public ILogger Logger { get; private set; }
 
+		// The "info" block every Xcode asset catalog Contents.json carries
+		internal static JsonObject XcodeInfo() =>
+			new()
+			{
+				["version"] = 1,
+				["author"] = "xcode",
+			};
+
 		public IEnumerable<ResizedImageInfo> Generate()
 		{
 			var outputAppIconSetDir = Path.Combine(IntermediateOutputPath, DpiPath.Ios.AppIconPath.Replace("{name}", AppIconName));
@@ -57,11 +65,7 @@ namespace Uno.Resizetizer
 
 			var infoJsonProp = new JsonObject
 			{
-				["info"] = new JsonObject
-				{
-					["version"] = 1,
-					["author"] = "xcode",
-				}
+				["info"] = XcodeInfo()
 			};
 
 			var appIconImagesJson = new JsonArray();
@@ -90,11 +94,7 @@ namespace Uno.Resizetizer
 			{
 				["images"] = appIconImagesJson,
 				["properties"] = new JsonObject(),
-				["info"] = new JsonObject
-				{
-					["version"] = 1,
-					["author"] = "xcode",
-				},
+				["info"] = XcodeInfo(),
 			};
 
 			//File.WriteAllText(assetContentsFile, infoJsonProp.ToString());

@@ -33,22 +33,7 @@ namespace Uno.Resizetizer
 			IntermediateOutputPath = intermediateOutputPath;
 			Logger = logger;
 
-			var hasBackground = !string.IsNullOrWhiteSpace(info.Filename) && File.Exists(info.Filename);
-			var hasForeground = !string.IsNullOrWhiteSpace(info.ForegroundFilename) && File.Exists(info.ForegroundFilename);
-			if (!hasBackground && !hasForeground)
-			{
-				throw new InvalidOperationException("An app icon needs at least one image.");
-			}
-
-			if (hasBackground)
-			{
-				_backgroundTools = SkiaSharpTools.Create(info.IsVector, info.Filename, null, null, null, logger);
-			}
-
-			if (hasForeground)
-			{
-				_foregroundTools = SkiaSharpTools.Create(info.ForegroundIsVector, info.ForegroundFilename, null, null, info.TintColor, logger);
-			}
+			(_backgroundTools, _foregroundTools) = SkiaSharpTools.CreateAppIconLayers(info, logger);
 		}
 
 		public ResizeImageInfo Info { get; }
@@ -81,7 +66,7 @@ namespace Uno.Resizetizer
 					BrandAsset(DpiPath.TvOS.AppIcon[0], "primary-app-icon"),
 					BrandAsset(DpiPath.TvOS.TopShelfWide[0], "top-shelf-image-wide"),
 					BrandAsset(DpiPath.TvOS.TopShelf[0], "top-shelf-image")),
-				["info"] = XcodeInfo(),
+				["info"] = AppleIconAssetsGenerator.XcodeInfo(),
 			});
 			files.Add(contentsFile);
 
@@ -114,7 +99,7 @@ namespace Uno.Resizetizer
 					}));
 
 				var layerContentsFile = Path.Combine(layerDirectory, "Contents.json");
-				WriteJson(layerContentsFile, new JsonObject { ["info"] = XcodeInfo() });
+				WriteJson(layerContentsFile, new JsonObject { ["info"] = AppleIconAssetsGenerator.XcodeInfo() });
 				files.Add(layerContentsFile);
 			}
 
@@ -124,7 +109,7 @@ namespace Uno.Resizetizer
 				["layers"] = new JsonArray(
 					new JsonObject { ["filename"] = FrontLayer + ".imagestacklayer" },
 					new JsonObject { ["filename"] = BackLayer + ".imagestacklayer" }),
-				["info"] = XcodeInfo(),
+				["info"] = AppleIconAssetsGenerator.XcodeInfo(),
 			});
 			files.Add(stackContentsFile);
 
@@ -185,7 +170,7 @@ namespace Uno.Resizetizer
 			WriteJson(contentsFile, new JsonObject
 			{
 				["images"] = images,
-				["info"] = XcodeInfo(),
+				["info"] = AppleIconAssetsGenerator.XcodeInfo(),
 			});
 			files.Add(contentsFile);
 
@@ -252,13 +237,6 @@ namespace Uno.Resizetizer
 				["role"] = role,
 			};
 		}
-
-		static JsonObject XcodeInfo() =>
-			new()
-			{
-				["version"] = 1,
-				["author"] = "xcode",
-			};
 
 		static void WriteJson(string path, JsonObject json)
 		{
