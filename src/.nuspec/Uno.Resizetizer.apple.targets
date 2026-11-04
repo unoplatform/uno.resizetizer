@@ -69,22 +69,15 @@
 			<ImageAsset
 					Include="@(_UnoResizetizerCollectedBundleResourceImages)"
 					Condition="'@(_UnoResizetizerCollectedBundleResourceImages->Contains('Assets.xcassets'))' == 'True' and '%(_UnoResizetizerCollectedBundleResourceImages.Identity)' != ''">
-				<LogicalName>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_UnoResizetizerCollectedBundleResourceImages.Identity)))))\%(_UnoResizetizerCollectedBundleResourceImages.Filename)%(_UnoResizetizerCollectedBundleResourceImages.Extension)</LogicalName>
-				<TargetPath>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_UnoResizetizerCollectedBundleResourceImages.Identity)))))\%(_UnoResizetizerCollectedBundleResourceImages.Filename)%(_UnoResizetizerCollectedBundleResourceImages.Extension)</TargetPath>
-				<Link>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_UnoResizetizerCollectedBundleResourceImages.Identity)))))\%(_UnoResizetizerCollectedBundleResourceImages.Filename)%(_UnoResizetizerCollectedBundleResourceImages.Extension)</Link>
-			</ImageAsset>
-
-			<!-- tvOS brand assets nest several folders deep, so keep their whole path inside the catalog -->
-			<ImageAsset Update="@(ImageAsset)"
-					Condition="'$(TargetPlatformIdentifier)' == 'tvos' And $([System.String]::new('%(ImageAsset.FullPath)').StartsWith('$(_UnoIntermediateImagesFullPath)'))">
-				<LogicalName>$([MSBuild]::MakeRelative('$(_UnoIntermediateImagesFullPath)', '%(ImageAsset.FullPath)'))</LogicalName>
-				<TargetPath>$([MSBuild]::MakeRelative('$(_UnoIntermediateImagesFullPath)', '%(ImageAsset.FullPath)'))</TargetPath>
-				<Link>$([MSBuild]::MakeRelative('$(_UnoIntermediateImagesFullPath)', '%(ImageAsset.FullPath)'))</Link>
+				<!-- Keep the whole path inside the catalog: tvOS brand assets nest several folders deep -->
+				<LogicalName>$([MSBuild]::MakeRelative('$(_UnoIntermediateImagesFullPath)', '%(_UnoResizetizerCollectedBundleResourceImages.FullPath)'))</LogicalName>
+				<TargetPath>$([MSBuild]::MakeRelative('$(_UnoIntermediateImagesFullPath)', '%(_UnoResizetizerCollectedBundleResourceImages.FullPath)'))</TargetPath>
+				<Link>$([MSBuild]::MakeRelative('$(_UnoIntermediateImagesFullPath)', '%(_UnoResizetizerCollectedBundleResourceImages.FullPath)'))</Link>
 			</ImageAsset>
 
 			<!-- The catalog is compiled by actool; its files must not also be bundled loose, where their names collide -->
 			<Content Remove="@(Content)"
-					Condition="'$(TargetPlatformIdentifier)' == 'tvos' And $([System.String]::new('%(Content.FullPath)').StartsWith('$(_UnoIntermediateImagesFullPath)Assets.xcassets'))"/>
+					Condition="$([System.String]::new('%(Content.FullPath)').StartsWith('$(_UnoIntermediateImagesFullPath)Assets.xcassets'))"/>
 		</ItemGroup>
 
 		<!-- iOS Only -->
