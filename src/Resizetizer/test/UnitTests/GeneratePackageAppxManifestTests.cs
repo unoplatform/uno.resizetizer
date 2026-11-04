@@ -12,6 +12,7 @@ using Xunit.Abstractions;
 
 namespace Uno.Resizetizer.Tests
 {
+    [Collection(TargetPlatformCollection.Name)]
     public class GeneratePackageAppxManifestTests(ITestOutputHelper testOutput) : MSBuildTaskTestFixture<GeneratePackageAppxManifest_v0>(testOutput)
 	{
         protected GeneratePackageAppxManifest_v0 GetNewTask(

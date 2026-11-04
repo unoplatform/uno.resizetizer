@@ -115,6 +115,39 @@ namespace Uno.Resizetizer
 				];
 		}
 
+		public static class TvOS
+		{
+			public const string BrandAssetsPath = "Assets.xcassets/{name}.brandassets";
+
+			public const string AppIconStack = "App Icon.imagestack";
+			public const string AppStoreIconStack = "App Icon - App Store.imagestack";
+			public const string TopShelfImageSet = "Top Shelf Image.imageset";
+			public const string TopShelfWideImageSet = "Top Shelf Image Wide.imageset";
+
+			public static DpiPath[] AppIcon =>
+				[
+					new DpiPath(AppIconStack, 1.0m, null, "@1x", new SKSize(400, 240), ["tv"]),
+					new DpiPath(AppIconStack, 2.0m, null, "@2x", new SKSize(400, 240), ["tv"]),
+				];
+
+			public static DpiPath[] AppStoreIcon =>
+				[
+					new DpiPath(AppStoreIconStack, 1.0m, null, "@1x", new SKSize(1280, 768), ["tv"]),
+				];
+
+			public static DpiPath[] TopShelf =>
+				[
+					new DpiPath(TopShelfImageSet, 1.0m, null, "@1x", new SKSize(1920, 720), ["tv"]),
+					new DpiPath(TopShelfImageSet, 2.0m, null, "@2x", new SKSize(1920, 720), ["tv"]),
+				];
+
+			public static DpiPath[] TopShelfWide =>
+				[
+					new DpiPath(TopShelfWideImageSet, 1.0m, null, "@1x", new SKSize(2320, 720), ["tv"]),
+					new DpiPath(TopShelfWideImageSet, 2.0m, null, "@2x", new SKSize(2320, 720), ["tv"]),
+				];
+		}
+
 		public static class Windows
 		{
 			private const string OutputPath = "";
@@ -269,7 +302,7 @@ namespace Uno.Resizetizer
 		{
 			var result = platform.ToLowerInvariant() switch
 			{
-				"ios" or "maccatalyst" => Ios.AppIcon,
+				"ios" => Ios.AppIcon,
 				"android" => Android.AppIcon,
 				"wpf" when RuntimeInformation.IsOSPlatform(OSPlatform.OSX) => MacOS.AppIcon,
 				"uwp" or "windows" or "wpf" => Windows.AppIcon,

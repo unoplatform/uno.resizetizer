@@ -1,0 +1,74 @@
+<Project>
+
+	<!--
+	Asserts that the per-platform scale metadata ends up in the inputs files that UnoResizetizeImages uses
+	for incremental builds. A value missing there means changing only that metadata leaves the generated
+	assets stale until a clean rebuild.
+
+	Run it with:  dotnet msbuild src/Resizetizer/test/MSBuild/InputsSnapshot.proj -t:Validate
+	-->
+
+	<PropertyGroup>
+		<TargetFrameworkIdentifier>.NETCoreApp</TargetFrameworkIdentifier>
+		<TargetFramework>net9.0-tvos</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<!-- Only the item collection is under test; this skips the targets that need the compiled tasks. -->
+		<DesignTimeBuild>true</DesignTimeBuild>
+		<IntermediateOutputPath>$(MSBuildThisFileDirectory)obj\InputsSnapshot\</IntermediateOutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<UnoIcon Include="$(MSBuildThisFileDirectory)..\UnitTests\images\appicon.svg" AndroidForegroundScale="0.41" IOSForegroundScale="0.43" TvOSForegroundScale="0.42" WindowsForegroundScale="0.44" WasmForegroundScale="0.45" SkiaForegroundScale="0.46" />
+		<UnoSplashScreen Include="$(MSBuildThisFileDirectory)..\UnitTests\images\appiconfg.svg" Scale="0.31" AndroidScale="0.32" IOSScale="0.33" TvOSScale="0.37" WindowsScale="0.34" WasmScale="0.35" SkiaScale="0.36" />
+	</ItemGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)..\..\..\.nuspec\Uno.Resizetizer.targets" />
+
+	<!-- Copies the packaged native runtime, which only exists in the built package. -->
+	<Target Name="_ResizetizerInitialize" />
+
+	<Target Name="Validate" DependsOnTargets="UnoResizetizeCollectItems">
+		<ReadLinesFromFile File="$(_UnoResizetizerInputsFile)">
+			<Output TaskParameter="Lines" ItemName="_ImageInputLine" />
+		</ReadLinesFromFile>
+		<ReadLinesFromFile File="$(_UnoSplashInputsFile)">
+			<Output TaskParameter="Lines" ItemName="_SplashInputLine" />
+		</ReadLinesFromFile>
+
+		<PropertyGroup>
+			<_ImageInputs>@(_ImageInputLine)</_ImageInputs>
+			<_SplashInputs>@(_SplashInputLine)</_SplashInputs>
+		</PropertyGroup>
+
+		<Error Condition="!$(_ImageInputs.Contains(';AndroidForegroundScale=0.41;'))"
+			   Text="AndroidForegroundScale is missing from the image inputs file: $(_ImageInputs)" />
+		<Error Condition="!$(_ImageInputs.Contains(';IOSForegroundScale=0.43;'))"
+			   Text="IOSForegroundScale is missing from the image inputs file: $(_ImageInputs)" />
+		<Error Condition="!$(_ImageInputs.Contains(';TvOSForegroundScale=0.42;'))"
+			   Text="TvOSForegroundScale is missing from the image inputs file: $(_ImageInputs)" />
+		<Error Condition="!$(_ImageInputs.Contains(';WindowsForegroundScale=0.44;'))"
+			   Text="WindowsForegroundScale is missing from the image inputs file: $(_ImageInputs)" />
+		<Error Condition="!$(_ImageInputs.Contains(';WasmForegroundScale=0.45;'))"
+			   Text="WasmForegroundScale is missing from the image inputs file: $(_ImageInputs)" />
+		<Error Condition="!$(_ImageInputs.Contains(';SkiaForegroundScale=0.46;'))"
+			   Text="SkiaForegroundScale is missing from the image inputs file: $(_ImageInputs)" />
+		<Error Condition="!$(_SplashInputs.Contains(';Scale=0.31;'))"
+			   Text="Scale is missing from the splash inputs file: $(_SplashInputs)" />
+		<Error Condition="!$(_SplashInputs.Contains(';AndroidScale=0.32;'))"
+			   Text="AndroidScale is missing from the splash inputs file: $(_SplashInputs)" />
+		<Error Condition="!$(_SplashInputs.Contains(';IOSScale=0.33;'))"
+			   Text="IOSScale is missing from the splash inputs file: $(_SplashInputs)" />
+		<Error Condition="!$(_SplashInputs.Contains(';TvOSScale=0.37;'))"
+			   Text="TvOSScale is missing from the splash inputs file: $(_SplashInputs)" />
+		<Error Condition="!$(_SplashInputs.Contains(';WindowsScale=0.34;'))"
+			   Text="WindowsScale is missing from the splash inputs file: $(_SplashInputs)" />
+		<Error Condition="!$(_SplashInputs.Contains(';WasmScale=0.35;'))"
+			   Text="WasmScale is missing from the splash inputs file: $(_SplashInputs)" />
+		<Error Condition="!$(_SplashInputs.Contains(';SkiaScale=0.36;'))"
+			   Text="SkiaScale is missing from the splash inputs file: $(_SplashInputs)" />
+
+		<RemoveDir Directories="$(IntermediateOutputPath)" />
+		<Message Importance="high" Text="InputsSnapshot: every per-platform scale is part of the incremental inputs." />
+	</Target>
+
+</Project>

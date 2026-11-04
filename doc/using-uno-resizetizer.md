@@ -162,7 +162,7 @@ You can also make specific files to be `UnoIcon` using Visual Studio, by right-c
 
 -----
 
-Next, some adjustments are needed on `Android`, `Windows (WinUI)`, `WebAssembly`, `mac-catalyst`, and `iOS`.
+Next, some adjustments are needed on `Android`, `Windows (WinUI)`, `WebAssembly`, `iOS`, and `tvOS`.
 
 # [**Android**](#tab/Android)
 
@@ -235,13 +235,21 @@ Next, some adjustments are needed on `Android`, `Windows (WinUI)`, `WebAssembly`
 
 # [**iOS**](#tab/iOS)
 
-* For `mac-catalyst` and `iOS`, open the [`info.plist` file](https://github.com/unoplatform/uno.resizetizer/blob/7ad1199ea1a256e171d88e694486e9a8c341c8a2/samples/NewTemplate/Resizetizer.Extensions.Sample.Mobile/iOS/Info.plist), find the `XSAppIconAsset` key, and change its value to `Assets.xcassets/iconapp.appiconset`.
+* For `iOS`, open the [`info.plist` file](https://github.com/unoplatform/uno.resizetizer/blob/7ad1199ea1a256e171d88e694486e9a8c341c8a2/samples/NewTemplate/Resizetizer.Extensions.Sample.Mobile/iOS/Info.plist), find the `XSAppIconAsset` key, and change its value to `Assets.xcassets/iconapp.appiconset`.
 
 > [!NOTE]
-> If your app icon has a another name than `iconapp`, use it instead.
+> If your app icon has another name than `iconapp`, use it instead.
 >
 > [!TIP]
 > You can delete the old assets related to the app icon from the project.
+
+# [**tvOS**](#tab/tvOS)
+
+* tvOS app icons are layered, so Uno.Resizetizer generates an `Assets.xcassets/iconapp.brandassets` with a two-layer app icon (the background image or `Color` at the back, the foreground at the front), the App Store icon and both Top Shelf images.
+* Open the `Info.plist` file of the tvOS head, find the `XSAppIconAssets` key, and change its value to `Assets.xcassets/iconapp.brandassets`.
+
+> [!NOTE]
+> If your app icon has another name than `iconapp`, use it instead. The back layer has to be opaque, so when there is no background image and no `Color`, it is filled with white.
 
 -----
 

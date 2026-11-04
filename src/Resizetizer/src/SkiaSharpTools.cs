@@ -15,6 +15,23 @@ internal abstract partial class SkiaSharpTools
     public static SkiaSharpTools CreateImaginary(SKColor? backgroundColor, ILogger logger)
         => new SkiaSharpImaginaryTools(backgroundColor, logger);
 
+    /// <summary>
+    /// Creates the tools for the background and foreground layers of an app icon; either may be null, but not both.
+    /// </summary>
+    public static (SkiaSharpTools Background, SkiaSharpTools Foreground) CreateAppIconLayers(ResizeImageInfo info, ILogger logger)
+    {
+        var hasBackground = !string.IsNullOrWhiteSpace(info.Filename) && File.Exists(info.Filename);
+        var hasForeground = !string.IsNullOrWhiteSpace(info.ForegroundFilename) && File.Exists(info.ForegroundFilename);
+        if (!hasBackground && !hasForeground)
+        {
+            throw new InvalidOperationException("An app icon needs at least one image.");
+        }
+
+        return (
+            hasBackground ? Create(info.IsVector, info.Filename, null, null, null, logger) : null,
+            hasForeground ? Create(info.ForegroundIsVector, info.ForegroundFilename, null, null, info.TintColor, logger) : null);
+    }
+
     public SkiaSharpTools(ResizeImageInfo info, ILogger logger)
         : this(info.Filename, info.BaseSize, info.Color, info.TintColor, logger)
     {

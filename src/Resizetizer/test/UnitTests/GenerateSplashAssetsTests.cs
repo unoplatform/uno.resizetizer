@@ -9,6 +9,7 @@ using Xunit;
 
 namespace Uno.Resizetizer.Tests
 {
+	[Collection(TargetPlatformCollection.Name)]
 	public class GenerateSplashAssetsTests : MSBuildTaskTestFixture<GenerateSplashAssets_v0>
 	{
 		protected GenerateSplashAssets_v0 GetNewTask(ITaskItem splash) =>
