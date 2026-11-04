@@ -247,6 +247,9 @@
 			   Text="[$(_Case)] _UnoResizetizerIsWindowsAppSdk expected '$(_ExpectedWindows)' but was '$(_UnoResizetizerIsWindowsAppSdk)'." />
 		<Error Condition="'$(UnoResizetizerPlatformType)' != '$(_ExpectedPlatformType)'"
 			   Text="[$(_Case)] UnoResizetizerPlatformType expected '$(_ExpectedPlatformType)' but was '$(UnoResizetizerPlatformType)'." />
+		<!-- Skia iOS looks up the .scale-NNN files itself. Running before AssignTargetPaths hands them to Uno's RetargetAssets, which renames them to @Nx and drops the other scales. -->
+		<Error Condition="'$(_UnoResizetizerIsiOSApp)' == 'True' And $(UnoResizetizeBeforeTargets.Contains('AssignTargetPaths'))"
+			   Text="[$(_Case)] UnoResizetizeBeforeTargets must not contain AssignTargetPaths on iOS, but was '$(UnoResizetizeBeforeTargets)'." />
 	</Target>
 
 </Project>
