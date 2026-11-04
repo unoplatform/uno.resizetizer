@@ -62,6 +62,9 @@ jobs:
     - name: Validate incremental inputs snapshot
       run: dotnet msbuild src/Resizetizer/test/MSBuild/InputsSnapshot.proj -t:Validate
 
+    - name: Validate Apple asset catalog items
+      run: dotnet msbuild src/Resizetizer/test/MSBuild/AppleCatalogItems.proj -t:Validate
+
     - run: |
         & dotnet tool update --global uno.check --version ${{ env.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
         & uno-check -v --ci --non-interactive --fix --skip xcode --skip androidemulator --skip gtk3 --skip vswin --skip vsmac
