@@ -1,0 +1,65 @@
+<Project DefaultTargets="Validate">
+
+	<!--
+	Asserts how the Apple heads hand the generated asset catalog to the build: every catalog file becomes an
+	ImageAsset that keeps its full path inside Assets.xcassets, and none of them is also bundled as loose Content.
+
+	Run it with:  dotnet msbuild src/Resizetizer/test/MSBuild/AppleCatalogItems.proj -t:Validate
+	-->
+
+	<PropertyGroup>
+		<TargetPlatformIdentifier Condition="'$(TargetPlatformIdentifier)' == ''">ios</TargetPlatformIdentifier>
+		<_UnoIntermediateImages>$(MSBuildThisFileDirectory)obj\AppleCatalogItems\$(TargetPlatformIdentifier)\r\</_UnoIntermediateImages>
+		<_Catalog>$(_UnoIntermediateImages)Assets.xcassets\</_Catalog>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)..\..\..\.nuspec\Uno.Resizetizer.apple.targets" />
+
+	<ItemGroup>
+		<_FakeOutput Include="$(_Catalog)AppIcon.appiconset\Contents.json" />
+		<_FakeOutput Include="$(_Catalog)AppIcon.appiconset\AppIcon60x60@2x.png" />
+		<_FakeOutput Include="$(_UnoIntermediateImages)logo.scale-200.png" />
+		<_FakeOutput Include="$(_Catalog)AppIcon.brandassets\App Icon.imagestack\Front.imagestacklayer\Content.imageset\AppIconFront.png"
+					 Condition="'$(TargetPlatformIdentifier)' == 'tvos'" />
+	</ItemGroup>
+
+	<!-- Stands in for the real ProcessResizedImages: same Content include, over fake resizetizer outputs. -->
+	<Target Name="ProcessResizedImages">
+		<MakeDir Directories="@(_FakeOutput->'%(RootDir)%(Directory)')" />
+		<Touch Files="@(_FakeOutput)" AlwaysCreate="True" />
+		<ItemGroup>
+			<_UnoResizetizerCollectedImages Include="$(_UnoIntermediateImages)**\*" />
+			<Content Include="@(_UnoResizetizerCollectedImages)"
+					 Link="%(_UnoResizetizerCollectedImages.RecursiveDir)%(_UnoResizetizerCollectedImages.Filename)%(_UnoResizetizerCollectedImages.Extension)"
+					 TargetPath="%(_UnoResizetizerCollectedImages.RecursiveDir)%(_UnoResizetizerCollectedImages.Filename)%(_UnoResizetizerCollectedImages.Extension)" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="Validate">
+		<MSBuild Projects="$(MSBuildThisFileFullPath)" Targets="_Check" Properties="TargetPlatformIdentifier=ios" />
+		<MSBuild Projects="$(MSBuildThisFileFullPath)" Targets="_Check" Properties="TargetPlatformIdentifier=tvos" />
+		<RemoveDir Directories="$(MSBuildThisFileDirectory)obj\AppleCatalogItems" />
+		<Message Importance="high" Text="AppleCatalogItems: catalog files are ImageAssets with their full catalog path, never loose Content." />
+	</Target>
+
+	<Target Name="_Check" DependsOnTargets="ProcessResizedImages">
+		<ItemGroup>
+			<_CatalogFile Include="@(_FakeOutput)" Condition="$([System.String]::new('%(FullPath)').StartsWith('$(_Catalog)'))">
+				<Expected>$([MSBuild]::MakeRelative('$(_UnoIntermediateImages)', '%(FullPath)').Replace('\', '/'))</Expected>
+			</_CatalogFile>
+			<_LooseCatalogContent Include="@(Content)" Condition="$([System.String]::new('%(FullPath)').StartsWith('$(_Catalog)'))" />
+			<_ImageAssetName Include="@(ImageAsset->'%(LogicalName)'->Replace('\', '/'))" />
+		</ItemGroup>
+		<PropertyGroup>
+			<_ImageAssetNames>;@(_ImageAssetName);</_ImageAssetNames>
+		</PropertyGroup>
+
+		<Error Condition="!$(_ImageAssetNames.Contains(';%(_CatalogFile.Expected);'))"
+			   Text="[$(TargetPlatformIdentifier)] expected an ImageAsset named '%(_CatalogFile.Expected)', got '$(_ImageAssetNames)'." />
+		<Error Condition="'@(_LooseCatalogContent)' != ''"
+			   Text="[$(TargetPlatformIdentifier)] catalog files must not be bundled as Content: @(_LooseCatalogContent->'%(Link)')" />
+		<Error Condition="'@(Content->AnyHaveMetadataValue('Link', 'logo.scale-200.png'))' != 'True'"
+			   Text="[$(TargetPlatformIdentifier)] images outside the catalog must stay Content, got '@(Content->'%(Link)')'." />
+	</Target>
+
+</Project>
