@@ -42,7 +42,7 @@
 		<Message Importance="high" Text="AppleCatalogItems: catalog files are ImageAssets with their full catalog path, never loose Content." />
 	</Target>
 
-	<Target Name="_Check" DependsOnTargets="ProcessResizedImages;ProcessResizedImagesApple_v0">
+	<Target Name="_Check" DependsOnTargets="ProcessResizedImages">
 		<ItemGroup>
 			<_CatalogFile Include="@(_FakeOutput)" Condition="$([System.String]::new('%(FullPath)').StartsWith('$(_Catalog)'))">
 				<Expected>$([MSBuild]::MakeRelative('$(_UnoIntermediateImages)', '%(FullPath)').Replace('\', '/'))</Expected>
