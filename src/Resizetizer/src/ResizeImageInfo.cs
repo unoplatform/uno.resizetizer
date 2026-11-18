@@ -69,6 +69,26 @@ namespace Uno.Resizetizer
 
 		public double ForegroundScale { get; set; } = 1.0;
 
+		// Windows App SDK padding, as the art's share of the canvas's shorter side. The defaults match
+		// Visual Studio's asset generator and are multiplied by ForegroundScale.
+		public double WindowsAppIconScale { get; set; } = 0.75;
+
+		public double WindowsSmallTileScale { get; set; } = 0.5;
+
+		public double WindowsTileScale { get; set; } = 0.33;
+
+		public double WindowsStoreLogoScale { get; set; } = 1.0;
+
+		public double GetForegroundScale(DpiPath dpi) =>
+			ForegroundScale * dpi.WindowsAssetType switch
+			{
+				WindowsAssetType.PlatedIcon => WindowsAppIconScale,
+				WindowsAssetType.StoreLogo => WindowsStoreLogoScale,
+				WindowsAssetType.SmallTile => WindowsSmallTileScale,
+				WindowsAssetType.Tile => WindowsTileScale,
+				_ => 1.0,
+			};
+
 		private static bool IsVectorFilename(string? filename)
 			=> Path.GetExtension(filename)?.Equals(".svg", StringComparison.OrdinalIgnoreCase) ?? false;
 
@@ -218,6 +238,11 @@ namespace Uno.Resizetizer
 					}
 
 					ApplyPlatformForegroundScale(image, info);
+
+					info.WindowsAppIconScale = ParseScale(image, nameof(WindowsAppIconScale), info.WindowsAppIconScale);
+					info.WindowsSmallTileScale = ParseScale(image, nameof(WindowsSmallTileScale), info.WindowsSmallTileScale);
+					info.WindowsTileScale = ParseScale(image, nameof(WindowsTileScale), info.WindowsTileScale);
+					info.WindowsStoreLogoScale = ParseScale(image, nameof(WindowsStoreLogoScale), info.WindowsStoreLogoScale);
 				}
 
 
@@ -229,6 +254,11 @@ namespace Uno.Resizetizer
 
 			return r;
 		}
+
+		static double ParseScale(ITaskItem image, string property, double defaultValue) =>
+			double.TryParse(image.GetMetadata(property), NumberStyles.Number, CultureInfo.InvariantCulture, out var result)
+				? result
+				: defaultValue;
 
 		static void SetPlatformForegroundScale(ITaskItem image, string property, ResizeImageInfo info)
 		{
