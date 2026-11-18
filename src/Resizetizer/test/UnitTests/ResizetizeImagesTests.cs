@@ -1497,5 +1497,33 @@ namespace Uno.Resizetizer.Tests
 				Assert.Equal(resize, size.Resize);
 			}
 		}
+			// An item that only has the new platform name takes effect end to end
+		[Collection(TargetPlatformCollection.Name)]
+		public class ExecuteWithPlatformScaleAliases : ExecuteForApp
+		{
+			[Theory]
+			[InlineData("uwp", "WinAppSdkForegroundScale")]
+			[InlineData("uwp", "WindowsForegroundScale")]
+			[InlineData("wpf", "DesktopForegroundScale")]
+			[InlineData("wpf", "SkiaForegroundScale")]
+			public void ForegroundScaleIsApplied(string platform, string name)
+			{
+				// Skia desktop renders the Windows image set on Windows only
+				if (platform == "wpf" && !OperatingSystem.IsWindows())
+				{
+					return;
+				}
+
+				var task = GetNewTask(platform, new TaskItem("images/full_square.svg", new Dictionary<string, string>
+				{
+					["IsAppIcon"] = bool.TrueString,
+					[name] = "0.5",
+				}));
+
+				Assert.True(task.Execute(), LogErrorEvents.FirstOrDefault()?.Message);
+
+				AssertArtRatio("full_squareLogo.altform-unplated_targetsize-256.png", 0.5);
+			}
+		}
 	}
 }

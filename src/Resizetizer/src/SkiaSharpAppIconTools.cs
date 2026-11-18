@@ -117,9 +117,10 @@ namespace Uno.Resizetizer
 				canvas.Scale(fgScale, fgScale);
 
 				// add any foreground scale on top
-				if (Info.ForegroundScale != 1.0)
+				var foregroundScale = Info.GetForegroundScale(dpi);
+				if (foregroundScale != 1.0)
 				{
-					var userFgScale = (float)Info.ForegroundScale;
+					var userFgScale = (float)foregroundScale;
 
 					// add the user scale to the main scale
 					fgScale *= userFgScale;

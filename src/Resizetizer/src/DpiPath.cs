@@ -37,6 +37,8 @@ namespace Uno.Resizetizer
 
 		public string[]? Idioms { get; set; }
 
+		public WinAppSdkAssetType WinAppSdkAssetType { get; set; }
+
 		internal static class Android
 		{
 			public static DpiPath[] AppIcon =>
@@ -181,79 +183,79 @@ namespace Uno.Resizetizer
 			public static DpiPath[] Logo =>
 				[
 					// normal
-					new DpiPath(IconOutputPath, 1.00m, "Logo", ".scale-100", new SKSize(44, 44)),
-					new DpiPath(IconOutputPath, 1.25m, "Logo", ".scale-125", new SKSize(44, 44)),
-					new DpiPath(IconOutputPath, 1.50m, "Logo", ".scale-150", new SKSize(44, 44)),
-					new DpiPath(IconOutputPath, 2.00m, "Logo", ".scale-200", new SKSize(44, 44)),
-					new DpiPath(IconOutputPath, 4.00m, "Logo", ".scale-400", new SKSize(44, 44)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".scale-100", new SKSize(44, 44)) { WinAppSdkAssetType = WinAppSdkAssetType.PlatedIcon },
+					new DpiPath(IconOutputPath, 1.25m, "Logo", ".scale-125", new SKSize(44, 44)) { WinAppSdkAssetType = WinAppSdkAssetType.PlatedIcon },
+					new DpiPath(IconOutputPath, 1.50m, "Logo", ".scale-150", new SKSize(44, 44)) { WinAppSdkAssetType = WinAppSdkAssetType.PlatedIcon },
+					new DpiPath(IconOutputPath, 2.00m, "Logo", ".scale-200", new SKSize(44, 44)) { WinAppSdkAssetType = WinAppSdkAssetType.PlatedIcon },
+					new DpiPath(IconOutputPath, 4.00m, "Logo", ".scale-400", new SKSize(44, 44)) { WinAppSdkAssetType = WinAppSdkAssetType.PlatedIcon },
 					// targetsize
-					new DpiPath(IconOutputPath, 1.00m, "Logo", ".targetsize-16", new SKSize(16, 16)),
-					new DpiPath(IconOutputPath, 1.00m, "Logo", ".targetsize-24", new SKSize(24, 24)),
-					new DpiPath(IconOutputPath, 1.00m, "Logo", ".targetsize-32", new SKSize(32, 32)),
-					new DpiPath(IconOutputPath, 1.00m, "Logo", ".targetsize-48", new SKSize(48, 48)),
-					new DpiPath(IconOutputPath, 1.00m, "Logo", ".targetsize-256", new SKSize(256, 256)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".targetsize-16", new SKSize(16, 16)) { WinAppSdkAssetType = WinAppSdkAssetType.PlatedIcon },
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".targetsize-24", new SKSize(24, 24)) { WinAppSdkAssetType = WinAppSdkAssetType.PlatedIcon },
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".targetsize-32", new SKSize(32, 32)) { WinAppSdkAssetType = WinAppSdkAssetType.PlatedIcon },
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".targetsize-48", new SKSize(48, 48)) { WinAppSdkAssetType = WinAppSdkAssetType.PlatedIcon },
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".targetsize-256", new SKSize(256, 256)) { WinAppSdkAssetType = WinAppSdkAssetType.PlatedIcon },
 					// altform-unplated_targetsize
-					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-16", new SKSize(16, 16)),
-					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-24", new SKSize(24, 24)),
-					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-32", new SKSize(32, 32)),
-					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-48", new SKSize(48, 48)),
-					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-256", new SKSize(256, 256)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-16", new SKSize(16, 16)) { WinAppSdkAssetType = WinAppSdkAssetType.UnplatedIcon },
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-24", new SKSize(24, 24)) { WinAppSdkAssetType = WinAppSdkAssetType.UnplatedIcon },
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-32", new SKSize(32, 32)) { WinAppSdkAssetType = WinAppSdkAssetType.UnplatedIcon },
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-48", new SKSize(48, 48)) { WinAppSdkAssetType = WinAppSdkAssetType.UnplatedIcon },
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-unplated_targetsize-256", new SKSize(256, 256)) { WinAppSdkAssetType = WinAppSdkAssetType.UnplatedIcon },
 					// altform-lightunplated_targetsize
-					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-16", new SKSize(16, 16)),
-					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-24", new SKSize(24, 24)),
-					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-32", new SKSize(32, 32)),
-					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-48", new SKSize(48, 48)),
-					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-256", new SKSize(256, 256)),
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-16", new SKSize(16, 16)) { WinAppSdkAssetType = WinAppSdkAssetType.UnplatedIcon },
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-24", new SKSize(24, 24)) { WinAppSdkAssetType = WinAppSdkAssetType.UnplatedIcon },
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-32", new SKSize(32, 32)) { WinAppSdkAssetType = WinAppSdkAssetType.UnplatedIcon },
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-48", new SKSize(48, 48)) { WinAppSdkAssetType = WinAppSdkAssetType.UnplatedIcon },
+					new DpiPath(IconOutputPath, 1.00m, "Logo", ".altform-lightunplated_targetsize-256", new SKSize(256, 256)) { WinAppSdkAssetType = WinAppSdkAssetType.UnplatedIcon },
 				];
 
 			// Store Logo
 			public static DpiPath[] StoreLogo =>
 				[
-					new DpiPath(IconOutputPath, 1.00m, "StoreLogo", ".scale-100", new SKSize(50, 50)),
-					new DpiPath(IconOutputPath, 1.25m, "StoreLogo", ".scale-125", new SKSize(50, 50)),
-					new DpiPath(IconOutputPath, 1.50m, "StoreLogo", ".scale-150", new SKSize(50, 50)),
-					new DpiPath(IconOutputPath, 2.00m, "StoreLogo", ".scale-200", new SKSize(50, 50)),
-					new DpiPath(IconOutputPath, 4.00m, "StoreLogo", ".scale-400", new SKSize(50, 50)),
+					new DpiPath(IconOutputPath, 1.00m, "StoreLogo", ".scale-100", new SKSize(50, 50)) { WinAppSdkAssetType = WinAppSdkAssetType.StoreLogo },
+					new DpiPath(IconOutputPath, 1.25m, "StoreLogo", ".scale-125", new SKSize(50, 50)) { WinAppSdkAssetType = WinAppSdkAssetType.StoreLogo },
+					new DpiPath(IconOutputPath, 1.50m, "StoreLogo", ".scale-150", new SKSize(50, 50)) { WinAppSdkAssetType = WinAppSdkAssetType.StoreLogo },
+					new DpiPath(IconOutputPath, 2.00m, "StoreLogo", ".scale-200", new SKSize(50, 50)) { WinAppSdkAssetType = WinAppSdkAssetType.StoreLogo },
+					new DpiPath(IconOutputPath, 4.00m, "StoreLogo", ".scale-400", new SKSize(50, 50)) { WinAppSdkAssetType = WinAppSdkAssetType.StoreLogo },
 				];
 
 			// Small Tile
 			public static DpiPath[] SmallTile =>
 				[
-					new DpiPath(IconOutputPath, 1.00m, "SmallTile", ".scale-100", new SKSize(71, 71)),
-					new DpiPath(IconOutputPath, 1.25m, "SmallTile", ".scale-125", new SKSize(71, 71)),
-					new DpiPath(IconOutputPath, 1.50m, "SmallTile", ".scale-150", new SKSize(71, 71)),
-					new DpiPath(IconOutputPath, 2.00m, "SmallTile", ".scale-200", new SKSize(71, 71)),
-					new DpiPath(IconOutputPath, 4.00m, "SmallTile", ".scale-400", new SKSize(71, 71)),
+					new DpiPath(IconOutputPath, 1.00m, "SmallTile", ".scale-100", new SKSize(71, 71)) { WinAppSdkAssetType = WinAppSdkAssetType.SmallTile },
+					new DpiPath(IconOutputPath, 1.25m, "SmallTile", ".scale-125", new SKSize(71, 71)) { WinAppSdkAssetType = WinAppSdkAssetType.SmallTile },
+					new DpiPath(IconOutputPath, 1.50m, "SmallTile", ".scale-150", new SKSize(71, 71)) { WinAppSdkAssetType = WinAppSdkAssetType.SmallTile },
+					new DpiPath(IconOutputPath, 2.00m, "SmallTile", ".scale-200", new SKSize(71, 71)) { WinAppSdkAssetType = WinAppSdkAssetType.SmallTile },
+					new DpiPath(IconOutputPath, 4.00m, "SmallTile", ".scale-400", new SKSize(71, 71)) { WinAppSdkAssetType = WinAppSdkAssetType.SmallTile },
 				];
 
 			// Medium Tile
 			public static DpiPath[] MediumTile =>
 				[
-					new DpiPath(IconOutputPath, 1.00m, "MediumTile", ".scale-100", new SKSize(150, 150)),
-					new DpiPath(IconOutputPath, 1.25m, "MediumTile", ".scale-125", new SKSize(150, 150)),
-					new DpiPath(IconOutputPath, 1.50m, "MediumTile", ".scale-150", new SKSize(150, 150)),
-					new DpiPath(IconOutputPath, 2.00m, "MediumTile", ".scale-200", new SKSize(150, 150)),
-					new DpiPath(IconOutputPath, 4.00m, "MediumTile", ".scale-400", new SKSize(150, 150)),
+					new DpiPath(IconOutputPath, 1.00m, "MediumTile", ".scale-100", new SKSize(150, 150)) { WinAppSdkAssetType = WinAppSdkAssetType.Tile },
+					new DpiPath(IconOutputPath, 1.25m, "MediumTile", ".scale-125", new SKSize(150, 150)) { WinAppSdkAssetType = WinAppSdkAssetType.Tile },
+					new DpiPath(IconOutputPath, 1.50m, "MediumTile", ".scale-150", new SKSize(150, 150)) { WinAppSdkAssetType = WinAppSdkAssetType.Tile },
+					new DpiPath(IconOutputPath, 2.00m, "MediumTile", ".scale-200", new SKSize(150, 150)) { WinAppSdkAssetType = WinAppSdkAssetType.Tile },
+					new DpiPath(IconOutputPath, 4.00m, "MediumTile", ".scale-400", new SKSize(150, 150)) { WinAppSdkAssetType = WinAppSdkAssetType.Tile },
 				];
 
 			// Wide Tile
 			public static DpiPath[] WideTile =>
 				[
-					new DpiPath(IconOutputPath, 1.00m, "WideTile", ".scale-100", new SKSize(310, 150)),
-					new DpiPath(IconOutputPath, 1.25m, "WideTile", ".scale-125", new SKSize(310, 150)),
-					new DpiPath(IconOutputPath, 1.50m, "WideTile", ".scale-150", new SKSize(310, 150)),
-					new DpiPath(IconOutputPath, 2.00m, "WideTile", ".scale-200", new SKSize(310, 150)),
-					new DpiPath(IconOutputPath, 4.00m, "WideTile", ".scale-400", new SKSize(310, 150)),
+					new DpiPath(IconOutputPath, 1.00m, "WideTile", ".scale-100", new SKSize(310, 150)) { WinAppSdkAssetType = WinAppSdkAssetType.Tile },
+					new DpiPath(IconOutputPath, 1.25m, "WideTile", ".scale-125", new SKSize(310, 150)) { WinAppSdkAssetType = WinAppSdkAssetType.Tile },
+					new DpiPath(IconOutputPath, 1.50m, "WideTile", ".scale-150", new SKSize(310, 150)) { WinAppSdkAssetType = WinAppSdkAssetType.Tile },
+					new DpiPath(IconOutputPath, 2.00m, "WideTile", ".scale-200", new SKSize(310, 150)) { WinAppSdkAssetType = WinAppSdkAssetType.Tile },
+					new DpiPath(IconOutputPath, 4.00m, "WideTile", ".scale-400", new SKSize(310, 150)) { WinAppSdkAssetType = WinAppSdkAssetType.Tile },
 				];
 
 			// Large Tile
 			public static DpiPath[] LargeTile =>
 				[
-					new DpiPath(IconOutputPath, 1.00m, "LargeTile", ".scale-100", new SKSize(310, 310)),
-					new DpiPath(IconOutputPath, 1.25m, "LargeTile", ".scale-125", new SKSize(310, 310)),
-					new DpiPath(IconOutputPath, 1.50m, "LargeTile", ".scale-150", new SKSize(310, 310)),
-					new DpiPath(IconOutputPath, 2.00m, "LargeTile", ".scale-200", new SKSize(310, 310)),
-					new DpiPath(IconOutputPath, 4.00m, "LargeTile", ".scale-400", new SKSize(310, 310)),
+					new DpiPath(IconOutputPath, 1.00m, "LargeTile", ".scale-100", new SKSize(310, 310)) { WinAppSdkAssetType = WinAppSdkAssetType.Tile },
+					new DpiPath(IconOutputPath, 1.25m, "LargeTile", ".scale-125", new SKSize(310, 310)) { WinAppSdkAssetType = WinAppSdkAssetType.Tile },
+					new DpiPath(IconOutputPath, 1.50m, "LargeTile", ".scale-150", new SKSize(310, 310)) { WinAppSdkAssetType = WinAppSdkAssetType.Tile },
+					new DpiPath(IconOutputPath, 2.00m, "LargeTile", ".scale-200", new SKSize(310, 310)) { WinAppSdkAssetType = WinAppSdkAssetType.Tile },
+					new DpiPath(IconOutputPath, 4.00m, "LargeTile", ".scale-400", new SKSize(310, 310)) { WinAppSdkAssetType = WinAppSdkAssetType.Tile },
 				];
 
 			// Badge
@@ -265,8 +267,6 @@ namespace Uno.Resizetizer
 					new DpiPath(IconOutputPath, 2.00m, "Badge", ".scale-200", new SKSize(24, 24)),
 					new DpiPath(IconOutputPath, 4.00m, "Badge", ".scale-400", new SKSize(24, 24)),
 				];
-
-			// TODO: logo variants (targetsize, altform-unplated, altform-lightunplated)
 
 			public static DpiPath[] AppIcon =>
 				Logo.Union(
@@ -315,6 +315,12 @@ namespace Uno.Resizetizer
 				if (!string.IsNullOrEmpty(r.Path))
 				{
 					r.Path = r.Path.Replace("{name}", appIconName);
+				}
+
+				// Skia desktop only uses the .ico, the padded images are for the Windows App SDK package
+				if (platform.Equals("wpf", StringComparison.OrdinalIgnoreCase))
+				{
+					r.WinAppSdkAssetType = WinAppSdkAssetType.None;
 				}
 			}
 

@@ -69,6 +69,26 @@ namespace Uno.Resizetizer
 
 		public double ForegroundScale { get; set; } = 1.0;
 
+		// Windows App SDK padding, as the art's share of the canvas's shorter side. The defaults match
+		// Visual Studio's asset generator and are multiplied by ForegroundScale.
+		public double WinAppSdkAppIconScale { get; set; } = 0.75;
+
+		public double WinAppSdkSmallTileScale { get; set; } = 0.5;
+
+		public double WinAppSdkTileScale { get; set; } = 0.33;
+
+		public double WinAppSdkStoreLogoScale { get; set; } = 1.0;
+
+		public double GetForegroundScale(DpiPath dpi) =>
+			ForegroundScale * dpi.WinAppSdkAssetType switch
+			{
+				WinAppSdkAssetType.PlatedIcon => WinAppSdkAppIconScale,
+				WinAppSdkAssetType.StoreLogo => WinAppSdkStoreLogoScale,
+				WinAppSdkAssetType.SmallTile => WinAppSdkSmallTileScale,
+				WinAppSdkAssetType.Tile => WinAppSdkTileScale,
+				_ => 1.0,
+			};
+
 		private static bool IsVectorFilename(string? filename)
 			=> Path.GetExtension(filename)?.Equals(".svg", StringComparison.OrdinalIgnoreCase) ?? false;
 
@@ -218,6 +238,11 @@ namespace Uno.Resizetizer
 					}
 
 					ApplyPlatformForegroundScale(image, info);
+
+					info.WinAppSdkAppIconScale = ParseScale(image, nameof(WinAppSdkAppIconScale), info.WinAppSdkAppIconScale);
+					info.WinAppSdkSmallTileScale = ParseScale(image, nameof(WinAppSdkSmallTileScale), info.WinAppSdkSmallTileScale);
+					info.WinAppSdkTileScale = ParseScale(image, nameof(WinAppSdkTileScale), info.WinAppSdkTileScale);
+					info.WinAppSdkStoreLogoScale = ParseScale(image, nameof(WinAppSdkStoreLogoScale), info.WinAppSdkStoreLogoScale);
 				}
 
 
@@ -230,6 +255,11 @@ namespace Uno.Resizetizer
 			return r;
 		}
 
+		static double ParseScale(ITaskItem image, string property, double defaultValue) =>
+			double.TryParse(image.GetMetadata(property), NumberStyles.Number, CultureInfo.InvariantCulture, out var result)
+				? result
+				: defaultValue;
+
 		static void SetPlatformForegroundScale(ITaskItem image, string property, ResizeImageInfo info)
 		{
 			if (double.TryParse(image.GetMetadata(property), NumberStyles.Number,
@@ -239,6 +269,7 @@ namespace Uno.Resizetizer
 			}
 		}
 
+		// Legacy names first, so the new one wins when both are set
 		static void ApplyPlatformForegroundScale(ITaskItem image, ResizeImageInfo info)
 		{
 			switch (ResizetizeImages_v0.TargetPlatform)
@@ -254,6 +285,7 @@ namespace Uno.Resizetizer
 					break;
 				case "uwp":
 					SetPlatformForegroundScale(image, "WindowsForegroundScale", info);
+					SetPlatformForegroundScale(image, "WinAppSdkForegroundScale", info);
 					break;
 				case "wasm":
 					SetPlatformForegroundScale(image, "WasmForegroundScale", info);
@@ -261,11 +293,13 @@ namespace Uno.Resizetizer
 				//skia
 				case "netstandard" or "wpf":
 					SetPlatformForegroundScale(image, "SkiaForegroundScale", info);
+					SetPlatformForegroundScale(image, "DesktopForegroundScale", info);
 					break;
 			}
 		}
 
 
+		// Legacy names first, so the new one wins when both are set
 		static void ApplyPlatformScale(ITaskItem image, ResizeImageInfo info)
 		{
 			switch (ResizetizeImages_v0.TargetPlatform)
@@ -281,6 +315,7 @@ namespace Uno.Resizetizer
 					break;
 				case "uwp":
 					SetPlatformForegroundScale(image, "WindowsScale", info);
+					SetPlatformForegroundScale(image, "WinAppSdkScale", info);
 					break;
 				case "wasm":
 					SetPlatformForegroundScale(image, "WasmScale", info);
@@ -288,6 +323,7 @@ namespace Uno.Resizetizer
 				//skia
 				case "netstandard" or "wpf":
 					SetPlatformForegroundScale(image, "SkiaScale", info);
+					SetPlatformForegroundScale(image, "DesktopScale", info);
 					break;
 			}
 		}
