@@ -69,7 +69,7 @@ namespace Uno.Resizetizer
 				Log.LogWarning("PlatformType is null.");
 			}
 
-			var images = ResizeImageInfo.Parse(Images);
+			var images = ResizeImageInfo.Parse(Images, PlatformType);
 
 			var dpis = DpiPath.GetDpis();
 

@@ -23,7 +23,12 @@ namespace Uno.Resizetizer
 #endif
 			var splash = UnoSplashScreen[0];
 
-			var img = ResizeImageInfo.ParseSplashScreen(splash);
+			// This task only runs for Windows App SDK, before ResizetizeImages sets its platform
+			var img = ResizeImageInfo.ParseSplashScreen(splash, platform: "uwp");
+
+			// Drawn as the foreground, which the scale applies to, while the background color fills the canvas
+			img.ForegroundFilename = img.Filename;
+			img.Filename = null;
 
 			Directory.CreateDirectory(IntermediateOutputPath);
 
