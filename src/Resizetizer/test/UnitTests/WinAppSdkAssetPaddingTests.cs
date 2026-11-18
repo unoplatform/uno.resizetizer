@@ -8,7 +8,7 @@ using Xunit;
 namespace Uno.Resizetizer.Tests
 {
 	// https://github.com/unoplatform/uno.resizetizer/issues/420
-	public class WindowsAssetPaddingTests : BaseTest
+	public class WinAppSdkAssetPaddingTests : BaseTest
 	{
 		readonly TestLogger Logger = new();
 
@@ -63,13 +63,13 @@ namespace Uno.Resizetizer.Tests
 		}
 
 		[Theory]
-		[InlineData(nameof(ResizeImageInfo.WindowsAppIconScale), "Logo.scale-200", 0.6)]
-		[InlineData(nameof(ResizeImageInfo.WindowsAppIconScale), "Logo.targetsize-256", 0.6)]
-		[InlineData(nameof(ResizeImageInfo.WindowsSmallTileScale), "SmallTile.scale-200", 0.4)]
-		[InlineData(nameof(ResizeImageInfo.WindowsTileScale), "MediumTile.scale-200", 0.5)]
-		[InlineData(nameof(ResizeImageInfo.WindowsTileScale), "WideTile.scale-200", 0.5)]
-		[InlineData(nameof(ResizeImageInfo.WindowsTileScale), "LargeTile.scale-200", 0.5)]
-		[InlineData(nameof(ResizeImageInfo.WindowsStoreLogoScale), "StoreLogo.scale-200", 0.8)]
+		[InlineData(nameof(ResizeImageInfo.WinAppSdkAppIconScale), "Logo.scale-200", 0.6)]
+		[InlineData(nameof(ResizeImageInfo.WinAppSdkAppIconScale), "Logo.targetsize-256", 0.6)]
+		[InlineData(nameof(ResizeImageInfo.WinAppSdkSmallTileScale), "SmallTile.scale-200", 0.4)]
+		[InlineData(nameof(ResizeImageInfo.WinAppSdkTileScale), "MediumTile.scale-200", 0.5)]
+		[InlineData(nameof(ResizeImageInfo.WinAppSdkTileScale), "WideTile.scale-200", 0.5)]
+		[InlineData(nameof(ResizeImageInfo.WinAppSdkTileScale), "LargeTile.scale-200", 0.5)]
+		[InlineData(nameof(ResizeImageInfo.WinAppSdkStoreLogoScale), "StoreLogo.scale-200", 0.8)]
 		public void RatioCanBeOverridden(string property, string asset, double value)
 		{
 			var info = CreateInfo();
@@ -87,7 +87,7 @@ namespace Uno.Resizetizer.Tests
 		public void OverrideOnlyAffectsItsOwnAssets(string asset, double expected)
 		{
 			var info = CreateInfo();
-			info.WindowsAppIconScale = 1.0;
+			info.WinAppSdkAppIconScale = 1.0;
 
 			AssertArtRatio(Render(info, GetDpi(asset)), expected);
 		}
@@ -99,10 +99,10 @@ namespace Uno.Resizetizer.Tests
 		public void AllOverridesAtOneReproducePreviousOutput(string? background, string foreground)
 		{
 			var info = CreateInfo(background, foreground);
-			info.WindowsAppIconScale = 1.0;
-			info.WindowsSmallTileScale = 1.0;
-			info.WindowsTileScale = 1.0;
-			info.WindowsStoreLogoScale = 1.0;
+			info.WinAppSdkAppIconScale = 1.0;
+			info.WinAppSdkSmallTileScale = 1.0;
+			info.WinAppSdkTileScale = 1.0;
+			info.WinAppSdkStoreLogoScale = 1.0;
 
 			foreach (var dpi in DpiPath.Windows.AppIcon)
 			{
@@ -147,7 +147,7 @@ namespace Uno.Resizetizer.Tests
 		public void BackgroundFileStillFillsTheTile()
 		{
 			var info = CreateInfo("full_square.svg", "full_square.svg");
-			info.WindowsTileScale = 0.0001;
+			info.WinAppSdkTileScale = 0.0001;
 
 			using var bitmap = SKBitmap.Decode(Render(info, GetDpi("MediumTile.scale-100")));
 

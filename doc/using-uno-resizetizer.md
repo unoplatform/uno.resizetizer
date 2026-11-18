@@ -144,7 +144,7 @@ If you want, you can see our sample project in [Uno.Resizetizer GitHub repositor
 > If the icon doesn't look good, you can use the `ForegroundScale` property which will re-scale the `Foreground` image for all platforms. If you want to re-scale for a specific platform, you can use the specific property for that platform. For more information, see [Resizetizer Properties](xref:Overview.Uno.Resizetizer.Properties).
 
 > [!NOTE]
-> On Windows App SDK, the plated app icon and the Start tiles leave room around the logo, like Visual Studio's generated assets. Each image type has its own scale (`WindowsAppIconScale`, `WindowsSmallTileScale`, `WindowsTileScale`, `WindowsStoreLogoScale`), on top of `ForegroundScale`. See [Windows App SDK padding](xref:Overview.Uno.Resizetizer.Properties#windows-app-sdk-padding).
+> On Windows App SDK, the plated app icon and the Start tiles leave room around the logo, like Visual Studio's generated assets. Each image type has its own scale (`WinAppSdkAppIconScale`, `WinAppSdkSmallTileScale`, `WinAppSdkTileScale`, `WinAppSdkStoreLogoScale`), on top of `ForegroundScale`. See [Windows App SDK padding](xref:Overview.Uno.Resizetizer.Properties#windows-app-sdk-padding).
 
 # [**Shared Project Based Solution**](#tab/sharedproject)
 

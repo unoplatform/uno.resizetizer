@@ -61,7 +61,7 @@ namespace Uno.Resizetizer.Tests
 		}
 
 		// https://github.com/unoplatform/uno.resizetizer/issues/420
-		public class WindowsAssetScales
+		public class WinAppSdkAssetScales
 		{
 			[Fact]
 			public void DefaultsMatchVisualStudio()
@@ -71,10 +71,10 @@ namespace Uno.Resizetizer.Tests
 					["IsAppIcon"] = bool.TrueString,
 				}));
 
-				Assert.Equal(0.75, info.WindowsAppIconScale);
-				Assert.Equal(0.5, info.WindowsSmallTileScale);
-				Assert.Equal(0.33, info.WindowsTileScale);
-				Assert.Equal(1.0, info.WindowsStoreLogoScale);
+				Assert.Equal(0.75, info.WinAppSdkAppIconScale);
+				Assert.Equal(0.5, info.WinAppSdkSmallTileScale);
+				Assert.Equal(0.33, info.WinAppSdkTileScale);
+				Assert.Equal(1.0, info.WinAppSdkStoreLogoScale);
 			}
 
 			[Fact]
@@ -87,16 +87,16 @@ namespace Uno.Resizetizer.Tests
 					var info = ResizeImageInfo.Parse(new TaskItem("images/full_square.svg", new Dictionary<string, string>
 					{
 						["IsAppIcon"] = bool.TrueString,
-						["WindowsAppIconScale"] = "0.6",
-						["WindowsSmallTileScale"] = "0.4",
-						["WindowsTileScale"] = "0.25",
-						["WindowsStoreLogoScale"] = "0.9",
+						["WinAppSdkAppIconScale"] = "0.6",
+						["WinAppSdkSmallTileScale"] = "0.4",
+						["WinAppSdkTileScale"] = "0.25",
+						["WinAppSdkStoreLogoScale"] = "0.9",
 					}));
 
-					Assert.Equal(0.6, info.WindowsAppIconScale);
-					Assert.Equal(0.4, info.WindowsSmallTileScale);
-					Assert.Equal(0.25, info.WindowsTileScale);
-					Assert.Equal(0.9, info.WindowsStoreLogoScale);
+					Assert.Equal(0.6, info.WinAppSdkAppIconScale);
+					Assert.Equal(0.4, info.WinAppSdkSmallTileScale);
+					Assert.Equal(0.25, info.WinAppSdkTileScale);
+					Assert.Equal(0.9, info.WinAppSdkStoreLogoScale);
 				}
 				finally
 				{

@@ -444,7 +444,7 @@
 		<!-- This allows us to invalidate the build based on not just input image files changing but project item metadata as well -->
 		<WriteLinesToFile
 				File="$(_UnoResizetizerInputsFile)"
-				Lines="@(UnoImage->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);IsAppIcon=%(IsAppIcon);ForegroundScale=%(ForegroundScale);AndroidForegroundScale=%(AndroidForegroundScale);IOSForegroundScale=%(IOSForegroundScale);TvOSForegroundScale=%(TvOSForegroundScale);WindowsForegroundScale=%(WindowsForegroundScale);WasmForegroundScale=%(WasmForegroundScale);SkiaForegroundScale=%(SkiaForegroundScale);WindowsAppIconScale=%(WindowsAppIconScale);WindowsSmallTileScale=%(WindowsSmallTileScale);WindowsTileScale=%(WindowsTileScale);WindowsStoreLogoScale=%(WindowsStoreLogoScale);ForegroundFile=%(ForegroundFile)')"
+				Lines="@(UnoImage->'File=%(Identity);Link=%(Link);BaseSize=%(BaseSize);Resize=%(Resize);TintColor=%(TintColor);Color=%(Color);IsAppIcon=%(IsAppIcon);ForegroundScale=%(ForegroundScale);AndroidForegroundScale=%(AndroidForegroundScale);IOSForegroundScale=%(IOSForegroundScale);TvOSForegroundScale=%(TvOSForegroundScale);WindowsForegroundScale=%(WindowsForegroundScale);WasmForegroundScale=%(WasmForegroundScale);SkiaForegroundScale=%(SkiaForegroundScale);WinAppSdkAppIconScale=%(WinAppSdkAppIconScale);WinAppSdkSmallTileScale=%(WinAppSdkSmallTileScale);WinAppSdkTileScale=%(WinAppSdkTileScale);WinAppSdkStoreLogoScale=%(WinAppSdkStoreLogoScale);ForegroundFile=%(ForegroundFile)')"
 				Overwrite="true"
 				WriteOnlyWhenDifferent="true"/>
 

@@ -71,21 +71,21 @@ namespace Uno.Resizetizer
 
 		// Windows App SDK padding, as the art's share of the canvas's shorter side. The defaults match
 		// Visual Studio's asset generator and are multiplied by ForegroundScale.
-		public double WindowsAppIconScale { get; set; } = 0.75;
+		public double WinAppSdkAppIconScale { get; set; } = 0.75;
 
-		public double WindowsSmallTileScale { get; set; } = 0.5;
+		public double WinAppSdkSmallTileScale { get; set; } = 0.5;
 
-		public double WindowsTileScale { get; set; } = 0.33;
+		public double WinAppSdkTileScale { get; set; } = 0.33;
 
-		public double WindowsStoreLogoScale { get; set; } = 1.0;
+		public double WinAppSdkStoreLogoScale { get; set; } = 1.0;
 
 		public double GetForegroundScale(DpiPath dpi) =>
-			ForegroundScale * dpi.WindowsAssetType switch
+			ForegroundScale * dpi.WinAppSdkAssetType switch
 			{
-				WindowsAssetType.PlatedIcon => WindowsAppIconScale,
-				WindowsAssetType.StoreLogo => WindowsStoreLogoScale,
-				WindowsAssetType.SmallTile => WindowsSmallTileScale,
-				WindowsAssetType.Tile => WindowsTileScale,
+				WinAppSdkAssetType.PlatedIcon => WinAppSdkAppIconScale,
+				WinAppSdkAssetType.StoreLogo => WinAppSdkStoreLogoScale,
+				WinAppSdkAssetType.SmallTile => WinAppSdkSmallTileScale,
+				WinAppSdkAssetType.Tile => WinAppSdkTileScale,
 				_ => 1.0,
 			};
 
@@ -239,10 +239,10 @@ namespace Uno.Resizetizer
 
 					ApplyPlatformForegroundScale(image, info);
 
-					info.WindowsAppIconScale = ParseScale(image, nameof(WindowsAppIconScale), info.WindowsAppIconScale);
-					info.WindowsSmallTileScale = ParseScale(image, nameof(WindowsSmallTileScale), info.WindowsSmallTileScale);
-					info.WindowsTileScale = ParseScale(image, nameof(WindowsTileScale), info.WindowsTileScale);
-					info.WindowsStoreLogoScale = ParseScale(image, nameof(WindowsStoreLogoScale), info.WindowsStoreLogoScale);
+					info.WinAppSdkAppIconScale = ParseScale(image, nameof(WinAppSdkAppIconScale), info.WinAppSdkAppIconScale);
+					info.WinAppSdkSmallTileScale = ParseScale(image, nameof(WinAppSdkSmallTileScale), info.WinAppSdkSmallTileScale);
+					info.WinAppSdkTileScale = ParseScale(image, nameof(WinAppSdkTileScale), info.WinAppSdkTileScale);
+					info.WinAppSdkStoreLogoScale = ParseScale(image, nameof(WinAppSdkStoreLogoScale), info.WinAppSdkStoreLogoScale);
 				}
 
 

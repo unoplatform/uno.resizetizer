@@ -37,25 +37,25 @@ Properties that can be used across all items
 | `IOSForegroundScale`     | The same as ForegroundScale, but the value will be applied just for iOS                                                               |
 | `TvOSForegroundScale`    | The same as ForegroundScale, but the value will be applied just for tvOS                                                              |
 | `SkiaForegroundScale`    | The same as ForegroundScale, but the value will be applied just for Skia targets                                                      |
-| `WindowsAppIconScale`    | Size of the foreground on the plated Windows app icon (`Logo.scale-*`, `Logo.targetsize-*`), as a share of the image. Default `0.75`. |
-| `WindowsSmallTileScale`  | Size of the foreground on the Windows small tile (`SmallTile.scale-*`). Default `0.5`.                                                |
-| `WindowsTileScale`       | Size of the foreground on the Windows medium, wide and large tiles. Default `0.33`.                                                   |
-| `WindowsStoreLogoScale`  | Size of the foreground on the Windows store logo (`StoreLogo.scale-*`). Default `1.0`.                                                |
+| `WinAppSdkAppIconScale`  | Size of the foreground on the plated Windows App SDK app icon (`Logo.scale-*`, `Logo.targetsize-*`), as a share of the image. Default `0.75`. |
+| `WinAppSdkSmallTileScale` | Size of the foreground on the Windows App SDK small tile (`SmallTile.scale-*`). Default `0.5`.                                         |
+| `WinAppSdkTileScale`     | Size of the foreground on the Windows App SDK medium, wide and large tiles. Default `0.33`.                                            |
+| `WinAppSdkStoreLogoScale` | Size of the foreground on the Windows App SDK store logo (`StoreLogo.scale-*`). Default `1.0`.                                         |
 
 > [!NOTE]
 > The `<PLATFORM>ForegroundScale` (`AndroidForegroundScale`, `WasmForegroundScale`, etc) will override the global `ForegroundScale` value.
 
 ### Windows App SDK padding
 
-On Windows App SDK, each generated image pads the foreground the way Visual Studio's asset generator does. The foreground is fitted to the shorter side of the image, then multiplied by the asset's scale below and by `ForegroundScale` (or `WindowsForegroundScale`). The background (`Include` file or `Color`) still fills the whole image.
+On Windows App SDK, each generated image pads the foreground the way Visual Studio's asset generator does. The foreground is fitted to the shorter side of the image, then multiplied by the asset's scale below and by `ForegroundScale` (or `WindowsForegroundScale`). `WindowsForegroundScale` keeps its meaning: one factor for every Windows image. The `WinAppSdk*` metadata only apply to the packaged Windows App SDK images, not to Skia desktop on Windows. The background (`Include` file or `Color`) still fills the whole image.
 
-| Images                                                                  | Metadata                | Default |
-|-------------------------------------------------------------------------|-------------------------|---------|
-| `Logo.scale-*`, `Logo.targetsize-*` (plated app icon)                   | `WindowsAppIconScale`   | `0.75`  |
-| `Logo.altform-unplated_targetsize-*`, `Logo.altform-lightunplated_targetsize-*` | -               | `1.0`   |
-| `StoreLogo.scale-*`                                                     | `WindowsStoreLogoScale` | `1.0`   |
-| `SmallTile.scale-*`                                                     | `WindowsSmallTileScale` | `0.5`   |
-| `MediumTile.scale-*`, `WideTile.scale-*`, `LargeTile.scale-*`           | `WindowsTileScale`      | `0.33`  |
+| Images                                                                          | Metadata                  | Default |
+|---------------------------------------------------------------------------------|---------------------------|---------|
+| `Logo.scale-*`, `Logo.targetsize-*` (plated app icon)                           | `WinAppSdkAppIconScale`   | `0.75`  |
+| `Logo.altform-unplated_targetsize-*`, `Logo.altform-lightunplated_targetsize-*` | -                         | `1.0`   |
+| `StoreLogo.scale-*`                                                             | `WinAppSdkStoreLogoScale` | `1.0`   |
+| `SmallTile.scale-*`                                                             | `WinAppSdkSmallTileScale` | `0.5`   |
+| `MediumTile.scale-*`, `WideTile.scale-*`, `LargeTile.scale-*`                   | `WinAppSdkTileScale`      | `0.33`  |
 
 For example, with `ForegroundScale="0.8"` the medium tile's foreground is `0.33 × 0.8 = 0.264` of the tile, while the unplated taskbar icon stays at `0.8`. The splash screen is not affected; it keeps using `UnoSplashScreen`'s `Scale`.
 
@@ -63,7 +63,7 @@ To go back to the output of earlier versions, where the foreground fills every i
 
 ```xml
 <ItemDefinitionGroup>
-    <UnoIcon WindowsAppIconScale="1" WindowsSmallTileScale="1" WindowsTileScale="1" WindowsStoreLogoScale="1" />
+    <UnoIcon WinAppSdkAppIconScale="1" WinAppSdkSmallTileScale="1" WinAppSdkTileScale="1" WinAppSdkStoreLogoScale="1" />
 </ItemDefinitionGroup>
 ```
 
