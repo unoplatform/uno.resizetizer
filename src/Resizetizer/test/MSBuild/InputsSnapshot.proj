@@ -18,8 +18,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<UnoIcon Include="$(MSBuildThisFileDirectory)..\UnitTests\images\appicon.svg" AndroidForegroundScale="0.41" IOSForegroundScale="0.43" TvOSForegroundScale="0.42" WindowsForegroundScale="0.44" WasmForegroundScale="0.45" SkiaForegroundScale="0.46" WinAppSdkAppIconScale="0.47" WinAppSdkSmallTileScale="0.48" WinAppSdkTileScale="0.49" WinAppSdkStoreLogoScale="0.51" />
-		<UnoSplashScreen Include="$(MSBuildThisFileDirectory)..\UnitTests\images\appiconfg.svg" Scale="0.31" AndroidScale="0.32" IOSScale="0.33" TvOSScale="0.37" WindowsScale="0.34" WasmScale="0.35" SkiaScale="0.36" />
+		<UnoIcon Include="$(MSBuildThisFileDirectory)..\UnitTests\images\appicon.svg" AndroidForegroundScale="0.41" IOSForegroundScale="0.43" TvOSForegroundScale="0.42" WindowsForegroundScale="0.44" WasmForegroundScale="0.45" SkiaForegroundScale="0.46" WinAppSdkAppIconScale="0.47" WinAppSdkSmallTileScale="0.48" WinAppSdkTileScale="0.49" WinAppSdkStoreLogoScale="0.51" WinAppSdkForegroundScale="0.52" DesktopForegroundScale="0.53" />
+		<UnoSplashScreen Include="$(MSBuildThisFileDirectory)..\UnitTests\images\appiconfg.svg" Scale="0.31" AndroidScale="0.32" IOSScale="0.33" TvOSScale="0.37" WindowsScale="0.34" WasmScale="0.35" SkiaScale="0.36" WinAppSdkScale="0.38" DesktopScale="0.39" />
 	</ItemGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)..\..\..\.nuspec\Uno.Resizetizer.targets" />
@@ -60,6 +60,10 @@
 			   Text="WinAppSdkTileScale is missing from the image inputs file: $(_ImageInputs)" />
 		<Error Condition="!$(_ImageInputs.Contains(';WinAppSdkStoreLogoScale=0.51;'))"
 			   Text="WinAppSdkStoreLogoScale is missing from the image inputs file: $(_ImageInputs)" />
+		<Error Condition="!$(_ImageInputs.Contains(';WinAppSdkForegroundScale=0.52;'))"
+			   Text="WinAppSdkForegroundScale is missing from the image inputs file: $(_ImageInputs)" />
+		<Error Condition="!$(_ImageInputs.Contains(';DesktopForegroundScale=0.53;'))"
+			   Text="DesktopForegroundScale is missing from the image inputs file: $(_ImageInputs)" />
 		<Error Condition="!$(_SplashInputs.Contains(';Scale=0.31;'))"
 			   Text="Scale is missing from the splash inputs file: $(_SplashInputs)" />
 		<Error Condition="!$(_SplashInputs.Contains(';AndroidScale=0.32;'))"
@@ -74,6 +78,10 @@
 			   Text="WasmScale is missing from the splash inputs file: $(_SplashInputs)" />
 		<Error Condition="!$(_SplashInputs.Contains(';SkiaScale=0.36;'))"
 			   Text="SkiaScale is missing from the splash inputs file: $(_SplashInputs)" />
+		<Error Condition="!$(_SplashInputs.Contains(';WinAppSdkScale=0.38;'))"
+			   Text="WinAppSdkScale is missing from the splash inputs file: $(_SplashInputs)" />
+		<Error Condition="!$(_SplashInputs.Contains(';DesktopScale=0.39;'))"
+			   Text="DesktopScale is missing from the splash inputs file: $(_SplashInputs)" />
 
 		<RemoveDir Directories="$(IntermediateOutputPath)" />
 		<Message Importance="high" Text="InputsSnapshot: every per-platform scale is part of the incremental inputs." />

@@ -192,39 +192,5 @@ namespace Uno.Resizetizer.Tests
 			new SkiaSharpAppIconTools(info, Logger).Resize(dpi, destination);
 			return File.ReadAllBytes(destination);
 		}
-
-		static void AssertArtRatio(byte[] png, double expected)
-		{
-			using var bitmap = SKBitmap.Decode(png);
-
-			int minX = int.MaxValue, minY = int.MaxValue, maxX = -1, maxY = -1;
-			for (var y = 0; y < bitmap.Height; y++)
-			{
-				for (var x = 0; x < bitmap.Width; x++)
-				{
-					if (bitmap.GetPixel(x, y).Alpha > 127)
-					{
-						minX = Math.Min(minX, x);
-						minY = Math.Min(minY, y);
-						maxX = Math.Max(maxX, x);
-						maxY = Math.Max(maxY, y);
-					}
-				}
-			}
-
-			Assert.True(maxX >= 0, "The image has no visible art");
-
-			var shortSide = Math.Min(bitmap.Width, bitmap.Height);
-			var artWidth = maxX - minX + 1;
-			var artHeight = maxY - minY + 1;
-			var tolerance = 2.0 / shortSide;
-
-			Assert.InRange(artWidth / (double)shortSide, expected - tolerance, expected + tolerance);
-			Assert.InRange(artHeight / (double)shortSide, expected - tolerance, expected + tolerance);
-
-			// centered on the canvas
-			Assert.InRange((minX + maxX + 1) / 2.0, bitmap.Width / 2.0 - 1.5, bitmap.Width / 2.0 + 1.5);
-			Assert.InRange((minY + maxY + 1) / 2.0, bitmap.Height / 2.0 - 1.5, bitmap.Height / 2.0 + 1.5);
-		}
 	}
 }
