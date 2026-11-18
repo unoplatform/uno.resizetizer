@@ -316,6 +316,12 @@ namespace Uno.Resizetizer
 				{
 					r.Path = r.Path.Replace("{name}", appIconName);
 				}
+
+				// Skia desktop only uses the .ico, the padded images are for the Windows App SDK package
+				if (platform.Equals("wpf", StringComparison.OrdinalIgnoreCase))
+				{
+					r.WinAppSdkAssetType = WinAppSdkAssetType.None;
+				}
 			}
 
 			return result;
