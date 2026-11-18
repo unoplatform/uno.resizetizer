@@ -63,6 +63,9 @@ namespace Uno.Resizetizer
 
 		public bool IsSplashScreen { get; set; }
 
+		// The platform whose scale metadata applies, e.g. "uwp" or "android"
+		public string? Platform { get; set; }
+
 		public string? ForegroundFilename { get; set; }
 
 		public bool ForegroundIsVector => IsVectorFilename(ForegroundFilename);
@@ -76,13 +79,15 @@ namespace Uno.Resizetizer
 			=> Parse(new[] { image })[0];
 
 		// UnoSplashScreen items use BackgroundColor only; Color is not supported on them
-		public static ResizeImageInfo ParseSplashScreen(ITaskItem image)
-			=> Parse(new[] { image }, isSplashScreenItem: true)[0];
+		public static ResizeImageInfo ParseSplashScreen(ITaskItem image, string? platform = null)
+			=> Parse(new[] { image }, isSplashScreenItem: true, platform)[0];
 
-		public static List<ResizeImageInfo> Parse(IEnumerable<ITaskItem>? images)
-			=> Parse(images, isSplashScreenItem: false);
+		public static List<ResizeImageInfo> Parse(IEnumerable<ITaskItem>? images, string? platform = null)
+			=> Parse(images, isSplashScreenItem: false, platform);
 
-		static List<ResizeImageInfo> Parse(IEnumerable<ITaskItem>? images, bool isSplashScreenItem)
+		// Without an explicit platform, falls back to the one of the last ResizetizeImages run,
+		// which can belong to another project built in the same node
+		static List<ResizeImageInfo> Parse(IEnumerable<ITaskItem>? images, bool isSplashScreenItem, string? platform)
 		{
 			var r = new List<ResizeImageInfo>();
 
@@ -93,7 +98,7 @@ namespace Uno.Resizetizer
 
 			foreach (var image in images)
 			{
-				var info = new ResizeImageInfo();
+				var info = new ResizeImageInfo { Platform = platform ?? ResizetizeImages_v0.TargetPlatform };
 
 				var fileInfo = new FileInfo(image.GetMetadata("FullPath"));
 				if (!fileInfo.Exists)
@@ -180,10 +185,7 @@ namespace Uno.Resizetizer
 					info.IsAppIcon = iai;
 				}
 
-				if (bool.TryParse(image.GetMetadata(nameof(IsSplashScreen)), out var isc))
-				{
-					info.IsSplashScreen = isc;
-				}
+				info.IsSplashScreen = isSplash;
 
 				if (float.TryParse(image.GetMetadata(nameof(ForegroundScale)), NumberStyles.Number, CultureInfo.InvariantCulture, out var fsc))
 				{
@@ -241,7 +243,7 @@ namespace Uno.Resizetizer
 
 		static void ApplyPlatformForegroundScale(ITaskItem image, ResizeImageInfo info)
 		{
-			switch (ResizetizeImages_v0.TargetPlatform)
+			switch (info.Platform)
 			{
 				case "android":
 					SetPlatformForegroundScale(image, "AndroidForegroundScale", info);
@@ -268,7 +270,7 @@ namespace Uno.Resizetizer
 
 		static void ApplyPlatformScale(ITaskItem image, ResizeImageInfo info)
 		{
-			switch (ResizetizeImages_v0.TargetPlatform)
+			switch (info.Platform)
 			{
 				case "android":
 					SetPlatformForegroundScale(image, "AndroidScale", info);
