@@ -30,7 +30,7 @@ namespace Uno.Resizetizer
 
 		internal static string? _TargetFramework { get; set; }
 
-		internal static string? TargetPlatform { get; private set; }
+		internal static string? TargetPlatform { get; set; }
 
 		public ITaskItem[]? Images { get; set; }
 

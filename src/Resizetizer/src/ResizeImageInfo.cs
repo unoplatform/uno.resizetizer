@@ -269,6 +269,7 @@ namespace Uno.Resizetizer
 			}
 		}
 
+		// Legacy names first, so the new one wins when both are set
 		static void ApplyPlatformForegroundScale(ITaskItem image, ResizeImageInfo info)
 		{
 			switch (ResizetizeImages_v0.TargetPlatform)
@@ -284,6 +285,7 @@ namespace Uno.Resizetizer
 					break;
 				case "uwp":
 					SetPlatformForegroundScale(image, "WindowsForegroundScale", info);
+					SetPlatformForegroundScale(image, "WinAppSdkForegroundScale", info);
 					break;
 				case "wasm":
 					SetPlatformForegroundScale(image, "WasmForegroundScale", info);
@@ -291,11 +293,13 @@ namespace Uno.Resizetizer
 				//skia
 				case "netstandard" or "wpf":
 					SetPlatformForegroundScale(image, "SkiaForegroundScale", info);
+					SetPlatformForegroundScale(image, "DesktopForegroundScale", info);
 					break;
 			}
 		}
 
 
+		// Legacy names first, so the new one wins when both are set
 		static void ApplyPlatformScale(ITaskItem image, ResizeImageInfo info)
 		{
 			switch (ResizetizeImages_v0.TargetPlatform)
@@ -311,6 +315,7 @@ namespace Uno.Resizetizer
 					break;
 				case "uwp":
 					SetPlatformForegroundScale(image, "WindowsScale", info);
+					SetPlatformForegroundScale(image, "WinAppSdkScale", info);
 					break;
 				case "wasm":
 					SetPlatformForegroundScale(image, "WasmScale", info);
@@ -318,6 +323,7 @@ namespace Uno.Resizetizer
 				//skia
 				case "netstandard" or "wpf":
 					SetPlatformForegroundScale(image, "SkiaScale", info);
+					SetPlatformForegroundScale(image, "DesktopScale", info);
 					break;
 			}
 		}
