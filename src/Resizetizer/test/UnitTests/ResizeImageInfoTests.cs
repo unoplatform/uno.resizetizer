@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Globalization;
+using System.Threading;
+using Microsoft.Build.Utilities;
 using Xunit;
 
 namespace Uno.Resizetizer.Tests
@@ -53,6 +57,51 @@ namespace Uno.Resizetizer.Tests
 				};
 
 				Assert.False(info.IsVector);
+			}
+		}
+
+		// https://github.com/unoplatform/uno.resizetizer/issues/420
+		public class WindowsAssetScales
+		{
+			[Fact]
+			public void DefaultsMatchVisualStudio()
+			{
+				var info = ResizeImageInfo.Parse(new TaskItem("images/full_square.svg", new Dictionary<string, string>
+				{
+					["IsAppIcon"] = bool.TrueString,
+				}));
+
+				Assert.Equal(0.75, info.WindowsAppIconScale);
+				Assert.Equal(0.5, info.WindowsSmallTileScale);
+				Assert.Equal(0.33, info.WindowsTileScale);
+				Assert.Equal(1.0, info.WindowsStoreLogoScale);
+			}
+
+			[Fact]
+			public void MetadataIsParsedWithInvariantCulture()
+			{
+				var culture = Thread.CurrentThread.CurrentCulture;
+				Thread.CurrentThread.CurrentCulture = new CultureInfo("cs-CZ");
+				try
+				{
+					var info = ResizeImageInfo.Parse(new TaskItem("images/full_square.svg", new Dictionary<string, string>
+					{
+						["IsAppIcon"] = bool.TrueString,
+						["WindowsAppIconScale"] = "0.6",
+						["WindowsSmallTileScale"] = "0.4",
+						["WindowsTileScale"] = "0.25",
+						["WindowsStoreLogoScale"] = "0.9",
+					}));
+
+					Assert.Equal(0.6, info.WindowsAppIconScale);
+					Assert.Equal(0.4, info.WindowsSmallTileScale);
+					Assert.Equal(0.25, info.WindowsTileScale);
+					Assert.Equal(0.9, info.WindowsStoreLogoScale);
+				}
+				finally
+				{
+					Thread.CurrentThread.CurrentCulture = culture;
+				}
 			}
 		}
 	}
