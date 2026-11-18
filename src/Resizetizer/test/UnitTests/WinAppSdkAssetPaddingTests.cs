@@ -165,6 +165,13 @@ namespace Uno.Resizetizer.Tests
 			Assert.Equal(0.9, info.GetForegroundScale(new DpiPath("icon", 1.0m, size: new SKSize(64, 64))));
 		}
 
+		[Fact]
+		public void OnlyWinAppSdkImagesArePadded()
+		{
+			Assert.Contains(DpiPath.GetAppIconDpis("uwp", "icon"), d => d.WinAppSdkAssetType == WinAppSdkAssetType.Tile);
+			Assert.All(DpiPath.GetAppIconDpis("wpf", "icon"), d => Assert.Equal(WinAppSdkAssetType.None, d.WinAppSdkAssetType));
+		}
+
 		static DpiPath GetDpi(string asset) =>
 			DpiPath.Windows.AppIcon.Single(d => d.FileSuffix == asset);
 
